@@ -1,0 +1,17 @@
+{
+    "$schema": "https://json.schemastore.org/claude-code-settings.json",
+    "env": {
+        "ANTHROPIC_BASE_URL": "https://openrouter.ai/api",
+        "ANTHROPIC_AUTH_TOKEN": "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",
+        "ANTHROPIC_API_KEY": "",
+        "ANTHROPIC_MODEL": "nvidia/nemotron-3-super-120b-a12b:free",
+        "ANTHROPIC_SMALL_FAST_MODEL": "nvidia/nemotron-3-super-120b-a12b:free",
+        "ANTHROPIC_DEFAULT_SONNET_MODEL": "nvidia/nemotron-3-super-120b-a12b:free",
+        "CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS": "true",
+        "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "true",
+        "CLAUDE_CODE_THINKING": "disabled",
+        "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+        "ENABLE_TOOL_SEARCH": "false"
+    },
+    "model": "nvidia/nemotron-3-super-120b-a12b:free"
+}

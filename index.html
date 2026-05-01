@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mediocre Markup — Websites that outperform average</title>
+  <title>Mediocre Markup</title>
   <meta name="description" content="Custom websites for local businesses. Beautiful, busy, professional, polished, memorable, effective.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,9 +47,10 @@
       inset: 0;
       pointer-events: none;
       z-index: 200;
-      opacity: 0.04;
+      opacity: 0.06;
       mix-blend-mode: multiply;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
     }
 
     a { color: inherit; text-decoration: none; }
@@ -97,7 +98,7 @@
     .topbar {
       position: fixed;
       top: 0; left: 0; right: 0;
-      padding: 24px 40px;
+      padding: 20px 40px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -106,9 +107,8 @@
       font-size: 11px;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: var(--muted);
-      mix-blend-mode: difference;
-      color: var(--cream);
+      background: var(--ink);
+      color: rgba(253,241,238,0.65);
     }
 
     .topbar a { color: inherit; transition: opacity 0.2s; }
@@ -620,6 +620,91 @@
       text-transform: uppercase;
     }
 
+    /* NAV LOGO */
+    .topbar-logo {
+      height: 28px;
+      width: auto;
+      display: block;
+      opacity: 0.9;
+    }
+
+    /* HERO VERTICAL TEXT */
+    .hero-vertical-text {
+      position: absolute;
+      left: -28px;
+      top: 50%;
+      transform: translateY(-50%) rotate(-90deg);
+      transform-origin: center center;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    @media (max-width: 900px) { .hero-vertical-text { display: none; } }
+
+    /* GHOST WATERMARK NUMBERS */
+    .ghost-num {
+      position: absolute;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(180px, 28vw, 340px);
+      line-height: 1;
+      color: var(--navy);
+      opacity: 0.028;
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -12px;
+      right: 40px;
+      bottom: 60px;
+      z-index: 0;
+    }
+
+    /* DECORATIVE DIVIDER */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 0 60px;
+    }
+
+    .section-divider::before,
+    .section-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .section-divider span {
+      color: var(--navy);
+      font-size: 14px;
+      opacity: 0.4;
+      padding: 0 16px;
+      line-height: 1;
+    }
+
+    /* HALFTONE TEXTURE ON FEATURED PRICING CARD */
+    .price-card.featured::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: 24px;
+      opacity: 0.07;
+      background-image: radial-gradient(circle, rgba(253,241,238,0.9) 1px, transparent 1px);
+      background-size: 8px 8px;
+      z-index: 0;
+    }
+
+    .price-card.featured > * { position: relative; z-index: 1; }
+
     /* RESPONSIVE */
     @media (max-width: 900px) {
       .hero { padding: 120px 32px 60px; }
@@ -647,8 +732,7 @@
 
   <div class="topbar">
     <div class="left">
-      <span>Mediocre Markup</span>
-      <span class="hide-mobile">/ Studio</span>
+      <img src="logo.png" alt="Mediocre Markup" class="topbar-logo">
     </div>
     <div class="right">
       <a href="#what">Work</a>
@@ -659,6 +743,7 @@
   </div>
 
   <section class="hero">
+    <div class="hero-vertical-text">Mediocre Markup / 2026</div>
     <div class="hero-meta">
       <span>St. Johns, Florida — Available</span>
       <span>/ 001</span>
@@ -698,7 +783,10 @@
     <div class="p-cream">Cream</div>
   </div>
 
+  <div class="section-divider"><span>✦</span></div>
+
   <section id="what">
+    <div class="ghost-num">01</div>
     <div class="section-meta">
       <span><span class="num">/ 02</span> What you get</span>
       <span>Four principles</span>
@@ -737,7 +825,10 @@
     </div>
   </section>
 
+  <div class="section-divider"><span>✦</span></div>
+
   <section id="pricing">
+    <div class="ghost-num">02</div>
     <div class="section-meta">
       <span><span class="num">/ 03</span> Pricing</span>
       <span>Three tiers</span>
@@ -793,7 +884,10 @@
     </div>
   </section>
 
+  <div class="section-divider"><span>✦</span></div>
+
   <section id="process">
+    <div class="ghost-num">03</div>
     <div class="section-meta">
       <span><span class="num">/ 04</span> Process</span>
       <span>Four steps</span>
