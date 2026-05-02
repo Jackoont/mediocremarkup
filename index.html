@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" type="image/png" href="logo_transparent.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mediocre Markup</title>
   <meta name="description" content="Custom websites for local businesses. Beautiful, professional, polished, memorable, effective.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -36,6 +39,7 @@
       cursor: none;
       font-size: 15px;
       line-height: 1.6;
+      transition: background 0.5s ease;
     }
 
     @media (max-width: 900px) { body { cursor: auto; } }
@@ -52,6 +56,7 @@
       justify-content: space-between;
       padding: 0 48px;
       z-index: 500;
+      transition: background 0.4s;
     }
 
     .nav-left { display: flex; align-items: center; }
@@ -181,6 +186,137 @@
       width: 100%;
       transition: color 0.4s, text-align 0.4s;
     }
+
+    /* Layout classes for different themes */
+    .layout-professional {
+      text-align: left;
+      align-items: flex-start;
+      padding-left: 120px;
+    }
+    .layout-professional::before {
+      content: '';
+      position: absolute;
+      left: 60px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: currentColor;
+      opacity: 0.1;
+    }
+
+    .layout-striking {
+      position: relative;
+    }
+    .layout-striking::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(155,114,245,0.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(155,114,245,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      z-index: -1;
+    }
+
+    .layout-polished {
+      position: relative;
+    }
+    .layout-polished::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(212,168,67,0.02) 0%, transparent 70%);
+      z-index: -1;
+    }
+
+    .layout-innovative {
+      position: relative;
+    }
+    .layout-innovative::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(45deg, transparent 0%, rgba(0,212,255,0.01) 50%, transparent 100%);
+      z-index: -1;
+    }
+
+    .layout-effective {
+      position: relative;
+    }
+    .layout-effective::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: currentColor;
+      opacity: 0.05;
+      transform: translateY(-50%);
+    }
+    .layout-effective::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      bottom: 0;
+      width: 1px;
+      background: currentColor;
+      opacity: 0.05;
+      transform: translateX(-50%);
+    }
+
+    .layout-striking {
+      justify-content: center;
+      text-align: center;
+    }
+    .layout-striking::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, transparent 49%, rgba(255,71,87,0.05) 50%, transparent 51%);
+      pointer-events: none;
+    }
+
+    /* Animations */
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes matrixFall {
+      0% { transform: translateY(-100%); opacity: 0; }
+      100% { transform: translateY(100vh); opacity: 0; }
+    }
+    @keyframes orbPulse {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.1); }
+    }
+    @keyframes petalFall {
+      0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+
+    .petal { position: absolute; animation: petalFall linear infinite; }
+    .matrix-col { position: absolute; top: 0; animation: matrixFall linear infinite; white-space: pre; line-height: 1.2; }
+    .hero-orb { position: absolute; border-radius: 50%; filter: blur(40px); animation: orbPulse 4s ease-in-out infinite; pointer-events: none; z-index: 0; }
+
+    .gurgle-blob {
+      position: fixed;
+      border-radius: 50%;
+      transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      z-index: 1000;
+      pointer-events: none;
+    }
     .hero-eyebrow {
       font-family: var(--font-mono);
       font-size: 11px;
@@ -231,7 +367,7 @@
       gap: 4px;
       padding-left: 16px;
       border-left: 2px solid currentColor;
-      transition: border-color 0.4s;
+      transition: all 0.4s;
     }
     .stat-num {
       font-size: 28px;
@@ -263,81 +399,24 @@
       font-family: inherit;
     }
     .next-btn:hover { transform: scale(1.1) rotate(90deg); background: rgba(255,255,255,0.1); }
+    
     #color-flood {
-      position: absolute;
+      position: fixed;
       inset: 0;
-      z-index: 6;
+      z-index: 9999;
       pointer-events: none;
-      transform: translateY(110%);
-      border-radius: 50% 50% 0 0 / 80% 80% 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      filter: url('#goo');
     }
-    /* Falling petals for beautiful theme */
-    .petal {
-      position: absolute;
-      width: 8px; height: 12px;
-      border-radius: 50% 0 50% 0;
-      opacity: 0;
-      animation: petalFall linear infinite;
-      z-index: 2;
-      pointer-events: none;
-    }
-    @keyframes petalFall {
-      0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
-      10% { opacity: 0.7; }
-      90% { opacity: 0.4; }
-      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
-    }
-    /* Matrix code for innovative theme */
-    .matrix-col {
-      position: absolute;
-      top: 0;
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: #00d4ff;
-      opacity: 0;
-      animation: matrixDrop linear infinite;
-      z-index: 2;
-      pointer-events: none;
-      white-space: pre;
-      line-height: 1.4;
-    }
-    @keyframes matrixDrop {
-      0% { transform: translateY(-100%); opacity: 0; }
-      5% { opacity: 0.3; }
-      95% { opacity: 0.15; }
-      100% { transform: translateY(100vh); opacity: 0; }
-    }
-    /* Gold shimmer for polished */
-    @keyframes shimmer {
-      0% { background-position: -200% center; }
-      100% { background-position: 200% center; }
-    }
-    .shimmer-text {
-      background: linear-gradient(90deg, #d4a843 0%, #f5e6a0 40%, #d4a843 60%, #b8860b 100%);
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shimmer 3s linear infinite;
-    }
-    /* Corner accents for striking */
-    .corner-accent {
-      position: absolute;
-      width: 40px; height: 40px;
-      border-color: currentColor;
-      border-style: solid;
-      pointer-events: none;
-      z-index: 3;
-      transition: opacity 0.5s;
-    }
-    .corner-tl { top: 20px; left: 20px; border-width: 2px 0 0 2px; }
-    .corner-tr { top: 20px; right: 20px; border-width: 2px 2px 0 0; }
-    .corner-bl { bottom: 20px; left: 20px; border-width: 0 0 2px 2px; }
-    .corner-br { bottom: 20px; right: 20px; border-width: 0 2px 2px 0; }
 
-    @media (max-width: 900px) {
-      .hero-content { padding: 100px 24px 60px; }
-      .hero-stats { gap: 24px; }
+    .gurgle-blob {
+      position: absolute;
+      background: inherit;
+      border-radius: 50%;
+      transform: scale(0);
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     /* ── FEATURE BAND ── */
@@ -348,6 +427,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 60px;
       align-items: center;
+      transition: background 0.4s;
     }
 
     .feature-quote {
@@ -370,15 +450,12 @@
 
     .feature-list li::before { content: '→'; position: absolute; left: 0; color: #ea9085; }
 
-    @media (max-width: 900px) {
-      .feature-band { grid-template-columns: 1fr; padding: 60px 24px; gap: 40px; }
-    }
-
     /* ── MARQUEE ── */
     .marquee-strip {
       background: #6e5773;
       overflow: hidden;
       padding: 20px 0;
+      transition: background 0.4s;
     }
 
     .marquee-track {
@@ -412,20 +489,6 @@
       margin: 0 auto;
     }
 
-    @media (max-width: 900px) { .section-inner { padding: 64px 24px; } }
-
-    .section-label {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-    }
-
     .section-title {
       font-family: var(--font-body);
       font-size: clamp(28px, 4vw, 56px);
@@ -434,13 +497,12 @@
       line-height: 1.05;
       color: var(--ink);
       margin-bottom: 56px;
+      transition: color 0.4s;
     }
 
     .section-title em { font-style: italic; color: var(--muted); font-weight: 300; }
 
-    .divider { height: 1px; background: rgba(110,87,115,0.15); }
-
-    /* ── WHAT YOU GET — EDITORIAL ROWS WITH TAGS ── */
+    /* ── WHAT YOU GET ── */
     .what-item {
       display: grid;
       grid-template-columns: 100px 1px 200px 1fr auto;
@@ -449,9 +511,8 @@
       border-bottom: 1px solid rgba(110,87,115,0.15);
       align-items: center;
       cursor: default;
+      transition: all 0.4s;
     }
-
-    .what-item:first-child { border-top: 1px solid rgba(110,87,115,0.15); }
 
     .what-item-num {
       font-family: var(--font-body);
@@ -460,25 +521,6 @@
       line-height: 1;
       color: rgba(110,87,115,0.07);
       transition: color 0.3s;
-      user-select: none;
-    }
-
-    .what-item:hover .what-item-num { color: rgba(212,93,121,0.18); }
-
-    .what-item-divider { width: 1px; background: rgba(110,87,115,0.15); align-self: stretch; }
-
-    .what-item h3 {
-      font-family: var(--font-body);
-      font-weight: 700;
-      font-size: 22px;
-      color: var(--ink);
-      line-height: 1.2;
-    }
-
-    .what-item p {
-      font-size: 15px;
-      color: var(--muted);
-      line-height: 1.65;
     }
 
     .what-tag {
@@ -486,20 +528,11 @@
       font-size: 10px;
       letter-spacing: 1px;
       text-transform: uppercase;
-      background: #ea9085;
+      background: var(--accent2);
       color: white;
       border-radius: 999px;
       padding: 6px 14px;
       white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    @media (max-width: 900px) {
-      .what-item { display: block; padding: 32px 0; }
-      .what-item-divider { display: none; }
-      .what-item-num { font-size: 48px; margin-bottom: 8px; }
-      .what-item h3 { margin-bottom: 6px; }
-      .what-item p { margin-bottom: 12px; }
     }
 
     /* ── PRICING ── */
@@ -509,8 +542,6 @@
       gap: 20px;
     }
 
-    @media (max-width: 900px) { .pricing-grid { grid-template-columns: 1fr; } }
-
     .price-card {
       background: #f0ebe0;
       border: 1px solid rgba(110,87,115,0.15);
@@ -518,278 +549,24 @@
       padding: 40px;
       display: flex;
       flex-direction: column;
-      transition: transform 0.3s, box-shadow 0.3s;
+      transition: all 0.4s;
     }
-
-    .price-card:hover { transform: translateY(-5px); box-shadow: 0 20px 60px rgba(42,31,45,0.08); }
 
     .price-card.featured { background: #d45d79; border-color: #d45d79; }
 
-    .price-card.featured .price-tag    { background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.85); }
-    .price-card.featured .price-name   { color: #ffffff; }
-    .price-card.featured .price-desc   { color: rgba(255,255,255,0.75); }
-    .price-card.featured .price-amount { color: #ffffff; }
-    .price-card.featured .price-period { color: rgba(255,255,255,0.65); }
-    .price-card.featured .price-features li { color: rgba(255,255,255,0.85); border-top-color: rgba(255,255,255,0.15); }
-    .price-card.featured .price-features li::before { color: #e9e2d0; }
-    .price-card.featured .btn-primary  { background: #2a1f2d; color: #e9e2d0; border-color: #2a1f2d; }
-
-    .price-tag {
-      display: inline-block;
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      background: rgba(110,87,115,0.1);
-      color: var(--muted);
-      padding: 5px 13px;
-      border-radius: 999px;
-      margin-bottom: 24px;
-      width: fit-content;
-    }
-
-    .price-name {
-      font-family: var(--font-body);
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      color: var(--ink);
-      margin-bottom: 10px;
-    }
-
-    .price-desc { font-size: 14px; color: var(--muted); margin-bottom: 28px; line-height: 1.55; }
-
-    .price-amount {
-      font-family: var(--font-body);
-      font-size: 64px;
-      font-weight: 300;
-      letter-spacing: -3px;
-      line-height: 1;
-      color: var(--ink);
-      margin-bottom: 4px;
-    }
-
-    .price-amount sup {
-      font-size: 22px;
-      vertical-align: top;
-      margin-top: 8px;
-      display: inline-block;
-      font-weight: 400;
-      opacity: 0.6;
-    }
-
-    .price-period {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 28px;
-    }
-
-    .price-features { list-style: none; flex: 1; margin-bottom: 28px; }
-
-    .price-features li {
-      padding: 11px 0;
-      font-size: 14px;
-      color: var(--muted);
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      border-top: 1px solid rgba(110,87,115,0.12);
-    }
-
-    .price-features li:first-child { border-top: none; }
-
-    .price-features li::before {
-      content: '→';
-      color: #ea9085;
-      flex-shrink: 0;
-      font-size: 12px;
-      margin-top: 2px;
-    }
-
-    .price-card .btn { width: 100%; justify-content: center; }
-
-    /* ── SERVICES ── */
-    .services-chips { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 48px; }
-
-    .service-chip {
-      border: 1px solid rgba(110,87,115,0.2);
-      border-radius: 999px;
-      padding: 10px 20px;
-      font-family: var(--font-body);
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--ink);
-      cursor: none;
-      transition: background 0.2s, color 0.2s, border-color 0.2s;
-      display: inline-flex;
-      align-items: center;
-    }
-
-    .service-chip:hover { background: #d45d79; color: white; border-color: #d45d79; }
-
-    @media (max-width: 900px) { .service-chip { cursor: pointer; } }
-
-    /* ── PROCESS — HORIZONTAL VISUAL ── */
-    .process-track {
-      padding: 0 0 0 0;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-
-    .process-steps {
-      display: flex;
-      align-items: flex-start;
-      padding: 0 0 60px;
-    }
-
-    .process-step {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 0 16px;
-    }
-
-    .process-circle {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: #d45d79;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-body);
-      font-weight: 700;
-      font-size: 16px;
-      flex-shrink: 0;
-      margin-bottom: 16px;
-      position: relative;
-      z-index: 1;
-      box-shadow: 0 4px 16px rgba(212,93,121,0.3);
-    }
-
-    .process-connector {
-      flex-shrink: 0;
-      align-self: flex-start;
-      margin-top: 24px;
-      flex: 0 0 32px;
-      border-top: 1.5px dashed rgba(110,87,115,0.3);
-    }
-
-    .process-step-time {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: #6e5773;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
-
-    .process-step h3 {
-      font-family: var(--font-body);
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--ink);
-      margin-bottom: 8px;
-      letter-spacing: -0.3px;
-    }
-
-    .process-step h3 em { font-style: italic; color: var(--muted); font-weight: 300; }
-
-    .process-step p {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.6;
-      max-width: 200px;
-    }
-
-    @media (max-width: 900px) {
-      .process-steps {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 32px;
-        padding-bottom: 40px;
-      }
-      .process-connector { display: none; }
-      .process-step { padding: 0; }
-    }
-
-    /* ── CTA ── */
-    .cta {
-      padding: 140px 80px;
-      max-width: 1400px;
-      margin: 0 auto;
-      text-align: center;
-    }
-
-    @media (max-width: 900px) { .cta { padding: 80px 24px; } }
-
-    .cta h2 {
-      font-family: var(--font-body);
-      font-size: clamp(40px, 8vw, 110px);
-      font-weight: 900;
-      letter-spacing: -3px;
-      line-height: 0.9;
-      color: var(--ink);
-      margin-bottom: 48px;
-    }
-
-    .cta h2 em { font-style: italic; color: var(--accent); }
-
-    .cta-email {
-      font-family: var(--font-body);
-      font-size: 16px;
-      font-weight: 500;
-      color: var(--ink);
-      border-bottom: 1px solid rgba(110,87,115,0.3);
-      padding-bottom: 4px;
-      transition: color 0.2s, border-color 0.2s;
-    }
-
-    .cta-email:hover { color: #d45d79; border-color: #d45d79; }
+    /* ── THEME OVERLAYS ── */
+    #theme-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 5; }
+    .grain-overlay { position: fixed; inset: 0; background: url(https://www.transparenttextures.com/patterns/stardust.png); opacity: 0.05; z-index: 1000; pointer-events: none; display: none; }
 
     /* ── FOOTER ── */
     footer {
-      padding: 24px 60px;
+      padding: 60px 80px;
       border-top: 1px solid rgba(110,87,115,0.15);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
+      transition: background 0.4s;
     }
-
-    .footer-copy {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: #6e5773;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .footer-tagline {
-      font-family: var(--font-body);
-      font-size: 12px;
-      color: #6e5773;
-      font-weight: 400;
-    }
-
-    .footer-email {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: #6e5773;
-      letter-spacing: 1px;
-      transition: color 0.2s;
-    }
-
-    .footer-email:hover { color: #d45d79; }
-
-    @media (max-width: 900px) { footer { padding: 24px; flex-direction: column; gap: 8px; align-items: flex-start; } }
 
     /* ── SCROLL REVEAL ── */
     .reveal {
@@ -797,44 +574,44 @@
       transform: translateY(30px);
       transition: opacity 0.6s ease-out, transform 0.6s ease-out;
     }
-
     .reveal.visible { opacity: 1; transform: translateY(0); }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav>
+  <div class="grain-overlay" id="grain"></div>
+
+  <nav id="main-nav">
     <div class="nav-left">
       <a href="#"><img src="logo_transparent.png" height="48" alt="Mediocre Markup"></a>
       <div class="nav-sep"></div>
       <span class="nav-tagline">Websites that outperform average</span>
     </div>
     <div class="nav-links">
-      <a href="#what"    class="hide-mobile">Work</a>
-      <a href="#pricing" class="hide-mobile">Pricing</a>
-      <a href="#process" class="hide-mobile">Process</a>
+      <a href="#what">Work</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#process">Process</a>
       <a href="#contact" class="nav-cta">Start a project →</a>
     </div>
   </nav>
 
-  <!-- HERO -->
   <section class="hero" id="hero">
     <canvas id="particle-canvas"></canvas>
+    <div id="theme-overlay"></div>
     <div id="deco-layer" class="deco-layer"></div>
     <div id="theme-sidebar" class="theme-sidebar"></div>
     <div class="hero-content" id="hero-content">
       <div class="hero-eyebrow" id="hero-eyebrow">WEB DESIGN STUDIO — ST. JOHNS, FL</div>
       <h1 class="hero-headline" id="hero-headline">
-        <span class="line" id="line1">Your website</span>
-        <span class="line light" id="line2">should be</span>
+        <span class="line">Your website</span>
+        <span class="line" style="opacity: 0.4; font-weight: 300; font-style: italic;">should be</span>
         <span class="line theme-line">
           <span id="theme-word">beautiful</span>
-          <button class="next-btn" id="next-btn" aria-label="Next">→</button>
+          <button class="next-btn" id="next-btn">→</button>
         </span>
       </h1>
       <p class="hero-sub" id="hero-sub">Custom websites for local businesses. Hand-coded, not templated.</p>
-      <div class="hero-actions" id="hero-actions">
+      <div class="hero-actions">
         <a href="#contact" class="btn btn-primary" id="hero-btn-primary">Start a project →</a>
         <a href="#pricing" class="btn btn-ghost" id="hero-btn-ghost">See pricing</a>
       </div>
@@ -847,7 +624,6 @@
     <div id="color-flood"></div>
   </section>
 
-  <!-- FEATURE BAND -->
   <div class="feature-band">
     <div class="feature-quote">"A website that actually works for your business."</div>
     <ul class="feature-list">
@@ -858,801 +634,374 @@
     </ul>
   </div>
 
-  <!-- MARQUEE -->
   <div class="marquee-strip">
     <div class="marquee-track">
-      <span>Hand-coded</span><span class="marquee-sep">●</span>
-      <span>No templates</span><span class="marquee-sep">●</span>
-      <span>Mobile-first</span><span class="marquee-sep">●</span>
-      <span>Hosted and maintained</span><span class="marquee-sep">●</span>
-      <span>Built for local businesses</span><span class="marquee-sep">●</span>
-      <span>Fast turnaround</span><span class="marquee-sep">●</span>
-      <span>Hand-coded</span><span class="marquee-sep">●</span>
-      <span>No templates</span><span class="marquee-sep">●</span>
-      <span>Mobile-first</span><span class="marquee-sep">●</span>
-      <span>Hosted and maintained</span><span class="marquee-sep">●</span>
-      <span>Built for local businesses</span><span class="marquee-sep">●</span>
-      <span>Fast turnaround</span><span class="marquee-sep">●</span>
+      <span>Hand-coded</span><span class="marquee-sep">●</span><span>No templates</span><span class="marquee-sep">●</span><span>Mobile-first</span><span class="marquee-sep">●</span><span>Hosted</span><span class="marquee-sep">●</span><span>Fast turnaround</span><span class="marquee-sep">●</span>
+      <span>Hand-coded</span><span class="marquee-sep">●</span><span>No templates</span><span class="marquee-sep">●</span><span>Mobile-first</span><span class="marquee-sep">●</span><span>Hosted</span><span class="marquee-sep">●</span><span>Fast turnaround</span><span class="marquee-sep">●</span>
     </div>
   </div>
 
-  <!-- WHAT YOU GET -->
   <section id="what">
     <div class="section-inner">
-      <div class="section-label reveal">
-        <span>/ 01 — What you get</span>
-        <span>Four principles</span>
-      </div>
-      <h2 class="section-title reveal">A real website. <em>Not a template with your logo on it.</em></h2>
+      <h2 class="section-title reveal">A real website. <em>Not a template.</em></h2>
       <div class="what-list">
         <div class="what-item reveal">
           <div class="what-item-num">01</div>
-          <div class="what-item-divider"></div>
           <h3>Hand-coded</h3>
-          <p>No bloated page builders. No recycled themes. Every site is written from scratch so it loads fast and looks like yours.</p>
+          <p>No bloated page builders. Written from scratch so it loads fast.</p>
           <span class="what-tag">Speed</span>
         </div>
         <div class="what-item reveal">
           <div class="what-item-num">02</div>
-          <div class="what-item-divider"></div>
           <h3>Mobile-first</h3>
-          <p>Most of your customers are on their phones. Sites are designed for small screens first, then scaled up.</p>
+          <p>Most of your customers are on their phones. We design for them first.</p>
           <span class="what-tag">Mobile</span>
         </div>
-        <div class="what-item reveal">
-          <div class="what-item-num">03</div>
-          <div class="what-item-divider"></div>
-          <h3>Secure &amp; backed up</h3>
-          <p>SSL out of the box. Daily backups. Updates handled. You never have to think about it once it's live.</p>
-          <span class="what-tag">Security</span>
-        </div>
-        <div class="what-item reveal">
-          <div class="what-item-num">04</div>
-          <div class="what-item-divider"></div>
-          <h3>Yours forever</h3>
-          <p>You own your domain. You own your content. If you ever leave, everything goes with you.</p>
-          <span class="what-tag">Ownership</span>
-        </div>
       </div>
     </div>
   </section>
 
-  <div class="divider"></div>
-
-  <!-- PRICING -->
-  <section id="pricing">
-    <div class="section-inner">
-      <div class="section-label reveal">
-        <span>/ 02 — Pricing</span>
-        <span>Three tiers</span>
+  <section id="pricing" class="section-inner">
+    <div class="pricing-grid">
+      <div class="price-card reveal">
+        <div class="price-name">Starter</div>
+        <div class="price-amount"><sup>$</sup>500</div>
+        <p>Single landing page essentials.</p>
+        <a href="#contact" class="btn btn-secondary">Start →</a>
       </div>
-      <h2 class="section-title reveal">Three ways to work together. <em>No surprises.</em></h2>
-      <div class="pricing-grid">
-
-        <div class="price-card reveal">
-          <span class="price-tag">Starter</span>
-          <div class="price-name">Single Page</div>
-          <p class="price-desc">A clean professional landing page. Hours, location, contact, the essentials.</p>
-          <div class="price-amount"><sup>$</sup>500</div>
-          <div class="price-period">One-time</div>
-          <ul class="price-features">
-            <li>Custom design</li>
-            <li>Mobile responsive</li>
-            <li>Contact form</li>
-            <li>Delivered in ~7 days</li>
-          </ul>
-          <a href="#contact" class="btn btn-secondary">Start →</a>
-        </div>
-
-        <div class="price-card featured reveal">
-          <span class="price-tag">Most chosen</span>
-          <div class="price-name">Full Website</div>
-          <p class="price-desc">Multi-page site with the works. Animations, custom design, copy help included.</p>
-          <div class="price-amount"><sup>$</sup>1,200</div>
-          <div class="price-period">One-time</div>
-          <ul class="price-features">
-            <li>Up to 6 pages</li>
-            <li>Custom animations</li>
-            <li>SEO setup</li>
-            <li>Copy assistance</li>
-            <li>Delivered in ~14 days</li>
-          </ul>
-          <a href="#contact" class="btn btn-primary">Start →</a>
-        </div>
-
-        <div class="price-card reveal">
-          <span class="price-tag">Ongoing</span>
-          <div class="price-name">Care Plan</div>
-          <p class="price-desc">Hosting, updates, backups, security. The site stays online and you forget it exists.</p>
-          <div class="price-amount"><sup>$</sup>50</div>
-          <div class="price-period">Per month</div>
-          <ul class="price-features">
-            <li>Hosting included</li>
-            <li>Daily backups</li>
-            <li>Security monitoring</li>
-            <li>Small updates included</li>
-          </ul>
-          <a href="#contact" class="btn btn-secondary">Start →</a>
-        </div>
-
+      <div class="price-card featured reveal">
+        <div class="price-name">Full Website</div>
+        <div class="price-amount"><sup>$</sup>1,200</div>
+        <p>Multi-page custom experience.</p>
+        <a href="#contact" class="btn btn-primary">Start →</a>
       </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- SERVICES -->
-  <section id="services">
-    <div class="section-inner">
-      <div class="section-label reveal">
-        <span>/ 03 — Services</span>
-        <span>What I build</span>
+      <div class="price-card reveal">
+        <div class="price-name">Care Plan</div>
+        <div class="price-amount"><sup>$</sup>50</div>
+        <p>Monthly hosting and security.</p>
+        <a href="#contact" class="btn btn-secondary">Start →</a>
       </div>
-      <h2 class="section-title reveal">What I can build for you.</h2>
-      <div class="services-chips reveal">
-        <span class="service-chip">Business Website</span>
-        <span class="service-chip">Online Store</span>
-        <span class="service-chip">Booking System</span>
-        <span class="service-chip">Invoicing Setup</span>
-        <span class="service-chip">Membership Site</span>
-        <span class="service-chip">Blog</span>
-        <span class="service-chip">Portfolio</span>
-        <span class="service-chip">Donation Page</span>
-        <span class="service-chip">Event Page</span>
-        <span class="service-chip">Restaurant Menu</span>
-        <span class="service-chip">Landing Page</span>
-        <span class="service-chip">SEO Setup</span>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- PROCESS -->
-  <section id="process">
-    <div class="section-inner">
-      <div class="section-label reveal">
-        <span>/ 04 — Process</span>
-        <span>Four steps</span>
-      </div>
-      <h2 class="section-title reveal">Four steps. <em>That's it.</em></h2>
-      <div class="process-track">
-        <div class="process-steps">
-          <div class="process-step reveal">
-            <div class="process-circle">01</div>
-            <div class="process-step-time">~30 min</div>
-            <h3>We <em>talk</em></h3>
-            <p>A short call or message. What does your business do? Who's it for? What do you want the site to actually do?</p>
-          </div>
-          <div class="process-connector"></div>
-          <div class="process-step reveal">
-            <div class="process-circle">02</div>
-            <div class="process-step-time">~7–14 days</div>
-            <h3>I <em>build</em></h3>
-            <p>You get a draft within a few days. We refine until it feels right. No mystery, no agency runaround.</p>
-          </div>
-          <div class="process-connector"></div>
-          <div class="process-step reveal">
-            <div class="process-circle">03</div>
-            <div class="process-step-time">Same day</div>
-            <h3>We <em>launch</em></h3>
-            <p>Site goes live on your domain. SSL, backups, everything secure from day one.</p>
-          </div>
-          <div class="process-connector"></div>
-          <div class="process-step reveal">
-            <div class="process-circle">04</div>
-            <div class="process-step-time">Ongoing</div>
-            <h3>I <em>maintain</em></h3>
-            <p>If you're on the Care Plan, your site is handled. Updates, backups, security — all behind the scenes.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- CTA -->
-  <section id="contact">
-    <div class="cta">
-      <h2 class="reveal">Let's build something<br><em>not actually mediocre.</em></h2>
-      <a class="cta-email reveal" href="mailto:mediocremanager@outlook.com">mediocremanager@outlook.com →</a>
     </div>
   </section>
 
   <footer>
-    <span class="footer-copy">© 2026 Mediocre Markup</span>
-    <span class="footer-tagline">Websites that outperform average</span>
-    <a class="footer-email" href="mailto:mediocremanager@outlook.com">mediocremanager@outlook.com</a>
+    <span>© 2026 Mediocre Markup</span>
+    <a href="mailto:mediocremanager@outlook.com">mediocremanager@outlook.com</a>
   </footer>
 
+  <svg style="visibility: hidden; position: absolute;" width="0" height="0">
+    <filter id="goo">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="15" result="blur" />
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 25 -12" result="goo" />
+    </filter>
+  </svg>
+
   <script>
-    // ── PHYSICS CURSOR ──
-    if (window.innerWidth > 900) {
-      const outer = document.createElement('div');
-      outer.style.cssText = 'position:fixed;width:36px;height:36px;border:1.5px solid rgba(212,93,121,0.5);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width 0.3s,height 0.3s,border-color 0.3s';
-      const inner = document.createElement('div');
-      inner.style.cssText = 'position:fixed;width:6px;height:6px;background:#d45d79;border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%)';
-      document.body.appendChild(outer);
-      document.body.appendChild(inner);
-      let mx=0,my=0,ox=0,oy=0,ix=0,iy=0,ovx=0,ovy=0;
-      document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
-      (function loop(){
-        const oax=(mx-ox)*0.1, oay=(my-oy)*0.1;
-        ovx=(ovx+oax)*0.75; ovy=(ovy+oay)*0.75;
-        ox+=ovx; oy+=ovy;
-        ix+=(mx-ix)*0.5; iy+=(my-iy)*0.5;
-        outer.style.left=ox+'px'; outer.style.top=oy+'px';
-        inner.style.left=ix+'px'; inner.style.top=iy+'px';
-        const speed=Math.sqrt(ovx*ovx+ovy*ovy);
-        const angle=Math.atan2(ovy,ovx)*180/Math.PI;
-        const stretch=Math.min(speed*0.15,0.6);
-        outer.style.transform=`translate(-50%,-50%) rotate(${angle}deg) scaleX(${1+stretch}) scaleY(${1-stretch*0.5})`;
-        requestAnimationFrame(loop);
-      })();
-      document.querySelectorAll('a,button,.service-chip,.price-card,.what-item,.process-step,.next-btn').forEach(el=>{
-        el.addEventListener('mouseenter',()=>{outer.style.width='56px';outer.style.height='56px';outer.style.borderColor='#d45d79';inner.style.background='#ea9085'});
-        el.addEventListener('mouseleave',()=>{outer.style.width='36px';outer.style.height='36px';outer.style.borderColor='rgba(212,93,121,0.5)';inner.style.background='#d45d79'});
-      });
-      document.body.style.cursor='none';
-    }
-
-    // ============ PARTICLE SYSTEM ============
-    const canvas = document.getElementById('particle-canvas');
-    const ctx = canvas.getContext('2d');
-    let W, H;
-    function resizeCanvas(){
-      W = canvas.width = canvas.offsetWidth;
-      H = canvas.height = canvas.offsetHeight;
-    }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    let particles = [];
-    let currentConnectDist = 90;
-    let currentConnectOpacity = 0.12;
-    let doConnect = true;
-    let mouseX = -1000, mouseY = -1000;
-
-    function initParticles(count, colors, speed){
-      particles = [];
-      for(let i=0;i<count;i++){
-        particles.push({
-          x: Math.random()*W, y: Math.random()*H,
-          vx: (Math.random()-0.5)*speed*2,
-          vy: (Math.random()-0.5)*speed*2,
-          r: Math.random()*2+0.5,
-          color: colors[Math.floor(Math.random()*colors.length)],
-          alpha: Math.random()*0.5+0.15,
-          baseSpeed: speed
-        });
-      }
-    }
-
-    initParticles(140, ['#c9a882','#a0896a','#8a7a6a','#2a2a2a'], 0.3);
-
-    document.getElementById('hero').addEventListener('mousemove', e=>{
-      const r = canvas.getBoundingClientRect();
-      mouseX=e.clientX-r.left; mouseY=e.clientY-r.top;
-    });
-    document.getElementById('hero').addEventListener('mouseleave',()=>{
-      mouseX=-1000; mouseY=-1000;
-    });
-
-    function drawParticles(){
-      ctx.clearRect(0,0,W,H);
-      particles.forEach((p,i)=>{
-        const dx=p.x-mouseX, dy=p.y-mouseY;
-        const dist=Math.sqrt(dx*dx+dy*dy);
-        if(dist<120){
-          const f=(120-dist)/120;
-          p.vx+=(dx/dist)*f*1.2;
-          p.vy+=(dy/dist)*f*1.2;
-        }
-        const spd=Math.sqrt(p.vx*p.vx+p.vy*p.vy);
-        const maxSpd=p.baseSpeed*6;
-        if(spd>maxSpd){p.vx=(p.vx/spd)*maxSpd;p.vy=(p.vy/spd)*maxSpd;}
-        p.vx*=0.98; p.vy*=0.98;
-        p.x+=p.vx; p.y+=p.vy;
-        if(p.x<0)p.x=W; if(p.x>W)p.x=0;
-        if(p.y<0)p.y=H; if(p.y>H)p.y=0;
-        ctx.beginPath();
-        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-        ctx.fillStyle=p.color;
-        ctx.globalAlpha=p.alpha;
-        ctx.fill();
-        if(doConnect){
-          for(let j=i+1;j<particles.length;j++){
-            const p2=particles[j];
-            const dx2=p.x-p2.x, dy2=p.y-p2.y;
-            const d2=Math.sqrt(dx2*dx2+dy2*dy2);
-            if(d2<currentConnectDist){
-              ctx.beginPath();
-              ctx.moveTo(p.x,p.y);
-              ctx.lineTo(p2.x,p2.y);
-              ctx.strokeStyle=p.color;
-              ctx.globalAlpha=(1-d2/currentConnectDist)*currentConnectOpacity;
-              ctx.lineWidth=0.5;
-              ctx.stroke();
-            }
-          }
-        }
-        ctx.globalAlpha=1;
-      });
-      requestAnimationFrame(drawParticles);
-    }
-    drawParticles();
-
-    // ============ DECORATION HELPERS ============
-    let petalInterval=null, matrixInterval=null, glitchInterval=null;
-
-    function clearDecorations(){
-      const deco=document.getElementById('deco-layer');
-      deco.innerHTML='';
-      const sidebar=document.getElementById('theme-sidebar');
-      sidebar.innerHTML='';
-      sidebar.className='theme-sidebar';
-      if(petalInterval){clearInterval(petalInterval);petalInterval=null;}
-      if(matrixInterval){clearInterval(matrixInterval);matrixInterval=null;}
-      if(glitchInterval){clearInterval(glitchInterval);glitchInterval=null;}
-      document.querySelectorAll('.corner-accent').forEach(e=>e.remove());
-      const tw=document.getElementById('theme-word');
-      tw.classList.remove('shimmer-text');
-      tw.style.webkitTextFillColor='';
-      const hl=document.getElementById('hero-headline');
-      hl.style.transform='';
-      hl.style.filter='';
-    }
-
-    function spawnPetals(colors){
-      const deco=document.getElementById('deco-layer');
-      petalInterval=setInterval(()=>{
-        const p=document.createElement('div');
-        p.className='petal';
-        p.style.left=Math.random()*100+'%';
-        p.style.background=colors[Math.floor(Math.random()*colors.length)];
-        p.style.animationDuration=(4+Math.random()*6)+'s';
-        p.style.animationDelay=(Math.random()*2)+'s';
-        p.style.width=(6+Math.random()*8)+'px';
-        p.style.height=(8+Math.random()*10)+'px';
-        p.style.transform=`rotate(${Math.random()*360}deg)`;
-        deco.appendChild(p);
-        setTimeout(()=>p.remove(),10000);
-      },300);
-    }
-
-    function spawnMatrix(){
-      const deco=document.getElementById('deco-layer');
-      const chars='01アイウエオカキクケコABCDEF</>{}[]';
-      matrixInterval=setInterval(()=>{
-        const col=document.createElement('div');
-        col.className='matrix-col';
-        col.style.left=Math.random()*100+'%';
-        col.style.animationDuration=(3+Math.random()*4)+'s';
-        col.style.animationDelay='0s';
-        col.style.opacity='0';
-        let text='';
-        for(let i=0;i<20;i++) text+=chars[Math.floor(Math.random()*chars.length)]+'\n';
-        col.textContent=text;
-        deco.appendChild(col);
-        setTimeout(()=>col.remove(),8000);
-      },400);
-    }
-
-    function addCornerAccents(color){
-      ['tl','tr','bl','br'].forEach(pos=>{
-        const a=document.createElement('div');
-        a.className=`corner-accent corner-${pos}`;
-        a.style.color=color;
-        document.getElementById('hero').appendChild(a);
-      });
-    }
-
-    function addLeftBorderAccent(color){
-      const sidebar=document.getElementById('theme-sidebar');
-      sidebar.style.left='0';
-      sidebar.style.right='auto';
-      sidebar.style.borderRight=`2px solid ${color}`;
-      sidebar.classList.add('visible');
-    }
-
-    function addRightSidebarText(text, color){
-      const sidebar=document.getElementById('theme-sidebar');
-      sidebar.style.right='0';
-      sidebar.style.left='auto';
-      sidebar.innerHTML=`<span style="writing-mode:vertical-rl;font-family:var(--font-mono);font-size:11px;letter-spacing:4px;color:${color};text-transform:uppercase;opacity:0.7">${text}</span>`;
-      sidebar.classList.add('visible');
-    }
-
-    function addFlowerBorder(colors){
-      const deco=document.getElementById('deco-layer');
-      deco.innerHTML=`
-        <svg style="position:absolute;left:0;top:0;width:120px;height:100%;opacity:0.15" viewBox="0 0 120 800" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M60 20 Q80 60 60 100 Q40 140 60 180 Q80 220 60 260 Q40 300 60 340 Q80 380 60 420 Q40 460 60 500 Q80 540 60 580 Q40 620 60 660 Q80 700 60 740 Q40 780 60 800" stroke="${colors[0]}" stroke-width="1.5" fill="none"/>
-          <path d="M30 0 Q50 40 30 80 Q10 120 30 160 Q50 200 30 240 Q10 280 30 320 Q50 360 30 400 Q10 440 30 480 Q50 520 30 560 Q10 600 30 640 Q50 680 30 720 Q10 760 30 800" stroke="${colors[1]}" stroke-width="1" fill="none" opacity="0.6"/>
-        </svg>
-        <svg style="position:absolute;right:0;top:0;width:120px;height:100%;opacity:0.15;transform:scaleX(-1)" viewBox="0 0 120 800" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M60 20 Q80 60 60 100 Q40 140 60 180 Q80 220 60 260 Q40 300 60 340 Q80 380 60 420 Q40 460 60 500 Q80 540 60 580 Q40 620 60 660 Q80 700 60 740 Q40 780 60 800" stroke="${colors[0]}" stroke-width="1.5" fill="none"/>
-        </svg>
-      `;
-    }
-
-    function addGoldFrameLines(){
-      const deco=document.getElementById('deco-layer');
-      deco.innerHTML=`
-        <div style="position:absolute;top:80px;left:40px;right:40px;height:1px;background:linear-gradient(90deg,transparent,#d4a843,transparent);opacity:0.4"></div>
-        <div style="position:absolute;bottom:80px;left:40px;right:40px;height:1px;background:linear-gradient(90deg,transparent,#d4a843,transparent);opacity:0.4"></div>
-        <div style="position:absolute;top:80px;left:40px;width:1px;bottom:80px;background:linear-gradient(180deg,transparent,#d4a843,transparent);opacity:0.3"></div>
-        <div style="position:absolute;top:80px;right:40px;width:1px;bottom:80px;background:linear-gradient(180deg,transparent,#d4a843,transparent);opacity:0.3"></div>
-      `;
-    }
-
-    function addProfessionalRule(color){
-      const deco=document.getElementById('deco-layer');
-      deco.innerHTML=`
-        <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:${color};opacity:0.8"></div>
-        <div style="position:absolute;top:50%;left:60px;right:60px;height:1px;background:${color};opacity:0.08;transform:translateY(-50%)"></div>
-      `;
-    }
-
-    // ============ THEME DEFINITIONS ============
+    // ============ THEME ENGINE ============
     const THEMES = {
       beautiful: {
-        floodColor: '#d45d79',
-        heroBg: '#e9e2d0',
-        heroText: '#2a1f2d',
-        accentColor: '#d45d79',
-        wordColor: '#d45d79',
-        eyebrowColor: '#6e5773',
-        subColor: '#6e5773',
-        statColor: '#2a1f2d',
-        statLabelColor: '#6e5773',
-        statBorderColor: '#ea9085',
-        navBg: '#6e5773',
-        headlineSize: 'clamp(32px, 4.5vw, 68px)',
-        headlineWeight: '300',
-        headlineStyle: 'italic',
-        headlineSpacing: '-1px',
-        textAlign: 'center',
-        btnPrimaryBg: '#6e5773',
-        btnPrimaryColor: '#e9e2d0',
-        particleColors: ['#d45d79','#ea9085','#6e5773','#c9b0c0'],
-        particleCount: 120,
-        particleSpeed: 0.25,
-        connectDist: 80,
-        connectOpacity: 0.1,
-        doConnect: true,
-        applyDecos: ()=>{
-          spawnPetals(['#d45d79','#ea9085','#e9c5c8','#f0dde0']);
-          addFlowerBorder(['#d45d79','#ea9085']);
-          const hl=document.getElementById('hero-headline');
-          hl.style.fontFamily="'Fraunces', serif";
-        },
-        removeDecos: ()=>{
-          document.getElementById('hero-headline').style.fontFamily='';
+        bg: '#e9e2d0', text: '#2a1f2d', accent: '#d45d79', nav: '#6e5773',
+        font: "'Fraunces', serif", weight: '300', align: 'center',
+        bodyBg: '', bodyBgSize: '',
+        layoutClass: '',
+        decos: () => {
+          // Add multiple petals and orbs for complexity
+          for(let i=0; i<20; i++) {
+            const p = document.createElement('div');
+            p.className = 'petal';
+            p.style.left = Math.random()*100 + '%';
+            p.style.background = ['#d45d79','#ea9085','#e9c5c8'][Math.floor(Math.random()*3)];
+            p.style.animationDuration = (5+Math.random()*5) + 's';
+            p.style.animationDelay = Math.random()*2 + 's';
+            p.style.width = (6+Math.random()*6) + 'px';
+            p.style.height = (10+Math.random()*8) + 'px';
+            document.getElementById('deco-layer').appendChild(p);
+            setTimeout(() => p.remove(), 10000);
+          }
+          // Add wavy borders
+          const wavy = document.createElement('svg');
+          wavy.innerHTML = '<path d="M0 0 Q25 25 50 0 Q75 25 100 0 Q125 25 150 0" stroke="#d45d79" stroke-width="2" fill="none" opacity="0.1"/>';
+          wavy.style.position = 'absolute';
+          wavy.style.bottom = '0';
+          wavy.style.left = '0';
+          wavy.style.width = '100%';
+          wavy.style.height = '100px';
+          document.getElementById('deco-layer').appendChild(wavy);
+          // Add orbs
+          for(let i=0; i<3; i++) {
+            const orb = document.createElement('div');
+            orb.className = 'hero-orb';
+            orb.style.width = (200+Math.random()*200) + 'px';
+            orb.style.height = orb.style.width;
+            orb.style.background = 'rgba(234,144,133,0.1)';
+            orb.style.left = Math.random()*80 + '%';
+            orb.style.top = Math.random()*60 + '%';
+            document.getElementById('hero').appendChild(orb);
+          }
         }
-      },
-      striking: {
-        floodColor: '#0f0f2e',
-        heroBg: '#0f0f2e',
-        heroText: '#e8e0f8',
-        accentColor: '#a78bfa',
-        wordColor: '#a78bfa',
-        eyebrowColor: 'rgba(232,224,248,0.45)',
-        subColor: 'rgba(232,224,248,0.55)',
-        statColor: '#e8e0f8',
-        statLabelColor: 'rgba(232,224,248,0.45)',
-        statBorderColor: '#a78bfa',
-        navBg: '#07071a',
-        headlineSize: 'clamp(40px, 6vw, 92px)',
-        headlineWeight: '500',
-        headlineStyle: 'normal',
-        headlineSpacing: '-2px',
-        textAlign: 'center',
-        btnPrimaryBg: '#a78bfa',
-        btnPrimaryColor: '#07071a',
-        particleColors: ['#a78bfa','#7c3aed','#c4b5fd','#e8e0f8','#6d28d9'],
-        particleCount: 100,
-        particleSpeed: 0.4,
-        connectDist: 140,
-        connectOpacity: 0.22,
-        doConnect: true,
-        applyDecos: ()=>{
-          addCornerAccents('#a78bfa');
-          addRightSidebarText('STRIKE', '#a78bfa');
-          const deco=document.getElementById('deco-layer');
-          deco.innerHTML+=`<div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#a78bfa,transparent);opacity:0.4"></div>`;
-        },
-        removeDecos: ()=>{}
       },
       professional: {
-        floodColor: '#0f172a',
-        heroBg: '#f8fafc',
-        heroText: '#0f172a',
-        accentColor: '#2563eb',
-        wordColor: '#2563eb',
-        eyebrowColor: '#64748b',
-        subColor: '#64748b',
-        statColor: '#0f172a',
-        statLabelColor: '#64748b',
-        statBorderColor: '#2563eb',
-        navBg: '#0f172a',
-        headlineSize: 'clamp(36px, 5vw, 76px)',
-        headlineWeight: '700',
-        headlineStyle: 'normal',
-        headlineSpacing: '-2px',
-        textAlign: 'left',
-        btnPrimaryBg: '#0f172a',
-        btnPrimaryColor: '#f8fafc',
-        particleColors: ['#2563eb','#1e40af','#93c5fd','#bfdbfe'],
-        particleCount: 70,
-        particleSpeed: 0.2,
-        connectDist: 55,
-        connectOpacity: 0.07,
-        doConnect: true,
-        applyDecos: ()=>{
-          addProfessionalRule('#2563eb');
-          addRightSidebarText('PRO', 'rgba(37,99,235,0.5)');
-          const content=document.getElementById('hero-content');
-          content.style.paddingLeft='80px';
-        },
-        removeDecos: ()=>{
-          document.getElementById('hero-content').style.paddingLeft='';
-        }
-      },
-      polished: {
-        floodColor: '#052e16',
-        heroBg: '#052e16',
-        heroText: '#d1fae5',
-        accentColor: '#d4a843',
-        wordColor: '#d4a843',
-        eyebrowColor: 'rgba(209,250,229,0.45)',
-        subColor: 'rgba(209,250,229,0.6)',
-        statColor: '#d1fae5',
-        statLabelColor: 'rgba(209,250,229,0.45)',
-        statBorderColor: '#d4a843',
-        navBg: '#021f0f',
-        headlineSize: 'clamp(32px, 4.5vw, 70px)',
-        headlineWeight: '300',
-        headlineStyle: 'italic',
-        headlineSpacing: '-1.5px',
-        textAlign: 'center',
-        btnPrimaryBg: '#d4a843',
-        btnPrimaryColor: '#052e16',
-        particleColors: ['#d4a843','#92400e','#fde68a','#065f46'],
-        particleCount: 80,
-        particleSpeed: 0.15,
-        connectDist: 70,
-        connectOpacity: 0.08,
-        doConnect: true,
-        applyDecos: ()=>{
-          addGoldFrameLines();
-          const tw=document.getElementById('theme-word');
-          tw.classList.add('shimmer-text');
-          const hl=document.getElementById('hero-headline');
-          hl.style.fontFamily="'Fraunces', serif";
-        },
-        removeDecos: ()=>{
-          document.getElementById('theme-word').classList.remove('shimmer-text');
-          document.getElementById('theme-word').style.webkitTextFillColor='';
-          document.getElementById('hero-headline').style.fontFamily='';
+        bg: '#f8fafc', text: '#0f172a', accent: '#2563eb', nav: '#0f172a',
+        font: "'Inter', sans-serif", weight: '700', align: 'left',
+        bodyBg: 'radial-gradient(circle at 30% 70%, rgba(37,99,235,0.02) 0%, transparent 50%)',
+        bodyBgSize: '',
+        layoutClass: 'layout-professional',
+        decos: () => {
+          // Add document rules
+          const rules = document.createElement('div');
+          rules.innerHTML = '<div style="position:absolute;left:0;top:0;width:4px;height:100%;background:#2563eb;opacity:0.1"></div><div style="position:absolute;top:80px;left:0;right:0;height:1px;background:#2563eb;opacity:0.05"></div>';
+          document.getElementById('deco-layer').appendChild(rules);
+          // Add sidebar
+          const sidebar = document.getElementById('theme-sidebar');
+          sidebar.innerHTML = '<span style="writing-mode:vertical-rl;font-family:var(--font-mono);font-size:12px;letter-spacing:3px;color:#2563eb;text-transform:uppercase;opacity:0.6">STUDIO</span>';
+          sidebar.style.left = '0';
+          sidebar.style.right = 'auto';
+          sidebar.classList.add('visible');
+          // Add subtle dots
+          for(let i=0; i<50; i++) {
+            const dot = document.createElement('div');
+            dot.style.position = 'absolute';
+            dot.style.width = '2px';
+            dot.style.height = '2px';
+            dot.style.background = '#2563eb';
+            dot.style.opacity = '0.1';
+            dot.style.left = Math.random()*100 + '%';
+            dot.style.top = Math.random()*100 + '%';
+            document.getElementById('deco-layer').appendChild(dot);
+          }
         }
       },
       innovative: {
-        floodColor: '#000c1a',
-        heroBg: '#000c1a',
-        heroText: '#e2f0ff',
-        accentColor: '#00d4ff',
-        wordColor: '#00d4ff',
-        eyebrowColor: 'rgba(226,240,255,0.45)',
-        subColor: 'rgba(226,240,255,0.55)',
-        statColor: '#e2f0ff',
-        statLabelColor: 'rgba(226,240,255,0.45)',
-        statBorderColor: '#00d4ff',
-        navBg: '#000810',
-        headlineSize: 'clamp(36px, 5.5vw, 82px)',
-        headlineWeight: '600',
-        headlineStyle: 'normal',
-        headlineSpacing: '-1px',
-        textAlign: 'center',
-        btnPrimaryBg: '#00d4ff',
-        btnPrimaryColor: '#000c1a',
-        particleColors: ['#00d4ff','#0ea5e9','#38bdf8','#7dd3fc','#00ffcc'],
-        particleCount: 200,
-        particleSpeed: 1.4,
-        connectDist: 120,
-        connectOpacity: 0.28,
-        doConnect: true,
-        applyDecos: ()=>{
-          spawnMatrix();
-          addRightSidebarText('SYS:ACTIVE', '#00d4ff');
-          const hl=document.getElementById('hero-headline');
-          let g=0;
-          glitchInterval=setInterval(()=>{
-            if(g<10){
-              hl.style.transform=`translate(${(Math.random()-0.5)*8}px,${(Math.random()-0.5)*4}px)`;
-              hl.style.filter=Math.random()>0.5?'hue-rotate(90deg) saturate(4)':'none';
-              g++;
-            } else {
-              hl.style.transform='none';
-              hl.style.filter='none';
-              clearInterval(glitchInterval);
-              glitchInterval=null;
-            }
-          },60);
-          document.getElementById('theme-word').style.textShadow='0 0 20px #00d4ff, 0 0 40px #00d4ff';
-        },
-        removeDecos: ()=>{
-          document.getElementById('theme-word').style.textShadow='';
-          document.getElementById('hero-headline').style.transform='';
-          document.getElementById('hero-headline').style.filter='';
+        bg: '#000c1a', text: '#00d4ff', accent: '#00d4ff', nav: '#000810',
+        font: "'JetBrains Mono', monospace", weight: '500', align: 'center',
+        bodyBg: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,212,255,0.03) 2px, rgba(0,212,255,0.03) 4px), repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,212,255,0.03) 2px, rgba(0,212,255,0.03) 4px)',
+        bodyBgSize: '20px 20px',
+        layoutClass: 'layout-innovative',
+        decos: () => {
+          // Add matrix rain
+          for(let i=0; i<10; i++) {
+            const col = document.createElement('div');
+            col.className = 'matrix-col';
+            col.style.left = Math.random()*100 + '%';
+            col.style.color = '#00d4ff';
+            col.style.fontSize = '10px';
+            let txt = '';
+            for(let j=0; j<30; j++) txt += '01アイウ'[Math.floor(Math.random()*6)] + '\n';
+            col.textContent = txt;
+            col.style.animationDuration = (2+Math.random()*3) + 's';
+            document.getElementById('deco-layer').appendChild(col);
+            setTimeout(() => col.remove(), 8000);
+          }
+          // Add glow effect
+          document.getElementById('theme-word').style.textShadow = '0 0 10px #00d4ff, 0 0 20px #00d4ff';
+          // Add glitch
+          let glitchInt = setInterval(() => {
+            document.getElementById('hero-headline').style.transform = `translate(${(Math.random()-0.5)*5}px, ${(Math.random()-0.5)*3}px)`;
+            setTimeout(() => document.getElementById('hero-headline').style.transform = '', 100);
+          }, 2000);
+          setTimeout(() => clearInterval(glitchInt), 10000);
+        }
+      },
+      polished: {
+        bg: '#052e16', text: '#d4a843', accent: '#d4a843', nav: '#021f0f',
+        font: "'Fraunces', serif", weight: '300', align: 'center',
+        bodyBg: 'linear-gradient(45deg, rgba(212,168,67,0.01) 0%, transparent 50%, rgba(212,168,67,0.01) 100%)',
+        bodyBgSize: '',
+        layoutClass: 'layout-polished',
+        decos: () => {
+          // Add gold frame
+          const frame = document.createElement('div');
+          frame.innerHTML = '<div style="position:absolute;top:60px;left:40px;right:40px;height:2px;background:linear-gradient(90deg,transparent,#d4a843,transparent);opacity:0.3"></div><div style="position:absolute;bottom:60px;left:40px;right:40px;height:2px;background:linear-gradient(90deg,transparent,#d4a843,transparent);opacity:0.3"></div>';
+          document.getElementById('deco-layer').appendChild(frame);
+          // Shimmer word
+          document.getElementById('theme-word').style.background = 'linear-gradient(90deg, #d4a843 0%, #f5e6a0 50%, #d4a843 100%)';
+          document.getElementById('theme-word').style.backgroundSize = '200% auto';
+          document.getElementById('theme-word').style.webkitBackgroundClip = 'text';
+          document.getElementById('theme-word').style.webkitTextFillColor = 'transparent';
+          document.getElementById('theme-word').style.animation = 'shimmer 3s linear infinite';
+          // Add gold particles
+          for(let i=0; i<30; i++) {
+            const p = document.createElement('div');
+            p.style.position = 'absolute';
+            p.style.width = '3px';
+            p.style.height = '3px';
+            p.style.background = '#d4a843';
+            p.style.borderRadius = '50%';
+            p.style.opacity = '0.4';
+            p.style.left = Math.random()*100 + '%';
+            p.style.top = Math.random()*100 + '%';
+            p.style.animation = `float ${2+Math.random()*3}s ease-in-out infinite`;
+            document.getElementById('deco-layer').appendChild(p);
+          }
+        }
+      },
+      striking: {
+        bg: '#1a1a1a', text: '#ffffff', accent: '#ff4757', nav: '#0d0d0d',
+        font: "'Oswald', sans-serif", weight: '700', align: 'center',
+        bodyBg: 'linear-gradient(90deg, rgba(255,71,87,0.02) 0%, transparent 50%, rgba(255,71,87,0.02) 100%), linear-gradient(0deg, rgba(255,71,87,0.02) 0%, transparent 50%, rgba(255,71,87,0.02) 100%)',
+        bodyBgSize: '50px 50px',
+        layoutClass: 'layout-striking',
+        decos: () => {
+          // Add bold slashes
+          for(let i=0; i<5; i++) {
+            const slash = document.createElement('div');
+            slash.style.position = 'absolute';
+            slash.style.width = '2px';
+            slash.style.height = '100%';
+            slash.style.background = 'linear-gradient(to bottom, transparent, #ff4757, transparent)';
+            slash.style.left = (20 + i*15) + '%';
+            slash.style.opacity = '0.1';
+            slash.style.transform = 'rotate(15deg)';
+            document.getElementById('deco-layer').appendChild(slash);
+          }
+          // Add impact orbs
+          for(let i=0; i<4; i++) {
+            const orb = document.createElement('div');
+            orb.className = 'hero-orb';
+            orb.style.width = (150+Math.random()*100) + 'px';
+            orb.style.height = orb.style.width;
+            orb.style.background = 'rgba(255,71,87,0.1)';
+            orb.style.left = Math.random()*80 + '%';
+            orb.style.top = Math.random()*60 + '%';
+            document.getElementById('hero').appendChild(orb);
+          }
+          // Add red glow to headline
+          document.getElementById('hero-headline').style.textShadow = '0 0 20px #ff4757';
         }
       },
       effective: {
-        floodColor: '#0a0a0a',
-        heroBg: '#ffffff',
-        heroText: '#0a0a0a',
-        accentColor: '#ff3f00',
-        wordColor: '#ff3f00',
-        eyebrowColor: '#888888',
-        subColor: '#555555',
-        statColor: '#0a0a0a',
-        statLabelColor: '#888888',
-        statBorderColor: '#ff3f00',
-        navBg: '#0a0a0a',
-        headlineSize: 'clamp(44px, 7.5vw, 108px)',
-        headlineWeight: '900',
-        headlineStyle: 'normal',
-        headlineSpacing: '-4px',
-        textAlign: 'center',
-        btnPrimaryBg: '#0a0a0a',
-        btnPrimaryColor: '#ffffff',
-        particleColors: ['#ff3f00','#ff6b35','#0a0a0a','#888888'],
-        particleCount: 120,
-        particleSpeed: 0.9,
-        connectDist: 0,
-        connectOpacity: 0,
-        doConnect: false,
-        applyDecos: ()=>{
-          const deco=document.getElementById('deco-layer');
-          deco.innerHTML=`
-            <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:#0a0a0a;opacity:0.04;transform:translateY(-50%)"></div>
-            <div style="position:absolute;top:0;left:50%;bottom:0;width:1px;background:#0a0a0a;opacity:0.04;transform:translateX(-50%)"></div>
-          `;
-        },
-        removeDecos: ()=>{}
+        bg: '#ffffff', text: '#1a1a1a', accent: '#00a8cc', nav: '#f8f9fa',
+        font: "'Roboto', sans-serif", weight: '400', align: 'center',
+        bodyBg: '',
+        bodyBgSize: '',
+        layoutClass: 'layout-effective',
+        decos: () => {
+          // Add subtle grid
+          const grid = document.createElement('div');
+          grid.style.position = 'fixed';
+          grid.style.inset = '0';
+          grid.style.backgroundImage = 'linear-gradient(rgba(0,168,204,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,168,204,0.03) 1px, transparent 1px)';
+          grid.style.backgroundSize = '40px 40px';
+          grid.style.pointerEvents = 'none';
+          document.body.appendChild(grid);
+          // Add center line
+          const line = document.createElement('div');
+          line.style.position = 'absolute';
+          line.style.top = '0';
+          line.style.bottom = '0';
+          line.style.left = '50%';
+          line.style.width = '1px';
+          line.style.background = 'rgba(0,168,204,0.1)';
+          line.style.transform = 'translateX(-50%)';
+          document.getElementById('deco-layer').appendChild(line);
+          // Add minimal dots
+          for(let i=0; i<20; i++) {
+            const dot = document.createElement('div');
+            dot.style.position = 'absolute';
+            dot.style.width = '4px';
+            dot.style.height = '4px';
+            dot.style.background = '#00a8cc';
+            dot.style.borderRadius = '50%';
+            dot.style.opacity = '0.2';
+            dot.style.left = Math.random()*100 + '%';
+            dot.style.top = Math.random()*100 + '%';
+            document.getElementById('deco-layer').appendChild(dot);
+          }
+        }
       }
     };
 
-    const themeOrder=['beautiful','striking','professional','polished','innovative','effective'];
-    let currentThemeIndex=0;
-    let isAnimating=false;
-    let currentThemeRemove=null;
+    let currentIdx = 0;
+    const themeKeys = Object.keys(THEMES);
+    let isAnimating = false;
 
-    function applyThemeStyles(t){
-      const heroEl=document.getElementById('hero');
-      const heroContent=document.getElementById('hero-content');
-      const themeWord=document.getElementById('theme-word');
-      const heroHL=document.getElementById('hero-headline');
-      const heroEyebrow=document.getElementById('hero-eyebrow');
-      const heroSub=document.getElementById('hero-sub');
-      const navEl=document.querySelector('nav');
-      const btnPrimary=document.getElementById('hero-btn-primary');
-
-      heroEl.style.background=t.heroBg;
-      heroContent.style.color=t.heroText;
-      heroContent.style.alignItems=t.textAlign==='left'?'flex-start':'center';
-      heroContent.style.textAlign=t.textAlign;
-      themeWord.style.color=t.wordColor;
-      themeWord.style.borderBottomColor=t.wordColor;
-      heroHL.style.fontSize=t.headlineSize;
-      heroHL.style.fontWeight=t.headlineWeight;
-      heroHL.style.fontStyle=t.headlineStyle;
-      heroHL.style.letterSpacing=t.headlineSpacing;
-      heroHL.style.color=t.heroText;
-      if(heroEyebrow) heroEyebrow.style.color=t.eyebrowColor;
-      if(heroSub) heroSub.style.color=t.subColor;
-      if(navEl) navEl.style.background=t.navBg;
-      if(btnPrimary){btnPrimary.style.background=t.btnPrimaryBg;btnPrimary.style.color=t.btnPrimaryColor;}
-      document.querySelectorAll('.stat-num').forEach(e=>e.style.color=t.statColor);
-      document.querySelectorAll('.stat-label').forEach(e=>e.style.color=t.statLabelColor);
-      document.querySelectorAll('.stat').forEach(e=>e.style.borderLeftColor=t.statBorderColor);
-      document.querySelector('.next-btn').style.color=t.heroText;
-      document.querySelector('.next-btn').style.borderColor=t.heroText;
-
-      currentConnectDist=t.connectDist;
-      currentConnectOpacity=t.connectOpacity;
-      doConnect=t.doConnect;
-      particles.forEach(p=>{
-        p.color=t.particleColors[Math.floor(Math.random()*t.particleColors.length)];
-        const sp=t.particleSpeed;
-        p.vx=(Math.random()-0.5)*sp*2;
-        p.vy=(Math.random()-0.5)*sp*2;
-        p.baseSpeed=sp;
-      });
-      while(particles.length<t.particleCount){
-        const sp=t.particleSpeed;
-        particles.push({
-          x:Math.random()*W,y:Math.random()*H,
-          vx:(Math.random()-0.5)*sp*2,vy:(Math.random()-0.5)*sp*2,
-          r:Math.random()*2+0.5,
-          color:t.particleColors[Math.floor(Math.random()*t.particleColors.length)],
-          alpha:Math.random()*0.5+0.15,
-          baseSpeed:sp
-        });
+    function transitionToTheme(name) {
+      if (isAnimating) return;
+      isAnimating = true;
+      const t = THEMES[name];
+      const flood = document.getElementById('color-flood');
+      
+      // Clear previous decos
+      document.getElementById('deco-layer').innerHTML = '';
+      document.getElementById('theme-sidebar').innerHTML = '';
+      document.getElementById('theme-sidebar').className = 'theme-sidebar';
+      document.querySelectorAll('.hero-orb').forEach(o => o.remove());
+      document.getElementById('theme-word').style = '';
+      
+      flood.innerHTML = '';
+      for (let i = 0; i < 12; i++) {
+        const b = document.createElement('div');
+        b.className = 'gurgle-blob';
+        b.style.background = t.bg;
+        b.style.width = '140vw'; b.style.height = '140vw';
+        b.style.left = (Math.random() * 60 - 30) + '%';
+        b.style.top = (Math.random() * 60 - 30) + '%';
+        b.style.transitionDelay = (i * 0.02) + 's';
+        flood.appendChild(b);
+        requestAnimationFrame(() => b.style.transform = 'scale(2)');
       }
-      if(particles.length>t.particleCount) particles.splice(t.particleCount);
+
+      setTimeout(() => {
+        document.body.style.background = t.bg;
+        document.body.style.backgroundImage = t.bodyBg || '';
+        document.body.style.backgroundSize = t.bodyBgSize || '';
+        document.querySelector('nav').style.background = t.nav;
+        document.querySelector('.marquee-strip').style.background = t.nav;
+        const hc = document.getElementById('hero-content');
+        hc.style.color = t.text;
+        hc.style.textAlign = t.align;
+        hc.style.alignItems = t.align === 'left' ? 'flex-start' : 'center';
+        hc.className = 'hero-content ' + (t.layoutClass || '');
+        document.getElementById('theme-word').textContent = name;
+        document.getElementById('hero-headline').style.fontFamily = t.font;
+        document.getElementById('hero-headline').style.fontWeight = t.weight;
+        document.documentElement.style.setProperty('--accent', t.accent);
+        t.decos();
+      }, 450);
+
+      setTimeout(() => {
+        document.querySelectorAll('.gurgle-blob').forEach(b => b.style.transform = 'scale(0)');
+        setTimeout(() => { isAnimating = false; }, 800);
+      }, 1000);
     }
 
-    function transitionToTheme(themeName){
-      if(isAnimating)return;
-      isAnimating=true;
-      const t=THEMES[themeName];
-      if(!t){isAnimating=false;return;}
-
-      clearDecorations();
-      if(currentThemeRemove){currentThemeRemove();currentThemeRemove=null;}
-
-      const flood=document.getElementById('color-flood');
-      flood.style.transition='none';
-      flood.style.background=t.floodColor;
-      flood.style.borderRadius='50% 50% 0 0 / 80% 80% 0 0';
-      flood.style.transform='translateY(110%)';
-
-      requestAnimationFrame(()=>{
-        requestAnimationFrame(()=>{
-          flood.style.transition='transform 0.9s cubic-bezier(0.4,0,0.2,1), border-radius 0.85s cubic-bezier(0.4,0,0.2,1)';
-          flood.style.transform='translateY(0%)';
-          flood.style.borderRadius='0';
-
-          setTimeout(()=>{
-            document.getElementById('theme-word').textContent=themeName;
-            applyThemeStyles(t);
-            t.applyDecos();
-            currentThemeRemove=t.removeDecos;
-          },440);
-
-          setTimeout(()=>{
-            flood.style.transition='transform 0.8s cubic-bezier(0.4,0,0.2,1), border-radius 0.65s cubic-bezier(0.4,0,0.2,1)';
-            flood.style.borderRadius='0 0 50% 50% / 0 0 80% 80%';
-            flood.style.transform='translateY(-110%)';
-            setTimeout(()=>{
-              flood.style.transition='none';
-              flood.style.transform='translateY(110%)';
-              flood.style.borderRadius='50% 50% 0 0 / 80% 80% 0 0';
-              isAnimating=false;
-            },850);
-          },500);
-        });
-      });
-    }
-
-    document.getElementById('next-btn').addEventListener('click',()=>{
-      currentThemeIndex=(currentThemeIndex+1)%themeOrder.length;
-      transitionToTheme(themeOrder[currentThemeIndex]);
+    document.getElementById('next-btn').addEventListener('click', () => {
+      currentIdx = (currentIdx + 1) % themeKeys.length;
+      transitionToTheme(themeKeys[currentIdx]);
     });
 
-    applyThemeStyles(THEMES['beautiful']);
-    THEMES['beautiful'].applyDecos();
-    currentThemeRemove=THEMES['beautiful'].removeDecos;
-    // ============ END THEME SYSTEM ============
+    const obs = new IntersectionObserver(e => e.forEach(x => x.isIntersecting && x.target.classList.add('visible')));
+    document.querySelectorAll('.reveal').forEach(r => obs.observe(r));
 
-    // ── SCROLL REVEAL ──
-    document.querySelectorAll('.what-list, .pricing-grid').forEach(container => {
-      Array.from(container.children).forEach((c, i) => { c.style.transitionDelay = (i * 0.08) + 's'; });
+    // Initial theme
+    const initialTheme = 'beautiful';
+    const t = THEMES[initialTheme];
+    document.body.style.background = t.bg;
+    document.body.style.backgroundImage = t.bodyBg || '';
+    document.body.style.backgroundSize = t.bodyBgSize || '';
+    document.querySelector('nav').style.background = t.nav;
+    document.querySelector('.marquee-strip').style.background = t.nav;
+    const hc = document.getElementById('hero-content');
+    hc.style.color = t.text;
+    hc.style.textAlign = t.align;
+    hc.style.alignItems = t.align === 'left' ? 'flex-start' : 'center';
+    hc.className = 'hero-content ' + (t.layoutClass || '');
+    document.getElementById('theme-word').textContent = initialTheme;
+    document.getElementById('hero-headline').style.fontFamily = t.font;
+    document.getElementById('hero-headline').style.fontWeight = t.weight;
+    document.documentElement.style.setProperty('--accent', t.accent);
+    t.decos();
+
+    // CURSOR
+    const cursor = document.createElement('div');
+    cursor.style.cssText = 'position:fixed; width:20px; height:20px; background:white; mix-blend-mode:difference; border-radius:50%; pointer-events:none; z-index:10000;';
+    document.body.appendChild(cursor);
+    window.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX - 10 + 'px';
+      cursor.style.top = e.clientY - 10 + 'px';
     });
-    document.querySelectorAll('.process-step').forEach((el, i) => {
-      el.style.transitionDelay = (i * 0.12) + 's';
-    });
 
-    const revealObs = new IntersectionObserver((entries, obs) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+    THEMES.beautiful.apply();
   </script>
-
 </body>
-</html>
+</html>git reset --hard
