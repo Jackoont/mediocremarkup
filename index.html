@@ -821,13 +821,56 @@
     phoneScreen.addEventListener('wheel', e => { e.stopPropagation(); }, { passive: true });
   }
 
-  // ── TEMPLATE SCROLL CYCLER ──
+  // ── UNIFIED THEME + SCROLL ENGINE ──
+  const themes = [
+    { word:'beautiful',    bg:'#fdf8f5', surface:'#fffcfb', ink:'#2a1f2d', muted:'#6e5773', accent:'#d45d79', accent2:'#ea9085', line:'rgba(110,87,115,0.1)',  tpl:1 },
+    { word:'professional', bg:'#f0f4f8', surface:'#ffffff', ink:'#1a2a3a', muted:'#546e7a', accent:'#2c5282', accent2:'#4299e1', line:'rgba(44,82,130,0.1)',   tpl:0 },
+    { word:'effective',    bg:'#fafafa', surface:'#ffffff', ink:'#1a1a1a', muted:'#606060', accent:'#2d3748', accent2:'#718096', line:'rgba(0,0,0,0.06)',       tpl:2 },
+    { word:'memorable',   bg:'#f5f5f0', surface:'#fcfcf9', ink:'#2d302d', muted:'#5e665e', accent:'#385e3c', accent2:'#82a182', line:'rgba(56,94,60,0.1)',     tpl:3 }
+  ];
+  let currentThemeIdx = 0;
   let currentTpl = 0;
-  const tplCount = 3;
+  const tplCount = 4;
   let scrollRaf = null;
   let pauseScroll = false;
 
-  function switchTemplate(idx) {
+  // ── SET CSS VARS DIRECTLY (guaranteed to override all hardcoded values) ──
+  function setThemeVars(t) {
+    const r = document.documentElement;
+    r.style.setProperty('--bg',      t.bg);
+    r.style.setProperty('--surface', t.surface);
+    r.style.setProperty('--ink',     t.ink);
+    r.style.setProperty('--muted',   t.muted);
+    r.style.setProperty('--accent',  t.accent);
+    r.style.setProperty('--accent2', t.accent2);
+    r.style.setProperty('--line',    t.line);
+  }
+
+  // ── PHYSICS RIPPLE TRANSITION ──
+  // A circle expands from page center with spring overshoot (cubic-bezier 0.34,1.56),
+  // reveals new theme underneath, then fades away.
+  function rippleTransition(bg, onMidpoint) {
+    const d = document.createElement('div');
+    d.style.cssText = [
+      'position:fixed','inset:0','z-index:8000','pointer-events:none',
+      `background:${bg}`,
+      'clip-path:circle(0% at 50% 45%)',
+      'transition:clip-path 0.75s cubic-bezier(0.34,1.56,0.64,1)'
+    ].join(';');
+    document.body.appendChild(d);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      d.style.clipPath = 'circle(150% at 50% 45%)';
+    }));
+    setTimeout(onMidpoint, 340);
+    setTimeout(() => {
+      d.style.transition = 'opacity 0.4s ease';
+      d.style.opacity = '0';
+      setTimeout(() => d.remove(), 450);
+    }, 720);
+  }
+
+  // ── PHONE TEMPLATE SWITCHER ──
+  function switchPhoneTpl(idx) {
     document.querySelectorAll('.phone-template').forEach((el, i) => {
       el.classList.toggle('active', i === idx);
       if (i === idx) el.scrollTop = 0;
@@ -839,45 +882,71 @@
     startScrollCycle();
   }
 
+  // ── PHONE AUTO-SCROLL (reaching bottom advances global theme) ──
   function startScrollCycle() {
     if (scrollRaf) cancelAnimationFrame(scrollRaf);
     let lastTime = null;
     let atBottomSince = null;
-    const SCROLL_PX_PER_SEC = 28;   // slow scroll speed
-    const BOTTOM_PAUSE_MS  = 1200;  // pause at bottom before switching
+    const PX_PER_SEC = 28;
+    const PAUSE_MS   = 1200;
 
     function tick(ts) {
       if (pauseScroll) { scrollRaf = requestAnimationFrame(tick); return; }
       if (!lastTime) lastTime = ts;
-      const dt = ts - lastTime;
+      const dt = Math.min(ts - lastTime, 50);
       lastTime = ts;
-
       const el = document.querySelectorAll('.phone-template')[currentTpl];
       if (!el) return;
-
       const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 2;
-
       if (atBottom) {
         if (!atBottomSince) atBottomSince = ts;
-        if (ts - atBottomSince >= BOTTOM_PAUSE_MS) {
-          switchTemplate((currentTpl + 1) % tplCount);
-          return; // switchTemplate calls startScrollCycle, so stop here
-        }
+        if (ts - atBottomSince >= PAUSE_MS) { nextTheme(); return; }
       } else {
         atBottomSince = null;
-        el.scrollTop += (SCROLL_PX_PER_SEC * dt) / 1000;
+        el.scrollTop += (PX_PER_SEC * dt) / 1000;
       }
-
       scrollRaf = requestAnimationFrame(tick);
     }
     scrollRaf = requestAnimationFrame(tick);
   }
 
-  // Pause scroll when user hovers the phone
   document.getElementById('phone-screen').addEventListener('mouseenter', () => { pauseScroll = true; });
   document.getElementById('phone-screen').addEventListener('mouseleave', () => { pauseScroll = false; });
 
-  startScrollCycle();
+  // ── THEME WORD ELEMENT ──
+  const themeWordEl = document.getElementById('theme-word');
+  themeWordEl.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+  themeWordEl.style.display = 'inline-block';
+
+  // ── APPLY THEME ──
+  function applyTheme(idx) {
+    currentThemeIdx = idx;
+    const t = themes[idx];
+    rippleTransition(t.bg, () => {
+      setThemeVars(t);
+      themeWordEl.style.opacity = '0';
+      themeWordEl.style.transform = 'translateY(8px)';
+      setTimeout(() => {
+        themeWordEl.textContent = t.word;
+        themeWordEl.style.opacity = '1';
+        themeWordEl.style.transform = 'translateY(0)';
+      }, 180);
+      switchPhoneTpl(t.tpl);
+    });
+  }
+
+  let themeTimer = null;
+  function nextTheme() {
+    clearInterval(themeTimer);
+    applyTheme((currentThemeIdx + 1) % themes.length);
+    themeTimer = setInterval(nextTheme, 20000);
+  }
+
+  function jumpToTheme(idx) {
+    clearInterval(themeTimer);
+    applyTheme(idx);
+    themeTimer = setInterval(nextTheme, 20000);
+  }
 
   // ── SCROLL REVEAL ──
   document.querySelectorAll('.what-list, .pricing-grid').forEach(container => {
@@ -888,67 +957,13 @@
     entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
   },{threshold:0.1});
   document.querySelectorAll('.reveal').forEach(el=>revealObs.observe(el));
-  // ── SYNCED THEME & PHONE CYCLER ──
-  const themes = [
-    { word: 'beautiful', class: '', tpl: 1 },    // Bloom & Co
-    { word: 'professional', class: 'theme-professional', tpl: 0 }, // Oak & Ember
-    { word: 'effective', class: 'theme-effective', tpl: 2 },    // Apex Fitness
-    { word: 'memorable', class: 'theme-memorable', tpl: 3 }     // Portfolio
-  ];
-  let currentThemeIdx = 0;
-  const themeWordEl = document.getElementById('theme-word');
-  let themeTimer = null;
 
-  function switchTemplate(idx) {
-    document.querySelectorAll('.phone-template').forEach((el, i) => {
-      el.classList.toggle('active', i === idx);
-      if (i === idx) el.scrollTop = 0;
-    });
-    document.querySelectorAll('.phone-dot').forEach((d, i) => {
-      d.classList.toggle('active', i === idx);
-    });
-    // Template cycler usually handles its own scroll, but we'll restart it
-    if (typeof startScrollCycle === 'function') startScrollCycle();
-  }
-
-  function jumpToTheme(idx) {
-    clearInterval(themeTimer);
-    applyTheme(idx);
-    themeTimer = setInterval(nextTheme, 20000);
-  }
-
-  function applyTheme(idx) {
-    currentThemeIdx = idx;
-    const theme = themes[idx];
-
-    // Transition Word
-    themeWordEl.style.opacity = '0';
-    themeWordEl.style.transform = 'translateY(10px)';
-
-    setTimeout(() => {
-      document.body.className = theme.class;
-      themeWordEl.textContent = theme.word;
-      themeWordEl.style.opacity = '1';
-      themeWordEl.style.transform = 'translateY(0)';
-      // Sync Phone
-      switchTemplate(theme.tpl);
-    }, 600);
-  }
-
-  function nextTheme() {
-    applyTheme((currentThemeIdx + 1) % themes.length);
-  }
-
-  // Init
-  themeWordEl.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-  themeWordEl.style.display = 'inline-block';
+  // ── BOOT ──
+  setThemeVars(themes[0]);
+  switchPhoneTpl(themes[0].tpl);
   themeTimer = setInterval(nextTheme, 20000);
 
-  // Re-link mouse hover pause to the global timer
-  document.getElementById('phone-screen').addEventListener('mouseenter', () => { pauseScroll = true; clearInterval(themeTimer); });
-  document.getElementById('phone-screen').addEventListener('mouseleave', () => { pauseScroll = false; themeTimer = setInterval(nextTheme, 20000); });
-
-  // Initial Sync
-  switchTemplate(themes[0].tpl);
-
   </script>
+</body>
+</html>
+
