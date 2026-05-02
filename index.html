@@ -333,7 +333,78 @@
       .hero-left { align-items: center; text-align: center; }
       .hero-right { display: none; }
     }
+
+    /* ══ NEUTRAL BELOW-FOLD ZONE ══
+       Everything below the hero is locked to cream + charcoal.
+       Only the hero section (and nav) shifts with the theme. */
+
+    /* Body bg = permanent cream — hero overrides its own bg explicitly */
+    body { background: #f5f3ed !important; }
+
+    /* Feature band */
+    .feature-band { background: #1c1c1a !important; }
+    .feature-list li::before { color: #8a8680 !important; }
+
+    /* Marquee */
+    .marquee-strip { background: #2c2c2a !important; }
+    .marquee-track span { color: #e8e4dc !important; }
+    .marquee-sep { color: #6a6662 !important; }
+
+    /* Section dividers */
+    .divider { background: rgba(0,0,0,0.07) !important; }
+
+    /* What You Get */
+    .what-tag { background: #2c2c2a !important; color: #e8e4dc !important; }
+    .what-item:hover .what-item-num { color: rgba(0,0,0,0.1) !important; }
+
+    /* Pricing cards */
+    .price-card { background: #ffffff !important; border-color: rgba(0,0,0,0.07) !important; }
+    .price-card.featured { background: #1c1c1a !important; border-color: #1c1c1a !important; }
+    .price-card.featured .price-tag { background: rgba(255,255,255,0.12) !important; color: rgba(255,255,255,0.7) !important; }
+    .price-card.featured .price-name,
+    .price-card.featured .price-amount { color: #fff !important; }
+    .price-card.featured .price-desc { color: rgba(255,255,255,0.65) !important; }
+    .price-card.featured .price-period { color: rgba(255,255,255,0.45) !important; }
+    .price-card.featured .price-features li { color: rgba(255,255,255,0.72) !important; border-top-color: rgba(255,255,255,0.1) !important; }
+    .price-card.featured .price-features li::before { color: rgba(255,255,255,0.55) !important; }
+    .price-card.featured .btn-primary { background: #f5f3ed !important; color: #1c1c1a !important; border-color: #f5f3ed !important; }
+
+    /* Buttons in below-fold sections */
+    section:not(#hero) .btn-primary { background: #2c2c2a !important; color: #f5f3ed !important; border-color: #2c2c2a !important; }
+    section:not(#hero) .btn-secondary { color: #2c2c2a !important; border-color: rgba(0,0,0,0.18) !important; }
+
+    /* Service chips */
+    .service-chip { color: #2c2c2a !important; border-color: rgba(0,0,0,0.15) !important; }
+    .service-chip:hover { background: #2c2c2a !important; border-color: #2c2c2a !important; color: #f5f3ed !important; }
+
+    /* Process */
+    .process-circle { background: #2c2c2a !important; box-shadow: 0 4px 14px rgba(0,0,0,0.15) !important; }
+    .process-connector { border-top-color: rgba(0,0,0,0.12) !important; }
+    .process-step-time { color: #7a7672 !important; }
+    .process-step h3 em { color: #7a7672 !important; }
+    .process-step p { color: #6a6662 !important; }
+
+    /* CTA */
+    .cta h2 em { color: #2c2c2a !important; }
+    .cta-email { color: #2c2c2a !important; border-bottom-color: rgba(0,0,0,0.2) !important; }
+    .cta-email:hover { color: #000 !important; border-bottom-color: #000 !important; }
+
+    /* Footer */
+    footer { border-top-color: rgba(0,0,0,0.08) !important; }
+    .footer-copy, .footer-tagline { color: #7a7672 !important; }
+    .footer-email { color: #7a7672 !important; }
+    .footer-email:hover { color: #2c2c2a !important; }
+
+    /* Muted text in below-fold sections */
+    section:not(#hero) .section-label { color: #7a7672 !important; }
+    section:not(#hero) .section-title em { color: #9a9590 !important; }
+    section:not(#hero) .what-item p,
+    section:not(#hero) .price-desc,
+    section:not(#hero) .price-period,
+    section:not(#hero) .price-features li { color: #6a6662 !important; }
+    section:not(#hero) .price-features li::before { color: #2c2c2a !important; }
   </style>
+
 </head>
 <body>
   <nav>
@@ -823,18 +894,70 @@
 
   // ── UNIFIED THEME + SCROLL ENGINE ──
   const themes = [
-    { word:'beautiful',    bg:'#fdf8f5', surface:'#fffcfb', ink:'#2a1f2d', muted:'#6e5773', accent:'#d45d79', accent2:'#ea9085', line:'rgba(110,87,115,0.1)',  tpl:1 },
-    { word:'professional', bg:'#f0f4f8', surface:'#ffffff', ink:'#1a2a3a', muted:'#546e7a', accent:'#2c5282', accent2:'#4299e1', line:'rgba(44,82,130,0.1)',   tpl:0 },
-    { word:'effective',    bg:'#fafafa', surface:'#ffffff', ink:'#1a1a1a', muted:'#606060', accent:'#2d3748', accent2:'#718096', line:'rgba(0,0,0,0.06)',       tpl:2 },
-    { word:'memorable',   bg:'#f5f5f0', surface:'#fcfcf9', ink:'#2d302d', muted:'#5e665e', accent:'#385e3c', accent2:'#82a182', line:'rgba(56,94,60,0.1)',     tpl:3 }
+    {
+      word: 'beautiful',
+      bg:'#fdf6f0', surface:'#fffaf7', ink:'#2a1a20', muted:'#7a556a',
+      accent:'#c94f6d', accent2:'#e8896e', line:'rgba(180,100,130,0.1)',
+      tpl: 1,
+      css: `
+        .hero { background: linear-gradient(135deg,#fce4ec 0%,#fdf6f0 55%,#fce4ec 100%) !important; }
+        .hero-headline { font-style:italic !important; font-weight:300 !important; letter-spacing:-2px !important; }
+        .hero-eyebrow { letter-spacing:6px !important; }
+        nav { background:#2a1a20 !important; }
+      `
+    },
+    {
+      word: 'professional',
+      bg:'#eef2f7', surface:'#ffffff', ink:'#0d1f35', muted:'#3d5870',
+      accent:'#1a4a8a', accent2:'#3d82cc', line:'rgba(26,74,138,0.08)',
+      tpl: 0,
+      css: `
+        .hero { background: linear-gradient(180deg,#dde8f5 0%,#eef2f7 40%,#f8fbff 100%) !important; }
+        .hero-headline { font-style:normal !important; font-weight:900 !important; letter-spacing:-3.5px !important; }
+        .hero-headline .light { opacity:0.5 !important; }
+        .hero-eyebrow { letter-spacing:9px !important; font-weight:700 !important; }
+        nav { background:#0d1f35 !important; }
+        .btn-primary, .nav-cta { border-radius:6px !important; }
+      `
+    },
+    {
+      word: 'effective',
+      bg:'#ffffff', surface:'#f5f5f5', ink:'#080808', muted:'#505050',
+      accent:'#bf6a00', accent2:'#e89420', line:'rgba(0,0,0,0.05)',
+      tpl: 2,
+      css: `
+        .hero { background:#ffffff !important; border-bottom:2px solid #080808; }
+        .hero-headline { font-style:normal !important; font-weight:900 !important; letter-spacing:-4px !important; text-transform:uppercase !important; }
+        .hero-headline .light { opacity:1 !important; font-weight:300 !important; }
+        .hero-eyebrow { letter-spacing:3px !important; }
+        nav { background:#080808 !important; }
+        .btn-primary, .nav-cta { border-radius:4px !important; background:#080808 !important; border-color:#080808 !important; }
+        .process-circle { background:#bf6a00 !important; box-shadow:none !important; }
+      `
+    },
+    {
+      word: 'memorable',
+      bg:'#f3f0e6', surface:'#faf8f0', ink:'#252818', muted:'#545a3e',
+      accent:'#3a6644', accent2:'#79a86a', line:'rgba(58,102,68,0.1)',
+      tpl: 3,
+      css: `
+        .hero { background: linear-gradient(150deg,#e8eedd 0%,#f3f0e6 60%,#ede8d5 100%) !important; }
+        .hero-headline { font-style:italic !important; font-weight:300 !important; letter-spacing:-1px !important; }
+        .hero-eyebrow { letter-spacing:4px !important; }
+        nav { background:#252818 !important; }
+        .btn-primary, .nav-cta { border-radius:999px !important; background:#3a6644 !important; border-color:#3a6644 !important; }
+        .process-circle { background:#3a6644 !important; }
+      `
+    }
   ];
+
   let currentThemeIdx = 0;
   let currentTpl = 0;
   const tplCount = 4;
   let scrollRaf = null;
   let pauseScroll = false;
 
-  // ── SET CSS VARS DIRECTLY (guaranteed to override all hardcoded values) ──
+  // ── APPLY CSS VARS + THEME STYLESHEET ──
   function setThemeVars(t) {
     const r = document.documentElement;
     r.style.setProperty('--bg',      t.bg);
@@ -844,29 +967,68 @@
     r.style.setProperty('--accent',  t.accent);
     r.style.setProperty('--accent2', t.accent2);
     r.style.setProperty('--line',    t.line);
+    let s = document.getElementById('theme-override');
+    if (!s) { s = document.createElement('style'); s.id = 'theme-override'; document.head.appendChild(s); }
+    s.textContent = t.css;
   }
 
-  // ── PHYSICS RIPPLE TRANSITION ──
-  // A circle expands from page center with spring overshoot (cubic-bezier 0.34,1.56),
-  // reveals new theme underneath, then fades away.
-  function rippleTransition(bg, onMidpoint) {
-    const d = document.createElement('div');
-    d.style.cssText = [
-      'position:fixed','inset:0','z-index:8000','pointer-events:none',
-      `background:${bg}`,
-      'clip-path:circle(0% at 50% 45%)',
-      'transition:clip-path 0.75s cubic-bezier(0.34,1.56,0.64,1)'
-    ].join(';');
-    document.body.appendChild(d);
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      d.style.clipPath = 'circle(150% at 50% 45%)';
+  // ── MULTI-RIPPLE CANVAS REVEAL ──
+  // Covers the old page with a canvas, applies new theme underneath,
+  // then 6 staggered circles erode the canvas to reveal the new theme.
+  function multiRippleReveal(oldBg, onNewThemeApplied) {
+    const W = window.innerWidth, H = window.innerHeight;
+    const cvs = document.createElement('canvas');
+    cvs.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:8000;pointer-events:none;';
+    cvs.width = W; cvs.height = H;
+    document.body.appendChild(cvs);
+    const ctx = cvs.getContext('2d');
+
+    // Apply new theme immediately — hidden under canvas
+    onNewThemeApplied();
+
+    // Spawn 6 ripples at randomised positions, staggered 110ms apart
+    const maxR = Math.hypot(W, H) * 1.08;
+    const rips = Array.from({length: 6}, (_, i) => ({
+      x: W * (0.08 + Math.random() * 0.84),
+      y: H * (0.08 + Math.random() * 0.84),
+      delay: i * 110
     }));
-    setTimeout(onMidpoint, 340);
-    setTimeout(() => {
-      d.style.transition = 'opacity 0.4s ease';
-      d.style.opacity = '0';
-      setTimeout(() => d.remove(), 450);
-    }, 720);
+
+    let start = null;
+    function draw(ts) {
+      if (!start) start = ts;
+      const elapsed = ts - start;
+
+      // Repaint old background each frame
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = oldBg;
+      ctx.fillRect(0, 0, W, H);
+
+      // Punch transparent holes for each ripple
+      ctx.globalCompositeOperation = 'destination-out';
+      let allDone = true;
+      rips.forEach(rip => {
+        const t = elapsed - rip.delay;
+        if (t <= 0) { allDone = false; return; }
+        // Ease-out quart: fast start, feathers at edge
+        const p = Math.min(t / 850, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const r = eased * maxR;
+        if (r < maxR * 0.99) allDone = false;
+        ctx.beginPath();
+        ctx.arc(rip.x, rip.y, r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      if (!allDone) {
+        requestAnimationFrame(draw);
+      } else {
+        cvs.style.transition = 'opacity 0.2s ease';
+        cvs.style.opacity = '0';
+        setTimeout(() => cvs.remove(), 230);
+      }
+    }
+    requestAnimationFrame(draw);
   }
 
   // ── PHONE TEMPLATE SWITCHER ──
@@ -882,14 +1044,11 @@
     startScrollCycle();
   }
 
-  // ── PHONE AUTO-SCROLL (reaching bottom advances global theme) ──
+  // ── PHONE AUTO-SCROLL (bottom → next theme) ──
   function startScrollCycle() {
     if (scrollRaf) cancelAnimationFrame(scrollRaf);
-    let lastTime = null;
-    let atBottomSince = null;
-    const PX_PER_SEC = 28;
-    const PAUSE_MS   = 1200;
-
+    let lastTime = null, atBottomSince = null;
+    const PX_PER_SEC = 28, PAUSE_MS = 1200;
     function tick(ts) {
       if (pauseScroll) { scrollRaf = requestAnimationFrame(tick); return; }
       if (!lastTime) lastTime = ts;
@@ -913,24 +1072,28 @@
   document.getElementById('phone-screen').addEventListener('mouseenter', () => { pauseScroll = true; });
   document.getElementById('phone-screen').addEventListener('mouseleave', () => { pauseScroll = false; });
 
-  // ── THEME WORD ELEMENT ──
+  // ── THEME WORD ──
   const themeWordEl = document.getElementById('theme-word');
-  themeWordEl.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+  themeWordEl.style.transition = 'opacity 0.45s ease, transform 0.45s ease';
   themeWordEl.style.display = 'inline-block';
 
   // ── APPLY THEME ──
   function applyTheme(idx) {
     currentThemeIdx = idx;
     const t = themes[idx];
-    rippleTransition(t.bg, () => {
+    // Capture current bg BEFORE switching
+    const oldBg = document.documentElement.style.getPropertyValue('--bg') || themes[0].bg;
+
+    multiRippleReveal(oldBg, () => {
       setThemeVars(t);
+      // Word swaps under the canvas — visible when canvas erodes
       themeWordEl.style.opacity = '0';
-      themeWordEl.style.transform = 'translateY(8px)';
+      themeWordEl.style.transform = 'translateY(6px)';
       setTimeout(() => {
         themeWordEl.textContent = t.word;
         themeWordEl.style.opacity = '1';
         themeWordEl.style.transform = 'translateY(0)';
-      }, 180);
+      }, 150);
       switchPhoneTpl(t.tpl);
     });
   }
@@ -950,13 +1113,13 @@
 
   // ── SCROLL REVEAL ──
   document.querySelectorAll('.what-list, .pricing-grid').forEach(container => {
-    Array.from(container.children).forEach((c,i)=>{ c.style.transitionDelay=(i*0.08)+'s'; });
+    Array.from(container.children).forEach((c,i) => { c.style.transitionDelay = (i*0.08)+'s'; });
   });
-  document.querySelectorAll('.process-step').forEach((el,i)=>{ el.style.transitionDelay=(i*0.12)+'s'; });
-  const revealObs = new IntersectionObserver((entries,obs)=>{
-    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  document.querySelectorAll('.process-step').forEach((el,i) => { el.style.transitionDelay = (i*0.12)+'s'; });
+  const revealObs = new IntersectionObserver((entries,obs) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
   },{threshold:0.1});
-  document.querySelectorAll('.reveal').forEach(el=>revealObs.observe(el));
+  document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
   // ── BOOT ──
   setThemeVars(themes[0]);
@@ -966,4 +1129,3 @@
   </script>
 </body>
 </html>
-
