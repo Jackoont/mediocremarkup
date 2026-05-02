@@ -487,15 +487,34 @@
                   <div class="t3-footer">© 2026 Apex Fitness · Built by Mediocre Markup</div>
                 </div>
 
+                <!-- TEMPLATE 4: MEDIOCRE MARKUP (Portfolio) -->
+                <div class="phone-template" id="tpl-3">
+                  <div style="background:var(--bg); min-height:230px; padding:20px 16px; display:flex; flex-direction:column; justify-content:center;">
+                    <div style="font-family:var(--font-mono); font-size:9px; color:var(--accent); letter-spacing:2px; margin-bottom:10px;">/ PORTFOLIO</div>
+                    <h2 style="font-family:var(--font-serif); font-size:22px; font-style:italic; color:var(--ink); line-height:1.1; margin-bottom:12px;">Websites that outperform <em>average.</em></h2>
+                    <div style="width:40px; height:2px; background:var(--accent2);"></div>
+                  </div>
+                  <div style="padding:16px; background:var(--surface);">
+                    <div style="font-size:10px; color:var(--muted); line-height:1.6;">I build custom, hand-coded websites for local businesses in St. Johns, FL. No templates, just real code.</div>
+                    <button style="margin-top:16px; background:var(--ink); color:var(--bg); border:none; padding:8px 16px; border-radius:4px; font-size:10px; font-weight:700;">View My Work</button>
+                  </div>
+                  <div style="padding:16px; border-top:1px solid var(--line);">
+                     <div style="font-size:11px; font-weight:700; color:var(--ink);">Latest Project</div>
+                     <div style="font-size:10px; color:var(--muted);">Oak & Ember Restaurant</div>
+                  </div>
+                  <div class="t1-footer" style="background:var(--bg)">© 2026 Mediocre Markup</div>
+                </div>
+
               </div>
             </div>
             <div class="phone-home-bar"></div>
           </div>
           <!-- dot indicators outside phone frame so they're visible -->
           <div class="phone-dots" id="phone-dots">
-            <div class="phone-dot active" onclick="switchTemplate(0)"></div>
-            <div class="phone-dot" onclick="switchTemplate(1)"></div>
-            <div class="phone-dot" onclick="switchTemplate(2)"></div>
+            <div class="phone-dot active" onclick="jumpToTheme(0)"></div>
+            <div class="phone-dot" onclick="jumpToTheme(1)"></div>
+            <div class="phone-dot" onclick="jumpToTheme(2)"></div>
+            <div class="phone-dot" onclick="jumpToTheme(3)"></div>
           </div>
         </div>
       </div>
@@ -869,42 +888,69 @@
     entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
   },{threshold:0.1});
   document.querySelectorAll('.reveal').forEach(el=>revealObs.observe(el));
-  // ── THEME CYCLER ──
+  // ── SYNCED THEME & PHONE CYCLER ──
   const themes = [
-    { word: 'beautiful', class: '' },
-    { word: 'professional', class: 'theme-professional' },
-    { word: 'effective', class: 'theme-effective' },
-    { word: 'memorable', class: 'theme-memorable' }
+    { word: 'beautiful', class: '', tpl: 1 },    // Bloom & Co
+    { word: 'professional', class: 'theme-professional', tpl: 0 }, // Oak & Ember
+    { word: 'effective', class: 'theme-effective', tpl: 2 },    // Apex Fitness
+    { word: 'memorable', class: 'theme-memorable', tpl: 3 }     // Portfolio
   ];
   let currentThemeIdx = 0;
   const themeWordEl = document.getElementById('theme-word');
+  let themeTimer = null;
 
-  function cycleTheme() {
-    currentThemeIdx = (currentThemeIdx + 1) % themes.length;
-    const theme = themes[currentThemeIdx];
+  function switchTemplate(idx) {
+    document.querySelectorAll('.phone-template').forEach((el, i) => {
+      el.classList.toggle('active', i === idx);
+      if (i === idx) el.scrollTop = 0;
+    });
+    document.querySelectorAll('.phone-dot').forEach((d, i) => {
+      d.classList.toggle('active', i === idx);
+    });
+    // Template cycler usually handles its own scroll, but we'll restart it
+    if (typeof startScrollCycle === 'function') startScrollCycle();
+  }
 
-    // Fade out word
+  function jumpToTheme(idx) {
+    clearInterval(themeTimer);
+    applyTheme(idx);
+    themeTimer = setInterval(nextTheme, 20000);
+  }
+
+  function applyTheme(idx) {
+    currentThemeIdx = idx;
+    const theme = themes[idx];
+
+    // Transition Word
     themeWordEl.style.opacity = '0';
     themeWordEl.style.transform = 'translateY(10px)';
 
     setTimeout(() => {
-      // Change class and word
       document.body.className = theme.class;
       themeWordEl.textContent = theme.word;
-
-      // Fade back in
       themeWordEl.style.opacity = '1';
       themeWordEl.style.transform = 'translateY(0)';
+      // Sync Phone
+      switchTemplate(theme.tpl);
     }, 600);
   }
 
-  // Set initial transition styles
+  function nextTheme() {
+    applyTheme((currentThemeIdx + 1) % themes.length);
+  }
+
+  // Init
   themeWordEl.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
   themeWordEl.style.display = 'inline-block';
+  themeTimer = setInterval(nextTheme, 20000);
 
-  // Cycle every 20 seconds
-  setInterval(cycleTheme, 20000);
+  // Re-link mouse hover pause to the global timer
+  document.getElementById('phone-screen').addEventListener('mouseenter', () => { pauseScroll = true; clearInterval(themeTimer); });
+  document.getElementById('phone-screen').addEventListener('mouseleave', () => { pauseScroll = false; themeTimer = setInterval(nextTheme, 20000); });
+
+  // Initial Sync
+  switchTemplate(themes[0].tpl);
 
   </script>
 </body>
-</html>
+</
