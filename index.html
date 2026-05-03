@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -132,12 +132,13 @@
     .stat-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #7a4a60; }
 
     /* ── BOKEH / FLORAL DECOS (beautiful, permanent) ── */
-    .bokeh { position: absolute; border-radius: 50%; pointer-events: none; z-index: 2; animation: bokehRise linear infinite; }
+    .bokeh { position: absolute; pointer-events: none; z-index: 2; animation: bokehRise linear forwards; filter: blur(0.6px) brightness(1.08); }
     @keyframes bokehRise {
-      0% { transform: translateY(30px) scale(0.6); opacity: 0; }
-      12% { opacity: 0.8; }
-      88% { opacity: 0.3; }
-      100% { transform: translateY(-110vh) scale(1.2); opacity: 0; }
+      0%   { transform: translateY(0) scale(0.7) rotate(0deg);   opacity: 0; }
+      8%   { opacity: 0; }
+      18%  { opacity: 1; }
+      82%  { opacity: 0.4; }
+      100% { transform: translateY(-115vh) scale(1.15) rotate(25deg); opacity: 0; }
     }
     .floral-vine { position: absolute; pointer-events: none; z-index: 2; opacity: 0.14; }
 
@@ -1109,18 +1110,46 @@
   }
   drawParticles();
 
-  // ── BOKEH SPAWNER (beautiful theme, permanent) ──
+  // ── BOKEH SPAWNER ──
   const decoLayer = document.getElementById('deco-layer');
-  const bokehColors = ['rgba(212,93,121','rgba(234,144,133','rgba(244,194,194'];
-  setInterval(()=>{
-    const b=document.createElement('div');
-    b.className='bokeh';
-    const size=20+Math.random()*60;
-    const color=bokehColors[Math.floor(Math.random()*bokehColors.length)];
-    b.style.cssText=`left:${Math.random()*95}%;bottom:${Math.random()*20}%;width:${size}px;height:${size}px;background:radial-gradient(circle,${color},0.35),transparent);animation-duration:${7+Math.random()*8}s;animation-delay:${Math.random()*1}s`;
+  const bokehColors = [
+    'rgba(212,93,121,', 'rgba(234,144,133,', 'rgba(244,194,194,',
+    'rgba(200,110,140,', 'rgba(220,160,170,'
+  ];
+  // Organic blob shapes — randomised border-radius combos
+  const blobShapes = [
+    '60% 40% 55% 45% / 50% 60% 40% 50%',
+    '40% 60% 45% 55% / 60% 40% 55% 45%',
+    '50% 50% 65% 35% / 45% 55% 50% 50%',
+    '35% 65% 40% 60% / 55% 45% 60% 40%',
+    '55% 45% 50% 50% / 40% 60% 45% 55%',
+    '45% 55% 60% 40% / 65% 35% 50% 50%'
+  ];
+  function spawnBokeh() {
+    const b = document.createElement('div');
+    b.className = 'bokeh';
+    const size = 22 + Math.random() * 55;
+    const dur  = 9 + Math.random() * 9;
+    const color = bokehColors[Math.floor(Math.random() * bokehColors.length)];
+    const shape = blobShapes[Math.floor(Math.random() * blobShapes.length)];
+    const opacity = (0.22 + Math.random() * 0.28).toFixed(2);
+    // Spawn well below visible area so it's never seen appearing
+    b.style.cssText = [
+      `left:${5 + Math.random() * 88}%`,
+      `bottom:-${size + 20}px`,          /* always off-screen at start */
+      `width:${size}px`,
+      `height:${size}px`,
+      `border-radius:${shape}`,
+      `background:radial-gradient(ellipse at 38% 36%, ${color}${opacity}), ${color}0.08))`,
+      `animation-duration:${dur}s`,
+      `animation-delay:0s`
+    ].join(';');
     decoLayer.appendChild(b);
-    setTimeout(()=>b.remove(), 16000);
-  }, 700);
+    setTimeout(() => b.remove(), (dur + 0.5) * 1000);
+  }
+  // Stagger first wave so the page doesn't look empty on load
+  for (let i = 0; i < 5; i++) setTimeout(spawnBokeh, i * 1400);
+  setInterval(spawnBokeh, 1800);
 
   // ── PHONE 3D TILT + PARALLAX ──
   const phoneWrapper = document.getElementById('phone-wrapper');
