@@ -163,36 +163,48 @@
     .phone-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(212,93,121,0.25); transition: background 0.3s, transform 0.3s; cursor: pointer; }
     .phone-dot.active { background: #d45d79; transform: scale(1.3); }
 
-    /* ══ TEMPLATE 0: OAK & EMBER — Professional Restaurant ══ */
-    #tpl-0 { background:#f9f6f1; font-family:'Georgia',serif; }
-    .t1-topbar { background:#1a1208; padding:6px 14px; display:flex; justify-content:space-between; align-items:center; }
-    .t1-topbar-logo { font-size:10px; font-weight:700; color:#c8a96e; letter-spacing:3px; text-transform:uppercase; }
-    .t1-topbar-res { font-size:8px; color:rgba(200,169,110,0.6); letter-spacing:1px; }
-    .t1-hero { position:relative; min-height:200px; background:linear-gradient(170deg,#0d0a04 0%,#1e1408 60%,#2a1c0a 100%); overflow:hidden; display:flex; flex-direction:column; justify-content:flex-end; padding:18px 16px 20px; }
-    .t1-hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 80% 60% at 70% 30%,rgba(220,175,100,0.12),transparent 65%); }
-    .t1-hero::after { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,rgba(200,169,110,0.5),transparent); }
-    .t1-hero-divider { position:absolute; top:12px; right:14px; display:flex; flex-direction:column; gap:3px; opacity:0.4; }
-    .t1-hero-divider span { display:block; width:18px; height:1px; background:#c8a96e; }
-    .t1-category { font-size:8px; letter-spacing:3px; text-transform:uppercase; color:rgba(200,169,110,0.7); margin-bottom:10px; font-family:'Inter',sans-serif; }
-    .t1-headline { font-size:22px; font-weight:400; color:#f5ede0; line-height:1.2; margin-bottom:4px; font-style:italic; }
-    .t1-sub { font-size:10px; color:rgba(245,237,224,0.45); letter-spacing:1px; font-family:'Inter',sans-serif; margin-bottom:16px; }
-    .t1-btn { background:transparent; border:1px solid rgba(200,169,110,0.6); color:#c8a96e; border-radius:2px; padding:7px 16px; font-size:9px; font-weight:700; letter-spacing:2px; text-transform:uppercase; width:fit-content; font-family:'Inter',sans-serif; }
-    .t1-menu-section { background:#fff; padding:16px 16px 8px; border-bottom:3px solid #1a1208; }
-    .t1-menu-header { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px; }
-    .t1-menu-title { font-size:11px; font-weight:700; color:#1a1208; letter-spacing:2px; text-transform:uppercase; font-family:'Inter',sans-serif; }
-    .t1-menu-subtitle { font-size:8px; color:#9a8a6a; font-family:'Inter',sans-serif; }
-    .t1-item { display:flex; justify-content:space-between; align-items:flex-start; padding:8px 0; border-bottom:1px solid rgba(0,0,0,0.05); }
-    .t1-item:last-child { border:none; }
-    .t1-item-left { display:flex; flex-direction:column; gap:2px; }
-    .t1-item-name { font-size:11px; color:#1a1208; font-weight:400; }
-    .t1-item-desc { font-size:9px; color:#9a8a6a; font-family:'Inter',sans-serif; }
-    .t1-item-price { font-size:11px; color:#6a5030; font-weight:700; font-family:'Inter',sans-serif; }
-    .t1-hours { background:#1a1208; padding:14px 16px; display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-    .t1-hours-label { font-size:8px; letter-spacing:2px; text-transform:uppercase; color:rgba(200,169,110,0.6); margin-bottom:8px; font-family:'Inter',sans-serif; grid-column:1/-1; }
-    .t1-hours-day { font-size:9px; color:rgba(245,237,224,0.8); font-family:'Inter',sans-serif; }
-    .t1-hours-time { font-size:9px; color:#c8a96e; font-family:'Inter',sans-serif; text-align:right; }
-    .t1-reserve { background:#c8a96e; margin:0; padding:13px 16px; text-align:center; font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#1a1208; font-family:'Inter',sans-serif; }
-    .t1-footer { padding:10px 16px; font-size:8px; color:#9a8a6a; text-align:center; background:#f0ece4; letter-spacing:1px; font-family:'Inter',sans-serif; border-top:1px solid rgba(0,0,0,0.06); }
+    /* ══ TEMPLATE 0: MERIDIAN LAW GROUP — Professional ══ */
+    #tpl-0 { background:#f7f8fa; font-family:'Inter',sans-serif; }
+    .t1-topbar { background:#0f1f3d; padding:5px 14px; display:flex; justify-content:space-between; align-items:center; }
+    .t1-topbar-logo { font-size:9px; font-weight:700; color:#c8a96e; letter-spacing:2px; text-transform:uppercase; }
+    .t1-topbar-phone { font-size:8px; color:rgba(200,169,110,0.7); }
+    .t1-nav { background:#fff; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,0,0,0.06); }
+    .t1-nav-logo { font-size:13px; font-weight:800; color:#0f1f3d; letter-spacing:-0.5px; }
+    .t1-nav-logo span { color:#c8a96e; }
+    .t1-nav-links { display:flex; gap:10px; }
+    .t1-nav-link { font-size:8px; color:#556; letter-spacing:0.5px; text-transform:uppercase; font-weight:600; }
+    .t1-hero { position:relative; min-height:170px; overflow:hidden; }
+    .t1-hero img { width:100%; height:170px; object-fit:cover; display:block; filter:brightness(0.45); }
+    .t1-hero-overlay { position:absolute; inset:0; background:linear-gradient(170deg,rgba(10,20,50,0.7) 0%,rgba(15,31,61,0.85) 100%); }
+    .t1-hero-content { position:absolute; inset:0; padding:20px 16px 18px; display:flex; flex-direction:column; justify-content:flex-end; }
+    .t1-badge { display:inline-flex; align-items:center; gap:5px; background:rgba(200,169,110,0.15); border:1px solid rgba(200,169,110,0.3); border-radius:999px; padding:3px 9px; font-size:7px; font-weight:700; color:#c8a96e; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:10px; width:fit-content; }
+    .t1-headline { font-size:18px; font-weight:800; color:#fff; line-height:1.2; letter-spacing:-0.5px; margin-bottom:6px; }
+    .t1-sub { font-size:9px; color:rgba(255,255,255,0.6); line-height:1.5; margin-bottom:14px; }
+    .t1-btn { background:#c8a96e; color:#0f1f3d; border:none; border-radius:3px; padding:8px 16px; font-size:9px; font-weight:800; letter-spacing:1px; text-transform:uppercase; width:fit-content; }
+    .t1-trust-bar { background:#0f1f3d; display:flex; }
+    .t1-trust-item { flex:1; padding:10px 6px; text-align:center; border-right:1px solid rgba(255,255,255,0.06); }
+    .t1-trust-item:last-child { border:none; }
+    .t1-trust-num { font-size:15px; font-weight:800; color:#c8a96e; line-height:1; margin-bottom:2px; }
+    .t1-trust-label { font-size:7px; color:rgba(255,255,255,0.4); letter-spacing:1px; text-transform:uppercase; }
+    .t1-practices { padding:14px; background:#fff; }
+    .t1-practices-label { font-size:8px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#0f1f3d; margin-bottom:10px; padding-bottom:8px; border-bottom:2px solid #c8a96e; display:inline-block; }
+    .t1-practice { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid rgba(0,0,0,0.05); }
+    .t1-practice:last-child { border:none; }
+    .t1-practice-icon { width:30px; height:30px; border-radius:6px; background:#f0f2f8; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+    .t1-practice-name { font-size:10px; font-weight:700; color:#0f1f3d; }
+    .t1-practice-desc { font-size:8px; color:#778; margin-top:1px; }
+    .t1-team { padding:14px; background:#f7f8fa; }
+    .t1-team-label { font-size:8px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#0f1f3d; margin-bottom:10px; }
+    .t1-team-card { display:flex; gap:10px; align-items:center; padding:10px; background:#fff; border-radius:8px; border:1px solid rgba(0,0,0,0.06); }
+    .t1-team-avatar { width:40px; height:40px; border-radius:50%; object-fit:cover; flex-shrink:0; }
+    .t1-team-name { font-size:10px; font-weight:800; color:#0f1f3d; margin-bottom:2px; }
+    .t1-team-title { font-size:8px; color:#c8a96e; font-weight:600; letter-spacing:0.5px; }
+    .t1-team-creds { font-size:8px; color:#889; margin-top:2px; }
+    .t1-cta-strip { background:#0f1f3d; padding:14px 16px; display:flex; justify-content:space-between; align-items:center; }
+    .t1-cta-text { font-size:10px; color:#fff; font-weight:700; }
+    .t1-cta-sub { font-size:8px; color:rgba(255,255,255,0.5); margin-top:2px; }
+    .t1-cta-btn { background:#c8a96e; color:#0f1f3d; border:none; border-radius:3px; padding:7px 12px; font-size:8px; font-weight:800; letter-spacing:1px; text-transform:uppercase; white-space:nowrap; }
+    .t1-footer { padding:8px 14px; font-size:8px; color:#aab; text-align:center; background:#fff; border-top:1px solid rgba(0,0,0,0.06); letter-spacing:0.3px; }
 
     /* ══ TEMPLATE 1: BLOOM & CO. — Beautiful Floral Boutique ══ */
     #tpl-1 { background:#fdf6f8; font-family:'Georgia',serif; }
@@ -203,26 +215,27 @@
     .t2-logo em { color:#c07080; }
     .t2-nav-links { display:flex; gap:10px; }
     .t2-nav-link { font-size:8px; color:#8a6070; letter-spacing:1px; font-family:'Inter',sans-serif; text-transform:uppercase; }
-    .t2-hero { position:relative; min-height:190px; background:linear-gradient(160deg,#fce8ef 0%,#fdf0f5 40%,#f0ede8 100%); overflow:hidden; display:flex; flex-direction:column; justify-content:flex-end; padding:0 16px 20px; }
-    .t2-petals { position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; }
-    .t2-hero::before { content:'✿'; position:absolute; top:12px; right:14px; font-size:56px; color:rgba(192,112,128,0.12); line-height:1; }
-    .t2-hero::after { content:'✾'; position:absolute; top:24px; left:8px; font-size:32px; color:rgba(192,112,128,0.08); line-height:1; }
-    .t2-hero-badge { display:inline-block; background:rgba(58,26,40,0.08); border:1px solid rgba(192,112,128,0.2); border-radius:999px; padding:4px 10px; font-size:7px; letter-spacing:2px; text-transform:uppercase; color:#8a6070; font-family:'Inter',sans-serif; margin-bottom:10px; width:fit-content; }
-    .t2-headline { font-size:21px; font-weight:400; color:#2a1018; line-height:1.2; margin-bottom:5px; font-style:italic; }
-    .t2-headline em { color:#c07080; }
-    .t2-hero-sub { font-size:9px; color:#8a6070; font-family:'Inter',sans-serif; margin-bottom:14px; }
-    .t2-btn { background:#3a1a28; color:#fdf6f8; border:none; border-radius:999px; padding:8px 18px; font-size:9px; font-weight:600; width:fit-content; letter-spacing:0.5px; font-family:'Inter',sans-serif; }
+    .t2-hero { position:relative; min-height:190px; overflow:hidden; }
+    .t2-hero img { width:100%; height:190px; object-fit:cover; display:block; }
+    .t2-hero-overlay { position:absolute; inset:0; background:linear-gradient(0deg,rgba(58,26,40,0.7) 0%,rgba(58,26,40,0.1) 60%); }
+    .t2-hero-content { position:absolute; inset:0; padding:14px 16px 18px; display:flex; flex-direction:column; justify-content:flex-end; }
+    .t2-hero-badge { display:inline-block; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); border-radius:999px; padding:3px 9px; font-size:7px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.85); font-family:'Inter',sans-serif; margin-bottom:8px; width:fit-content; }
+    .t2-headline { font-size:20px; font-weight:400; color:#fff; line-height:1.2; margin-bottom:5px; font-style:italic; }
+    .t2-headline em { color:#f8c8d4; }
+    .t2-hero-sub { font-size:9px; color:rgba(255,255,255,0.7); font-family:'Inter',sans-serif; margin-bottom:13px; }
+    .t2-btn { background:#fff; color:#3a1a28; border:none; border-radius:999px; padding:8px 18px; font-size:9px; font-weight:700; width:fit-content; letter-spacing:0.5px; font-family:'Inter',sans-serif; }
     .t2-featured { padding:16px; background:#fff; }
     .t2-featured-label { font-size:8px; letter-spacing:3px; text-transform:uppercase; color:#c07080; margin-bottom:12px; font-family:'Inter',sans-serif; }
     .t2-featured-card { border-radius:12px; background:linear-gradient(135deg,#fce8ef,#fdf6f8); padding:14px; display:flex; gap:10px; align-items:center; margin-bottom:10px; border:1px solid rgba(192,112,128,0.12); }
-    .t2-featured-img { width:48px; height:48px; border-radius:8px; background:linear-gradient(135deg,#f8d4e0,#fce8ef); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+    .t2-featured-img { width:48px; height:48px; border-radius:8px; object-fit:cover; flex-shrink:0; }
     .t2-featured-info { flex:1; }
     .t2-featured-name { font-size:11px; color:#2a1018; margin-bottom:2px; font-style:italic; }
     .t2-featured-desc { font-size:8px; color:#8a6070; font-family:'Inter',sans-serif; line-height:1.4; }
     .t2-featured-price { font-size:11px; color:#c07080; font-weight:700; font-family:'Inter',sans-serif; }
     .t2-mini-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; padding:0 16px 16px; background:#fff; }
-    .t2-mini-card { border-radius:8px; background:#fdf6f8; padding:8px; text-align:center; border:1px solid rgba(192,112,128,0.1); }
-    .t2-mini-emoji { font-size:18px; display:block; margin-bottom:4px; }
+    .t2-mini-card { border-radius:8px; overflow:hidden; border:1px solid rgba(192,112,128,0.1); }
+    .t2-mini-card img { width:100%; height:48px; object-fit:cover; display:block; }
+    .t2-mini-info { padding:5px 6px; background:#fdf6f8; }
     .t2-mini-name { font-size:8px; color:#3a1a28; font-family:'Inter',sans-serif; line-height:1.2; }
     .t2-mini-price { font-size:8px; color:#c07080; font-family:'Inter',sans-serif; font-weight:700; }
     .t2-testimonial { padding:14px 16px; background:linear-gradient(135deg,#fce8ef,#fdf0f5); border-left:3px solid rgba(192,112,128,0.4); margin:0 16px 16px; border-radius:0 8px 8px 0; }
@@ -230,76 +243,101 @@
     .t2-testimonial-author { font-size:8px; color:#8a6070; font-family:'Inter',sans-serif; letter-spacing:1px; }
     .t2-footer { padding:10px 16px; font-size:8px; color:#b09098; text-align:center; background:#fff; letter-spacing:0.5px; font-family:'Inter',sans-serif; border-top:1px solid rgba(192,112,128,0.1); }
 
-    /* ══ TEMPLATE 2: APEX FITNESS — Effective Trainer ══ */
-    #tpl-2 { background:#0a0a0a; font-family:'Inter',sans-serif; }
-    .t3-topbar { background:#00cc66; padding:5px 14px; display:flex; justify-content:space-between; align-items:center; }
-    .t3-topbar-txt { font-size:8px; font-weight:800; color:#0a0a0a; letter-spacing:1px; text-transform:uppercase; }
-    .t3-nav { padding:12px 14px; display:flex; justify-content:space-between; align-items:center; background:#0f0f0f; border-bottom:1px solid rgba(255,255,255,0.04); }
-    .t3-logo { font-size:14px; font-weight:900; color:#fff; letter-spacing:2px; text-transform:uppercase; }
-    .t3-logo-dot { color:#00cc66; }
-    .t3-nav-right { display:flex; gap:3px; }
-    .t3-nav-pip { width:4px; height:4px; background:rgba(255,255,255,0.2); border-radius:50%; }
-    .t3-nav-pip:first-child { background:#00cc66; }
-    .t3-hero { position:relative; min-height:200px; background:#0a0a0a; overflow:hidden; padding:18px 14px 20px; display:flex; flex-direction:column; justify-content:flex-end; }
-    .t3-hero::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,#00cc66,transparent); }
-    .t3-hero-bg { position:absolute; inset:0; background: repeating-linear-gradient(90deg,rgba(0,204,102,0.02) 0px,rgba(0,204,102,0.02) 1px,transparent 1px,transparent 28px), repeating-linear-gradient(0deg,rgba(0,204,102,0.02) 0px,rgba(0,204,102,0.02) 1px,transparent 1px,transparent 28px); }
-    .t3-glow { position:absolute; top:20px; right:-10px; width:120px; height:120px; border-radius:50%; background:radial-gradient(circle,rgba(0,204,102,0.15),transparent 70%); pointer-events:none; }
-    .t3-tag { font-size:8px; font-weight:800; letter-spacing:3px; text-transform:uppercase; color:#00cc66; margin-bottom:10px; position:relative; }
-    .t3-headline { font-size:22px; font-weight:900; color:#fff; line-height:1.05; letter-spacing:-1px; margin-bottom:8px; text-transform:uppercase; position:relative; }
-    .t3-headline em { color:#00cc66; font-style:normal; display:block; }
-    .t3-hero-sub { font-size:9px; color:rgba(255,255,255,0.4); margin-bottom:14px; position:relative; letter-spacing:0.5px; }
-    .t3-btn { background:#00cc66; color:#0a0a0a; border:none; border-radius:4px; padding:9px 16px; font-size:9px; font-weight:900; width:fit-content; letter-spacing:2px; text-transform:uppercase; position:relative; }
-    .t3-stats { display:grid; grid-template-columns:repeat(3,1fr); background:#111; border-top:1px solid rgba(0,204,102,0.2); }
-    .t3-stat { padding:12px 6px; text-align:center; border-right:1px solid rgba(255,255,255,0.04); }
-    .t3-stat:last-child { border-right:none; }
-    .t3-stat-num { font-size:17px; font-weight:900; color:#00cc66; line-height:1; margin-bottom:3px; letter-spacing:-1px; }
-    .t3-stat-label { font-size:7px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.3); }
-    .t3-programs { background:#0f0f0f; padding:14px; }
-    .t3-programs-label { font-size:8px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.25); margin-bottom:10px; }
-    .t3-program { display:flex; align-items:center; gap:0; margin-bottom:6px; background:#1a1a1a; border-radius:4px; overflow:hidden; }
-    .t3-program-accent { width:3px; align-self:stretch; background:#00cc66; flex-shrink:0; }
-    .t3-program-body { display:flex; justify-content:space-between; align-items:center; padding:9px 10px; flex:1; }
-    .t3-program-name { font-size:10px; font-weight:700; color:#fff; }
-    .t3-program-type { font-size:8px; color:rgba(255,255,255,0.3); margin-top:1px; }
-    .t3-program-price { font-size:10px; font-weight:900; color:#00cc66; }
-    .t3-result-bar { background:#111; padding:12px 14px; border-top:1px solid rgba(0,204,102,0.1); }
-    .t3-result-label { font-size:8px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-bottom:8px; }
-    .t3-bar-row { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
-    .t3-bar-metric { font-size:8px; color:rgba(255,255,255,0.5); width:52px; flex-shrink:0; }
-    .t3-bar-track { flex:1; height:4px; background:rgba(255,255,255,0.07); border-radius:999px; overflow:hidden; }
-    .t3-bar-fill { height:100%; background:#00cc66; border-radius:999px; }
-    .t3-bar-val { font-size:8px; font-weight:700; color:#00cc66; width:24px; text-align:right; flex-shrink:0; }
-    .t3-footer { padding:10px 14px; font-size:8px; color:rgba(255,255,255,0.15); text-align:center; background:#0a0a0a; letter-spacing:0.5px; border-top:1px solid rgba(255,255,255,0.04); }
+    /* ══ TEMPLATE 2: COASTAL PROPERTIES — Real Estate ══ */
+    #tpl-2 { background:#f8f9fb; font-family:'Inter',sans-serif; }
+    .t3-nav { background:#fff; padding:11px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,0,0,0.07); }
+    .t3-logo { font-size:13px; font-weight:800; color:#1a2c44; letter-spacing:-0.5px; }
+    .t3-logo-sub { font-size:7px; color:#8a9aaa; letter-spacing:2px; text-transform:uppercase; font-weight:500; }
+    .t3-contact-btn { background:#1a2c44; color:#fff; border:none; border-radius:4px; padding:5px 10px; font-size:8px; font-weight:700; letter-spacing:0.5px; }
+    .t3-search { background:#fff; padding:10px 12px; border-bottom:1px solid rgba(0,0,0,0.07); }
+    .t3-search-bar { display:flex; gap:6px; align-items:center; background:#f3f5f8; border-radius:6px; padding:7px 10px; }
+    .t3-search-icon { font-size:10px; color:#8a9aaa; }
+    .t3-search-text { font-size:9px; color:#aab; flex:1; }
+    .t3-search-filter { font-size:8px; font-weight:700; color:#1a2c44; }
+    .t3-hero { position:relative; min-height:180px; overflow:hidden; }
+    .t3-hero img { width:100%; height:180px; object-fit:cover; display:block; }
+    .t3-hero-overlay { position:absolute; inset:0; background:linear-gradient(0deg,rgba(10,25,50,0.6) 0%,transparent 60%); }
+    .t3-listing-badge { position:absolute; top:10px; left:10px; background:#e74c3c; color:#fff; font-size:7px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; padding:3px 8px; border-radius:3px; }
+    .t3-save-btn { position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); border:none; border-radius:50%; width:26px; height:26px; display:flex; align-items:center; justify-content:center; font-size:12px; }
+    .t3-listing-info { position:absolute; bottom:0; left:0; right:0; padding:12px 14px; }
+    .t3-price { font-size:20px; font-weight:900; color:#fff; letter-spacing:-1px; }
+    .t3-address { font-size:9px; color:rgba(255,255,255,0.75); margin-top:2px; }
+    .t3-chips { display:flex; gap:6px; background:#fff; padding:10px 14px; border-bottom:1px solid rgba(0,0,0,0.06); }
+    .t3-chip { background:#f0f4f8; border-radius:4px; padding:4px 8px; font-size:8px; font-weight:700; color:#1a2c44; display:flex; align-items:center; gap:3px; }
+    .t3-open-house { background:#fff8e1; color:#c8860a; }
+    .t3-details { padding:14px; background:#fff; }
+    .t3-details-label { font-size:8px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#8a9aaa; margin-bottom:10px; }
+    .t3-desc { font-size:9px; color:#445; line-height:1.6; margin-bottom:12px; }
+    .t3-features { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:12px; }
+    .t3-feature { background:#f3f5f8; border-radius:6px; padding:8px; display:flex; align-items:center; gap:6px; }
+    .t3-feature-icon { font-size:12px; }
+    .t3-feature-text { font-size:8px; color:#334; font-weight:600; }
+    .t3-agent { display:flex; gap:10px; align-items:center; padding:12px 14px; background:#f8f9fb; border-top:1px solid rgba(0,0,0,0.06); }
+    .t3-agent-photo { width:38px; height:38px; border-radius:50%; object-fit:cover; flex-shrink:0; }
+    .t3-agent-name { font-size:10px; font-weight:800; color:#1a2c44; }
+    .t3-agent-title { font-size:8px; color:#8a9aaa; margin-top:1px; }
+    .t3-agent-rating { font-size:8px; color:#c8860a; margin-top:2px; }
+    .t3-agent-btns { margin-left:auto; display:flex; flex-direction:column; gap:4px; }
+    .t3-agent-call { background:#1a2c44; color:#fff; border:none; border-radius:4px; padding:5px 9px; font-size:8px; font-weight:700; }
+    .t3-agent-text { background:#f0f4f8; color:#1a2c44; border:none; border-radius:4px; padding:5px 9px; font-size:8px; font-weight:700; }
+    .t3-market { padding:14px; background:#fff; border-top:1px solid rgba(0,0,0,0.06); }
+    .t3-market-label { font-size:8px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#8a9aaa; margin-bottom:10px; }
+    .t3-market-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+    .t3-mstat { text-align:center; padding:8px; background:#f3f5f8; border-radius:6px; }
+    .t3-mstat-num { font-size:14px; font-weight:900; color:#1a2c44; letter-spacing:-0.5px; }
+    .t3-mstat-label { font-size:7px; color:#8a9aaa; text-transform:uppercase; letter-spacing:0.5px; margin-top:2px; }
+    .t3-cta-strip { background:#1a2c44; padding:13px 14px; display:flex; justify-content:space-between; align-items:center; }
+    .t3-cta-text { font-size:10px; font-weight:700; color:#fff; }
+    .t3-cta-sub { font-size:8px; color:rgba(255,255,255,0.5); margin-top:1px; }
+    .t3-cta-btn { background:#c8a96e; color:#1a2c44; border:none; border-radius:4px; padding:7px 12px; font-size:8px; font-weight:800; text-transform:uppercase; letter-spacing:1px; }
+    .t3-footer { padding:8px 14px; font-size:8px; color:#aab; text-align:center; background:#f8f9fb; border-top:1px solid rgba(0,0,0,0.06); }
 
-    /* ══ TEMPLATE 3: MEDIOCRE MARKUP PORTFOLIO — Memorable ══ */
-    #tpl-3 { background:#f3f0e6; font-family:'Georgia',serif; }
-    .t4-sidebar-layout { display:flex; min-height:220px; }
-    .t4-sidebar { width:38px; background:#252818; display:flex; flex-direction:column; align-items:center; padding:12px 0; gap:14px; flex-shrink:0; }
-    .t4-sidebar-dot { width:5px; height:5px; border-radius:50%; background:rgba(255,255,255,0.15); }
-    .t4-sidebar-dot.active { background:#79a86a; }
-    .t4-sidebar-line { width:1px; height:30px; background:rgba(255,255,255,0.08); }
-    .t4-sidebar-icon { font-size:10px; color:rgba(255,255,255,0.2); }
-    .t4-main-hero { flex:1; background:linear-gradient(155deg,#e8edd4 0%,#f3f0e6 60%,#ede8d5 100%); padding:18px 14px 16px; display:flex; flex-direction:column; justify-content:flex-end; position:relative; overflow:hidden; }
-    .t4-main-hero::before { content:'"'; position:absolute; top:-10px; right:8px; font-size:80px; color:rgba(58,102,68,0.07); font-family:'Georgia',serif; line-height:1; }
-    .t4-eyebrow { font-size:7px; letter-spacing:3px; text-transform:uppercase; color:#79a86a; margin-bottom:10px; font-family:'Inter',sans-serif; font-weight:700; }
-    .t4-headline { font-size:19px; font-weight:400; color:#252818; line-height:1.2; margin-bottom:4px; font-style:italic; }
-    .t4-headline strong { font-weight:700; font-style:normal; }
-    .t4-sub { font-size:9px; color:#6a7258; font-family:'Inter',sans-serif; line-height:1.5; margin-bottom:14px; }
-    .t4-btn { background:#252818; color:#f3f0e6; border:none; border-radius:999px; padding:7px 16px; font-size:9px; font-family:'Inter',sans-serif; font-weight:600; width:fit-content; }
-    .t4-work-section { background:#fff; padding:14px; margin-top:0; }
-    .t4-work-label { font-size:8px; letter-spacing:3px; text-transform:uppercase; color:#79a86a; margin-bottom:10px; font-family:'Inter',sans-serif; font-weight:700; }
-    .t4-project { display:flex; gap:10px; align-items:flex-start; padding:9px 0; border-bottom:1px solid rgba(37,40,24,0.06); }
-    .t4-project:last-child { border-bottom:none; }
-    .t4-project-thumb { width:36px; height:36px; border-radius:6px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:14px; }
-    .t4-project-info { flex:1; }
-    .t4-project-name { font-size:10px; color:#252818; margin-bottom:2px; font-style:italic; }
-    .t4-project-type { font-size:8px; color:#8a9070; font-family:'Inter',sans-serif; }
-    .t4-project-arrow { font-size:10px; color:#79a86a; font-family:'Inter',sans-serif; align-self:center; }
-    .t4-about { padding:14px; background:linear-gradient(135deg,#e8edd4,#f3f0e6); display:flex; gap:10px; align-items:center; }
-    .t4-about-avatar { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#79a86a,#3a6644); display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
-    .t4-about-text { font-size:9px; color:#4a5040; font-family:'Inter',sans-serif; line-height:1.5; font-style:italic; }
-    .t4-footer { padding:10px 14px; font-size:8px; color:#8a9070; text-align:center; background:#f3f0e6; letter-spacing:0.5px; font-family:'Inter',sans-serif; border-top:1px solid rgba(37,40,24,0.08); }
-
+    /* ══ TEMPLATE 3: ELEVEN NORTH COFFEE — Memorable ══ */
+    #tpl-3 { background:#1e120a; font-family:'Inter',sans-serif; }
+    .t4-nav { background:#1e120a; padding:12px 14px; display:flex; justify-content:space-between; align-items:center; }
+    .t4-logo { font-size:14px; font-weight:800; color:#e8d5b0; letter-spacing:-0.5px; }
+    .t4-logo span { color:#c8860a; }
+    .t4-nav-right { display:flex; gap:12px; align-items:center; }
+    .t4-nav-link { font-size:8px; color:rgba(232,213,176,0.5); letter-spacing:1px; text-transform:uppercase; }
+    .t4-nav-order { background:#c8860a; color:#1e120a; border:none; border-radius:4px; padding:5px 10px; font-size:8px; font-weight:800; letter-spacing:0.5px; }
+    .t4-hero { position:relative; min-height:190px; overflow:hidden; }
+    .t4-hero img { width:100%; height:190px; object-fit:cover; display:block; filter:brightness(0.6); }
+    .t4-hero-overlay { position:absolute; inset:0; background:linear-gradient(0deg,rgba(20,10,4,0.9) 0%,rgba(20,10,4,0.2) 70%); }
+    .t4-hero-content { position:absolute; inset:0; padding:16px 14px 18px; display:flex; flex-direction:column; justify-content:flex-end; }
+    .t4-eyebrow { font-size:7px; letter-spacing:3px; text-transform:uppercase; color:#c8860a; margin-bottom:8px; font-weight:700; }
+    .t4-headline { font-size:21px; font-weight:900; color:#e8d5b0; line-height:1.15; letter-spacing:-0.5px; margin-bottom:6px; }
+    .t4-sub { font-size:9px; color:rgba(232,213,176,0.55); margin-bottom:13px; }
+    .t4-hero-btn { background:#c8860a; color:#1e120a; border:none; border-radius:4px; padding:8px 16px; font-size:9px; font-weight:800; width:fit-content; letter-spacing:1px; text-transform:uppercase; }
+    .t4-roast-bar { background:#140c05; display:flex; align-items:center; gap:12px; padding:10px 14px; overflow:hidden; border-top:1px solid rgba(200,134,10,0.15); border-bottom:1px solid rgba(200,134,10,0.15); }
+    .t4-roast-label { font-size:7px; letter-spacing:2px; text-transform:uppercase; color:#c8860a; font-weight:700; white-space:nowrap; }
+    .t4-roast-items { display:flex; gap:8px; }
+    .t4-roast-item { font-size:8px; color:rgba(232,213,176,0.5); white-space:nowrap; }
+    .t4-menu { padding:14px; }
+    .t4-menu-label { font-size:8px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#c8860a; margin-bottom:12px; }
+    .t4-menu-item { display:flex; justify-content:space-between; align-items:flex-start; padding:9px 0; border-bottom:1px solid rgba(232,213,176,0.07); }
+    .t4-menu-item:last-child { border:none; }
+    .t4-item-name { font-size:11px; font-weight:700; color:#e8d5b0; margin-bottom:2px; }
+    .t4-item-desc { font-size:8px; color:rgba(232,213,176,0.4); }
+    .t4-item-price { font-size:11px; font-weight:700; color:#c8860a; flex-shrink:0; }
+    .t4-today { background:#2a1a0a; padding:14px; margin:0; border-top:1px solid rgba(200,134,10,0.15); }
+    .t4-today-label { font-size:8px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#c8860a; margin-bottom:10px; }
+    .t4-today-card { background:#1e120a; border-radius:8px; padding:10px; border:1px solid rgba(200,134,10,0.2); display:flex; gap:10px; align-items:center; }
+    .t4-today-img { width:44px; height:44px; border-radius:6px; object-fit:cover; flex-shrink:0; }
+    .t4-today-name { font-size:10px; font-weight:700; color:#e8d5b0; margin-bottom:2px; }
+    .t4-today-desc { font-size:8px; color:rgba(232,213,176,0.45); line-height:1.4; }
+    .t4-today-tag { font-size:7px; background:rgba(200,134,10,0.2); color:#c8860a; border-radius:3px; padding:2px 6px; font-weight:700; letter-spacing:1px; margin-top:4px; display:inline-block; }
+    .t4-loyalty { background:#140c05; padding:12px 14px; display:flex; gap:10px; align-items:center; border-top:1px solid rgba(200,134,10,0.15); }
+    .t4-loyalty-icon { font-size:22px; }
+    .t4-loyalty-info { flex:1; }
+    .t4-loyalty-title { font-size:9px; font-weight:700; color:#e8d5b0; margin-bottom:4px; }
+    .t4-loyalty-bar-track { height:4px; background:rgba(255,255,255,0.07); border-radius:999px; overflow:hidden; margin-bottom:3px; }
+    .t4-loyalty-bar-fill { height:100%; background:#c8860a; border-radius:999px; width:68%; }
+    .t4-loyalty-sub { font-size:8px; color:rgba(232,213,176,0.4); }
+    .t4-hours { background:#1e120a; padding:12px 14px; display:grid; grid-template-columns:1fr 1fr; gap:4px 8px; border-top:1px solid rgba(200,134,10,0.15); }
+    .t4-hours-label { font-size:7px; letter-spacing:2px; text-transform:uppercase; color:#c8860a; margin-bottom:6px; grid-column:1/-1; font-weight:700; }
+    .t4-hours-day { font-size:8px; color:rgba(232,213,176,0.5); }
+    .t4-hours-time { font-size:8px; color:#e8d5b0; font-weight:600; text-align:right; }
+    .t4-footer { padding:9px 14px; font-size:8px; color:rgba(232,213,176,0.2); text-align:center; background:#140c05; border-top:1px solid rgba(200,134,10,0.1); }
     /* ── FEATURE BAND ── */
     .feature-band { background: #2a1f2d; padding: 80px 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
     .feature-quote { font-family: var(--font-body); font-size: clamp(24px, 3vw, 40px); font-weight: 300; font-style: italic; color: #e9e2d0; line-height: 1.3; }
@@ -541,61 +579,73 @@
             <div class="phone-screen" id="phone-screen">
               <div class="phone-templates-wrap" id="phone-templates-wrap">
 
-                <!-- TEMPLATE 0: OAK & EMBER — Professional -->
+                <!-- TEMPLATE 0: MERIDIAN LAW GROUP — Professional -->
                 <div class="phone-template active" id="tpl-0">
                   <div class="t1-topbar">
-                    <span class="t1-topbar-logo">Oak &amp; Ember</span>
-                    <span class="t1-topbar-res">Reservations: (904) 555-0182</span>
+                    <span class="t1-topbar-logo">Meridian Law Group</span>
+                    <span class="t1-topbar-phone">(904) 555-0147</span>
+                  </div>
+                  <div class="t1-nav">
+                    <div>
+                      <div class="t1-nav-logo">Meridian<span>.</span></div>
+                      <div class="t1-logo-sub" style="font-size:7px;color:#8a9aaa;letter-spacing:1.5px;text-transform:uppercase;">Attorneys at Law</div>
+                    </div>
+                    <div class="t1-nav-links">
+                      <span class="t1-nav-link">Practice</span>
+                      <span class="t1-nav-link">Team</span>
+                      <span class="t1-nav-link">Contact</span>
+                    </div>
                   </div>
                   <div class="t1-hero">
-                    <div class="t1-hero-divider"><span></span><span></span><span></span></div>
-                    <div class="t1-category">Fine Dining · St. Johns, FL</div>
-                    <h2 class="t1-headline">Where every<br>meal tells<br>a story.</h2>
-                    <div class="t1-sub">Est. 2021 · Farm to Table</div>
-                    <button class="t1-btn">Reserve a Table</button>
-                  </div>
-                  <div class="t1-menu-section">
-                    <div class="t1-menu-header">
-                      <span class="t1-menu-title">Dinner Menu</span>
-                      <span class="t1-menu-subtitle">Seasonal selections</span>
-                    </div>
-                    <div class="t1-item">
-                      <div class="t1-item-left">
-                        <div class="t1-item-name">Braised Short Rib</div>
-                        <div class="t1-item-desc">red wine demi, truffle pomme</div>
-                      </div>
-                      <div class="t1-item-price">$38</div>
-                    </div>
-                    <div class="t1-item">
-                      <div class="t1-item-left">
-                        <div class="t1-item-name">Pan Seared Salmon</div>
-                        <div class="t1-item-desc">lemon beurre blanc, haricots verts</div>
-                      </div>
-                      <div class="t1-item-price">$32</div>
-                    </div>
-                    <div class="t1-item">
-                      <div class="t1-item-left">
-                        <div class="t1-item-name">Truffle Risotto</div>
-                        <div class="t1-item-desc">aged parmesan, black truffle oil</div>
-                      </div>
-                      <div class="t1-item-price">$26</div>
-                    </div>
-                    <div class="t1-item">
-                      <div class="t1-item-left">
-                        <div class="t1-item-name">Burrata &amp; Heirloom</div>
-                        <div class="t1-item-desc">basil oil, aged balsamic</div>
-                      </div>
-                      <div class="t1-item-price">$18</div>
+                    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=170&fit=crop&q=80" alt="Law office" loading="lazy">
+                    <div class="t1-hero-overlay"></div>
+                    <div class="t1-hero-content">
+                      <div class="t1-badge">⚖ Est. 1998 · St. Johns, FL</div>
+                      <h2 class="t1-headline">Trusted counsel<br>when it matters<br>most.</h2>
+                      <div class="t1-sub">Protecting families and businesses across Northeast Florida.</div>
+                      <button class="t1-btn">Free Consultation</button>
                     </div>
                   </div>
-                  <div class="t1-hours">
-                    <div class="t1-hours-label">Hours of Operation</div>
-                    <div class="t1-hours-day">Mon – Thu</div><div class="t1-hours-time">5 – 10 pm</div>
-                    <div class="t1-hours-day">Fri – Sat</div><div class="t1-hours-time">5 – 11 pm</div>
-                    <div class="t1-hours-day">Sunday</div><div class="t1-hours-time">Closed</div>
+                  <div class="t1-trust-bar">
+                    <div class="t1-trust-item"><div class="t1-trust-num">26yr</div><div class="t1-trust-label">Experience</div></div>
+                    <div class="t1-trust-item"><div class="t1-trust-num">2,400+</div><div class="t1-trust-label">Cases Won</div></div>
+                    <div class="t1-trust-item"><div class="t1-trust-num">4.9★</div><div class="t1-trust-label">Google</div></div>
                   </div>
-                  <div class="t1-reserve">Reserve Your Table →</div>
-                  <div class="t1-footer">© 2026 Oak &amp; Ember · Built by Mediocre Markup</div>
+                  <div class="t1-practices">
+                    <div class="t1-practices-label">Practice Areas</div>
+                    <div class="t1-practice">
+                      <div class="t1-practice-icon">🏠</div>
+                      <div><div class="t1-practice-name">Real Estate Law</div><div class="t1-practice-desc">Closings, disputes, title issues</div></div>
+                    </div>
+                    <div class="t1-practice">
+                      <div class="t1-practice-icon">📋</div>
+                      <div><div class="t1-practice-name">Estate Planning</div><div class="t1-practice-desc">Wills, trusts, probate</div></div>
+                    </div>
+                    <div class="t1-practice">
+                      <div class="t1-practice-icon">⚖️</div>
+                      <div><div class="t1-practice-name">Business Law</div><div class="t1-practice-desc">Contracts, formation, disputes</div></div>
+                    </div>
+                    <div class="t1-practice">
+                      <div class="t1-practice-icon">👨‍👩‍👧</div>
+                      <div><div class="t1-practice-name">Family Law</div><div class="t1-practice-desc">Divorce, custody, adoption</div></div>
+                    </div>
+                  </div>
+                  <div class="t1-team">
+                    <div class="t1-team-label">Lead Attorney</div>
+                    <div class="t1-team-card">
+                      <img class="t1-team-avatar" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&h=80&fit=crop&q=80" alt="Attorney">
+                      <div>
+                        <div class="t1-team-name">James R. Meridian, Esq.</div>
+                        <div class="t1-team-title">Managing Partner · FL Bar #987432</div>
+                        <div class="t1-team-creds">J.D. University of Florida · 26 yrs experience</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="t1-cta-strip">
+                    <div><div class="t1-cta-text">Ready to get started?</div><div class="t1-cta-sub">No fees for initial consultation</div></div>
+                    <button class="t1-cta-btn">Call Now</button>
+                  </div>
+                  <div class="t1-footer">© 2026 Meridian Law Group · Built by Mediocre Markup</div>
                 </div>
 
                 <!-- TEMPLATE 1: BLOOM & CO. — Beautiful -->
@@ -610,15 +660,19 @@
                     </div>
                   </div>
                   <div class="t2-hero">
-                    <div class="t2-hero-badge">St. Johns, FL · Est. 2019</div>
-                    <h2 class="t2-headline">Flowers that<br>make <em>moments</em><br>unforgettable.</h2>
-                    <div class="t2-hero-sub">Hand-arranged by our local florists, daily.</div>
-                    <button class="t2-btn">Shop Arrangements</button>
+                    <img src="https://images.unsplash.com/photo-1487530811015-780a40e0e736?w=400&h=190&fit=crop&q=80" alt="Floral boutique">
+                    <div class="t2-hero-overlay"></div>
+                    <div class="t2-hero-content">
+                      <div class="t2-hero-badge">St. Johns, FL · Est. 2019</div>
+                      <h2 class="t2-headline">Flowers that make<br><em>moments</em> unforgettable.</h2>
+                      <div class="t2-hero-sub">Hand-arranged by our local florists, daily.</div>
+                      <button class="t2-btn">Shop Arrangements</button>
+                    </div>
                   </div>
                   <div class="t2-featured">
                     <div class="t2-featured-label">This Week's Feature</div>
                     <div class="t2-featured-card">
-                      <div class="t2-featured-img">🌹</div>
+                      <img class="t2-featured-img" src="https://images.unsplash.com/photo-1455659817273-f96807779a8a?w=96&h=96&fit=crop&q=80" alt="Bouquet">
                       <div class="t2-featured-info">
                         <div class="t2-featured-name">Scarlet Garden Bouquet</div>
                         <div class="t2-featured-desc">Red roses, eucalyptus, white gypsophila · lasts 10–14 days</div>
@@ -627,9 +681,18 @@
                     </div>
                   </div>
                   <div class="t2-mini-grid">
-                    <div class="t2-mini-card"><span class="t2-mini-emoji">🌸</span><div class="t2-mini-name">Spring Bliss</div><div class="t2-mini-price">$48</div></div>
-                    <div class="t2-mini-card"><span class="t2-mini-emoji">🌿</span><div class="t2-mini-name">Garden Fresh</div><div class="t2-mini-price">$36</div></div>
-                    <div class="t2-mini-card"><span class="t2-mini-emoji">🌼</span><div class="t2-mini-name">Sunny Day</div><div class="t2-mini-price">$42</div></div>
+                    <div class="t2-mini-card">
+                      <img src="https://images.unsplash.com/photo-1490750967868-88df5691cc5e?w=120&h=80&fit=crop&q=80" alt="Spring Bliss">
+                      <div class="t2-mini-info"><div class="t2-mini-name">Spring Bliss</div><div class="t2-mini-price">$48</div></div>
+                    </div>
+                    <div class="t2-mini-card">
+                      <img src="https://images.unsplash.com/photo-1562690868-60bbe7293e94?w=120&h=80&fit=crop&q=80" alt="Garden Fresh">
+                      <div class="t2-mini-info"><div class="t2-mini-name">Garden Fresh</div><div class="t2-mini-price">$36</div></div>
+                    </div>
+                    <div class="t2-mini-card">
+                      <img src="https://images.unsplash.com/photo-1598454444233-3e3b2b2e1ee2?w=120&h=80&fit=crop&q=80" alt="Sunny Day">
+                      <div class="t2-mini-info"><div class="t2-mini-name">Sunny Day</div><div class="t2-mini-price">$42</div></div>
+                    </div>
                   </div>
                   <div class="t2-testimonial">
                     <div class="t2-testimonial-text">"The arrangements were absolutely stunning — our guests couldn't stop asking about them."</div>
@@ -638,126 +701,156 @@
                   <div class="t2-footer">© 2026 Bloom &amp; Co. · Built by Mediocre Markup</div>
                 </div>
 
-                <!-- TEMPLATE 2: APEX FITNESS — Effective -->
+                <!-- TEMPLATE 2: COASTAL PROPERTIES — Real Estate -->
                 <div class="phone-template" id="tpl-2">
-                  <div class="t3-topbar">
-                    <span class="t3-topbar-txt">🔥 Limited spots open — Book now</span>
-                    <span class="t3-topbar-txt">→</span>
-                  </div>
                   <div class="t3-nav">
-                    <span class="t3-logo">APEX<span class="t3-logo-dot">.</span></span>
-                    <div class="t3-nav-right">
-                      <div class="t3-nav-pip"></div><div class="t3-nav-pip"></div><div class="t3-nav-pip"></div>
+                    <div>
+                      <div class="t3-logo">Coastal Properties</div>
+                      <div class="t3-logo-sub">Northeast Florida</div>
+                    </div>
+                    <button class="t3-contact-btn">Contact</button>
+                  </div>
+                  <div class="t3-search">
+                    <div class="t3-search-bar">
+                      <span class="t3-search-icon">🔍</span>
+                      <span class="t3-search-text">St. Johns, FL · Any price</span>
+                      <span class="t3-search-filter">Filters</span>
                     </div>
                   </div>
                   <div class="t3-hero">
-                    <div class="t3-hero-bg"></div>
-                    <div class="t3-glow"></div>
-                    <div class="t3-tag">Personal Training · St. Johns</div>
-                    <h2 class="t3-headline">Train Harder.<br><em>Live Stronger.</em></h2>
-                    <div class="t3-hero-sub">Results-driven coaching for real people.</div>
-                    <button class="t3-btn">Book a Free Session</button>
-                  </div>
-                  <div class="t3-stats">
-                    <div class="t3-stat"><div class="t3-stat-num">500+</div><div class="t3-stat-label">Clients</div></div>
-                    <div class="t3-stat"><div class="t3-stat-num">8yr</div><div class="t3-stat-label">Experience</div></div>
-                    <div class="t3-stat"><div class="t3-stat-num">4.9★</div><div class="t3-stat-label">Rated</div></div>
-                  </div>
-                  <div class="t3-programs">
-                    <div class="t3-programs-label">Programs</div>
-                    <div class="t3-program">
-                      <div class="t3-program-accent"></div>
-                      <div class="t3-program-body">
-                        <div><div class="t3-program-name">1-on-1 Training</div><div class="t3-program-type">Private · 60 min</div></div>
-                        <div class="t3-program-price">$80</div>
-                      </div>
-                    </div>
-                    <div class="t3-program">
-                      <div class="t3-program-accent"></div>
-                      <div class="t3-program-body">
-                        <div><div class="t3-program-name">Group Classes</div><div class="t3-program-type">Max 8 people · 45 min</div></div>
-                        <div class="t3-program-price">$25</div>
-                      </div>
-                    </div>
-                    <div class="t3-program">
-                      <div class="t3-program-accent"></div>
-                      <div class="t3-program-body">
-                        <div><div class="t3-program-name">Nutrition Plan</div><div class="t3-program-type">Custom 8-week program</div></div>
-                        <div class="t3-program-price">$120</div>
-                      </div>
+                    <img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&h=180&fit=crop&q=80" alt="Property">
+                    <div class="t3-hero-overlay"></div>
+                    <span class="t3-listing-badge">New Listing</span>
+                    <button class="t3-save-btn">♡</button>
+                    <div class="t3-listing-info">
+                      <div class="t3-price">$624,900</div>
+                      <div class="t3-address">214 Harbour Pointe Dr, St. Johns, FL 32259</div>
                     </div>
                   </div>
-                  <div class="t3-result-bar">
-                    <div class="t3-result-label">Avg Client Results (12wk)</div>
-                    <div class="t3-bar-row"><span class="t3-bar-metric">Strength</span><div class="t3-bar-track"><div class="t3-bar-fill" style="width:88%"></div></div><span class="t3-bar-val">+88%</span></div>
-                    <div class="t3-bar-row"><span class="t3-bar-metric">Fat Loss</span><div class="t3-bar-track"><div class="t3-bar-fill" style="width:72%"></div></div><span class="t3-bar-val">−18lb</span></div>
-                    <div class="t3-bar-row"><span class="t3-bar-metric">Energy</span><div class="t3-bar-track"><div class="t3-bar-fill" style="width:95%"></div></div><span class="t3-bar-val">+95%</span></div>
+                  <div class="t3-chips">
+                    <div class="t3-chip">🛏 4 beds</div>
+                    <div class="t3-chip">🛁 3 baths</div>
+                    <div class="t3-chip">📐 2,840 sqft</div>
+                    <div class="t3-chip t3-open-house">Open Sun 1–4</div>
                   </div>
-                  <div class="t3-footer">© 2026 Apex Fitness · Built by Mediocre Markup</div>
+                  <div class="t3-details">
+                    <div class="t3-details-label">About This Home</div>
+                    <div class="t3-desc">Stunning pool home in Durbin Crossing. Open concept living, chef's kitchen with quartz countertops, and a resort-style backyard. A-rated schools.</div>
+                    <div class="t3-features">
+                      <div class="t3-feature"><span class="t3-feature-icon">🏊</span><div class="t3-feature-text">Pool &amp; Spa</div></div>
+                      <div class="t3-feature"><span class="t3-feature-icon">🚗</span><div class="t3-feature-text">3-Car Garage</div></div>
+                      <div class="t3-feature"><span class="t3-feature-icon">🏫</span><div class="t3-feature-text">A-Rated Schools</div></div>
+                      <div class="t3-feature"><span class="t3-feature-icon">🌳</span><div class="t3-feature-text">0.28 Acre Lot</div></div>
+                    </div>
+                  </div>
+                  <div class="t3-agent">
+                    <img class="t3-agent-photo" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&h=80&fit=crop&q=80" alt="Agent">
+                    <div>
+                      <div class="t3-agent-name">Lauren Whitfield</div>
+                      <div class="t3-agent-title">Listing Agent · Coastal Properties</div>
+                      <div class="t3-agent-rating">⭐⭐⭐⭐⭐ 48 reviews</div>
+                    </div>
+                    <div class="t3-agent-btns">
+                      <button class="t3-agent-call">📞 Call</button>
+                      <button class="t3-agent-text">💬 Text</button>
+                    </div>
+                  </div>
+                  <div class="t3-market">
+                    <div class="t3-market-label">St. Johns Market Snapshot</div>
+                    <div class="t3-market-stats">
+                      <div class="t3-mstat"><div class="t3-mstat-num">142</div><div class="t3-mstat-label">Sold / 90d</div></div>
+                      <div class="t3-mstat"><div class="t3-mstat-num">$598k</div><div class="t3-mstat-label">Avg Price</div></div>
+                      <div class="t3-mstat"><div class="t3-mstat-num">18d</div><div class="t3-mstat-label">Avg DOM</div></div>
+                    </div>
+                  </div>
+                  <div class="t3-cta-strip">
+                    <div><div class="t3-cta-text">Schedule a Showing</div><div class="t3-cta-sub">Tours available 7 days a week</div></div>
+                    <button class="t3-cta-btn">Book Tour</button>
+                  </div>
+                  <div class="t3-footer">© 2026 Coastal Properties · Built by Mediocre Markup</div>
                 </div>
 
-                <!-- TEMPLATE 3: MEDIOCRE MARKUP PORTFOLIO — Memorable -->
+                <!-- TEMPLATE 3: ELEVEN NORTH COFFEE — Memorable -->
                 <div class="phone-template" id="tpl-3">
-                  <div class="t4-sidebar-layout">
-                    <div class="t4-sidebar">
-                      <div class="t4-sidebar-dot active"></div>
-                      <div class="t4-sidebar-line"></div>
-                      <div class="t4-sidebar-dot"></div>
-                      <div class="t4-sidebar-line"></div>
-                      <div class="t4-sidebar-dot"></div>
-                      <div class="t4-sidebar-line"></div>
-                      <div class="t4-sidebar-icon">✦</div>
-                    </div>
-                    <div class="t4-main-hero">
-                      <div class="t4-eyebrow">Web Studio · St. Johns, FL</div>
-                      <h2 class="t4-headline">Sites that<br>people actually<br><strong>remember.</strong></h2>
-                      <div class="t4-sub">Hand-coded, not templated. Built for real local businesses.</div>
-                      <button class="t4-btn">See My Work</button>
+                  <div class="t4-nav">
+                    <div class="t4-logo">Eleven<span>North</span></div>
+                    <div class="t4-nav-right">
+                      <span class="t4-nav-link">Menu</span>
+                      <button class="t4-nav-order">Order Ahead</button>
                     </div>
                   </div>
-                  <div class="t4-work-section">
-                    <div class="t4-work-label">Recent Projects</div>
-                    <div class="t4-project">
-                      <div class="t4-project-thumb" style="background:linear-gradient(135deg,#1a1208,#2a1c0a)">🍽️</div>
-                      <div class="t4-project-info">
-                        <div class="t4-project-name">Oak &amp; Ember Restaurant</div>
-                        <div class="t4-project-type">Fine Dining · Custom Website</div>
-                      </div>
-                      <div class="t4-project-arrow">→</div>
-                    </div>
-                    <div class="t4-project">
-                      <div class="t4-project-thumb" style="background:linear-gradient(135deg,#fce8ef,#fdf6f8)">🌸</div>
-                      <div class="t4-project-info">
-                        <div class="t4-project-name">Bloom &amp; Co. Florist</div>
-                        <div class="t4-project-type">Boutique Shop · E-Commerce</div>
-                      </div>
-                      <div class="t4-project-arrow">→</div>
-                    </div>
-                    <div class="t4-project">
-                      <div class="t4-project-thumb" style="background:linear-gradient(135deg,#0a0a0a,#1a1a1a)">💪</div>
-                      <div class="t4-project-info">
-                        <div class="t4-project-name">Apex Fitness</div>
-                        <div class="t4-project-type">Personal Trainer · Booking</div>
-                      </div>
-                      <div class="t4-project-arrow">→</div>
+                  <div class="t4-hero">
+                    <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=190&fit=crop&q=80" alt="Coffee shop">
+                    <div class="t4-hero-overlay"></div>
+                    <div class="t4-hero-content">
+                      <div class="t4-eyebrow">Specialty Coffee · St. Johns, FL</div>
+                      <h2 class="t4-headline">Roasted in-house.<br>Poured with intent.</h2>
+                      <div class="t4-sub">Single-origin beans, thoughtfully crafted, every cup.</div>
+                      <button class="t4-hero-btn">View Full Menu</button>
                     </div>
                   </div>
-                  <div class="t4-about">
-                    <div class="t4-about-avatar">👋</div>
-                    <div class="t4-about-text">"I'm Jack — 17, self-taught, and obsessed with building sites that actually work for small businesses."</div>
+                  <div class="t4-roast-bar">
+                    <span class="t4-roast-label">On Tap</span>
+                    <div class="t4-roast-items">
+                      <span class="t4-roast-item">· Ethiopia Yirgacheffe</span>
+                      <span class="t4-roast-item">· Guatemala Huehuetenango</span>
+                      <span class="t4-roast-item">· Colombia Nariño</span>
+                    </div>
                   </div>
-                  <div class="t4-footer">© 2026 Mediocre Markup · mediocremanager@outlook.com</div>
+                  <div class="t4-menu">
+                    <div class="t4-menu-label">Signature Drinks</div>
+                    <div class="t4-menu-item">
+                      <div><div class="t4-item-name">Cortado Doble</div><div class="t4-item-desc">Double ristretto, warm whole milk</div></div>
+                      <div class="t4-item-price">$5.50</div>
+                    </div>
+                    <div class="t4-menu-item">
+                      <div><div class="t4-item-name">Honey Oat Latte</div><div class="t4-item-desc">Espresso, oat milk, local wildflower honey</div></div>
+                      <div class="t4-item-price">$6.75</div>
+                    </div>
+                    <div class="t4-menu-item">
+                      <div><div class="t4-item-name">Cold Brew Float</div><div class="t4-item-desc">18-hr brew, vanilla bean, sparkling water</div></div>
+                      <div class="t4-item-price">$7.00</div>
+                    </div>
+                    <div class="t4-menu-item">
+                      <div><div class="t4-item-name">Pour Over</div><div class="t4-item-desc">Single origin, brewed to order</div></div>
+                      <div class="t4-item-price">$5.00</div>
+                    </div>
+                  </div>
+                  <div class="t4-today">
+                    <div class="t4-today-label">Today's Special</div>
+                    <div class="t4-today-card">
+                      <img class="t4-today-img" src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=88&h=88&fit=crop&q=80" alt="Latte">
+                      <div>
+                        <div class="t4-today-name">Lavender Fog Latte</div>
+                        <div class="t4-today-desc">House lavender syrup, steamed oat milk, single origin espresso</div>
+                        <div class="t4-today-tag">Limited · $6.50</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="t4-loyalty">
+                    <span class="t4-loyalty-icon">☕</span>
+                    <div class="t4-loyalty-info">
+                      <div class="t4-loyalty-title">Loyalty Rewards · 68/100 pts</div>
+                      <div class="t4-loyalty-bar-track"><div class="t4-loyalty-bar-fill"></div></div>
+                      <div class="t4-loyalty-sub">32 more points for a free drink</div>
+                    </div>
+                  </div>
+                  <div class="t4-hours">
+                    <div class="t4-hours-label">Hours</div>
+                    <div class="t4-hours-day">Mon – Fri</div><div class="t4-hours-time">6:30 am – 6 pm</div>
+                    <div class="t4-hours-day">Saturday</div><div class="t4-hours-time">7 am – 5 pm</div>
+                    <div class="t4-hours-day">Sunday</div><div class="t4-hours-time">8 am – 3 pm</div>
+                  </div>
+                  <div class="t4-footer">© 2026 Eleven North Coffee · Built by Mediocre Markup</div>
                 </div>
-
-            </div>
             <div class="phone-home-bar"></div>
           </div>
           <!-- dot indicators outside phone frame so they're visible -->
           <div class="phone-dots" id="phone-dots">
-            <div class="phone-dot active" onclick="jumpToTheme(0)"></div>
-            <div class="phone-dot" onclick="jumpToTheme(1)"></div>
-            <div class="phone-dot" onclick="jumpToTheme(2)"></div>
-            <div class="phone-dot" onclick="jumpToTheme(3)"></div>
+            <div class="phone-dot active" onclick="switchPhoneTpl(0)"></div>
+            <div class="phone-dot" onclick="switchPhoneTpl(1)"></div>
+            <div class="phone-dot" onclick="switchPhoneTpl(2)"></div>
+            <div class="phone-dot" onclick="switchPhoneTpl(3)"></div>
           </div>
         </div>
       </div>
@@ -1064,144 +1157,11 @@
     phoneScreen.addEventListener('wheel', e => { e.stopPropagation(); }, { passive: true });
   }
 
-  // ── UNIFIED THEME + SCROLL ENGINE ──
-  const themes = [
-    {
-      word: 'beautiful',
-      bg:'#fdf6f0', surface:'#fffaf7', ink:'#2a1a20', muted:'#7a556a',
-      accent:'#c94f6d', accent2:'#e8896e', line:'rgba(180,100,130,0.1)',
-      tpl: 1,
-      css: `
-        .hero { background: linear-gradient(135deg,#fce4ec 0%,#fdf6f0 55%,#fce4ec 100%) !important; }
-        .hero-headline { font-style:italic !important; font-weight:300 !important; letter-spacing:-2px !important; }
-        .hero-eyebrow { letter-spacing:6px !important; }
-        nav { background:#2a1a20 !important; }
-      `
-    },
-    {
-      word: 'professional',
-      bg:'#eef2f7', surface:'#ffffff', ink:'#0d1f35', muted:'#3d5870',
-      accent:'#1a4a8a', accent2:'#3d82cc', line:'rgba(26,74,138,0.08)',
-      tpl: 0,
-      css: `
-        .hero { background: linear-gradient(180deg,#dde8f5 0%,#eef2f7 40%,#f8fbff 100%) !important; }
-        .hero-headline { font-style:normal !important; font-weight:900 !important; letter-spacing:-3.5px !important; }
-        .hero-headline .light { opacity:0.5 !important; }
-        .hero-eyebrow { letter-spacing:9px !important; font-weight:700 !important; }
-        nav { background:#0d1f35 !important; }
-        .btn-primary, .nav-cta { border-radius:6px !important; }
-      `
-    },
-    {
-      word: 'effective',
-      bg:'#ffffff', surface:'#f5f5f5', ink:'#080808', muted:'#505050',
-      accent:'#bf6a00', accent2:'#e89420', line:'rgba(0,0,0,0.05)',
-      tpl: 2,
-      css: `
-        .hero { background:#ffffff !important; border-bottom:2px solid #080808; }
-        .hero-headline { font-style:normal !important; font-weight:900 !important; letter-spacing:-4px !important; text-transform:uppercase !important; }
-        .hero-headline .light { opacity:1 !important; font-weight:300 !important; }
-        .hero-eyebrow { letter-spacing:3px !important; }
-        nav { background:#080808 !important; }
-        .btn-primary, .nav-cta { border-radius:4px !important; background:#080808 !important; border-color:#080808 !important; }
-        .process-circle { background:#bf6a00 !important; box-shadow:none !important; }
-      `
-    },
-    {
-      word: 'memorable',
-      bg:'#f3f0e6', surface:'#faf8f0', ink:'#252818', muted:'#545a3e',
-      accent:'#3a6644', accent2:'#79a86a', line:'rgba(58,102,68,0.1)',
-      tpl: 3,
-      css: `
-        .hero { background: linear-gradient(150deg,#e8eedd 0%,#f3f0e6 60%,#ede8d5 100%) !important; }
-        .hero-headline { font-style:italic !important; font-weight:300 !important; letter-spacing:-1px !important; }
-        .hero-eyebrow { letter-spacing:4px !important; }
-        nav { background:#252818 !important; }
-        .btn-primary, .nav-cta { border-radius:999px !important; background:#3a6644 !important; border-color:#3a6644 !important; }
-        .process-circle { background:#3a6644 !important; }
-      `
-    }
-  ];
-
-  let currentThemeIdx = 0;
+  // ── PHONE CYCLER (no site theme switching) ──
   let currentTpl = 0;
   const tplCount = 4;
   let scrollRaf = null;
   let pauseScroll = false;
-
-  // ── APPLY CSS VARS + THEME STYLESHEET ──
-  function setThemeVars(t) {
-    const r = document.documentElement;
-    r.style.setProperty('--bg',      t.bg);
-    r.style.setProperty('--surface', t.surface);
-    r.style.setProperty('--ink',     t.ink);
-    r.style.setProperty('--muted',   t.muted);
-    r.style.setProperty('--accent',  t.accent);
-    r.style.setProperty('--accent2', t.accent2);
-    r.style.setProperty('--line',    t.line);
-    let s = document.getElementById('theme-override');
-    if (!s) { s = document.createElement('style'); s.id = 'theme-override'; document.head.appendChild(s); }
-    s.textContent = t.css;
-  }
-
-  // ── MULTI-RIPPLE CANVAS REVEAL ──
-  // Covers the old page with a canvas, applies new theme underneath,
-  // then 6 staggered circles erode the canvas to reveal the new theme.
-  function multiRippleReveal(oldBg, onNewThemeApplied) {
-    const W = window.innerWidth, H = window.innerHeight;
-    const cvs = document.createElement('canvas');
-    cvs.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:8000;pointer-events:none;';
-    cvs.width = W; cvs.height = H;
-    document.body.appendChild(cvs);
-    const ctx = cvs.getContext('2d');
-
-    // Apply new theme immediately — hidden under canvas
-    onNewThemeApplied();
-
-    // Spawn 6 ripples at randomised positions, staggered 110ms apart
-    const maxR = Math.hypot(W, H) * 1.08;
-    const rips = Array.from({length: 6}, (_, i) => ({
-      x: W * (0.08 + Math.random() * 0.84),
-      y: H * (0.08 + Math.random() * 0.84),
-      delay: i * 110
-    }));
-
-    let start = null;
-    function draw(ts) {
-      if (!start) start = ts;
-      const elapsed = ts - start;
-
-      // Repaint old background each frame
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.fillStyle = oldBg;
-      ctx.fillRect(0, 0, W, H);
-
-      // Punch transparent holes for each ripple
-      ctx.globalCompositeOperation = 'destination-out';
-      let allDone = true;
-      rips.forEach(rip => {
-        const t = elapsed - rip.delay;
-        if (t <= 0) { allDone = false; return; }
-        // Ease-out quart: fast start, feathers at edge
-        const p = Math.min(t / 850, 1);
-        const eased = 1 - Math.pow(1 - p, 3);
-        const r = eased * maxR;
-        if (r < maxR * 0.99) allDone = false;
-        ctx.beginPath();
-        ctx.arc(rip.x, rip.y, r, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      if (!allDone) {
-        requestAnimationFrame(draw);
-      } else {
-        cvs.style.transition = 'opacity 0.2s ease';
-        cvs.style.opacity = '0';
-        setTimeout(() => cvs.remove(), 230);
-      }
-    }
-    requestAnimationFrame(draw);
-  }
 
   // ── PHONE TEMPLATE SWITCHER ──
   function switchPhoneTpl(idx) {
@@ -1216,11 +1176,11 @@
     startScrollCycle();
   }
 
-  // ── PHONE AUTO-SCROLL (bottom → next theme) ──
+  // ── PHONE AUTO-SCROLL (reaches bottom → next template) ──
   function startScrollCycle() {
     if (scrollRaf) cancelAnimationFrame(scrollRaf);
     let lastTime = null, atBottomSince = null;
-    const PX_PER_SEC = 28, PAUSE_MS = 1200;
+    const PX_PER_SEC = 28, PAUSE_MS = 1400;
     function tick(ts) {
       if (pauseScroll) { scrollRaf = requestAnimationFrame(tick); return; }
       if (!lastTime) lastTime = ts;
@@ -1231,7 +1191,10 @@
       const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 2;
       if (atBottom) {
         if (!atBottomSince) atBottomSince = ts;
-        if (ts - atBottomSince >= PAUSE_MS) { nextTheme(); return; }
+        if (ts - atBottomSince >= PAUSE_MS) {
+          switchPhoneTpl((currentTpl + 1) % tplCount);
+          return;
+        }
       } else {
         atBottomSince = null;
         el.scrollTop += (PX_PER_SEC * dt) / 1000;
@@ -1244,45 +1207,6 @@
   document.getElementById('phone-screen').addEventListener('mouseenter', () => { pauseScroll = true; });
   document.getElementById('phone-screen').addEventListener('mouseleave', () => { pauseScroll = false; });
 
-  // ── THEME WORD ──
-  const themeWordEl = document.getElementById('theme-word');
-  themeWordEl.style.transition = 'opacity 0.45s ease, transform 0.45s ease';
-  themeWordEl.style.display = 'inline-block';
-
-  // ── APPLY THEME ──
-  function applyTheme(idx) {
-    currentThemeIdx = idx;
-    const t = themes[idx];
-    // Capture current bg BEFORE switching
-    const oldBg = document.documentElement.style.getPropertyValue('--bg') || themes[0].bg;
-
-    multiRippleReveal(oldBg, () => {
-      setThemeVars(t);
-      // Word swaps under the canvas — visible when canvas erodes
-      themeWordEl.style.opacity = '0';
-      themeWordEl.style.transform = 'translateY(6px)';
-      setTimeout(() => {
-        themeWordEl.textContent = t.word;
-        themeWordEl.style.opacity = '1';
-        themeWordEl.style.transform = 'translateY(0)';
-      }, 150);
-      switchPhoneTpl(t.tpl);
-    });
-  }
-
-  let themeTimer = null;
-  function nextTheme() {
-    clearInterval(themeTimer);
-    applyTheme((currentThemeIdx + 1) % themes.length);
-    themeTimer = setInterval(nextTheme, 20000);
-  }
-
-  function jumpToTheme(idx) {
-    clearInterval(themeTimer);
-    applyTheme(idx);
-    themeTimer = setInterval(nextTheme, 20000);
-  }
-
   // ── SCROLL REVEAL ──
   document.querySelectorAll('.what-list, .pricing-grid').forEach(container => {
     Array.from(container.children).forEach((c,i) => { c.style.transitionDelay = (i*0.08)+'s'; });
@@ -1294,9 +1218,8 @@
   document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
   // ── BOOT ──
-  setThemeVars(themes[0]);
-  switchPhoneTpl(themes[0].tpl);
-  themeTimer = setInterval(nextTheme, 20000);
+  switchPhoneTpl(0);
+
 
   </script>
 </body>
