@@ -145,8 +145,8 @@
     /* ── PHONE MOCKUP ── */
     .phone-wrapper { transform-style: preserve-3d; transition: transform 0.1s ease-out; cursor: default; position: relative; display: inline-block; }
     .phone-frame {
-      width: 240px; height: 480px;
-      background: #1a1a2e; border-radius: 36px; padding: 12px;
+      width: 290px; height: 580px;
+      background: #1a1a2e; border-radius: 42px; padding: 14px;
       box-shadow: 0 0 0 2px #2a2a4a, 0 30px 80px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.06) inset;
       position: relative; display: flex; flex-direction: column; align-items: center;
     }
@@ -251,13 +251,14 @@
     .t2-featured-price { font-size:13px; color:#f5c5d0; font-family:'Inter',sans-serif; font-weight:300; flex-shrink:0; }
 
     /* photo grid */
-    .t2-grid { display:grid; grid-template-columns:1fr 1fr; gap:2px; margin:0 14px 14px; border-radius:6px; overflow:hidden; }
-    .t2-grid-item { position:relative; overflow:hidden; cursor:pointer; }
-    .t2-grid-item img { width:100%; height:70px; object-fit:cover; display:block; filter:brightness(0.82) saturate(0.95); transition:filter 0.3s, transform 0.4s; }
-    .t2-grid-item:hover img { filter:brightness(1) saturate(1.1); transform:scale(1.04); }
-    .t2-grid-item-label { position:absolute; bottom:0; left:0; right:0; padding:5px 7px; background:linear-gradient(0deg,rgba(14,10,11,0.85),transparent); }
-    .t2-grid-item-name { font-size:8px; color:#f5ede8; font-family:'Inter',sans-serif; font-style:italic; }
-    .t2-grid-item-price { font-size:7px; color:#b87a8a; font-family:'Inter',sans-serif; }
+    .t2-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:0 14px 14px; }
+    .t2-grid-item { border-radius:6px; overflow:hidden; cursor:pointer; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); }
+    .t2-grid-item-photo { overflow:hidden; }
+    .t2-grid-item-photo img { width:100%; height:90px; object-fit:cover; display:block; filter:brightness(0.9) saturate(1.05); transition:filter 0.3s, transform 0.4s; }
+    .t2-grid-item:hover .t2-grid-item-photo img { filter:brightness(1.05) saturate(1.15); transform:scale(1.04); }
+    .t2-grid-item-label { padding:7px 8px 8px; }
+    .t2-grid-item-name { font-size:8.5px; color:#f5ede8; font-family:'Inter',sans-serif; font-style:italic; margin-bottom:2px; }
+    .t2-grid-item-price { font-size:8px; color:#b87a8a; font-family:'Inter',sans-serif; font-weight:600; }
 
     /* quote block */
     .t2-quote { margin:0 14px 14px; padding:14px; background:rgba(184,122,138,0.07); border-left:2px solid #b87a8a; border-radius:0 4px 4px 0; }
@@ -734,16 +735,16 @@
                   <div class="t2-section-label"><span>The Collection</span></div>
                   <div class="t2-grid">
                     <div class="t2-grid-item">
-                      <img src="images/annie-spratt-vs6a4EHj_Ro-unsplash.jpg" alt="Hydrangeas">
+                      <div class="t2-grid-item-photo"><img src="images/annie-spratt-vs6a4EHj_Ro-unsplash.jpg" alt="Hydrangeas"></div>
                       <div class="t2-grid-item-label">
                         <div class="t2-grid-item-name">Dusk Hydrangeas</div>
                         <div class="t2-grid-item-price">$54</div>
                       </div>
                     </div>
                     <div class="t2-grid-item">
-                      <img src="images/evie-s-w1JE5duY62M-unsplash.jpg" alt="Garden rose">
+                      <div class="t2-grid-item-photo"><img src="images/evie-s-w1JE5duY62M-unsplash.jpg" alt="Garden rose"></div>
                       <div class="t2-grid-item-label">
-                        <div class="t2-grid-item-name">Floating Rose</div>
+                        <div class="t2-grid-item-name">Garden Rose</div>
                         <div class="t2-grid-item-price">$42</div>
                       </div>
                     </div>
@@ -1282,7 +1283,7 @@
   function startScrollCycle() {
     if (scrollRaf) cancelAnimationFrame(scrollRaf);
     let lastTime = null, atBottomSince = null;
-    const PX_PER_SEC = 28, PAUSE_MS = 1400;
+    const PX_PER_SEC = 14, PAUSE_MS = 1800;
     function tick(ts) {
       if (pauseScroll) { scrollRaf = requestAnimationFrame(tick); return; }
       if (!lastTime) lastTime = ts;
