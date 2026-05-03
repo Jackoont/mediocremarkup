@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -445,75 +445,82 @@
       .hero-right { display: none; }
     }
 
-    /* ══ NEUTRAL BELOW-FOLD ZONE ══
-       Everything below the hero is locked to cream + charcoal.
-       Only the hero section (and nav) shifts with the theme. */
+    /* ══ BELOW-FOLD THEME ZONE ══
+       Matches the hero's rose / parchment / plum palette.
+       Warm, editorial, cohesive — not pink-overload. */
 
-    /* Body bg = permanent cream — hero overrides its own bg explicitly */
-    body { background: #f5f3ed !important; }
+    body { background: #fdf6f0; }
 
     /* Feature band */
-    .feature-band { background: #1c1c1a !important; }
-    .feature-list li::before { color: #8a8680 !important; }
+    .feature-band { background: #2a1f2d !important; }
+    .feature-quote { color: #f0e6d8 !important; }
+    .feature-list li { color: rgba(240,230,216,0.8) !important; }
+    .feature-list li::before { color: #ea9085 !important; }
 
     /* Marquee */
-    .marquee-strip { background: #2c2c2a !important; }
-    .marquee-track span { color: #e8e4dc !important; }
-    .marquee-sep { color: #6a6662 !important; }
+    .marquee-strip { background: #6e5773 !important; }
+    .marquee-track span { color: #f0e6d8 !important; }
+    .marquee-sep { color: #ea9085 !important; }
 
-    /* Section dividers */
-    .divider { background: rgba(0,0,0,0.07) !important; }
+    /* Section dividers + labels */
+    .divider { background: rgba(110,87,115,0.15) !important; }
+    section:not(#hero) .section-label { color: #7a4a60 !important; }
+    section:not(#hero) .section-title em { color: #c47090 !important; }
 
     /* What You Get */
-    .what-tag { background: #2c2c2a !important; color: #e8e4dc !important; }
-    .what-item:hover .what-item-num { color: rgba(0,0,0,0.1) !important; }
+    .what-item { border-bottom-color: rgba(110,87,115,0.12) !important; }
+    .what-item:first-child { border-top-color: rgba(110,87,115,0.12) !important; }
+    .what-tag { background: #d45d79 !important; color: #fff !important; }
+    .what-item:hover .what-item-num { color: rgba(212,93,121,0.15) !important; }
+    section:not(#hero) .what-item p { color: #7a4a60 !important; }
 
     /* Pricing cards */
-    .price-card { background: #ffffff !important; border-color: rgba(0,0,0,0.07) !important; }
-    .price-card.featured { background: #1c1c1a !important; border-color: #1c1c1a !important; }
-    .price-card.featured .price-tag { background: rgba(255,255,255,0.12) !important; color: rgba(255,255,255,0.7) !important; }
+    .price-card { background: #fff8f4 !important; border-color: rgba(110,87,115,0.12) !important; }
+    .price-card:hover { box-shadow: 0 20px 60px rgba(212,93,121,0.1) !important; }
+    .price-card.featured { background: #d45d79 !important; border-color: #d45d79 !important; }
+    .price-card.featured .price-tag { background: rgba(255,255,255,0.2) !important; color: rgba(255,255,255,0.85) !important; }
     .price-card.featured .price-name,
     .price-card.featured .price-amount { color: #fff !important; }
-    .price-card.featured .price-desc { color: rgba(255,255,255,0.65) !important; }
-    .price-card.featured .price-period { color: rgba(255,255,255,0.45) !important; }
-    .price-card.featured .price-features li { color: rgba(255,255,255,0.72) !important; border-top-color: rgba(255,255,255,0.1) !important; }
-    .price-card.featured .price-features li::before { color: rgba(255,255,255,0.55) !important; }
-    .price-card.featured .btn-primary { background: #f5f3ed !important; color: #1c1c1a !important; border-color: #f5f3ed !important; }
-
-    /* Buttons in below-fold sections */
-    section:not(#hero) .btn-primary { background: #2c2c2a !important; color: #f5f3ed !important; border-color: #2c2c2a !important; }
-    section:not(#hero) .btn-secondary { color: #2c2c2a !important; border-color: rgba(0,0,0,0.18) !important; }
-
-    /* Service chips */
-    .service-chip { color: #2c2c2a !important; border-color: rgba(0,0,0,0.15) !important; }
-    .service-chip:hover { background: #2c2c2a !important; border-color: #2c2c2a !important; color: #f5f3ed !important; }
-
-    /* Process */
-    .process-circle { background: #2c2c2a !important; box-shadow: 0 4px 14px rgba(0,0,0,0.15) !important; }
-    .process-connector { border-top-color: rgba(0,0,0,0.12) !important; }
-    .process-step-time { color: #7a7672 !important; }
-    .process-step h3 em { color: #7a7672 !important; }
-    .process-step p { color: #6a6662 !important; }
-
-    /* CTA */
-    .cta h2 em { color: #2c2c2a !important; }
-    .cta-email { color: #2c2c2a !important; border-bottom-color: rgba(0,0,0,0.2) !important; }
-    .cta-email:hover { color: #000 !important; border-bottom-color: #000 !important; }
-
-    /* Footer */
-    footer { border-top-color: rgba(0,0,0,0.08) !important; }
-    .footer-copy, .footer-tagline { color: #7a7672 !important; }
-    .footer-email { color: #7a7672 !important; }
-    .footer-email:hover { color: #2c2c2a !important; }
-
-    /* Muted text in below-fold sections */
-    section:not(#hero) .section-label { color: #7a7672 !important; }
-    section:not(#hero) .section-title em { color: #9a9590 !important; }
-    section:not(#hero) .what-item p,
+    .price-card.featured .price-desc { color: rgba(255,255,255,0.75) !important; }
+    .price-card.featured .price-period { color: rgba(255,255,255,0.65) !important; }
+    .price-card.featured .price-features li { color: rgba(255,255,255,0.85) !important; border-top-color: rgba(255,255,255,0.15) !important; }
+    .price-card.featured .price-features li::before { color: #f0e6d8 !important; }
+    .price-card.featured .btn-primary { background: #2a1f2d !important; color: #f0e6d8 !important; border-color: #2a1f2d !important; }
     section:not(#hero) .price-desc,
     section:not(#hero) .price-period,
-    section:not(#hero) .price-features li { color: #6a6662 !important; }
-    section:not(#hero) .price-features li::before { color: #2c2c2a !important; }
+    section:not(#hero) .price-features li { color: #7a4a60 !important; }
+    section:not(#hero) .price-features li::before { color: #ea9085 !important; }
+
+    /* Buttons below the fold */
+    section:not(#hero) .btn-primary { background: #d45d79 !important; color: #fff !important; border-color: #d45d79 !important; }
+    section:not(#hero) .btn-primary:hover { background: #c04468 !important; border-color: #c04468 !important; }
+    section:not(#hero) .btn-secondary { color: #2a1f2d !important; border-color: rgba(110,87,115,0.3) !important; }
+    section:not(#hero) .btn-secondary:hover { background: rgba(110,87,115,0.06) !important; }
+
+    /* Service chips */
+    .service-chip { color: #2a1f2d !important; border-color: rgba(110,87,115,0.2) !important; }
+    .service-chip:hover { background: #d45d79 !important; border-color: #d45d79 !important; color: #fff !important; }
+
+    /* Process */
+    .process-circle { background: #d45d79 !important; box-shadow: 0 4px 16px rgba(212,93,121,0.3) !important; }
+    .process-connector { border-top-color: rgba(110,87,115,0.25) !important; }
+    .process-step-time { color: #7a4a60 !important; }
+    .process-step h3 em { color: #c47090 !important; }
+    section:not(#hero) .process-step p { color: #7a4a60 !important; }
+
+    /* CTA section */
+    .cta h2 em { color: #d45d79 !important; }
+    .cta-email { color: #2a1f2d !important; border-bottom-color: rgba(110,87,115,0.3) !important; }
+    .cta-email:hover { color: #d45d79 !important; border-bottom-color: #d45d79 !important; }
+
+    /* Footer */
+    footer { background: #2a1f2d; border-top-color: rgba(110,87,115,0.2) !important; }
+    .footer-copy, .footer-tagline { color: rgba(240,230,216,0.55) !important; }
+    .footer-email { color: rgba(240,230,216,0.55) !important; }
+    .footer-email:hover { color: #ea9085 !important; }
+
+
+    /* Feature band */
   </style>
 
 </head>
