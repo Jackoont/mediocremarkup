@@ -207,42 +207,72 @@
     .t1-cta-btn { background:#c8a96e; color:#0f1f3d; border:none; border-radius:3px; padding:7px 12px; font-size:8px; font-weight:800; letter-spacing:1px; text-transform:uppercase; white-space:nowrap; }
     .t1-footer { padding:8px 14px; font-size:8px; color:#aab; text-align:center; background:#fff; border-top:1px solid rgba(0,0,0,0.06); letter-spacing:0.3px; }
 
-    /* ══ TEMPLATE 1: BLOOM & CO. — Beautiful Floral Boutique ══ */
-    #tpl-1 { background:#fdf6f8; font-family:'Georgia',serif; }
-    .t2-topstrip { background:#3a1a28; padding:5px 14px; display:flex; justify-content:center; }
-    .t2-topstrip span { font-size:8px; color:rgba(248,230,238,0.7); letter-spacing:2px; text-transform:uppercase; font-family:'Inter',sans-serif; }
-    .t2-nav { padding:14px 16px 8px; display:flex; justify-content:space-between; align-items:center; background:#fdf6f8; }
-    .t2-logo { font-size:16px; color:#3a1a28; letter-spacing:-0.5px; font-style:italic; }
-    .t2-logo em { color:#c07080; }
-    .t2-nav-links { display:flex; gap:10px; }
-    .t2-nav-link { font-size:8px; color:#8a6070; letter-spacing:1px; font-family:'Inter',sans-serif; text-transform:uppercase; }
-    .t2-hero { position:relative; min-height:190px; overflow:hidden; }
-    .t2-hero img { width:100%; height:190px; object-fit:cover; display:block; }
-    .t2-hero-overlay { position:absolute; inset:0; background:linear-gradient(0deg,rgba(58,26,40,0.7) 0%,rgba(58,26,40,0.1) 60%); }
-    .t2-hero-content { position:absolute; inset:0; padding:14px 16px 18px; display:flex; flex-direction:column; justify-content:flex-end; }
-    .t2-hero-badge { display:inline-block; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); border-radius:999px; padding:3px 9px; font-size:7px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.85); font-family:'Inter',sans-serif; margin-bottom:8px; width:fit-content; }
-    .t2-headline { font-size:20px; font-weight:400; color:#fff; line-height:1.2; margin-bottom:5px; font-style:italic; }
-    .t2-headline em { color:#f8c8d4; }
-    .t2-hero-sub { font-size:9px; color:rgba(255,255,255,0.7); font-family:'Inter',sans-serif; margin-bottom:13px; }
-    .t2-btn { background:#fff; color:#3a1a28; border:none; border-radius:999px; padding:8px 18px; font-size:9px; font-weight:700; width:fit-content; letter-spacing:0.5px; font-family:'Inter',sans-serif; }
-    .t2-featured { padding:16px; background:#fff; }
-    .t2-featured-label { font-size:8px; letter-spacing:3px; text-transform:uppercase; color:#c07080; margin-bottom:12px; font-family:'Inter',sans-serif; }
-    .t2-featured-card { border-radius:12px; background:linear-gradient(135deg,#fce8ef,#fdf6f8); padding:14px; display:flex; gap:10px; align-items:center; margin-bottom:10px; border:1px solid rgba(192,112,128,0.12); }
-    .t2-featured-img { width:48px; height:48px; border-radius:8px; object-fit:cover; flex-shrink:0; }
-    .t2-featured-info { flex:1; }
-    .t2-featured-name { font-size:11px; color:#2a1018; margin-bottom:2px; font-style:italic; }
-    .t2-featured-desc { font-size:8px; color:#8a6070; font-family:'Inter',sans-serif; line-height:1.4; }
-    .t2-featured-price { font-size:11px; color:#c07080; font-weight:700; font-family:'Inter',sans-serif; }
-    .t2-mini-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; padding:0 16px 16px; background:#fff; }
-    .t2-mini-card { border-radius:8px; overflow:hidden; border:1px solid rgba(192,112,128,0.1); }
-    .t2-mini-card img { width:100%; height:48px; object-fit:cover; display:block; }
-    .t2-mini-info { padding:5px 6px; background:#fdf6f8; }
-    .t2-mini-name { font-size:8px; color:#3a1a28; font-family:'Inter',sans-serif; line-height:1.2; }
-    .t2-mini-price { font-size:8px; color:#c07080; font-family:'Inter',sans-serif; font-weight:700; }
-    .t2-testimonial { padding:14px 16px; background:linear-gradient(135deg,#fce8ef,#fdf0f5); border-left:3px solid rgba(192,112,128,0.4); margin:0 16px 16px; border-radius:0 8px 8px 0; }
-    .t2-testimonial-text { font-size:10px; color:#3a1a28; font-style:italic; line-height:1.5; margin-bottom:6px; }
-    .t2-testimonial-author { font-size:8px; color:#8a6070; font-family:'Inter',sans-serif; letter-spacing:1px; }
-    .t2-footer { padding:10px 16px; font-size:8px; color:#b09098; text-align:center; background:#fff; letter-spacing:0.5px; font-family:'Inter',sans-serif; border-top:1px solid rgba(192,112,128,0.1); }
+    /* ══ TEMPLATE 1: BLOOM & CO. — Editorial Floral ══ */
+    #tpl-1 { background:#0e0a0b; font-family:'Georgia',serif; color:#f5ede8; }
+
+    /* nav */
+    .t2-nav { padding:12px 14px 10px; display:flex; justify-content:space-between; align-items:center; background:rgba(14,10,11,0.92); position:sticky; top:0; z-index:10; backdrop-filter:blur(8px); border-bottom:1px solid rgba(255,255,255,0.06); }
+    .t2-logo { font-size:15px; color:#f5ede8; letter-spacing:0.5px; font-style:italic; line-height:1; }
+    .t2-logo span { display:block; font-size:6px; letter-spacing:4px; text-transform:uppercase; color:#b87a8a; font-family:'Inter',sans-serif; font-style:normal; margin-top:2px; }
+    .t2-nav-links { display:flex; gap:12px; align-items:center; }
+    .t2-nav-link { font-size:7px; color:rgba(245,237,232,0.5); letter-spacing:1.5px; font-family:'Inter',sans-serif; text-transform:uppercase; cursor:pointer; transition:color 0.2s; }
+    .t2-nav-link:hover { color:#f5ede8; }
+    .t2-nav-cart { width:20px; height:20px; border-radius:50%; background:rgba(184,122,138,0.2); border:1px solid rgba(184,122,138,0.4); display:flex; align-items:center; justify-content:center; cursor:pointer; }
+    .t2-nav-cart svg { width:9px; height:9px; stroke:#b87a8a; fill:none; stroke-width:1.5; }
+
+    /* hero */
+    .t2-hero { position:relative; height:220px; overflow:hidden; }
+    .t2-hero img { width:100%; height:100%; object-fit:cover; display:block; object-position:center 30%; filter:brightness(0.75) saturate(1.1); }
+    .t2-hero-overlay { position:absolute; inset:0; background:linear-gradient(180deg, rgba(14,10,11,0.15) 0%, rgba(14,10,11,0.0) 30%, rgba(14,10,11,0.65) 75%, rgba(14,10,11,0.95) 100%); }
+    .t2-hero-content { position:absolute; inset:0; padding:14px 16px 16px; display:flex; flex-direction:column; justify-content:flex-end; }
+    .t2-hero-eyebrow { font-size:6.5px; letter-spacing:3px; text-transform:uppercase; color:#b87a8a; font-family:'Inter',sans-serif; margin-bottom:7px; }
+    .t2-headline { font-size:21px; font-weight:400; color:#fff; line-height:1.15; margin-bottom:4px; font-style:italic; }
+    .t2-headline em { color:#f5c5d0; font-style:inherit; }
+    .t2-hero-sub { font-size:8.5px; color:rgba(255,255,255,0.55); font-family:'Inter',sans-serif; margin-bottom:14px; letter-spacing:0.3px; line-height:1.5; }
+    .t2-hero-actions { display:flex; gap:8px; align-items:center; }
+    .t2-btn { background:#f5ede8; color:#1a0d12; border:none; border-radius:2px; padding:8px 16px; font-size:8px; font-weight:700; letter-spacing:1px; text-transform:uppercase; font-family:'Inter',sans-serif; cursor:pointer; transition:background 0.2s; flex-shrink:0; }
+    .t2-btn:hover { background:#fff; }
+    .t2-btn-ghost { background:transparent; color:rgba(255,255,255,0.6); border:1px solid rgba(255,255,255,0.25); border-radius:2px; padding:8px 14px; font-size:8px; letter-spacing:1px; text-transform:uppercase; font-family:'Inter',sans-serif; cursor:pointer; }
+
+    /* divider label */
+    .t2-section-label { display:flex; align-items:center; gap:8px; padding:14px 16px 10px; }
+    .t2-section-label span { font-size:7px; letter-spacing:3px; text-transform:uppercase; color:#b87a8a; font-family:'Inter',sans-serif; white-space:nowrap; }
+    .t2-section-label::before, .t2-section-label::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.08); }
+    .t2-section-label::before { display:none; }
+
+    /* featured */
+    .t2-featured { padding:0 14px 14px; }
+    .t2-featured-card { border-radius:6px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); display:flex; gap:12px; align-items:center; padding:12px; }
+    .t2-featured-img { width:54px; height:54px; border-radius:4px; object-fit:cover; flex-shrink:0; }
+    .t2-featured-info { flex:1; min-width:0; }
+    .t2-featured-tag { font-size:6.5px; letter-spacing:2px; text-transform:uppercase; color:#b87a8a; font-family:'Inter',sans-serif; margin-bottom:3px; }
+    .t2-featured-name { font-size:12px; color:#f5ede8; font-style:italic; margin-bottom:3px; line-height:1.2; }
+    .t2-featured-desc { font-size:7.5px; color:rgba(245,237,232,0.45); font-family:'Inter',sans-serif; line-height:1.4; }
+    .t2-featured-price { font-size:13px; color:#f5c5d0; font-family:'Inter',sans-serif; font-weight:300; flex-shrink:0; }
+
+    /* photo grid */
+    .t2-grid { display:grid; grid-template-columns:1fr 1fr; gap:2px; margin:0 14px 14px; border-radius:6px; overflow:hidden; }
+    .t2-grid-item { position:relative; overflow:hidden; cursor:pointer; }
+    .t2-grid-item img { width:100%; height:70px; object-fit:cover; display:block; filter:brightness(0.82) saturate(0.95); transition:filter 0.3s, transform 0.4s; }
+    .t2-grid-item:hover img { filter:brightness(1) saturate(1.1); transform:scale(1.04); }
+    .t2-grid-item-label { position:absolute; bottom:0; left:0; right:0; padding:5px 7px; background:linear-gradient(0deg,rgba(14,10,11,0.85),transparent); }
+    .t2-grid-item-name { font-size:8px; color:#f5ede8; font-family:'Inter',sans-serif; font-style:italic; }
+    .t2-grid-item-price { font-size:7px; color:#b87a8a; font-family:'Inter',sans-serif; }
+
+    /* quote block */
+    .t2-quote { margin:0 14px 14px; padding:14px; background:rgba(184,122,138,0.07); border-left:2px solid #b87a8a; border-radius:0 4px 4px 0; }
+    .t2-quote-text { font-size:10px; color:rgba(245,237,232,0.75); font-style:italic; line-height:1.6; margin-bottom:5px; }
+    .t2-quote-author { font-size:7px; color:#b87a8a; font-family:'Inter',sans-serif; letter-spacing:1.5px; text-transform:uppercase; }
+
+    /* services strip */
+    .t2-services { display:flex; padding:0 14px 14px; gap:6px; }
+    .t2-service-pill { flex:1; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:4px; padding:8px 6px; text-align:center; cursor:pointer; transition:background 0.2s, border-color 0.2s; }
+    .t2-service-pill:hover { background:rgba(184,122,138,0.1); border-color:rgba(184,122,138,0.3); }
+    .t2-service-pill svg { width:14px; height:14px; stroke:#b87a8a; fill:none; stroke-width:1.2; display:block; margin:0 auto 4px; }
+    .t2-service-pill span { font-size:7px; color:rgba(245,237,232,0.55); font-family:'Inter',sans-serif; letter-spacing:0.5px; }
+
+    /* footer */
+    .t2-footer { padding:12px 16px; font-size:7px; color:rgba(245,237,232,0.25); text-align:center; border-top:1px solid rgba(255,255,255,0.06); letter-spacing:1px; text-transform:uppercase; font-family:'Inter',sans-serif; }
 
     /* ══ TEMPLATE 2: COASTAL PROPERTIES — Real Estate ══ */
     #tpl-2 { background:#f8f9fb; font-family:'Inter',sans-serif; }
@@ -656,57 +686,93 @@
                   <div class="t1-footer">© 2026 Meridian Law Group · Built by Mediocre Markup</div>
                 </div>
 
-                <!-- TEMPLATE 1: BLOOM & CO. — Beautiful -->
+                <!-- TEMPLATE 1: BLOOM & CO. — Editorial Floral -->
                 <div class="phone-template" id="tpl-1">
-                  <div class="t2-topstrip"><span>Free local delivery on orders over $60</span></div>
+
+                  <!-- Nav -->
                   <div class="t2-nav">
-                    <div class="t2-logo"><em>Bloom</em> &amp; Co.</div>
+                    <div class="t2-logo">Bloom &amp; Co.<span>Floral Studio · St. Johns</span></div>
                     <div class="t2-nav-links">
                       <span class="t2-nav-link">Shop</span>
                       <span class="t2-nav-link">Events</span>
-                      <span class="t2-nav-link">About</span>
+                      <div class="t2-nav-cart">
+                        <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                      </div>
                     </div>
                   </div>
+
+                  <!-- Hero — local roses photo -->
                   <div class="t2-hero">
-                    <img src="https://images.unsplash.com/photo-1487530811015-780a40e0e736?w=400&h=190&fit=crop&q=80" alt="Floral boutique">
+                    <img src="images/rikonavt-oEWdQsbRVZk-unsplash.jpg" alt="Garden roses">
                     <div class="t2-hero-overlay"></div>
                     <div class="t2-hero-content">
-                      <div class="t2-hero-badge">St. Johns, FL · Est. 2019</div>
-                      <h2 class="t2-headline">Flowers that make<br><em>moments</em> unforgettable.</h2>
-                      <div class="t2-hero-sub">Hand-arranged by our local florists, daily.</div>
-                      <button class="t2-btn">Shop Arrangements</button>
-                    </div>
-                  </div>
-                  <div class="t2-featured">
-                    <div class="t2-featured-label">This Week's Feature</div>
-                    <div class="t2-featured-card">
-                      <img class="t2-featured-img" src="https://images.unsplash.com/photo-1455659817273-f96807779a8a?w=96&h=96&fit=crop&q=80" alt="Bouquet">
-                      <div class="t2-featured-info">
-                        <div class="t2-featured-name">Scarlet Garden Bouquet</div>
-                        <div class="t2-featured-desc">Red roses, eucalyptus, white gypsophila · lasts 10–14 days</div>
+                      <div class="t2-hero-eyebrow">Est. 2019 &nbsp;·&nbsp; Hand-arranged daily</div>
+                      <h2 class="t2-headline">Flowers that make<br><em>moments</em> last.</h2>
+                      <div class="t2-hero-sub">Bespoke arrangements for weddings, events &amp; everyday life.</div>
+                      <div class="t2-hero-actions">
+                        <button class="t2-btn">Shop Now</button>
+                        <button class="t2-btn-ghost">Our Story</button>
                       </div>
-                      <div class="t2-featured-price">$68</div>
                     </div>
                   </div>
-                  <div class="t2-mini-grid">
-                    <div class="t2-mini-card">
-                      <img src="https://images.unsplash.com/photo-1490750967868-88df5691cc5e?w=120&h=80&fit=crop&q=80" alt="Spring Bliss">
-                      <div class="t2-mini-info"><div class="t2-mini-name">Spring Bliss</div><div class="t2-mini-price">$48</div></div>
-                    </div>
-                    <div class="t2-mini-card">
-                      <img src="https://images.unsplash.com/photo-1562690868-60bbe7293e94?w=120&h=80&fit=crop&q=80" alt="Garden Fresh">
-                      <div class="t2-mini-info"><div class="t2-mini-name">Garden Fresh</div><div class="t2-mini-price">$36</div></div>
-                    </div>
-                    <div class="t2-mini-card">
-                      <img src="https://images.unsplash.com/photo-1598454444233-3e3b2b2e1ee2?w=120&h=80&fit=crop&q=80" alt="Sunny Day">
-                      <div class="t2-mini-info"><div class="t2-mini-name">Sunny Day</div><div class="t2-mini-price">$42</div></div>
+
+                  <!-- Featured arrangement -->
+                  <div class="t2-section-label"><span>This Week's Feature</span></div>
+                  <div class="t2-featured">
+                    <div class="t2-featured-card">
+                      <img class="t2-featured-img" src="images/howard-bouchevereau-7V9HKa95ysw-unsplash.jpg" alt="Dried bouquet">
+                      <div class="t2-featured-info">
+                        <div class="t2-featured-tag">Limited Edition</div>
+                        <div class="t2-featured-name">Autumn Harvest Bouquet</div>
+                        <div class="t2-featured-desc">Dried pampas, protea, blush hydrangea · ships in 2 days</div>
+                      </div>
+                      <div class="t2-featured-price">$88</div>
                     </div>
                   </div>
-                  <div class="t2-testimonial">
-                    <div class="t2-testimonial-text">"The arrangements were absolutely stunning — our guests couldn't stop asking about them."</div>
-                    <div class="t2-testimonial-author">— Sarah M., Wedding Client</div>
+
+                  <!-- Photo grid — local images -->
+                  <div class="t2-section-label"><span>The Collection</span></div>
+                  <div class="t2-grid">
+                    <div class="t2-grid-item">
+                      <img src="images/annie-spratt-vs6a4EHj_Ro-unsplash.jpg" alt="Hydrangeas">
+                      <div class="t2-grid-item-label">
+                        <div class="t2-grid-item-name">Dusk Hydrangeas</div>
+                        <div class="t2-grid-item-price">$54</div>
+                      </div>
+                    </div>
+                    <div class="t2-grid-item">
+                      <img src="images/evie-s-w1JE5duY62M-unsplash.jpg" alt="Garden rose">
+                      <div class="t2-grid-item-label">
+                        <div class="t2-grid-item-name">Floating Rose</div>
+                        <div class="t2-grid-item-price">$42</div>
+                      </div>
+                    </div>
                   </div>
-                  <div class="t2-footer">© 2026 Bloom &amp; Co. · Built by Mediocre Markup</div>
+
+                  <!-- Services -->
+                  <div class="t2-section-label"><span>Services</span></div>
+                  <div class="t2-services">
+                    <div class="t2-service-pill">
+                      <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                      <span>Weddings</span>
+                    </div>
+                    <div class="t2-service-pill">
+                      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                      <span>Events</span>
+                    </div>
+                    <div class="t2-service-pill">
+                      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      <span>Subscriptions</span>
+                    </div>
+                  </div>
+
+                  <!-- Quote -->
+                  <div class="t2-quote">
+                    <div class="t2-quote-text">"Every arrangement felt like it was made just for us. Our guests were speechless."</div>
+                    <div class="t2-quote-author">— Sarah M., Wedding Client</div>
+                  </div>
+
+                  <div class="t2-footer">© 2026 Bloom &amp; Co. &nbsp;·&nbsp; Built by Mediocre Markup</div>
                 </div>
 
                 <!-- TEMPLATE 2: COASTAL PROPERTIES — Real Estate -->
