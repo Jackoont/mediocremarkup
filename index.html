@@ -1231,13 +1231,36 @@
     .what-item:hover .what-item-num { color: rgba(212,93,121,0.15) !important; }
     section:not(#hero) .what-item p { color: #7a4a60 !important; }
 
-    /* ── PRICING PAGE (dark, editorial) ── */
+    /* ── PRICING PAGE ── */
     #pricing {
       background: #0e0a0d;
       padding: 0;
       position: relative;
       overflow: hidden;
     }
+
+    /* Top fade — blends from whatever is above into pricing's dark bg */
+    #pricing::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 120px;
+      background: linear-gradient(to bottom, rgba(14,10,13,0) 0%, #0e0a0d 100%);
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    /* Bottom fade — blends pricing into the footer seamlessly */
+    #pricing::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 160px;
+      background: linear-gradient(to bottom, transparent 0%, rgba(14,10,13,0.6) 60%, #0e0a0d 100%);
+      z-index: 3;
+      pointer-events: none;
+    }
+
     #pricing-canvas {
       position: absolute;
       inset: 0;
@@ -1245,37 +1268,56 @@
       height: 100%;
       pointer-events: none;
       z-index: 1;
-      opacity: 0.55;
+      opacity: 0.4;
     }
+
+    /* Ambient rose radial glow, centered */
+    #pricing-glow {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 900px;
+      height: 900px;
+      background: radial-gradient(circle, rgba(212,93,121,0.07) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 1;
+      animation: pricingGlowPulse 6s ease-in-out infinite;
+    }
+    @keyframes pricingGlowPulse {
+      0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+      50%       { opacity: 1;   transform: translate(-50%, -50%) scale(1.12); }
+    }
+
     #pricing .pricing-inner {
       max-width: 1300px;
       margin: 0 auto;
-      padding: 120px 80px 100px;
+      padding: 120px 80px 140px;
       position: relative;
       z-index: 2;
     }
-    @media (max-width: 900px) { #pricing .pricing-inner { padding: 80px 24px 80px; } }
+    @media (max-width: 900px) { #pricing .pricing-inner { padding: 80px 24px 100px; } }
 
-    /* Background huge italic number watermark */
+    /* Watermark */
     #pricing .pricing-bg-word {
       position: absolute;
       font-family: 'Fraunces', serif;
       font-style: italic;
       font-weight: 300;
       font-size: clamp(200px, 28vw, 440px);
-      color: rgba(212,93,121,0.04);
+      color: rgba(212,93,121,0.03);
       line-height: 1;
       right: -40px;
-      bottom: -60px;
+      bottom: 80px;
       pointer-events: none;
       user-select: none;
       letter-spacing: -10px;
       z-index: 1;
     }
 
-    #pricing .pricing-header {
-      margin-bottom: 72px;
-    }
+    /* Header */
+    #pricing .pricing-header { margin-bottom: 72px; }
+
     #pricing .pricing-eyebrow {
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
@@ -1286,12 +1328,14 @@
       align-items: center;
       gap: 12px;
       margin-bottom: 28px;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
     }
     #pricing .pricing-eyebrow::before {
       content: '';
       display: block;
-      width: 32px;
-      height: 1px;
+      width: 32px; height: 1px;
       background: rgba(212,93,121,0.35);
     }
     #pricing .pricing-headline {
@@ -1303,17 +1347,29 @@
       color: #f0e6d8;
       letter-spacing: -2px;
       margin-bottom: 20px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s 0.1s ease, transform 0.8s 0.1s ease;
     }
-    #pricing .pricing-headline em {
-      color: #d45d79;
-      font-style: italic;
-    }
+    #pricing .pricing-headline em { color: #d45d79; font-style: italic; }
     #pricing .pricing-sub {
       font-size: 15px;
       color: rgba(240,230,216,0.45);
       max-width: 440px;
       line-height: 1.65;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.7s 0.2s ease, transform 0.7s 0.2s ease;
     }
+
+    /* Reveal state — added by JS when section enters viewport */
+    #pricing.in-view .pricing-eyebrow,
+    #pricing.in-view .pricing-headline,
+    #pricing.in-view .pricing-sub {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     .pricing-rule {
       margin-top: 48px;
       height: 1px;
@@ -1332,19 +1388,20 @@
     }
     @keyframes priceDot {
       0%, 100% { opacity: 1; box-shadow: 0 0 12px 4px rgba(212,93,121,0.5); }
-      50% { opacity: 0.5; box-shadow: 0 0 20px 8px rgba(212,93,121,0.25); }
+      50%       { opacity: 0.5; box-shadow: 0 0 20px 8px rgba(212,93,121,0.25); }
     }
 
-    /* Cards */
+    /* ── PRICING GRID ── */
     .pricing-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 1px;
-      background: rgba(240,230,216,0.06); /* gap color = subtle grid line */
+      background: rgba(240,230,216,0.06);
       border: 1px solid rgba(240,230,216,0.06);
     }
-    @media (max-width: 900px) { .pricing-grid { grid-template-columns: 1fr; gap: 1px; } }
+    @media (max-width: 900px) { .pricing-grid { grid-template-columns: 1fr; } }
 
+    /* Cards start invisible; JS adds .card-visible */
     .price-card {
       background: #0e0a0d !important;
       border: none !important;
@@ -1352,50 +1409,69 @@
       padding: 52px 44px !important;
       display: flex;
       flex-direction: column;
-      transition: background 0.3s, box-shadow 0.3s !important;
       position: relative;
       overflow: hidden;
+      opacity: 0;
+      transform: translateY(40px);
+      transition:
+        opacity 0.7s ease,
+        transform 0.7s ease,
+        background 0.25s ease !important;
     }
-    /* Top accent line — dim on regular cards */
+    .price-card.card-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* stagger via inline style set by JS */
+
+    /* Top accent line */
     .price-card::before {
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0;
       height: 2px;
-      background: rgba(212,93,121,0.15);
-      transition: background 0.3s;
+      background: rgba(212,93,121,0.12);
+      transition: background 0.3s, width 0.4s ease;
     }
-    .price-card:hover::before { background: rgba(212,93,121,0.5); }
-    .price-card:hover { background: #130d17 !important; box-shadow: none !important; transform: none !important; }
+    .price-card:hover { background: #120b15 !important; }
+    .price-card:hover::before { background: rgba(212,93,121,0.55); }
 
+    /* Featured card */
     .price-card.featured {
-      background: #1a0d14 !important;
-      border-color: transparent !important;
+      background: #160b11 !important;
     }
     .price-card.featured::before {
       background: #d45d79;
       height: 3px;
     }
-    .price-card.featured:hover { background: #200f19 !important; }
-    /* Subtle rose glow behind the featured card */
+    .price-card.featured:hover { background: #1e0f18 !important; }
+
+    /* Rose ambient glow inside featured */
     .price-card.featured::after {
       content: '';
       position: absolute;
-      top: -60px; left: 50%; transform: translateX(-50%);
-      width: 260px; height: 260px;
-      background: radial-gradient(circle, rgba(212,93,121,0.18) 0%, transparent 70%);
+      top: -80px; left: 50%;
+      transform: translateX(-50%);
+      width: 320px; height: 320px;
+      background: radial-gradient(circle, rgba(212,93,121,0.14) 0%, transparent 70%);
       pointer-events: none;
       z-index: 0;
+      animation: featuredInnerGlow 4s ease-in-out infinite;
+    }
+    @keyframes featuredInnerGlow {
+      0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+      50%       { opacity: 1;   transform: translateX(-50%) scale(1.15); }
     }
     .price-card.featured > * { position: relative; z-index: 1; }
 
+    /* Tag */
     .price-tag {
       font-family: 'JetBrains Mono', monospace;
       font-size: 9px !important;
       letter-spacing: 3px !important;
       text-transform: uppercase;
       background: rgba(240,230,216,0.07) !important;
-      color: rgba(240,230,216,0.45) !important;
+      color: rgba(240,230,216,0.4) !important;
       padding: 5px 13px;
       border-radius: 0 !important;
       margin-bottom: 32px !important;
@@ -1403,10 +1479,11 @@
       width: fit-content;
     }
     .price-card.featured .price-tag {
-      background: rgba(255,255,255,0.15) !important;
-      color: rgba(255,255,255,0.9) !important;
+      background: rgba(212,93,121,0.2) !important;
+      color: #d45d79 !important;
     }
 
+    /* Name */
     .price-name {
       font-family: 'Fraunces', serif !important;
       font-size: 28px !important;
@@ -1418,143 +1495,129 @@
     }
     .price-card.featured .price-name { color: #fff !important; }
 
+    /* Desc */
     .price-desc {
       font-size: 13px !important;
-      color: rgba(240,230,216,0.4) !important;
+      color: rgba(240,230,216,0.38) !important;
       margin-bottom: 36px !important;
-      line-height: 1.6;
+      line-height: 1.65;
       flex: none;
     }
-    .price-card.featured .price-desc { color: rgba(255,255,255,0.7) !important; }
+    .price-card.featured .price-desc { color: rgba(255,255,255,0.65) !important; }
 
+    /* Big price number */
     .price-amount {
       font-family: 'Fraunces', serif !important;
-      font-size: 100px !important;
+      font-size: 96px !important;
       font-weight: 300 !important;
       font-style: italic;
       letter-spacing: -5px !important;
       line-height: 0.9 !important;
       color: #f0e6d8 !important;
       margin-bottom: 8px !important;
+      transition: text-shadow 0.4s ease;
     }
-    .price-card.featured .price-amount { color: #d45d79 !important; text-shadow: 0 0 40px rgba(212,93,121,0.4); }
-    .price-amount sup { font-size: 26px !important; font-weight: 300 !important; opacity: 0.45; vertical-align: top; margin-top: 18px; display: inline-block; }
+    .price-card:hover .price-amount {
+      text-shadow: 0 0 48px rgba(212,93,121,0.28);
+    }
+    .price-card.featured .price-amount {
+      color: #d45d79 !important;
+      text-shadow: 0 0 40px rgba(212,93,121,0.35);
+      animation: featuredAmountBreath 4s ease-in-out infinite;
+    }
+    @keyframes featuredAmountBreath {
+      0%, 100% { text-shadow: 0 0 40px rgba(212,93,121,0.35); }
+      50%       { text-shadow: 0 0 80px rgba(212,93,121,0.6), 0 0 120px rgba(212,93,121,0.2); }
+    }
+    .price-amount sup {
+      font-size: 26px !important;
+      font-weight: 300 !important;
+      opacity: 0.45;
+      vertical-align: top;
+      margin-top: 18px;
+      display: inline-block;
+    }
 
+    /* Period */
     .price-period {
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px !important;
       letter-spacing: 3px !important;
       text-transform: uppercase;
-      color: rgba(240,230,216,0.3) !important;
+      color: rgba(240,230,216,0.28) !important;
       margin-bottom: 36px !important;
     }
-    .price-card.featured .price-period { color: rgba(255,255,255,0.55) !important; }
+    .price-card.featured .price-period { color: rgba(212,93,121,0.6) !important; }
 
+    /* Features list */
     .price-features { list-style: none; flex: 1; margin-bottom: 36px !important; }
     .price-features li {
       padding: 12px 0 !important;
       font-size: 13px !important;
-      color: rgba(240,230,216,0.55) !important;
+      color: rgba(240,230,216,0.5) !important;
       display: flex;
       align-items: flex-start;
       gap: 10px;
-      border-top: 1px solid rgba(240,230,216,0.07) !important;
+      border-top: 1px solid rgba(240,230,216,0.06) !important;
     }
     .price-features li:first-child { border-top: none !important; }
-    .price-features li::before { content: '→'; color: #d45d79 !important; flex-shrink: 0; font-size: 11px; margin-top: 2px; }
+    .price-features li::before {
+      content: '→';
+      color: rgba(212,93,121,0.5) !important;
+      flex-shrink: 0;
+      font-size: 11px;
+      margin-top: 2px;
+      transition: color 0.2s;
+    }
+    .price-card:hover .price-features li::before { color: #d45d79 !important; }
+    .price-card.featured .price-features li { color: rgba(255,255,255,0.75) !important; border-top-color: rgba(255,255,255,0.08) !important; }
+    .price-card.featured .price-features li::before { color: #d45d79 !important; }
 
-    .price-card.featured .price-features li { color: rgba(255,255,255,0.8) !important; border-top-color: rgba(255,255,255,0.12) !important; }
-    .price-card.featured .price-features li::before { color: rgba(255,255,255,0.9) !important; }
-
+    /* CTA buttons */
     .price-card .btn {
       width: 100%;
       justify-content: center;
       border-radius: 0 !important;
-      font-size: 12px !important;
-      letter-spacing: 2px;
+      font-size: 11px !important;
+      letter-spacing: 2.5px;
       text-transform: uppercase;
       padding: 16px 24px !important;
+      transition: background 0.2s, color 0.2s, border-color 0.2s !important;
     }
     .price-card:not(.featured) .btn {
       background: transparent !important;
-      color: rgba(240,230,216,0.6) !important;
-      border: 1px solid rgba(240,230,216,0.15) !important;
+      color: rgba(240,230,216,0.45) !important;
+      border: 1px solid rgba(240,230,216,0.1) !important;
     }
     .price-card:not(.featured) .btn:hover {
-      background: rgba(240,230,216,0.06) !important;
+      background: rgba(240,230,216,0.05) !important;
       color: #f0e6d8 !important;
-      border-color: rgba(240,230,216,0.3) !important;
+      border-color: rgba(240,230,216,0.25) !important;
     }
     .price-card.featured .btn {
-      background: #0e0a0d !important;
-      color: #f0e6d8 !important;
+      background: #d45d79 !important;
+      color: #fff !important;
       border: none !important;
+      letter-spacing: 3px;
     }
     .price-card.featured .btn:hover {
-      background: #1e1424 !important;
+      background: #c04468 !important;
     }
 
-    /* Note below pricing */
+    /* Note */
     .pricing-note {
-      margin-top: 32px;
+      margin-top: 40px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       letter-spacing: 1px;
-      color: rgba(240,230,216,0.25);
+      color: rgba(240,230,216,0.2);
       text-align: center;
+      opacity: 0;
+      transition: opacity 0.8s 0.5s ease;
     }
-    .pricing-note a { color: #d45d79; border-bottom: 1px solid rgba(212,93,121,0.3); }
-    .pricing-note a:hover { color: #ea9085; }
-
-    /* ── PRICING LIVENESS ANIMATIONS ── */
-    @keyframes priceCardFloat {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-6px); }
-    }
-    @keyframes priceAmountGlow {
-      0%, 100% { text-shadow: 0 0 20px rgba(212,93,121,0.0); }
-      50% { text-shadow: 0 0 40px rgba(212,93,121,0.5), 0 0 80px rgba(212,93,121,0.2); }
-    }
-    @keyframes priceFeaturedPulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(212,93,121,0); }
-      50% { box-shadow: 0 0 60px 0 rgba(212,93,121,0.12); }
-    }
-    @keyframes priceLineGrow {
-      from { transform: scaleX(0); transform-origin: left; }
-      to { transform: scaleX(1); transform-origin: left; }
-    }
-    @keyframes priceRevealUp {
-      from { opacity: 0; transform: translateY(32px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .price-card.featured {
-      animation: priceFeaturedPulse 3s ease-in-out infinite !important;
-    }
-    .price-card.featured .price-amount {
-      animation: priceAmountGlow 3s ease-in-out infinite !important;
-    }
-    .pricing-grid .price-card:nth-child(1) { animation-delay: 0s; }
-    .pricing-grid .price-card:nth-child(2) { animation-delay: 0.1s; }
-    .pricing-grid .price-card:nth-child(3) { animation-delay: 0.2s; }
-    .price-card:hover {
-      transform: translateY(-8px) !important;
-      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), background 0.3s !important;
-    }
-    .price-card:hover .price-amount {
-      text-shadow: 0 0 40px rgba(212,93,121,0.35) !important;
-      transition: text-shadow 0.3s ease !important;
-    }
-    .price-card:not(.featured):hover::before {
-      background: rgba(212,93,121,0.6) !important;
-      transition: background 0.3s ease !important;
-    }
-    /* Animated entry for pricing header */
-    #pricing .pricing-header {
-      animation: priceRevealUp 0.8s cubic-bezier(0.16,1,0.3,1) both;
-    }
-    #pricing .pricing-grid {
-      animation: priceRevealUp 0.8s 0.2s cubic-bezier(0.16,1,0.3,1) both;
-    }
+    #pricing.in-view .pricing-note { opacity: 1; }
+    .pricing-note a { color: rgba(212,93,121,0.6); border-bottom: 1px solid rgba(212,93,121,0.2); }
+    .pricing-note a:hover { color: #d45d79; }
 
     /* Buttons below the fold */
     section:not(#hero) .btn-primary { background: #d45d79 !important; color: #fff !important; border-color: #d45d79 !important; }
@@ -2134,6 +2197,7 @@
   <!-- PRICING -->
   <section id="pricing">
     <canvas id="pricing-canvas"></canvas>
+    <div id="pricing-glow"></div>
     <div class="pricing-bg-word">pricing</div>
     <div class="pricing-inner">
 
@@ -2146,7 +2210,7 @@
 
       <div class="pricing-grid">
 
-        <div class="price-card reveal">
+        <div class="price-card">
           <span class="price-tag">Starter</span>
           <div class="price-name">Single Page</div>
           <p class="price-desc">One clean page. Your hours, location, services, and a way to contact you. Done right.</p>
@@ -2161,7 +2225,7 @@
           <a href="mailto:mediocremanager@outlook.com" class="btn">Get started →</a>
         </div>
 
-        <div class="price-card featured reveal">
+        <div class="price-card featured">
           <span class="price-tag">Most popular</span>
           <div class="price-name">Full Site</div>
           <p class="price-desc">The real thing. Multi-page, animated, built to convert visitors into customers.</p>
@@ -2177,7 +2241,7 @@
           <a href="mailto:mediocremanager@outlook.com" class="btn">Get started →</a>
         </div>
 
-        <div class="price-card reveal">
+        <div class="price-card">
           <span class="price-tag">Ongoing</span>
           <div class="price-name">Care Plan</div>
           <p class="price-desc">Hosting, updates, backups. The site stays online and you never have to think about it.</p>
@@ -2206,8 +2270,8 @@
     padding: 0;
     display: block;
   ">
-    <!-- Thin divider line connecting pricing → footer -->
-    <div style="height:1px;background:rgba(240,230,216,0.06);margin:0 80px;"></div>
+    <!-- Gradient bridge from pricing into footer -->
+    <div style="height:80px;background:linear-gradient(to bottom,#0e0a0d,#0e0a0d);"></div>
     <!-- Big CTA block -->
     <div style="
       padding: 100px 80px 80px;
@@ -2861,8 +2925,9 @@
     if (target) target.scrollIntoView({ behavior: 'smooth' });
   }
 
-  /* ── 9. PRICING CANVAS — drifting code fragments ── */
+  /* ── 9. PRICING — canvas + scroll reveals ── */
   {
+    // Canvas: slow drifting code fragments
     const pc = document.getElementById('pricing-canvas');
     if (pc) {
       const ctx = pc.getContext('2d');
@@ -2870,21 +2935,23 @@
       resize(); window.addEventListener('resize', resize);
 
       const SYMS = ['$500','$1,200','$50/mo','</>','{}','→','fn()','px','rem','//','&&','::','*','#'];
-      const particles = Array.from({length: 28}, () => ({
+      const particles = Array.from({length: 32}, () => ({
         x: Math.random(),
         y: Math.random(),
-        vx: (Math.random() - 0.5) * 0.00012,
-        vy: 0.00008 + Math.random() * 0.00012,
+        vx: (Math.random() - 0.5) * 0.00010,
+        vy: 0.00005 + Math.random() * 0.00010,
         sym: SYMS[Math.floor(Math.random() * SYMS.length)],
-        alpha: 0.04 + Math.random() * 0.1,
-        size: 10 + Math.random() * 8,
+        alpha: 0.03 + Math.random() * 0.07,
+        size: 10 + Math.random() * 10,
       }));
 
+      let pcRunning = false;
       function drawPricing() {
+        if (!pcRunning) return;
         ctx.clearRect(0, 0, pc.width, pc.height);
         const now = Date.now() * 0.001;
         particles.forEach(p => {
-          p.x += p.vx + Math.sin(now * 0.4 + p.y * 6) * 0.00008;
+          p.x += p.vx + Math.sin(now * 0.3 + p.y * 5) * 0.00006;
           p.y += p.vy;
           if (p.y > 1.05) { p.y = -0.05; p.x = Math.random(); p.sym = SYMS[Math.floor(Math.random() * SYMS.length)]; }
           if (p.x < -0.1) p.x = 1.1;
@@ -2896,10 +2963,27 @@
         requestAnimationFrame(drawPricing);
       }
 
-      const obs = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting) drawPricing();
+      const pcObs = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting && !pcRunning) { pcRunning = true; drawPricing(); }
+        if (!entries[0].isIntersecting) pcRunning = false;
       }, { threshold: 0 });
-      obs.observe(pc);
+      pcObs.observe(pc);
+    }
+
+    // Scroll reveal: add .in-view to section + stagger .card-visible on cards
+    const pricingSection = document.getElementById('pricing');
+    if (pricingSection) {
+      const cards = pricingSection.querySelectorAll('.price-card');
+      const revealObs = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
+          pricingSection.classList.add('in-view');
+          cards.forEach((card, i) => {
+            setTimeout(() => card.classList.add('card-visible'), 300 + i * 140);
+          });
+          revealObs.disconnect();
+        }
+      }, { threshold: 0.12 });
+      revealObs.observe(pricingSection);
     }
   }
 
