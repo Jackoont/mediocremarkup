@@ -8,6 +8,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mediocre Markup</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
   <meta name="description" content="Custom websites for local businesses. Beautiful, professional, polished, memorable, effective.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -382,6 +385,361 @@
     .t4-hours-day { font-size:8px; color:rgba(232,213,176,0.5); }
     .t4-hours-time { font-size:8px; color:#e8d5b0; font-weight:600; text-align:right; }
     .t4-footer { padding:9px 14px; font-size:8px; color:rgba(232,213,176,0.2); text-align:center; background:#140c05; border-top:1px solid rgba(200,134,10,0.1); }
+    /* ═══════════════════════════════════════════════
+       SCROLL WHIRLPOOL — The signature animation
+       ═══════════════════════════════════════════════ */
+    #whirlpool-container {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100vh;
+      z-index: 999;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    #whirlpool-svg {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .spiral-arm {
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      transform-origin: center;
+    }
+    #whirlpool-label {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(212,93,121,0.8);
+      opacity: 0;
+      z-index: 2;
+    }
+    #whirlpool-cta {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(212,93,121,0.6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+    }
+    #whirlpool-cta .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, rgba(212,93,121,0.5), transparent);
+      animation: scrollPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(0.7); }
+      50% { opacity: 1; transform: scaleY(1); }
+    }
+    /* Whirlpool particle burst */
+    .whirlpool-particle {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    /* ═══════════════════════════════════════════════
+       SCROLL VIDEO / NARRATIVE SECTIONS
+       ═══════════════════════════════════════════════ */
+    .scroll-narrative {
+      position: relative;
+      overflow: hidden;
+    }
+    .scroll-narrative-bg {
+      position: absolute;
+      inset: 0;
+      will-change: transform;
+    }
+    .scroll-narrative-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 30%, rgba(253,248,245,0.95) 85%, var(--bg) 100%);
+    }
+    .scroll-narrative-content {
+      position: relative;
+      z-index: 2;
+      padding: 120px 80px;
+      max-width: 900px;
+    }
+    .narrative-text {
+      font-family: var(--font-serif);
+      font-size: clamp(32px, 5vw, 64px);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--ink);
+      line-height: 1.15;
+      letter-spacing: -1px;
+      opacity: 0;
+    }
+    .narrative-text em {
+      color: var(--accent);
+      font-style: italic;
+    }
+    .narrative-sub {
+      font-family: var(--font-body);
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-top: 24px;
+      opacity: 0;
+    }
+    .narrative-accent {
+      width: 60px;
+      height: 3px;
+      background: var(--accent);
+      margin-top: 32px;
+      opacity: 0;
+      transform: scaleX(0);
+      transform-origin: left;
+    }
+
+    /* ═══════════════════════════════════════════════
+       PARALLAX DECORATIVE ELEMENTS
+       ═══════════════════════════════════════════════ */
+    .parallax-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.4;
+      pointer-events: none;
+      will-change: transform;
+    }
+    .parallax-blob-1 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(212,93,121,0.15) 0%, transparent 70%);
+      top: -150px; right: -100px;
+    }
+    .parallax-blob-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(234,144,133,0.12) 0%, transparent 70%);
+      bottom: -100px; left: -80px;
+    }
+    .parallax-blob-3 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(184,122,138,0.1) 0%, transparent 70%);
+      top: 40%; right: 10%;
+    }
+
+    /* ═══════════════════════════════════════════════
+       LUSION-STYLE SMOOTH SECTION REVEALS
+       ═══════════════════════════════════════════════ */
+    .gsap-reveal {
+      opacity: 0;
+      transform: translateY(60px);
+      will-change: transform, opacity;
+    }
+    .gsap-reveal-char {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(40px) rotate(3deg);
+    }
+
+    /* ═══════════════════════════════════════════════
+       FLOATING ORBS (replacing bokeh)
+       ═══════════════════════════════════════════════ */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      will-change: transform;
+    }
+    .orb-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      position: relative;
+    }
+    .orb-1 { width: 320px; height: 320px; top: 10%; right: -80px; }
+    .orb-2 { width: 200px; height: 200px; bottom: 15%; left: -40px; }
+    .orb-3 { width: 150px; height: 150px; top: 60%; right: 20%; }
+
+    /* ═══════════════════════════════════════════════
+       MAGNETIC BUTTONS
+       ═══════════════════════════════════════════════ */
+    .magnetic-btn {
+      position: relative;
+      display: inline-block;
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    .magnetic-btn::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: inherit;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .magnetic-btn:hover::after {
+      opacity: 1;
+      box-shadow: 0 8px 32px rgba(212,93,121,0.2);
+    }
+
+    /* ═══════════════════════════════════════════════
+       HORIZONTAL SCROLL SHOWCASE (services)
+       ═══════════════════════════════════════════════ */
+    .h-scroll-wrapper {
+      overflow: hidden;
+      padding: 80px 0;
+    }
+    .h-scroll-track {
+      display: flex;
+      gap: 24px;
+      width: max-content;
+      padding: 0 80px;
+    }
+    .h-scroll-card {
+      width: 320px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 40px 32px;
+      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), box-shadow 0.4s;
+      cursor: pointer;
+    }
+    .h-scroll-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 24px 60px rgba(212,93,121,0.12);
+    }
+    .h-scroll-card-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .h-scroll-card h3 {
+      font-family: var(--font-body);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+    .h-scroll-card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .h-scroll-card .card-tag {
+      display: inline-block;
+      margin-top: 16px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(212,93,121,0.08);
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
+    /* ═══════════════════════════════════════════════
+       MARQUEE — Enhanced fluid motion
+       ═══════════════════════════════════════════════ */
+    .marquee-container {
+      overflow: hidden;
+      padding: 28px 0;
+      position: relative;
+    }
+    .marquee-container::before,
+    .marquee-container::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 120px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .marquee-container::before {
+      left: 0;
+      background: linear-gradient(to right, var(--bg), transparent);
+    }
+    .marquee-container::after {
+      right: 0;
+      background: linear-gradient(to left, var(--bg), transparent);
+    }
+    .marquee-track {
+      display: flex;
+      animation: marqueeSmooth 35s linear infinite;
+    }
+    .marquee-item {
+      font-family: var(--font-body);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--muted);
+      white-space: nowrap;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .marquee-item .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+    @keyframes marqueeSmooth {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ═══════════════════════════════════════════════
+       IMAGE REVEAL with clip-path
+       ═══════════════════════════════════════════════ */
+    .clip-reveal {
+      overflow: hidden;
+      border-radius: 16px;
+      position: relative;
+    }
+    .clip-reveal img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transform: scale(1.1);
+    }
+    .clip-reveal::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(212,93,121,0.08);
+      mix-blend-mode: multiply;
+    }
+
+    /* ═══════════════════════════════════════════════
+       SMOOTH SCROLL CONTAINER
+       ═══════════════════════════════════════════════ */
+    html { scroll-behavior: smooth; }
+    .smooth-wrapper {
+      position: relative;
+    }
+
     /* ── FEATURE BAND ── */
     .feature-band { background: #2a1f2d; padding: 80px 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
     .feature-quote { font-family: var(--font-body); font-size: clamp(24px, 3vw, 40px); font-weight: 300; font-style: italic; color: #e9e2d0; line-height: 1.3; }
@@ -568,6 +926,36 @@
 
 </head>
 <body>
+
+  <!-- ══ WHIRLPOOL OVERLAY — Scroll-driven intro animation ══ -->
+  <div id="whirlpool-container">
+    <div id="whirlpool-label">scroll to enter</div>
+    <svg id="whirlpool-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+      <path class="spiral-arm" id="arm1" d="M200,200 Q240,160 260,200 Q280,240 240,260 Q200,280 180,240 Q160,200 200,180 Q240,160 280,180" />
+      <path class="spiral-arm" id="arm2" d="M200,200 Q160,240 180,280 Q200,320 240,300 Q280,280 300,240 Q320,200 280,180 Q240,160 200,180" />
+      <path class="spiral-arm" id="arm3" d="M200,200 Q160,160 140,200 Q120,240 160,260 Q200,280 220,240 Q240,200 200,180 Q160,160 140,180" />
+      <path class="spiral-arm" id="arm4" d="M200,200 Q240,240 220,280 Q200,320 160,300 Q120,280 100,240 Q80,200 120,180 Q160,160 200,180" />
+      <circle id="whirlpool-core" cx="200" cy="200" r="8" fill="#d45d79" opacity="0" />
+      <circle id="whirlpool-ring1" cx="200" cy="200" r="40" fill="none" stroke="rgba(212,93,121,0.3)" stroke-width="1" />
+      <circle id="whirlpool-ring2" cx="200" cy="200" r="80" fill="none" stroke="rgba(234,144,133,0.2)" stroke-width="1" />
+      <circle id="whirlpool-ring3" cx="200" cy="200" r="130" fill="none" stroke="rgba(196,112,144,0.1)" stroke-width="1" />
+    </svg>
+    <div id="whirlpool-cta">
+      <span>scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </div>
+
+  <!-- ══ FLOATING ORBS (organic background) ══ -->
+  <div class="orb orb-1" id="orb1">
+    <div class="orb-inner" style="background:radial-gradient(circle at 40% 40%, rgba(212,93,121,0.2), rgba(234,144,133,0.05));"></div>
+  </div>
+  <div class="orb orb-2" id="orb2">
+    <div class="orb-inner" style="background:radial-gradient(circle at 60% 60%, rgba(234,144,133,0.15), rgba(212,93,121,0.03));"></div>
+  </div>
+  <div class="orb orb-3" id="orb3">
+    <div class="orb-inner" style="background:radial-gradient(circle at 50% 50%, rgba(184,122,138,0.12), transparent);"></div>
+  </div>
   <nav>
     <div class="nav-left">
       <a href="#"><img src="logo_transparent.png" height="48" alt="Mediocre Markup"></a>
@@ -583,10 +971,15 @@
   </nav>
 
   <section class="hero" id="hero">
+    <!-- Parallax blob background -->
+    <div class="parallax-blob parallax-blob-1" id="blob1"></div>
+    <div class="parallax-blob parallax-blob-2" id="blob2"></div>
+    <div class="parallax-blob parallax-blob-3" id="blob3"></div>
+
     <canvas id="particle-canvas"></canvas>
     <div id="deco-layer" class="deco-layer">
-      <!-- Floral vine SVGs — permanent beautiful theme decoration -->
-      <svg class="floral-vine" style="left:0;top:64px;width:160px;height:300px" viewBox="0 0 160 300" xmlns="http://www.w3.org/2000/svg">
+      <!-- Decorative SVG elements — organic and lively -->
+      <svg class="floral-vine" style="left:0;top:64px;width:160px;height:300px;opacity:0.6" viewBox="0 0 160 300" xmlns="http://www.w3.org/2000/svg">
         <path d="M20 0 Q40 50 20 100 Q0 150 20 200 Q40 250 20 300" stroke="#d45d79" stroke-width="1.5" fill="none"/>
         <circle cx="20" cy="50" r="8" fill="#d45d79" opacity="0.3"/>
         <circle cx="20" cy="150" r="6" fill="#ea9085" opacity="0.4"/>
@@ -594,7 +987,7 @@
         <ellipse cx="32" cy="100" rx="12" ry="6" fill="#ea9085" opacity="0.2" transform="rotate(-20 32 100)"/>
         <ellipse cx="8" cy="200" rx="10" ry="5" fill="#d45d79" opacity="0.18" transform="rotate(20 8 200)"/>
       </svg>
-      <svg class="floral-vine" style="right:0;top:64px;width:160px;height:300px;transform:scaleX(-1)" viewBox="0 0 160 300" xmlns="http://www.w3.org/2000/svg">
+      <svg class="floral-vine" style="right:0;top:64px;width:160px;height:300px;transform:scaleX(-1);opacity:0.6" viewBox="0 0 160 300" xmlns="http://www.w3.org/2000/svg">
         <path d="M20 0 Q40 50 20 100 Q0 150 20 200 Q40 250 20 300" stroke="#d45d79" stroke-width="1.5" fill="none"/>
         <circle cx="20" cy="50" r="8" fill="#d45d79" opacity="0.3"/>
         <circle cx="20" cy="150" r="6" fill="#ea9085" opacity="0.4"/>
@@ -605,18 +998,18 @@
 
     <div class="hero-content" id="hero-content">
       <div class="hero-left" id="hero-left">
-        <div class="hero-eyebrow">WEB DESIGN STUDIO — ST. JOHNS, FL</div>
-        <h1 class="hero-headline">
-          <span class="line">Your website</span>
-          <span class="line light">should be</span>
-          <span class="line"><span id="theme-word">beautiful</span></span>
+        <div class="hero-eyebrow gsap-reveal" id="hero-eyebrow">WEB DESIGN STUDIO — ST. JOHNS, FL</div>
+        <h1 class="hero-headline" id="hero-headline">
+          <span class="line gsap-reveal" id="hl1">Your website</span>
+          <span class="line light gsap-reveal" id="hl2">should be</span>
+          <span class="line gsap-reveal" id="hl3"><span id="theme-word">beautiful</span></span>
         </h1>
-        <p class="hero-sub">Custom websites for local businesses. Hand-coded, not templated.</p>
-        <div class="hero-actions">
-          <a href="#contact" class="btn btn-primary">Start a project →</a>
+        <p class="hero-sub gsap-reveal" id="hero-sub">Custom websites for local businesses.<br>Hand-coded, not templated.</p>
+        <div class="hero-actions gsap-reveal" id="hero-actions">
+          <a href="#contact" class="btn btn-primary magnetic-btn">Start a project →</a>
           <a href="#pricing" class="btn btn-ghost">See pricing</a>
         </div>
-        <div class="hero-stats">
+        <div class="hero-stats gsap-reveal" id="hero-stats">
           <div class="stat"><span class="stat-num">$500</span><span class="stat-label">Starting price</span></div>
           <div class="stat"><span class="stat-num">7</span><span class="stat-label">Days to launch</span></div>
           <div class="stat"><span class="stat-num">$50</span><span class="stat-label">Monthly care</span></div>
