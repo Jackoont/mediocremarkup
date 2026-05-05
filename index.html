@@ -70,15 +70,15 @@
     a { color: inherit; text-decoration: none; }
 
     /* ── NAV ── */
-    nav { position: fixed; top: 0; left: 0; right: 0; height: 64px; background: var(--ink); display: flex; align-items: center; justify-content: space-between; padding: 0 48px; z-index: 500; transition: background 1.2s ease; }
+    nav { position: fixed; top: 0; left: 0; right: 0; height: 64px; background: rgba(14,10,13,0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(240,230,216,0.06); display: flex; align-items: center; justify-content: space-between; padding: 0 48px; z-index: 500; transition: background 0.4s ease; }
     .nav-left { display: flex; align-items: center; }
     nav img { display: block; filter: brightness(0) invert(1); }
     .nav-sep { width: 1px; height: 20px; background: rgba(233,226,208,0.3); margin: 0 16px; flex-shrink: 0; }
     .nav-tagline { font-family: var(--font-body); font-size: 12px; color: rgba(233,226,208,0.55); white-space: nowrap; }
     @media (max-width: 900px) { .nav-sep, .nav-tagline { display: none; } }
     .nav-links { display: flex; gap: 28px; align-items: center; }
-    .nav-links a { font-family: var(--font-body); font-size: 13px; font-weight: 500; color: rgba(233,226,208,0.65); transition: color 0.2s; }
-    .nav-links a:hover { color: #e9e2d0; }
+    .nav-links a { font-family: var(--font-body); font-size: 13px; font-weight: 500; color: rgba(240,230,216,0.55); transition: color 0.2s; }
+    .nav-links a:hover { color: rgba(240,230,216,0.9); }
     .nav-cta { background: var(--accent) !important; color: white !important; border-radius: 999px; padding: 8px 18px !important; font-size: 13px !important; font-weight: 600 !important; transition: opacity 0.2s, transform 0.2s, background 1.2s !important; }
     .nav-cta:hover { opacity: 0.88; transform: translateY(-1px); }
     @media (max-width: 900px) { nav { padding: 0 24px; } .nav-links .hide-mobile { display: none; } }
@@ -93,77 +93,317 @@
     .btn-ghost { background: transparent; color: #2a1f2d; border: 1.5px solid rgba(42,31,45,0.3); }
     .btn-ghost:hover { background: rgba(42,31,45,0.06); transform: translateY(-2px); }
 
-    /* ── HERO ── */
-    .hero { min-height: 100vh; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background: linear-gradient(160deg, var(--bg) 0%, var(--surface) 100%); transition: background 1.2s ease; }
-    #particle-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+    /* ── HERO — full overhaul ── */
+    .hero {
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      background: #0e0a0d;
+    }
+    #particle-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0.5; }
     .deco-layer { position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
 
+    /* Giant background number — decorative */
+    .hero-bg-num {
+      position: absolute;
+      font-family: 'Fraunces', serif;
+      font-size: clamp(300px, 40vw, 600px);
+      font-weight: 300;
+      font-style: italic;
+      color: rgba(212,93,121,0.04);
+      line-height: 1;
+      right: -2vw;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -10px;
+      z-index: 1;
+    }
+
+    /* Floating code tokens — decorative scattered text */
+    .hero-token {
+      position: absolute;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: rgba(212,93,121,0.18);
+      pointer-events: none;
+      z-index: 2;
+      white-space: nowrap;
+    }
+
+    /* Diagonal accent line */
+    .hero-diagonal {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Main content grid */
     .hero-content {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       align-items: center;
-      text-align: center;
-      padding: 160px 48px 100px;
-      max-width: 900px;
+      padding: 120px 80px 80px;
+      max-width: 1400px;
       width: 100%;
+      margin: 0 auto;
       position: relative;
       z-index: 4;
+      gap: 40px;
     }
+
     .hero-left {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      text-align: center;
+      align-items: flex-start;
+      text-align: left;
     }
+
     .hero-right {
-      display: none;
-    }
-    .hero-ink-blob {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 700px;
-      height: 420px;
-      z-index: 1;
-      pointer-events: none;
-      opacity: 0.06;
-    }
-    .hero-scroll-indicator {
-      position: absolute;
-      bottom: 32px;
-      left: 50%;
-      transform: translateX(-50%);
       display: flex;
       flex-direction: column;
+      align-items: flex-end;
+      gap: 24px;
+    }
+
+    /* Eyebrow */
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(212,93,121,0.7);
+      margin-bottom: 28px;
+      display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 1px;
+      background: rgba(212,93,121,0.4);
+    }
+
+    /* Headline — massive, mixed weight */
+    .hero-headline {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(52px, 7.5vw, 108px);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 0.92;
+      letter-spacing: -3px;
+      margin-bottom: 0;
+      color: #f0e6d8;
+    }
+    .hero-headline .line { display: block; }
+    .hero-headline .hl-dim { color: rgba(240,230,216,0.25); }
+    .hero-headline .hl-accent { color: #d45d79; }
+    .hero-headline .hl-outlined {
+      -webkit-text-stroke: 1.5px rgba(240,230,216,0.35);
+      color: transparent;
+    }
+    #theme-word { color: #d45d79; }
+
+    /* Tag between headline sections */
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(212,93,121,0.6);
+      border: 1px solid rgba(212,93,121,0.2);
+      border-radius: 999px;
+      padding: 5px 12px;
+      margin: 20px 0;
+    }
+    .hero-tag::before { content: '◆'; font-size: 5px; }
+
+    .hero-sub {
+      font-size: 15px;
+      max-width: 400px;
+      line-height: 1.7;
+      color: rgba(240,230,216,0.45);
+      margin-bottom: 36px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 52px;
+      flex-wrap: wrap;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      padding-left: 14px;
+      border-left: 1.5px solid rgba(212,93,121,0.3);
+    }
+    .stat-num {
+      font-family: 'Fraunces', serif;
+      font-size: 26px;
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1;
+      color: #f0e6d8;
+    }
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(240,230,216,0.35);
+    }
+
+    /* Right column content */
+    .hero-right-card {
+      background: rgba(240,230,216,0.04);
+      border: 1px solid rgba(240,230,216,0.07);
+      border-radius: 16px;
+      padding: 28px 32px;
+      width: 100%;
+      max-width: 380px;
+    }
+    .hero-right-card-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(212,93,121,0.5);
+      margin-bottom: 16px;
+    }
+    .hero-right-card-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .hero-right-card-list li {
+      font-size: 13px;
+      color: rgba(240,230,216,0.6);
+      padding-left: 16px;
+      position: relative;
+      line-height: 1.4;
+    }
+    .hero-right-card-list li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: #d45d79;
+      font-size: 11px;
+    }
+
+    /* Rose accent circle — decorative */
+    .hero-circle-deco {
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      border: 1px solid rgba(212,93,121,0.08);
+      position: absolute;
+      right: 60px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .hero-circle-deco::before {
+      content: '';
+      position: absolute;
+      inset: 24px;
+      border-radius: 50%;
+      border: 1px solid rgba(212,93,121,0.06);
+    }
+    .hero-circle-deco::after {
+      content: '';
+      position: absolute;
+      inset: 48px;
+      border-radius: 50%;
+      border: 1px solid rgba(212,93,121,0.04);
+    }
+
+    /* Bottom status bar */
+    .hero-status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 80px;
+      border-top: 1px solid rgba(240,230,216,0.05);
+      position: relative;
+      z-index: 4;
+    }
+    .hero-status-left {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .hero-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #d45d79;
+      animation: statusPulse 2s ease-in-out infinite;
+    }
+    @keyframes statusPulse {
+      0%,100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(212,93,121,0.4); }
+      50%      { opacity: 0.7; transform: scale(0.85); box-shadow: 0 0 0 6px rgba(212,93,121,0); }
+    }
+    .hero-status-text {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(240,230,216,0.3);
+    }
+    .hero-status-scroll {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       font-family: var(--font-mono);
       font-size: 10px;
       letter-spacing: 3px;
       text-transform: uppercase;
-      color: rgba(122,74,96,0.6);
-      z-index: 5;
+      color: rgba(240,230,216,0.25);
     }
-    .hero-scroll-line {
-      width: 1px;
-      height: 44px;
-      background: linear-gradient(to bottom, rgba(212,93,121,0.6), transparent);
-      animation: scrollPulse 1.6s ease-in-out infinite;
+    .hero-status-line {
+      width: 40px;
+      height: 1px;
+      background: linear-gradient(to right, rgba(212,93,121,0.5), transparent);
+      animation: lineExpand 1.8s ease-in-out infinite;
     }
+    @keyframes lineExpand {
+      0%,100% { transform: scaleX(0.3); transform-origin: left; opacity: 0.5; }
+      50%      { transform: scaleX(1);   transform-origin: left; opacity: 1; }
+    }
+
+    .hero-scroll-indicator { display: none; }
+    .hero-scroll-line { display: none; }
+
     .showcase-label.active { color:#d45d79 !important; border-color:rgba(212,93,121,0.4) !important; }
 
-    .hero-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 32px; color: #7a4a60; }
-    .hero-headline { font-family: 'Fraunces', serif; font-size: clamp(64px, 10vw, 140px); font-weight: 300; font-style: italic; line-height: 0.95; letter-spacing: -2px; margin-bottom: 28px; color: #2a1f2d; }
-    .hero-headline .line { display: block; }
-    .hero-headline .light { opacity: 0.4; }
-    #theme-word { color: #d45d79; border-bottom: 3px solid #d45d79; padding-bottom: 4px; }
-    .hero-sub { font-size: 16px; max-width: 560px; text-align: center; margin: 0 auto 32px; line-height: 1.6; color: #7a4a60; }
-    .hero-actions { display: flex; gap: 12px; margin-bottom: 56px; flex-wrap: wrap; justify-content: center; }
-    .hero-stats { display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; }
-    .stat { display: flex; flex-direction: column; gap: 4px; padding-left: 16px; border-left: 2px solid #ea9085; }
-    .stat-num { font-size: 28px; font-weight: 700; line-height: 1; color: #2a1f2d; }
-    .stat-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #7a4a60; }
+    @media (max-width: 900px) {
+      .hero-content { grid-template-columns: 1fr; padding: 120px 24px 60px; }
+      .hero-right { align-items: flex-start; }
+      .hero-bg-num { display: none; }
+      .hero-status-bar { padding: 16px 24px; }
+      .hero-headline { font-size: clamp(44px, 10vw, 80px); letter-spacing: -2px; }
+    }
 
     /* ── BOKEH / FLORAL DECOS (beautiful, permanent) ── */
     .bokeh { position: absolute; pointer-events: none; z-index: 2; animation: bokehRise linear forwards; filter: blur(0.6px) brightness(1.08); }
@@ -580,15 +820,16 @@
     }
     .video-headline {
       font-family: var(--font-serif);
-      font-size: clamp(40px, 6vw, 96px);
+      font-size: clamp(28px, 3.8vw, 58px);
       font-weight: 300;
       font-style: italic;
       color: #f5ede8;
-      line-height: 1.05;
-      letter-spacing: -2px;
+      line-height: 1.15;
+      letter-spacing: -1px;
       opacity: 0;
       transform: translateY(30px);
       transition: opacity 1.2s 0.2s cubic-bezier(0.4,0,0.2,1), transform 1.2s 0.2s cubic-bezier(0.4,0,0.2,1);
+      max-width: 680px;
     }
     .video-headline em { color: #d45d79; font-style: inherit; }
     #video-progress-bar {
@@ -956,7 +1197,7 @@
        Matches the hero's rose / parchment / plum palette.
        Warm, editorial, cohesive — not pink-overload. */
 
-    body { background: #fdf6f0; }
+    body { background: #0e0a0d; }
 
     /* Feature band */
     .feature-band { background: #2a1f2d !important; }
@@ -1093,62 +1334,98 @@
   </nav>
 
   <section class="hero" id="hero">
-    <!-- Parallax blob background -->
-    <div class="parallax-blob parallax-blob-1" id="blob1"></div>
-    <div class="parallax-blob parallax-blob-2" id="blob2"></div>
-    <div class="parallax-blob parallax-blob-3" id="blob3"></div>
+    <!-- Deep dark radial glow -->
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 30% 50%, rgba(212,93,121,0.07) 0%, transparent 65%), radial-gradient(ellipse 50% 60% at 80% 30%, rgba(110,87,115,0.08) 0%, transparent 60%);pointer-events:none;z-index:1;"></div>
 
-    <!-- Decorative ink-wash blob -->
-    <svg class="hero-ink-blob" viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path d="M350,30 C430,10 570,40 630,120 C690,200 680,310 600,370 C520,430 380,440 280,400 C180,360 80,290 60,200 C40,110 120,30 220,15 C270,8 310,45 350,30 Z" fill="#d45d79"/>
-      <path d="M400,60 C470,35 560,80 600,160 C640,240 620,350 540,395 C460,440 330,430 240,385 C150,340 90,260 100,175 C110,90 180,50 270,40 C315,35 360,78 400,60 Z" fill="#ea9085" opacity="0.5"/>
-      <path d="M300,80 C370,55 500,90 555,170 C610,250 580,370 490,405 C400,440 270,420 190,370 C110,320 75,230 95,150 C115,70 190,40 275,50 C295,53 285,95 300,80 Z" fill="#d45d79" opacity="0.4"/>
+    <!-- Giant decorative background number -->
+    <div class="hero-bg-num" aria-hidden="true">01</div>
+
+    <!-- Concentric circles deco -->
+    <div class="hero-circle-deco" aria-hidden="true"></div>
+
+    <!-- Scattered code tokens -->
+    <span class="hero-token" style="top:14%;left:8%;">const site = buildFrom(scratch);</span>
+    <span class="hero-token" style="top:22%;right:6%;opacity:0.12;">/* no templates */</span>
+    <span class="hero-token" style="bottom:28%;left:5%;opacity:0.1;">@media (max-width: 768px) {</span>
+    <span class="hero-token" style="bottom:18%;right:8%;opacity:0.13;">return&nbsp;yourBusiness.online();</span>
+    <span class="hero-token" style="top:55%;left:3%;opacity:0.09;">transform: scale(1);</span>
+
+    <!-- Thin diagonal SVG line across hero -->
+    <svg class="hero-diagonal" viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <line x1="0" y1="900" x2="1440" y2="0" stroke="rgba(212,93,121,0.04)" stroke-width="1"/>
+      <line x1="0" y1="820" x2="1440" y2="80" stroke="rgba(212,93,121,0.025)" stroke-width="1"/>
     </svg>
 
     <canvas id="particle-canvas"></canvas>
-    <div id="deco-layer" class="deco-layer">
-      <!-- Decorative SVG elements — organic and lively -->
-      <svg class="floral-vine" style="left:0;top:64px;width:160px;height:300px;opacity:0.6" viewBox="0 0 160 300" xmlns="http://www.w3.org/2000/svg">
-        <path d="M20 0 Q40 50 20 100 Q0 150 20 200 Q40 250 20 300" stroke="#d45d79" stroke-width="1.5" fill="none"/>
-        <circle cx="20" cy="50" r="8" fill="#d45d79" opacity="0.3"/>
-        <circle cx="20" cy="150" r="6" fill="#ea9085" opacity="0.4"/>
-        <circle cx="20" cy="250" r="7" fill="#d45d79" opacity="0.25"/>
-        <ellipse cx="32" cy="100" rx="12" ry="6" fill="#ea9085" opacity="0.2" transform="rotate(-20 32 100)"/>
-        <ellipse cx="8" cy="200" rx="10" ry="5" fill="#d45d79" opacity="0.18" transform="rotate(20 8 200)"/>
-      </svg>
-      <svg class="floral-vine" style="right:0;top:64px;width:160px;height:300px;transform:scaleX(-1);opacity:0.6" viewBox="0 0 160 300" xmlns="http://www.w3.org/2000/svg">
-        <path d="M20 0 Q40 50 20 100 Q0 150 20 200 Q40 250 20 300" stroke="#d45d79" stroke-width="1.5" fill="none"/>
-        <circle cx="20" cy="50" r="8" fill="#d45d79" opacity="0.3"/>
-        <circle cx="20" cy="150" r="6" fill="#ea9085" opacity="0.4"/>
-        <circle cx="20" cy="250" r="7" fill="#d45d79" opacity="0.25"/>
-      </svg>
-      <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 60%, rgba(212,93,121,0.06) 0%, transparent 70%);pointer-events:none"></div>
-    </div>
+    <div id="deco-layer" class="deco-layer"></div>
 
+    <!-- MAIN CONTENT GRID -->
     <div class="hero-content" id="hero-content">
+
+      <!-- LEFT — headline + CTA -->
       <div class="hero-left" id="hero-left">
-        <div class="hero-eyebrow gsap-reveal" id="hero-eyebrow">WEB DESIGN STUDIO — ST. JOHNS, FL</div>
+        <div class="hero-eyebrow" id="hero-eyebrow">Web Design Studio — St. Johns, FL</div>
+
         <h1 class="hero-headline" id="hero-headline">
-          <span class="line" id="hl1"><span class="gsap-reveal-char">Y</span><span class="gsap-reveal-char">o</span><span class="gsap-reveal-char">u</span><span class="gsap-reveal-char">r</span><span class="gsap-reveal-char">&nbsp;</span><span class="gsap-reveal-char">w</span><span class="gsap-reveal-char">e</span><span class="gsap-reveal-char">b</span><span class="gsap-reveal-char">s</span><span class="gsap-reveal-char">i</span><span class="gsap-reveal-char">t</span><span class="gsap-reveal-char">e</span></span>
-          <span class="line light" id="hl2"><span class="gsap-reveal-char">s</span><span class="gsap-reveal-char">h</span><span class="gsap-reveal-char">o</span><span class="gsap-reveal-char">u</span><span class="gsap-reveal-char">l</span><span class="gsap-reveal-char">d</span><span class="gsap-reveal-char">&nbsp;</span><span class="gsap-reveal-char">b</span><span class="gsap-reveal-char">e</span></span>
-          <span class="line" id="hl3"><span id="theme-word">beautiful</span></span>
+          <span class="line hl-dim" id="hl1">Your website</span>
+          <span class="line" id="hl2">should be</span>
+          <span class="line hl-accent" id="hl3"><span id="theme-word">beautiful</span></span>
         </h1>
-        <p class="hero-sub gsap-reveal" id="hero-sub">Custom websites for local businesses. Hand-coded, not templated.</p>
-        <div class="hero-actions gsap-reveal" id="hero-actions">
+
+        <div class="hero-tag">Hand-coded for local businesses</div>
+
+        <p class="hero-sub" id="hero-sub">Custom websites built from scratch — not Squarespace, not Wix, not a recycled theme with your name slapped on it. Real code. Real craft.</p>
+
+        <div class="hero-actions" id="hero-actions">
           <a href="#contact" class="btn btn-primary magnetic-btn">Start a project →</a>
-          <a href="#pricing" class="btn btn-ghost">See pricing</a>
+          <a href="#pricing" class="btn" style="background:transparent;color:rgba(240,230,216,0.6);border:1.5px solid rgba(240,230,216,0.15);border-radius:999px;padding:13px 28px;font-size:14px;font-weight:600;transition:all 0.2s;">See pricing</a>
         </div>
-        <div class="hero-stats gsap-reveal" id="hero-stats">
+
+        <div class="hero-stats" id="hero-stats">
           <div class="stat"><span class="stat-num">$500</span><span class="stat-label">Starting price</span></div>
           <div class="stat"><span class="stat-num">7</span><span class="stat-label">Days to launch</span></div>
           <div class="stat"><span class="stat-num">$50</span><span class="stat-label">Monthly care</span></div>
         </div>
       </div>
+
+      <!-- RIGHT — feature card + availability chip -->
+      <div class="hero-right" id="hero-right">
+        <!-- Availability chip -->
+        <div style="display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(240,230,216,0.35);border:1px solid rgba(240,230,216,0.07);border-radius:999px;padding:7px 16px;">
+          <span style="width:6px;height:6px;border-radius:50%;background:#4ade80;display:inline-block;animation:statusPulse 2s ease-in-out infinite;"></span>
+          Accepting new clients
+        </div>
+
+        <!-- Feature card -->
+        <div class="hero-right-card">
+          <div class="hero-right-card-label">What you actually get</div>
+          <ul class="hero-right-card-list">
+            <li>A site written in real HTML, CSS &amp; JS — nothing between you and your visitors</li>
+            <li>Mobile-first. Loads fast. Looks sharp on every screen</li>
+            <li>Delivered in ~7 days for a single page, ~14 for a full site</li>
+            <li>SEO foundations, contact forms, Google Analytics — all included</li>
+            <li>Optional $50/mo care plan: hosting, updates, backups handled</li>
+          </ul>
+        </div>
+
+        <!-- Quoted testimonial-style callout -->
+        <div style="max-width:380px;width:100%;padding:20px 24px;border-left:2px solid rgba(212,93,121,0.3);background:rgba(212,93,121,0.04);border-radius:0 8px 8px 0;">
+          <p style="font-family:'Fraunces',serif;font-size:15px;font-style:italic;font-weight:300;color:rgba(240,230,216,0.55);line-height:1.6;margin-bottom:10px;">"The kind of site that actually convinces a stranger to become a customer."</p>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(212,93,121,0.5);">— The whole point</span>
+        </div>
+      </div>
     </div>
 
-    <div class="hero-scroll-indicator">
-      <span>scroll</span>
-      <div class="hero-scroll-line"></div>
+    <!-- BOTTOM STATUS BAR -->
+    <div class="hero-status-bar">
+      <div class="hero-status-left">
+        <div class="hero-status-dot"></div>
+        <span class="hero-status-text">Available for new projects · 2026</span>
+      </div>
+      <div class="hero-status-scroll">
+        <div class="hero-status-line"></div>
+        scroll
+      </div>
     </div>
   </section>
 
@@ -1523,6 +1800,9 @@
     </ul>
   </div>
 
+  <!-- ══ LIGHT CONTENT ZONE — switches body back to parchment ══ -->
+  <div id="light-zone" style="background:#fdf6f0;">
+
   <div class="marquee-strip">
     <div class="marquee-track">
       <span>Hand-coded</span><span class="marquee-sep">●</span>
@@ -1689,6 +1969,8 @@
     </div>
   </section>
 
+  </div><!-- /light-zone -->
+
   <footer>
     <span class="footer-copy">© 2026 Mediocre Markup</span>
     <span class="footer-tagline">Websites that outperform average</span>
@@ -1741,7 +2023,7 @@
         x:Math.random()*W, y:Math.random()*H,
         vx:(Math.random()-0.5)*0.6, vy:(Math.random()-0.5)*0.6,
         r:Math.random()*2+0.5,
-        color:['#d45d79','#ea9085','#6e5773','#c9b0c0','#e8c8d0'][Math.floor(Math.random()*5)],
+        color:['#d45d79','#c04468','#8b3a54','#ea9085','#b87a8a'][Math.floor(Math.random()*5)],
         alpha:Math.random()*0.5+0.15
       });
     };
@@ -2101,6 +2383,12 @@
     let currentRatio = 0;
     let rafPending = false;
 
+    // Scroll lock state — holds the page inside the section once fully revealed
+    let textShownAt = null;  // timestamp when ratio first hit 1
+    const TEXT_HOLD_MS = 1800; // hold fully-revealed for this long before releasing
+    let scrollLocked = false;
+    let lockScrollY  = 0;
+
     function applyReveal() {
       rafPending = false;
       const ratio = currentRatio;
@@ -2108,42 +2396,72 @@
       if (ratio > 0 && !fcRunning) { fcRunning = true; drawFC(); }
       if (ratio <= 0 && fcRunning) { fcRunning = false; cancelAnimationFrame(fcRaf); }
 
-      const rawPct = Math.max(0, Math.min(1, ratio / 0.65));
-      const eased = rawPct < 0.5 ? 2 * rawPct * rawPct : -1 + (4 - 2 * rawPct) * rawPct;
-      const inset = (1 - eased) * 50;
+      // Ease the open: quadratic ease-in-out on 0→0.72 of progress
+      const rawPct = Math.max(0, Math.min(1, ratio / 0.72));
+      const eased  = rawPct < 0.5 ? 2 * rawPct * rawPct : -1 + (4 - 2 * rawPct) * rawPct;
+      const inset  = (1 - eased) * 50;
       mask.style.clipPath = `inset(${inset}% ${inset}% ${inset}% ${inset}%)`;
-      mask.style.opacity  = ratio >= 0.98 ? '0' : '1';
+      mask.style.opacity  = ratio >= 0.99 ? '0' : '1';
 
-      if (ratio > 0.62) {
-        const t = Math.min(1, (ratio - 0.62) / 0.3);
-        eyebrow.style.opacity   = t;
-        eyebrow.style.transform = `translateY(${(1 - t) * 20}px)`;
-        headline.style.opacity  = t;
-        headline.style.transform= `translateY(${(1 - t) * 30}px)`;
+      // Text fade-in at 65% reveal
+      if (ratio > 0.65) {
+        const t = Math.min(1, (ratio - 0.65) / 0.28);
+        eyebrow.style.opacity    = t;
+        eyebrow.style.transform  = `translateY(${(1 - t) * 16}px)`;
+        headline.style.opacity   = t;
+        headline.style.transform = `translateY(${(1 - t) * 24}px)`;
       } else {
         eyebrow.style.opacity = '0'; headline.style.opacity = '0';
       }
 
       const pct = Math.round(ratio * 100);
       progressFill.style.width = pct + '%';
-      progressLabel.textContent = String(pct).padStart(3,'0') + '%';
+      progressLabel.textContent = String(pct).padStart(3, '0') + '%';
     }
 
     function onScroll() {
       if (!revealSection) return;
-      const rect    = revealSection.getBoundingClientRect();
-      const total   = revealSection.offsetHeight - window.innerHeight;
+
+      // If scroll-locked, snap back to lock position and hold
+      if (scrollLocked) {
+        window.scrollTo({ top: lockScrollY, behavior: 'instant' });
+        // Check if enough time has passed to release the lock
+        if (textShownAt && performance.now() - textShownAt >= TEXT_HOLD_MS) {
+          scrollLocked = false;
+          document.body.style.overflowY = '';
+        }
+        return;
+      }
+
+      const rect     = revealSection.getBoundingClientRect();
+      const total    = revealSection.offsetHeight - window.innerHeight;
       const scrolled = -rect.top;
-      currentRatio  = Math.max(0, Math.min(1, scrolled / total));
+      currentRatio   = Math.max(0, Math.min(1, scrolled / total));
+
+      // When we hit 100%, lock scroll briefly so user can read the text
+      if (currentRatio >= 1 && !textShownAt) {
+        textShownAt  = performance.now();
+        lockScrollY  = window.scrollY;
+        scrollLocked = true;
+        // Release after TEXT_HOLD_MS automatically
+        setTimeout(() => {
+          scrollLocked = false;
+          document.body.style.overflowY = '';
+        }, TEXT_HOLD_MS);
+      }
 
       if (currentRatio > 0 && !fcRunning) { fcRunning = true; drawFC(); }
-
       if (!rafPending) { rafPending = true; requestAnimationFrame(applyReveal); }
     }
 
     const sectionObs = new IntersectionObserver(entries => {
       entries.forEach(e => {
         if (e.isIntersecting && !fcRunning) { fcRunning = true; drawFC(); }
+        // Reset the lock state when section leaves view (scrolling back up)
+        if (!e.isIntersecting && e.boundingClientRect.top > 0) {
+          textShownAt = null;
+          scrollLocked = false;
+        }
       });
     }, { threshold: 0 });
     if (revealSection) sectionObs.observe(revealSection);
@@ -2163,13 +2481,18 @@
       return el.querySelectorAll('.split-inner');
     }
 
-    // Hero text entrance — staggered word rise
-    gsap.timeline({ delay: 0.3 })
-      .from('#hero-eyebrow',  { opacity:0, y:30, duration:0.7, ease:'power3.out' })
-      .from('#hl1 .gsap-reveal-char, #hl2 .gsap-reveal-char, #hl3 .gsap-reveal-char', { opacity:0, y:50, rotate:4, stagger:0.04, duration:0.8, ease:'power3.out' }, '-=0.4')
-      .from('#hero-sub',      { opacity:0, y:20, duration:0.7, ease:'power2.out' }, '-=0.5')
-      .from('#hero-actions',  { opacity:0, y:20, duration:0.6, ease:'power2.out' }, '-=0.4')
-      .from('#hero-stats .stat', { opacity:0, y:15, stagger:0.1, duration:0.5, ease:'power2.out' }, '-=0.3');
+    // Hero text entrance — lines rise in sequence, right column fades
+    gsap.timeline({ delay: 0.25 })
+      .from('#hero-eyebrow',   { opacity:0, x:-20, duration:0.6, ease:'power2.out' })
+      .from('#hl1',            { opacity:0, y:60, duration:0.8, ease:'power3.out' }, '-=0.3')
+      .from('#hl2',            { opacity:0, y:60, duration:0.8, ease:'power3.out' }, '-=0.6')
+      .from('#hl3',            { opacity:0, y:60, duration:0.8, ease:'power3.out' }, '-=0.6')
+      .from('.hero-tag',       { opacity:0, y:16, duration:0.5, ease:'power2.out' }, '-=0.3')
+      .from('#hero-sub',       { opacity:0, y:16, duration:0.6, ease:'power2.out' }, '-=0.35')
+      .from('#hero-actions',   { opacity:0, y:16, duration:0.5, ease:'power2.out' }, '-=0.3')
+      .from('#hero-stats .stat', { opacity:0, y:12, stagger:0.1, duration:0.5, ease:'power2.out' }, '-=0.25')
+      .from('#hero-right > *', { opacity:0, y:24, stagger:0.15, duration:0.7, ease:'power2.out' }, '-=0.5')
+      .from('.hero-status-bar', { opacity:0, y:10, duration:0.5, ease:'power2.out' }, '-=0.3');
 
     // Section title reveals
     document.querySelectorAll('.section-title').forEach(el => {
