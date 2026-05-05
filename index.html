@@ -99,12 +99,12 @@
     .deco-layer { position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
 
     .hero-content {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
+      display: flex;
+      flex-direction: column;
       align-items: center;
-      padding: 140px 80px 80px;
-      max-width: 1300px;
+      text-align: center;
+      padding: 160px 48px 100px;
+      max-width: 900px;
       width: 100%;
       position: relative;
       z-index: 4;
@@ -112,24 +112,55 @@
     .hero-left {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
-      text-align: left;
+      align-items: center;
+      text-align: center;
     }
     .hero-right {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      perspective: 1000px;
+      display: none;
     }
+    .hero-ink-blob {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px;
+      height: 420px;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.06;
+    }
+    .hero-scroll-indicator {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(122,74,96,0.6);
+      z-index: 5;
+    }
+    .hero-scroll-line {
+      width: 1px;
+      height: 44px;
+      background: linear-gradient(to bottom, rgba(212,93,121,0.6), transparent);
+      animation: scrollPulse 1.6s ease-in-out infinite;
+    }
+    .showcase-label.active { color:#d45d79 !important; border-color:rgba(212,93,121,0.4) !important; }
 
     .hero-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 32px; color: #7a4a60; }
-    .hero-headline { font-family: 'Fraunces', serif; font-size: clamp(36px, 5vw, 72px); font-weight: 300; font-style: italic; line-height: 0.95; letter-spacing: -1.5px; margin-bottom: 28px; color: #2a1f2d; }
+    .hero-headline { font-family: 'Fraunces', serif; font-size: clamp(64px, 10vw, 140px); font-weight: 300; font-style: italic; line-height: 0.95; letter-spacing: -2px; margin-bottom: 28px; color: #2a1f2d; }
     .hero-headline .line { display: block; }
     .hero-headline .light { opacity: 0.4; }
     #theme-word { color: #d45d79; border-bottom: 3px solid #d45d79; padding-bottom: 4px; }
-    .hero-sub { font-size: 16px; max-width: 420px; margin-bottom: 32px; line-height: 1.6; color: #7a4a60; }
-    .hero-actions { display: flex; gap: 12px; margin-bottom: 56px; flex-wrap: wrap; }
-    .hero-stats { display: flex; gap: 40px; flex-wrap: wrap; }
+    .hero-sub { font-size: 16px; max-width: 560px; text-align: center; margin: 0 auto 32px; line-height: 1.6; color: #7a4a60; }
+    .hero-actions { display: flex; gap: 12px; margin-bottom: 56px; flex-wrap: wrap; justify-content: center; }
+    .hero-stats { display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; }
     .stat { display: flex; flex-direction: column; gap: 4px; padding-left: 16px; border-left: 2px solid #ea9085; }
     .stat-num { font-size: 28px; font-weight: 700; line-height: 1; color: #2a1f2d; }
     .stat-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #7a4a60; }
@@ -545,7 +576,7 @@
       margin-bottom: 20px;
       opacity: 0;
       transform: translateY(20px);
-      transition: opacity 0.8s, transform 0.8s;
+      transition: opacity 1.2s cubic-bezier(0.4,0,0.2,1), transform 1.2s cubic-bezier(0.4,0,0.2,1);
     }
     .video-headline {
       font-family: var(--font-serif);
@@ -557,7 +588,7 @@
       letter-spacing: -2px;
       opacity: 0;
       transform: translateY(30px);
-      transition: opacity 0.9s 0.15s, transform 0.9s 0.15s;
+      transition: opacity 1.2s 0.2s cubic-bezier(0.4,0,0.2,1), transform 1.2s 0.2s cubic-bezier(0.4,0,0.2,1);
     }
     .video-headline em { color: #d45d79; font-style: inherit; }
     #video-progress-bar {
@@ -916,9 +947,9 @@
 
     /* ── MOBILE HERO ── */
     @media (max-width: 768px) {
-      .hero-content { grid-template-columns: 1fr; padding: 120px 24px 60px; gap: 40px; }
-      .hero-left { align-items: center; text-align: center; }
+      .hero-content { padding: 120px 24px 60px; }
       .hero-right { display: none; }
+      .hero-ink-blob { width: 100vw; height: 250px; }
     }
 
     /* ══ BELOW-FOLD THEME ZONE ══
@@ -1067,6 +1098,13 @@
     <div class="parallax-blob parallax-blob-2" id="blob2"></div>
     <div class="parallax-blob parallax-blob-3" id="blob3"></div>
 
+    <!-- Decorative ink-wash blob -->
+    <svg class="hero-ink-blob" viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M350,30 C430,10 570,40 630,120 C690,200 680,310 600,370 C520,430 380,440 280,400 C180,360 80,290 60,200 C40,110 120,30 220,15 C270,8 310,45 350,30 Z" fill="#d45d79"/>
+      <path d="M400,60 C470,35 560,80 600,160 C640,240 620,350 540,395 C460,440 330,430 240,385 C150,340 90,260 100,175 C110,90 180,50 270,40 C315,35 360,78 400,60 Z" fill="#ea9085" opacity="0.5"/>
+      <path d="M300,80 C370,55 500,90 555,170 C610,250 580,370 490,405 C400,440 270,420 190,370 C110,320 75,230 95,150 C115,70 190,40 275,50 C295,53 285,95 300,80 Z" fill="#d45d79" opacity="0.4"/>
+    </svg>
+
     <canvas id="particle-canvas"></canvas>
     <div id="deco-layer" class="deco-layer">
       <!-- Decorative SVG elements — organic and lively -->
@@ -1095,7 +1133,7 @@
           <span class="line light" id="hl2"><span class="gsap-reveal-char">s</span><span class="gsap-reveal-char">h</span><span class="gsap-reveal-char">o</span><span class="gsap-reveal-char">u</span><span class="gsap-reveal-char">l</span><span class="gsap-reveal-char">d</span><span class="gsap-reveal-char">&nbsp;</span><span class="gsap-reveal-char">b</span><span class="gsap-reveal-char">e</span></span>
           <span class="line" id="hl3"><span id="theme-word">beautiful</span></span>
         </h1>
-        <p class="hero-sub gsap-reveal" id="hero-sub">Custom websites for local businesses.<br>Hand-coded, not templated.</p>
+        <p class="hero-sub gsap-reveal" id="hero-sub">Custom websites for local businesses. Hand-coded, not templated.</p>
         <div class="hero-actions gsap-reveal" id="hero-actions">
           <a href="#contact" class="btn btn-primary magnetic-btn">Start a project →</a>
           <a href="#pricing" class="btn btn-ghost">See pricing</a>
@@ -1106,13 +1144,28 @@
           <div class="stat"><span class="stat-num">$50</span><span class="stat-label">Monthly care</span></div>
         </div>
       </div>
+    </div>
 
-      <div class="hero-right">
-        <div class="phone-wrapper" id="phone-wrapper">
-          <div class="phone-frame">
-            <div class="phone-notch"></div>
-            <div class="phone-screen" id="phone-screen">
-              <div class="phone-templates-wrap" id="phone-templates-wrap">
+    <div class="hero-scroll-indicator">
+      <span>scroll</span>
+      <div class="hero-scroll-line"></div>
+    </div>
+  </section>
+
+  <section id="showcase" style="background:#110c10;padding:100px 0;position:relative;overflow:hidden;">
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Fraunces',serif;font-size:clamp(80px,15vw,220px);font-weight:300;font-style:italic;color:rgba(212,93,121,0.04);white-space:nowrap;pointer-events:none;letter-spacing:-4px;user-select:none;">Your Site.</div>
+  <div style="max-width:1100px;margin:0 auto;padding:0 48px;display:flex;flex-direction:column;align-items:center;gap:56px;">
+    <div style="text-align:center;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:rgba(212,93,121,0.6);margin-bottom:16px;">/ Real examples</div>
+      <h2 style="font-family:'Fraunces',serif;font-size:clamp(32px,5vw,64px);font-weight:300;font-style:italic;color:#f0e6d8;line-height:1.1;letter-spacing:-1px;">What your site could<br><em style="color:#d45d79;">actually look like.</em></h2>
+      <p style="font-family:'Inter',sans-serif;font-size:15px;color:rgba(240,230,216,0.5);margin-top:16px;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.6;">Four real industries. Four completely custom designs. All hand-coded.</p>
+    </div>
+    <div style="position:relative;display:flex;flex-direction:column;align-items:center;">
+      <div class="phone-wrapper" id="phone-wrapper">
+        <div class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen" id="phone-screen">
+            <div class="phone-templates-wrap" id="phone-templates-wrap">
 
                 <!-- TEMPLATE 0: MERIDIAN LAW GROUP — Professional -->
                 <div class="phone-template active" id="tpl-0">
@@ -1414,23 +1467,30 @@
                   </div>
                   <div class="t4-footer">© 2026 Eleven North Coffee · Built by Mediocre Markup</div>
                 </div>
-            <div class="phone-home-bar"></div>
+            </div>
           </div>
-          <!-- dot indicators outside phone frame so they're visible -->
-          <div class="phone-dots" id="phone-dots">
-            <div class="phone-dot active" onclick="switchPhoneTpl(0)"></div>
-            <div class="phone-dot" onclick="switchPhoneTpl(1)"></div>
-            <div class="phone-dot" onclick="switchPhoneTpl(2)"></div>
-            <div class="phone-dot" onclick="switchPhoneTpl(3)"></div>
-          </div>
-          <div class="phone-arrows">
-            <button class="phone-arrow" onclick="switchPhoneTpl((currentTpl - 1 + tplCount) % tplCount)" aria-label="Previous template">←</button>
-            <button class="phone-arrow" onclick="switchPhoneTpl((currentTpl + 1) % tplCount)" aria-label="Next template">→</button>
-          </div>
-          <div class="phone-badge">📱 Mobile-first design</div>
+          <div class="phone-home-bar"></div>
         </div>
+        <div class="phone-dots" id="phone-dots">
+          <div class="phone-dot active" onclick="switchPhoneTpl(0)"></div>
+          <div class="phone-dot" onclick="switchPhoneTpl(1)"></div>
+          <div class="phone-dot" onclick="switchPhoneTpl(2)"></div>
+          <div class="phone-dot" onclick="switchPhoneTpl(3)"></div>
+        </div>
+        <div class="phone-arrows">
+          <button class="phone-arrow" onclick="switchPhoneTpl((currentTpl - 1 + tplCount) % tplCount)" aria-label="Previous">←</button>
+          <button class="phone-arrow" onclick="switchPhoneTpl((currentTpl + 1) % tplCount)" aria-label="Next">→</button>
+        </div>
+        <div class="phone-badge">📱 Mobile-first design</div>
       </div>
     </div>
+    <div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center;">
+      <div onclick="switchPhoneTpl(0)" style="cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(240,230,216,0.35);padding:8px 16px;border:1px solid rgba(255,255,255,0.07);border-radius:999px;transition:all 0.2s;" class="showcase-label" data-idx="0">⚖ Law</div>
+      <div onclick="switchPhoneTpl(1)" style="cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(240,230,216,0.35);padding:8px 16px;border:1px solid rgba(255,255,255,0.07);border-radius:999px;transition:all 0.2s;" class="showcase-label" data-idx="1">🌸 Floral</div>
+      <div onclick="switchPhoneTpl(2)" style="cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(240,230,216,0.35);padding:8px 16px;border:1px solid rgba(255,255,255,0.07);border-radius:999px;transition:all 0.2s;" class="showcase-label" data-idx="2">🏠 Real Estate</div>
+      <div onclick="switchPhoneTpl(3)" style="cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(240,230,216,0.35);padding:8px 16px;border:1px solid rgba(255,255,255,0.07);border-radius:999px;transition:all 0.2s;" class="showcase-label" data-idx="3">☕ Coffee</div>
+    </div>
+  </div>
   </section>
 
   <!-- ══ SCROLL-PINNED VIDEO REVEAL ══ -->
@@ -1442,8 +1502,8 @@
       <div id="video-clip-mask"></div>
       <!-- Text that fades in once reveal completes -->
       <div id="video-text-overlay">
-        <div class="video-eyebrow" id="video-eyebrow">The craft behind every site</div>
-        <h2 class="video-headline" id="video-headline">Hand-coded.<br><em>Never templated.</em></h2>
+        <div class="video-eyebrow" id="video-eyebrow">The craft behind every build</div>
+        <h2 class="video-headline" id="video-headline">Organic code.<br><em>Not just a template with your logo on it.</em></h2>
       </div>
       <!-- Progress bar -->
       <div id="video-progress-bar">
@@ -1902,15 +1962,17 @@
 
   /* ── 6. PHONE 3D TILT ── */
   {
-    const phoneWrapper = document.getElementById('phone-wrapper');
-    const heroSection  = document.getElementById('hero');
+    const phoneWrapper  = document.getElementById('phone-wrapper');
+    const tiltSection   = document.getElementById('showcase') || document.getElementById('hero');
     let tiltX = 0, tiltY = 0, targetX = 0, targetY = 0;
-    heroSection.addEventListener('mousemove', e => {
-      const rect = heroSection.getBoundingClientRect();
+    if (tiltSection) {
+    tiltSection.addEventListener('mousemove', e => {
+      const rect = tiltSection.getBoundingClientRect();
       targetX = (e.clientX - rect.left) / rect.width - 0.5;
       targetY = (e.clientY - rect.top)  / rect.height - 0.5;
     });
-    heroSection.addEventListener('mouseleave', () => { targetX = 0; targetY = 0; });
+    tiltSection.addEventListener('mouseleave', () => { targetX = 0; targetY = 0; });
+    }
     (function tiltLoop(){
       tiltX += (targetX - tiltX) * 0.08;
       tiltY += (targetY - tiltY) * 0.08;
@@ -1941,6 +2003,12 @@
       if (i === idx) el.scrollTop = 0;
     });
     document.querySelectorAll('.phone-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+    document.querySelectorAll('.showcase-label').forEach(l => {
+      const active = parseInt(l.dataset.idx) === idx;
+      l.classList.toggle('active', active);
+      l.style.color = active ? '#d45d79' : 'rgba(240,230,216,0.35)';
+      l.style.borderColor = active ? 'rgba(212,93,121,0.4)' : 'rgba(255,255,255,0.07)';
+    });
     currentTpl = idx;
     startScrollCycle();
   }
@@ -1977,7 +2045,6 @@
   /* ── 8. SCROLL-PINNED VIDEO REVEAL (generative canvas fallback) ── */
   {
     const revealSection = document.getElementById('video-reveal');
-    const sticky        = document.getElementById('video-sticky');
     const mask          = document.getElementById('video-clip-mask');
     const progressFill  = document.getElementById('video-progress-fill');
     const progressLabel = document.getElementById('video-progress-label');
@@ -1986,11 +2053,9 @@
     const fc            = document.getElementById('video-canvas-fallback');
     const fCtx          = fc.getContext('2d');
 
-    // Size the canvas
     const sizeFC = () => { fc.width = fc.offsetWidth; fc.height = fc.offsetHeight; };
     sizeFC(); window.addEventListener('resize', sizeFC);
 
-    // Generative "code rain" on canvas — columns of falling code symbols
     const COLS_SYMS = ['<','/','>','{','}','(',')',';','#','=','[',']','&','|','0','1','px','em','vh','fn','if','&&','//'];
     let cols = [];
     const COL_W = 28;
@@ -1998,29 +2063,24 @@
       cols = [];
       const n = Math.ceil(fc.width / COL_W);
       for (let i = 0; i < n; i++) {
-        cols.push({ x: i * COL_W + COL_W / 2, y: Math.random() * -fc.height, speed: 0.6 + Math.random() * 1.2, chars: [], alpha: 0.3 + Math.random() * 0.5 });
+        cols.push({ x: i * COL_W + COL_W / 2, y: Math.random() * -fc.height, speed: 0.6 + Math.random() * 1.2, alpha: 0.3 + Math.random() * 0.5 });
       }
     }
     initCols();
     window.addEventListener('resize', initCols);
 
-    let fcRaf, fcRunning = false, fcT = 0;
+    let fcRaf, fcRunning = false;
     function drawFC() {
-      fcT++;
       fCtx.fillStyle = 'rgba(17,12,16,0.12)';
       fCtx.fillRect(0, 0, fc.width, fc.height);
 
       cols.forEach(col => {
         col.y += col.speed;
         if (col.y > fc.height + 60) col.y = -20 - Math.random() * 300;
-
         const sym = COLS_SYMS[Math.floor(Math.random() * COLS_SYMS.length)];
-        // Head glyph — bright rose
         fCtx.font = '13px "JetBrains Mono", monospace';
         fCtx.fillStyle = `rgba(212,93,121,${col.alpha})`;
         fCtx.fillText(sym, col.x, col.y);
-
-        // Trail glyphs — fade to dark
         for (let t = 1; t <= 8; t++) {
           const trailSym = COLS_SYMS[Math.floor(Math.random() * COLS_SYMS.length)];
           const a = col.alpha * (1 - t / 9) * 0.35;
@@ -2028,31 +2088,32 @@
           fCtx.fillText(trailSym, col.x, col.y - t * 18);
         }
       });
+
+      const vg = fCtx.createRadialGradient(fc.width/2, fc.height/2, fc.width*0.15, fc.width/2, fc.height/2, fc.width*0.7);
+      vg.addColorStop(0, 'rgba(17,12,16,0)');
+      vg.addColorStop(1, 'rgba(17,12,16,0.7)');
+      fCtx.fillStyle = vg;
+      fCtx.fillRect(0, 0, fc.width, fc.height);
+
       fcRaf = requestAnimationFrame(drawFC);
     }
 
-    // Reveal animation driven by scroll position within the section
-    let prevRatio = 0;
-    function onScroll() {
-      if (!revealSection) return;
-      const rect   = revealSection.getBoundingClientRect();
-      const total  = revealSection.offsetHeight - window.innerHeight;
-      const scrolled = -rect.top;
-      const ratio  = Math.max(0, Math.min(1, scrolled / total));
+    let currentRatio = 0;
+    let rafPending = false;
 
-      // Start canvas when section enters
+    function applyReveal() {
+      rafPending = false;
+      const ratio = currentRatio;
+
       if (ratio > 0 && !fcRunning) { fcRunning = true; drawFC(); }
       if (ratio <= 0 && fcRunning) { fcRunning = false; cancelAnimationFrame(fcRaf); }
 
-      // Mask peels away: inset shrinks from 100% → 0%
-      // Phase 0–0.5: mask opens up like curtains (horizontal)
-      // Phase 0.5–1: text fades in
-      const openPct = Math.max(0, Math.min(1, ratio / 0.65));
-      const hInset  = (1 - openPct) * 52; // % from each side
-      mask.style.clipPath = `inset(0 ${hInset}% 0 ${hInset}%)`;
+      const rawPct = Math.max(0, Math.min(1, ratio / 0.65));
+      const eased = rawPct < 0.5 ? 2 * rawPct * rawPct : -1 + (4 - 2 * rawPct) * rawPct;
+      const inset = (1 - eased) * 50;
+      mask.style.clipPath = `inset(${inset}% ${inset}% ${inset}% ${inset}%)`;
       mask.style.opacity  = ratio >= 0.98 ? '0' : '1';
 
-      // Text fade in at 60% scroll
       if (ratio > 0.62) {
         const t = Math.min(1, (ratio - 0.62) / 0.3);
         eyebrow.style.opacity   = t;
@@ -2060,16 +2121,32 @@
         headline.style.opacity  = t;
         headline.style.transform= `translateY(${(1 - t) * 30}px)`;
       } else {
-        eyebrow.style.opacity = 0; headline.style.opacity = 0;
+        eyebrow.style.opacity = '0'; headline.style.opacity = '0';
       }
 
-      // Progress bar
       const pct = Math.round(ratio * 100);
       progressFill.style.width = pct + '%';
       progressLabel.textContent = String(pct).padStart(3,'0') + '%';
-
-      prevRatio = ratio;
     }
+
+    function onScroll() {
+      if (!revealSection) return;
+      const rect    = revealSection.getBoundingClientRect();
+      const total   = revealSection.offsetHeight - window.innerHeight;
+      const scrolled = -rect.top;
+      currentRatio  = Math.max(0, Math.min(1, scrolled / total));
+
+      if (currentRatio > 0 && !fcRunning) { fcRunning = true; drawFC(); }
+
+      if (!rafPending) { rafPending = true; requestAnimationFrame(applyReveal); }
+    }
+
+    const sectionObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting && !fcRunning) { fcRunning = true; drawFC(); }
+      });
+    }, { threshold: 0 });
+    if (revealSection) sectionObs.observe(revealSection);
 
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
@@ -2092,8 +2169,7 @@
       .from('#hl1 .gsap-reveal-char, #hl2 .gsap-reveal-char, #hl3 .gsap-reveal-char', { opacity:0, y:50, rotate:4, stagger:0.04, duration:0.8, ease:'power3.out' }, '-=0.4')
       .from('#hero-sub',      { opacity:0, y:20, duration:0.7, ease:'power2.out' }, '-=0.5')
       .from('#hero-actions',  { opacity:0, y:20, duration:0.6, ease:'power2.out' }, '-=0.4')
-      .from('#hero-stats .stat', { opacity:0, y:15, stagger:0.1, duration:0.5, ease:'power2.out' }, '-=0.3')
-      .from('#phone-wrapper',  { opacity:0, y:40, duration:1, ease:'power3.out' }, '-=0.8');
+      .from('#hero-stats .stat', { opacity:0, y:15, stagger:0.1, duration:0.5, ease:'power2.out' }, '-=0.3');
 
     // Section title reveals
     document.querySelectorAll('.section-title').forEach(el => {
