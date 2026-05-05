@@ -1506,6 +1506,56 @@
     .pricing-note a { color: #d45d79; border-bottom: 1px solid rgba(212,93,121,0.3); }
     .pricing-note a:hover { color: #ea9085; }
 
+    /* ── PRICING LIVENESS ANIMATIONS ── */
+    @keyframes priceCardFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+    @keyframes priceAmountGlow {
+      0%, 100% { text-shadow: 0 0 20px rgba(212,93,121,0.0); }
+      50% { text-shadow: 0 0 40px rgba(212,93,121,0.5), 0 0 80px rgba(212,93,121,0.2); }
+    }
+    @keyframes priceFeaturedPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(212,93,121,0); }
+      50% { box-shadow: 0 0 60px 0 rgba(212,93,121,0.12); }
+    }
+    @keyframes priceLineGrow {
+      from { transform: scaleX(0); transform-origin: left; }
+      to { transform: scaleX(1); transform-origin: left; }
+    }
+    @keyframes priceRevealUp {
+      from { opacity: 0; transform: translateY(32px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .price-card.featured {
+      animation: priceFeaturedPulse 3s ease-in-out infinite !important;
+    }
+    .price-card.featured .price-amount {
+      animation: priceAmountGlow 3s ease-in-out infinite !important;
+    }
+    .pricing-grid .price-card:nth-child(1) { animation-delay: 0s; }
+    .pricing-grid .price-card:nth-child(2) { animation-delay: 0.1s; }
+    .pricing-grid .price-card:nth-child(3) { animation-delay: 0.2s; }
+    .price-card:hover {
+      transform: translateY(-8px) !important;
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), background 0.3s !important;
+    }
+    .price-card:hover .price-amount {
+      text-shadow: 0 0 40px rgba(212,93,121,0.35) !important;
+      transition: text-shadow 0.3s ease !important;
+    }
+    .price-card:not(.featured):hover::before {
+      background: rgba(212,93,121,0.6) !important;
+      transition: background 0.3s ease !important;
+    }
+    /* Animated entry for pricing header */
+    #pricing .pricing-header {
+      animation: priceRevealUp 0.8s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    #pricing .pricing-grid {
+      animation: priceRevealUp 0.8s 0.2s cubic-bezier(0.16,1,0.3,1) both;
+    }
+
     /* Buttons below the fold */
     section:not(#hero) .btn-primary { background: #d45d79 !important; color: #fff !important; border-color: #d45d79 !important; }
     section:not(#hero) .btn-primary:hover { background: #c04468 !important; border-color: #c04468 !important; }
@@ -1594,7 +1644,7 @@
     </div>
     <div class="nav-links">
       <a href="#what" class="hide-mobile">Work</a>
-      <a href="#pricing" class="hide-mobile">Pricing</a>
+      <a href="#pricing" onclick="jumpToPricing(event)" class="hide-mobile">Pricing</a>
       <a href="#process" class="hide-mobile">Process</a>
       <a href="#contact" class="nav-cta">Start a project →</a>
     </div>
@@ -1644,7 +1694,7 @@
 
         <div class="hero-actions" id="hero-actions">
           <a href="#contact" class="btn btn-primary magnetic-btn">Start a project →</a>
-          <a href="#pricing" class="btn" style="background:transparent;color:rgba(240,230,216,0.6);border:1.5px solid rgba(240,230,216,0.15);border-radius:999px;padding:13px 28px;font-size:14px;font-weight:600;transition:all 0.2s;">See pricing</a>
+          <a href="#pricing" onclick="jumpToPricing(event)" class="btn" style="background:transparent;color:rgba(240,230,216,0.6);border:1.5px solid rgba(240,230,216,0.15);border-radius:999px;padding:13px 28px;font-size:14px;font-weight:600;transition:all 0.2s;">See pricing</a>
         </div>
 
         <div class="hero-stats" id="hero-stats">
@@ -2079,6 +2129,8 @@
     </div>
   </div>
 
+  </div><!-- /light-zone -->
+
   <!-- PRICING -->
   <section id="pricing">
     <canvas id="pricing-canvas"></canvas>
@@ -2146,8 +2198,6 @@
 
     </div>
   </section>
-
-  </div><!-- /light-zone -->
 
   <!-- FOOTER / CTA -->
   <footer id="contact" style="
@@ -2799,6 +2849,16 @@
 
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
+
+    // Expose a way for links to skip straight to pricing, bypassing the scroll lock
+    window._videoRevealUnlock = () => { scrollLocked = false; };
+  }
+
+  function jumpToPricing(e) {
+    e.preventDefault();
+    if (window._videoRevealUnlock) window._videoRevealUnlock();
+    const target = document.getElementById('pricing');
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
   }
 
   /* ── 9. PRICING CANVAS — drifting code fragments ── */
