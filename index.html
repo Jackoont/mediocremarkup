@@ -794,29 +794,40 @@
       opacity: 0;
       transition: opacity 0.4s;
     }
+    /* Shockwave flash layer — flares white then fades */
     #video-clip-mask {
       position: absolute;
       inset: 0;
-      background: #110c10;
-      /* clip path is animated via JS — starts as full cover, opens to nothing */
-      clip-path: inset(0 0 0 0);
+      background: #fff;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 5;
+      mix-blend-mode: overlay;
+    }
+    /* Shockwave ring canvas — drawn on top of code rain */
+    #shockwave-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 4;
     }
     #video-text-overlay {
       position: relative;
-      z-index: 3;
+      z-index: 6;
       text-align: center;
       padding: 40px;
+      /* starts invisible, slams in via JS */
     }
     .video-eyebrow {
       font-family: var(--font-mono);
       font-size: 11px;
       letter-spacing: 4px;
       text-transform: uppercase;
-      color: rgba(245,224,220,0.5);
+      color: rgba(245,224,220,0.55);
       margin-bottom: 20px;
       opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 1.2s cubic-bezier(0.4,0,0.2,1), transform 1.2s cubic-bezier(0.4,0,0.2,1);
     }
     .video-headline {
       font-family: var(--font-serif);
@@ -827,8 +838,6 @@
       line-height: 1.15;
       letter-spacing: -1px;
       opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 1.2s 0.2s cubic-bezier(0.4,0,0.2,1), transform 1.2s 0.2s cubic-bezier(0.4,0,0.2,1);
       max-width: 680px;
     }
     .video-headline em { color: #d45d79; font-style: inherit; }
@@ -1374,7 +1383,7 @@
 
         <div class="hero-tag">Hand-coded for local businesses</div>
 
-        <p class="hero-sub" id="hero-sub">Custom websites built from scratch — not Squarespace, not Wix, not a recycled theme with your name slapped on it. Real code. Real craft.</p>
+        <p class="hero-sub" id="hero-sub">For local businesses that are tired of looking like everyone else online. Built by hand, launched fast, maintained quietly.</p>
 
         <div class="hero-actions" id="hero-actions">
           <a href="#contact" class="btn btn-primary magnetic-btn">Start a project →</a>
@@ -1773,11 +1782,13 @@
   <!-- ══ SCROLL-PINNED VIDEO REVEAL ══ -->
   <div id="video-reveal">
     <div id="video-sticky">
-      <!-- Canvas fallback — generative "code rain" when no video present -->
+      <!-- Code rain background -->
       <canvas id="video-canvas-fallback"></canvas>
-      <!-- Mask that peels away as you scroll -->
+      <!-- Shockwave ring canvas -->
+      <canvas id="shockwave-canvas"></canvas>
+      <!-- White flash layer -->
       <div id="video-clip-mask"></div>
-      <!-- Text that fades in once reveal completes -->
+      <!-- Text that slams in -->
       <div id="video-text-overlay">
         <div class="video-eyebrow" id="video-eyebrow">The craft behind every build</div>
         <h2 class="video-headline" id="video-headline">Organic code.<br><em>Not just a template with your logo on it.</em></h2>
@@ -1790,191 +1801,150 @@
     </div>
   </div>
 
-  <div class="feature-band">
-    <div class="feature-quote">"A website that actually works for your business."</div>
-    <ul class="feature-list">
-      <li>Built in code, not a page builder</li>
-      <li>Yours to keep forever</li>
-      <li>Mobile-first, always</li>
-      <li>Ongoing care available</li>
-    </ul>
-  </div>
+  <!-- ══ BELOW-FOLD LIGHT ZONE ══ -->
+  <div id="light-zone">
 
-  <!-- ══ LIGHT CONTENT ZONE — switches body back to parchment ══ -->
-  <div id="light-zone" style="background:#fdf6f0;">
-
+  <!-- MARQUEE -->
   <div class="marquee-strip">
-    <div class="marquee-track">
+    <div class="marquee-track" id="marquee-track">
       <span>Hand-coded</span><span class="marquee-sep">●</span>
       <span>No templates</span><span class="marquee-sep">●</span>
       <span>Mobile-first</span><span class="marquee-sep">●</span>
-      <span>Hosted and maintained</span><span class="marquee-sep">●</span>
-      <span>Built for local businesses</span><span class="marquee-sep">●</span>
+      <span>Hosted &amp; maintained</span><span class="marquee-sep">●</span>
       <span>Fast turnaround</span><span class="marquee-sep">●</span>
+      <span>Local businesses</span><span class="marquee-sep">●</span>
       <span>Hand-coded</span><span class="marquee-sep">●</span>
       <span>No templates</span><span class="marquee-sep">●</span>
       <span>Mobile-first</span><span class="marquee-sep">●</span>
-      <span>Hosted and maintained</span><span class="marquee-sep">●</span>
-      <span>Built for local businesses</span><span class="marquee-sep">●</span>
+      <span>Hosted &amp; maintained</span><span class="marquee-sep">●</span>
       <span>Fast turnaround</span><span class="marquee-sep">●</span>
+      <span>Local businesses</span><span class="marquee-sep">●</span>
     </div>
   </div>
 
-  <section id="what">
-    <div class="section-inner">
-      <div class="section-label reveal"><span>/ 01 — What you get</span><span>Four principles</span></div>
-      <h2 class="section-title reveal">A real website. <em>Not a template with your logo on it.</em></h2>
-      <div class="what-list">
-        <div class="what-item reveal">
-          <div class="what-item-num">01</div><div class="what-item-divider"></div>
-          <h3>Hand-coded</h3>
-          <p>No bloated page builders. No recycled themes. Every site is written from scratch so it loads fast and looks like yours.</p>
-          <span class="what-tag">Speed</span>
-        </div>
-        <div class="what-item reveal">
-          <div class="what-item-num">02</div><div class="what-item-divider"></div>
-          <h3>Mobile-first</h3>
-          <p>Most of your customers are on their phones. Sites are designed for small screens first, then scaled up.</p>
-          <span class="what-tag">Mobile</span>
-        </div>
-        <div class="what-item reveal">
-          <div class="what-item-num">03</div><div class="what-item-divider"></div>
-          <h3>Secure &amp; backed up</h3>
-          <p>SSL out of the box. Daily backups. Updates handled. You never have to think about it once it's live.</p>
-          <span class="what-tag">Security</span>
-        </div>
-        <div class="what-item reveal">
-          <div class="what-item-num">04</div><div class="what-item-divider"></div>
-          <h3>Yours forever</h3>
-          <p>You own your domain. You own your content. If you ever leave, everything goes with you.</p>
-          <span class="what-tag">Ownership</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
+  <!-- PRICING -->
   <section id="pricing">
     <div class="section-inner">
-      <div class="section-label reveal"><span>/ 02 — Pricing</span><span>Three tiers</span></div>
-      <h2 class="section-title reveal">Three ways to work together. <em>No surprises.</em></h2>
+      <div class="section-label reveal"><span>/ Pricing</span><span>Three tiers</span></div>
+      <h2 class="section-title reveal">Simple pricing.<br><em>No agency markup.</em></h2>
+
       <div class="pricing-grid">
+
         <div class="price-card reveal">
           <span class="price-tag">Starter</span>
           <div class="price-name">Single Page</div>
-          <p class="price-desc">A clean professional landing page. Hours, location, contact, the essentials.</p>
+          <p class="price-desc">One clean page. Your hours, location, services, and a way to contact you. Done right.</p>
           <div class="price-amount"><sup>$</sup>500</div>
           <div class="price-period">One-time</div>
           <ul class="price-features">
-            <li>Custom design</li><li>Mobile responsive</li><li>Contact form</li><li>Delivered in ~7 days</li>
+            <li>Custom design, nothing recycled</li>
+            <li>Mobile responsive</li>
+            <li>Contact form</li>
+            <li>Delivered in ~7 days</li>
           </ul>
-          <a href="#contact" class="btn btn-secondary">Start →</a>
+          <a href="mailto:mediocremanager@outlook.com" class="btn btn-secondary">Get started →</a>
         </div>
+
         <div class="price-card featured reveal">
-          <span class="price-tag">Most chosen</span>
-          <div class="price-name">Full Website</div>
-          <p class="price-desc">Multi-page site with the works. Animations, custom design, copy help included.</p>
+          <span class="price-tag">Most popular</span>
+          <div class="price-name">Full Site</div>
+          <p class="price-desc">The real thing. Multi-page, animated, built to convert visitors into customers.</p>
           <div class="price-amount"><sup>$</sup>1,200</div>
           <div class="price-period">One-time</div>
           <ul class="price-features">
-            <li>Up to 6 pages</li><li>Custom animations</li><li>SEO setup</li><li>Copy assistance</li><li>Delivered in ~14 days</li>
+            <li>Up to 6 pages</li>
+            <li>Custom animations</li>
+            <li>SEO foundations</li>
+            <li>Copy assistance</li>
+            <li>Delivered in ~14 days</li>
           </ul>
-          <a href="#contact" class="btn btn-primary">Start →</a>
+          <a href="mailto:mediocremanager@outlook.com" class="btn btn-primary">Get started →</a>
         </div>
+
         <div class="price-card reveal">
           <span class="price-tag">Ongoing</span>
           <div class="price-name">Care Plan</div>
-          <p class="price-desc">Hosting, updates, backups, security. The site stays online and you forget it exists.</p>
+          <p class="price-desc">Hosting, updates, backups. The site stays online and you never have to think about it.</p>
           <div class="price-amount"><sup>$</sup>50</div>
           <div class="price-period">Per month</div>
           <ul class="price-features">
-            <li>Hosting included</li><li>Daily backups</li><li>Security monitoring</li><li>Small updates included</li>
+            <li>Hosting included</li>
+            <li>Daily backups</li>
+            <li>Security monitoring</li>
+            <li>Small edits included</li>
           </ul>
-          <a href="#contact" class="btn btn-secondary">Start →</a>
+          <a href="mailto:mediocremanager@outlook.com" class="btn btn-secondary">Get started →</a>
         </div>
+
       </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <section id="services">
-    <div class="section-inner">
-      <div class="section-label reveal"><span>/ 03 — Services</span><span>What I build</span></div>
-      <h2 class="section-title reveal">What I can build for you.</h2>
-      <div class="services-chips reveal">
-        <span class="service-chip">Business Website</span>
-        <span class="service-chip">Online Store</span>
-        <span class="service-chip">Booking System</span>
-        <span class="service-chip">Invoicing Setup</span>
-        <span class="service-chip">Membership Site</span>
-        <span class="service-chip">Blog</span>
-        <span class="service-chip">Portfolio</span>
-        <span class="service-chip">Donation Page</span>
-        <span class="service-chip">Event Page</span>
-        <span class="service-chip">Restaurant Menu</span>
-        <span class="service-chip">Landing Page</span>
-        <span class="service-chip">SEO Setup</span>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <section id="process">
-    <div class="section-inner">
-      <div class="section-label reveal"><span>/ 04 — Process</span><span>Four steps</span></div>
-      <h2 class="section-title reveal">Four steps. <em>That's it.</em></h2>
-      <div class="process-track">
-        <div class="process-steps">
-          <div class="process-step reveal">
-            <div class="process-circle">01</div>
-            <div class="process-step-time">~30 min</div>
-            <h3>We <em>talk</em></h3>
-            <p>A short call or message. What does your business do? Who's it for? What do you want the site to actually do?</p>
-          </div>
-          <div class="process-connector"></div>
-          <div class="process-step reveal">
-            <div class="process-circle">02</div>
-            <div class="process-step-time">~7–14 days</div>
-            <h3>I <em>build</em></h3>
-            <p>You get a draft within a few days. We refine until it feels right. No mystery, no agency runaround.</p>
-          </div>
-          <div class="process-connector"></div>
-          <div class="process-step reveal">
-            <div class="process-circle">03</div>
-            <div class="process-step-time">Same day</div>
-            <h3>We <em>launch</em></h3>
-            <p>Site goes live on your domain. SSL, backups, everything secure from day one.</p>
-          </div>
-          <div class="process-connector"></div>
-          <div class="process-step reveal">
-            <div class="process-circle">04</div>
-            <div class="process-step-time">Ongoing</div>
-            <h3>I <em>maintain</em></h3>
-            <p>If you're on the Care Plan, your site is handled. Updates, backups, security — all behind the scenes.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <section id="contact">
-    <div class="cta">
-      <h2 class="reveal">Let's build something<br><em>not actually mediocre.</em></h2>
-      <a class="cta-email reveal" href="mailto:mediocremanager@outlook.com">mediocremanager@outlook.com →</a>
     </div>
   </section>
 
   </div><!-- /light-zone -->
 
-  <footer>
-    <span class="footer-copy">© 2026 Mediocre Markup</span>
-    <span class="footer-tagline">Websites that outperform average</span>
-    <a class="footer-email" href="mailto:mediocremanager@outlook.com">mediocremanager@outlook.com</a>
+  <!-- FOOTER / CTA -->
+  <footer id="contact" style="
+    background: #0e0a0d;
+    border-top: none;
+    padding: 0;
+    display: block;
+  ">
+    <!-- Big CTA block -->
+    <div style="
+      padding: 120px 80px 80px;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 60px;
+    " class="footer-cta-grid">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(212,93,121,0.6);margin-bottom:24px;display:flex;align-items:center;gap:10px;">
+          <span style="display:inline-block;width:28px;height:1px;background:rgba(212,93,121,0.4);"></span>
+          Ready to build
+        </div>
+        <h2 style="
+          font-family:'Fraunces',serif;
+          font-size:clamp(40px,6vw,88px);
+          font-weight:300;
+          font-style:italic;
+          color:#f0e6d8;
+          line-height:0.95;
+          letter-spacing:-2px;
+          margin-bottom:36px;
+        ">Let's build something<br><em style="color:#d45d79;">not actually mediocre.</em></h2>
+        <a href="mailto:mediocremanager@outlook.com" style="
+          font-family:'JetBrains Mono',monospace;
+          font-size:15px;
+          color:rgba(240,230,216,0.55);
+          letter-spacing:0.5px;
+          border-bottom:1px solid rgba(240,230,216,0.15);
+          padding-bottom:3px;
+          transition:color 0.2s,border-color 0.2s;
+          text-decoration:none;
+        " onmouseenter="this.style.color='#d45d79';this.style.borderColor='rgba(212,93,121,0.5)'" onmouseleave="this.style.color='rgba(240,230,216,0.55)';this.style.borderColor='rgba(240,230,216,0.15)'">mediocremanager@outlook.com →</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;text-align:right;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(240,230,216,0.2);">Based in</span>
+        <span style="font-family:'Fraunces',serif;font-size:18px;font-weight:300;font-style:italic;color:rgba(240,230,216,0.4);">St. Johns, FL</span>
+      </div>
+    </div>
+    <!-- Bottom bar -->
+    <div style="
+      border-top:1px solid rgba(240,230,216,0.06);
+      padding:20px 80px;
+      max-width:none;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:12px;
+    " class="footer-bottom-bar">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(240,230,216,0.2);">© 2026 Mediocre Markup</span>
+      <span style="font-family:'Fraunces',serif;font-size:13px;font-weight:300;font-style:italic;color:rgba(240,230,216,0.2);">Websites that outperform average</span>
+      <a href="mailto:mediocremanager@outlook.com" style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:rgba(240,230,216,0.2);text-decoration:none;transition:color 0.2s;" onmouseenter="this.style.color='#d45d79'" onmouseleave="this.style.color='rgba(240,230,216,0.2)'">mediocremanager@outlook.com</a>
+    </div>
   </footer>
 
   <script>
@@ -2052,24 +2022,7 @@
     })();
   }
 
-  /* ── 3. BOKEH SPAWNER ── */
-  {
-    const decoLayer = document.getElementById('deco-layer');
-    const bokehColors=['rgba(212,93,121,','rgba(234,144,133,','rgba(244,194,194,','rgba(200,110,140,','rgba(220,160,170,'];
-    const blobShapes=['60% 40% 55% 45% / 50% 60% 40% 50%','40% 60% 45% 55% / 60% 40% 55% 45%','50% 50% 65% 35% / 45% 55% 50% 50%','35% 65% 40% 60% / 55% 45% 60% 40%','55% 45% 50% 50% / 40% 60% 45% 55%','45% 55% 60% 40% / 65% 35% 50% 50%'];
-    function spawnBokeh(){
-      const b=document.createElement('div'); b.className='bokeh';
-      const size=22+Math.random()*55, dur=9+Math.random()*9;
-      const color=bokehColors[Math.floor(Math.random()*bokehColors.length)];
-      const shape=blobShapes[Math.floor(Math.random()*blobShapes.length)];
-      const opacity=(0.22+Math.random()*0.28).toFixed(2);
-      b.style.cssText=[`left:${5+Math.random()*88}%`,`bottom:-${size+20}px`,`width:${size}px`,`height:${size}px`,`border-radius:${shape}`,`background:radial-gradient(ellipse at 38% 36%, ${color}${opacity}), ${color}0.08))`,`animation-duration:${dur}s`,`animation-delay:0s`].join(';');
-      decoLayer.appendChild(b);
-      setTimeout(()=>b.remove(),(dur+0.5)*1000);
-    }
-    for(let i=0;i<5;i++) setTimeout(spawnBokeh,i*1400);
-    setInterval(spawnBokeh,1800);
-  }
+  /* ── 3. BOKEH SPAWNER — disabled, symbols are the only floating elements ── */
 
   /* ── 4. AMBIENT MORPHING BLOBS ── */
   {
@@ -2156,33 +2109,7 @@
 
     function drawVortex() {
       vCtx.clearRect(0, 0, VW, VH);
-      const cx = VW / 2, cy = VH / 2;
-      // Concentric fading rings
-      const numRings = 5;
-      for (let r = 0; r < numRings; r++) {
-        const radius = 30 + r * 55;
-        const alpha  = (0.12 - r * 0.02) * (1 - dispProgress);
-        if (alpha <= 0) continue;
-        vCtx.beginPath();
-        vCtx.arc(cx, cy, radius, 0, Math.PI * 2);
-        vCtx.strokeStyle = `rgba(212,93,121,${alpha})`;
-        vCtx.lineWidth = 1;
-        vCtx.stroke();
-      }
-      // Spiral arms
-      for (let arm = 0; arm < 3; arm++) {
-        vCtx.beginPath();
-        const offset = (arm / 3) * Math.PI * 2;
-        for (let t = 0; t < Math.PI * 4; t += 0.05) {
-          const rr = t * 28;
-          const x  = cx + Math.cos(t + offset + vt) * rr;
-          const y  = cy + Math.sin(t + offset + vt) * rr;
-          if (t === 0) vCtx.moveTo(x, y); else vCtx.lineTo(x, y);
-        }
-        vCtx.strokeStyle = `rgba(212,93,121,${0.06 * (1 - dispProgress)})`;
-        vCtx.lineWidth = 1.5;
-        vCtx.stroke();
-      }
+      // Pure black — symbols are the only visual element
     }
 
     let wpStarted = false;
@@ -2335,57 +2262,200 @@
     const fc            = document.getElementById('video-canvas-fallback');
     const fCtx          = fc.getContext('2d');
 
-    const sizeFC = () => { fc.width = fc.offsetWidth; fc.height = fc.offsetHeight; };
-    sizeFC(); window.addEventListener('resize', sizeFC);
+    // ── SIZE CANVASES ──
+    const sw   = document.getElementById('shockwave-canvas');
+    const swCtx = sw.getContext('2d');
+    const sizeCanvases = () => {
+      fc.width  = fc.offsetWidth;  fc.height  = fc.offsetHeight;
+      sw.width  = sw.offsetWidth;  sw.height  = sw.offsetHeight;
+    };
+    sizeCanvases(); window.addEventListener('resize', sizeCanvases);
 
-    const COLS_SYMS = ['<','/','>','{','}','(',')',';','#','=','[',']','&','|','0','1','px','em','vh','fn','if','&&','//'];
+    // ── CODE RAIN ──
+    const COLS_SYMS = ['</', '/>', '{}', '()', '=>', '&&', '//', '#', '[]', '+=', 'var', 'fn', 'px', 'vh', 'rem', 'url', '/*', '*/', '0', '1'];
     let cols = [];
-    const COL_W = 28;
+    const COL_W = 32;
     function initCols() {
       cols = [];
       const n = Math.ceil(fc.width / COL_W);
       for (let i = 0; i < n; i++) {
-        cols.push({ x: i * COL_W + COL_W / 2, y: Math.random() * -fc.height, speed: 0.6 + Math.random() * 1.2, alpha: 0.3 + Math.random() * 0.5 });
+        cols.push({
+          x: i * COL_W + COL_W / 2,
+          y: Math.random() * -fc.height,
+          speed: 0.8 + Math.random() * 1.6,
+          alpha: 0.25 + Math.random() * 0.45,
+          warpX: 0  // lateral distortion driven by scroll
+        });
       }
     }
     initCols();
     window.addEventListener('resize', initCols);
 
     let fcRaf, fcRunning = false;
+    let rainWarp = 0; // 0 = calm, 1 = max warp (scroll approaches trigger)
+
     function drawFC() {
-      fCtx.fillStyle = 'rgba(17,12,16,0.12)';
+      // Trailing fade — less fade = more persistence = more chaos
+      const fadeAlpha = 0.08 + rainWarp * 0.06;
+      fCtx.fillStyle = `rgba(17,12,16,${fadeAlpha})`;
       fCtx.fillRect(0, 0, fc.width, fc.height);
 
-      cols.forEach(col => {
-        col.y += col.speed;
-        if (col.y > fc.height + 60) col.y = -20 - Math.random() * 300;
+      cols.forEach((col, ci) => {
+        // Warp: columns oscillate sideways as scroll intensifies
+        col.warpX = Math.sin(Date.now() * 0.002 + ci * 0.7) * rainWarp * 18;
+
+        // Speed also increases with warp
+        const spd = col.speed * (1 + rainWarp * 3);
+        col.y += spd;
+        if (col.y > fc.height + 60) {
+          col.y = -20 - Math.random() * 200;
+          col.warpX = 0;
+        }
+
         const sym = COLS_SYMS[Math.floor(Math.random() * COLS_SYMS.length)];
-        fCtx.font = '13px "JetBrains Mono", monospace';
-        fCtx.fillStyle = `rgba(212,93,121,${col.alpha})`;
-        fCtx.fillText(sym, col.x, col.y);
-        for (let t = 1; t <= 8; t++) {
+        const ax  = col.x + col.warpX;
+
+        // Head glyph — brighter rose
+        fCtx.font = `${12 + rainWarp * 4}px "JetBrains Mono", monospace`;
+        const headAlpha = Math.min(1, col.alpha + rainWarp * 0.4);
+        fCtx.fillStyle = `rgba(212,93,121,${headAlpha})`;
+        fCtx.fillText(sym, ax, col.y);
+
+        // Trail
+        const trailLen = Math.floor(6 + rainWarp * 10);
+        for (let t = 1; t <= trailLen; t++) {
           const trailSym = COLS_SYMS[Math.floor(Math.random() * COLS_SYMS.length)];
-          const a = col.alpha * (1 - t / 9) * 0.35;
-          fCtx.fillStyle = `rgba(180,80,110,${a})`;
-          fCtx.fillText(trailSym, col.x, col.y - t * 18);
+          const a = col.alpha * (1 - t / (trailLen + 1)) * 0.4;
+          fCtx.fillStyle = `rgba(180,70,100,${a})`;
+          fCtx.fillText(trailSym, ax, col.y - t * 16);
         }
       });
 
-      const vg = fCtx.createRadialGradient(fc.width/2, fc.height/2, fc.width*0.15, fc.width/2, fc.height/2, fc.width*0.7);
+      // Vignette
+      const vg = fCtx.createRadialGradient(fc.width/2, fc.height/2, fc.width*0.1, fc.width/2, fc.height/2, fc.width*0.72);
       vg.addColorStop(0, 'rgba(17,12,16,0)');
-      vg.addColorStop(1, 'rgba(17,12,16,0.7)');
+      vg.addColorStop(1, 'rgba(17,12,16,0.65)');
       fCtx.fillStyle = vg;
       fCtx.fillRect(0, 0, fc.width, fc.height);
 
       fcRaf = requestAnimationFrame(drawFC);
     }
 
-    let currentRatio = 0;
-    let rafPending = false;
+    // ── SHOCKWAVE RINGS ──
+    // Each ring: { r, maxR, alpha, lineW, born }
+    let rings = [];
+    let swRaf;
+    let swRunning = false;
 
-    // Scroll lock state — holds the page inside the section once fully revealed
-    let textShownAt = null;  // timestamp when ratio first hit 1
-    const TEXT_HOLD_MS = 1800; // hold fully-revealed for this long before releasing
+    function fireShockwave() {
+      const cx = sw.width / 2, cy = sw.height / 2;
+      // Fire 4 rings in quick succession
+      for (let i = 0; i < 4; i++) {
+        setTimeout(() => {
+          rings.push({ cx, cy, r: 0, maxR: Math.max(sw.width, sw.height) * 0.85, alpha: 0.9 - i * 0.15, lineW: 3 - i * 0.5, speed: 14 + i * 8 });
+        }, i * 80);
+      }
+    }
+
+    function drawSW() {
+      swCtx.clearRect(0, 0, sw.width, sw.height);
+      rings = rings.filter(ring => ring.r < ring.maxR);
+      rings.forEach(ring => {
+        ring.r += ring.speed;
+        const t = ring.r / ring.maxR;
+        const a = ring.alpha * (1 - t) * (1 - t); // quadratic fade
+        swCtx.beginPath();
+        swCtx.arc(ring.cx, ring.cy, ring.r, 0, Math.PI * 2);
+        swCtx.strokeStyle = `rgba(212,93,121,${a})`;
+        swCtx.lineWidth = ring.lineW * (1 - t * 0.7);
+        swCtx.stroke();
+        // Glow ring
+        swCtx.beginPath();
+        swCtx.arc(ring.cx, ring.cy, ring.r, 0, Math.PI * 2);
+        swCtx.strokeStyle = `rgba(255,180,200,${a * 0.3})`;
+        swCtx.lineWidth = ring.lineW * 4 * (1 - t);
+        swCtx.stroke();
+      });
+      swRaf = requestAnimationFrame(drawSW);
+    }
+
+    // ── TEXT SLAM ANIMATION ──
+    // Uses a quick glitch sequence then settles
+    let textRevealed = false;
+    function slamText() {
+      if (textRevealed) return;
+      textRevealed = true;
+
+      const eyebrowEl  = eyebrow;
+      const headlineEl = headline;
+      const flashEl    = mask;
+
+      // 1. White flash
+      flashEl.style.transition = 'opacity 0.06s';
+      flashEl.style.opacity = '0.7';
+      setTimeout(() => {
+        flashEl.style.transition = 'opacity 0.5s';
+        flashEl.style.opacity = '0';
+      }, 60);
+
+      // 2. Fire shockwave rings
+      setTimeout(fireShockwave, 40);
+
+      // 3. Eyebrow glitch-in
+      setTimeout(() => {
+        eyebrowEl.style.opacity = '1';
+        eyebrowEl.style.transform = 'translateY(0) skewX(-8deg)';
+        eyebrowEl.style.transition = 'none';
+        setTimeout(() => {
+          eyebrowEl.style.transform = 'translateY(0) skewX(3deg)';
+          setTimeout(() => {
+            eyebrowEl.style.transform = 'translateY(0) skewX(0deg)';
+            eyebrowEl.style.transition = 'transform 0.3s cubic-bezier(0.4,0,0.2,1)';
+          }, 80);
+        }, 60);
+      }, 120);
+
+      // 4. Headline slams in from below — each line staggers
+      const lines = headlineEl.querySelectorAll('.slam-line');
+      if (lines.length === 0) {
+        // No split lines — just slam the whole thing
+        headlineEl.style.opacity    = '1';
+        headlineEl.style.transform  = 'translateY(40px) scaleY(1.2)';
+        headlineEl.style.transition = 'none';
+        setTimeout(() => {
+          headlineEl.style.transform  = 'translateY(-6px) scaleY(0.97)';
+          headlineEl.style.transition = 'transform 0.15s ease-out';
+          setTimeout(() => {
+            headlineEl.style.transform  = 'translateY(0) scaleY(1)';
+            headlineEl.style.transition = 'transform 0.25s cubic-bezier(0.4,0,0.2,1)';
+          }, 150);
+        }, 200);
+      } else {
+        lines.forEach((line, i) => {
+          setTimeout(() => {
+            line.style.opacity    = '1';
+            line.style.transform  = 'translateY(30px) scaleY(1.15)';
+            line.style.transition = 'none';
+            setTimeout(() => {
+              line.style.transform  = 'translateY(-4px) scaleY(0.98)';
+              line.style.transition = 'transform 0.12s ease-out';
+              setTimeout(() => {
+                line.style.transform  = 'translateY(0) scaleY(1)';
+                line.style.transition = 'transform 0.2s cubic-bezier(0.4,0,0.2,1)';
+              }, 120);
+            }, 180);
+          }, 200 + i * 90);
+        });
+        headlineEl.style.opacity = '1';
+      }
+    }
+
+    // ── SCROLL STATE ──
+    let currentRatio = 0;
+    let rafPending   = false;
+    let shockFired   = false;
+    let textShownAt  = null;
+    const TEXT_HOLD_MS = 2200;
     let scrollLocked = false;
     let lockScrollY  = 0;
 
@@ -2393,25 +2463,28 @@
       rafPending = false;
       const ratio = currentRatio;
 
-      if (ratio > 0 && !fcRunning) { fcRunning = true; drawFC(); }
-      if (ratio <= 0 && fcRunning) { fcRunning = false; cancelAnimationFrame(fcRaf); }
+      if (ratio > 0 && !fcRunning) { fcRunning = true; drawFC(); drawSW(); swRunning = true; }
+      if (ratio <= 0 && fcRunning) {
+        fcRunning = false; swRunning = false;
+        cancelAnimationFrame(fcRaf); cancelAnimationFrame(swRaf);
+        swCtx.clearRect(0, 0, sw.width, sw.height);
+      }
 
-      // Ease the open: quadratic ease-in-out on 0→0.72 of progress
-      const rawPct = Math.max(0, Math.min(1, ratio / 0.72));
-      const eased  = rawPct < 0.5 ? 2 * rawPct * rawPct : -1 + (4 - 2 * rawPct) * rawPct;
-      const inset  = (1 - eased) * 50;
-      mask.style.clipPath = `inset(${inset}% ${inset}% ${inset}% ${inset}%)`;
-      mask.style.opacity  = ratio >= 0.99 ? '0' : '1';
+      // Rain warp: ramp up aggressively from 40% scroll onward
+      rainWarp = Math.max(0, Math.min(1, (ratio - 0.30) / 0.45));
 
-      // Text fade-in at 65% reveal
-      if (ratio > 0.65) {
-        const t = Math.min(1, (ratio - 0.65) / 0.28);
-        eyebrow.style.opacity    = t;
-        eyebrow.style.transform  = `translateY(${(1 - t) * 16}px)`;
-        headline.style.opacity   = t;
-        headline.style.transform = `translateY(${(1 - t) * 24}px)`;
-      } else {
-        eyebrow.style.opacity = '0'; headline.style.opacity = '0';
+      // At 75% — fire the shockwave + slam the text
+      if (ratio >= 0.75 && !shockFired) {
+        shockFired = true;
+        slamText();
+      }
+      // Reset if scrolled back
+      if (ratio < 0.5 && shockFired) {
+        shockFired    = false;
+        textRevealed  = false;
+        rings         = [];
+        eyebrow.style.opacity   = '0';
+        headline.style.opacity  = '0';
       }
 
       const pct = Math.round(ratio * 100);
@@ -2422,13 +2495,10 @@
     function onScroll() {
       if (!revealSection) return;
 
-      // If scroll-locked, snap back to lock position and hold
       if (scrollLocked) {
         window.scrollTo({ top: lockScrollY, behavior: 'instant' });
-        // Check if enough time has passed to release the lock
         if (textShownAt && performance.now() - textShownAt >= TEXT_HOLD_MS) {
           scrollLocked = false;
-          document.body.style.overflowY = '';
         }
         return;
       }
@@ -2438,29 +2508,21 @@
       const scrolled = -rect.top;
       currentRatio   = Math.max(0, Math.min(1, scrolled / total));
 
-      // When we hit 100%, lock scroll briefly so user can read the text
       if (currentRatio >= 1 && !textShownAt) {
-        textShownAt  = performance.now();
-        lockScrollY  = window.scrollY;
+        textShownAt = performance.now();
+        lockScrollY = window.scrollY;
         scrollLocked = true;
-        // Release after TEXT_HOLD_MS automatically
-        setTimeout(() => {
-          scrollLocked = false;
-          document.body.style.overflowY = '';
-        }, TEXT_HOLD_MS);
+        setTimeout(() => { scrollLocked = false; }, TEXT_HOLD_MS);
       }
 
-      if (currentRatio > 0 && !fcRunning) { fcRunning = true; drawFC(); }
       if (!rafPending) { rafPending = true; requestAnimationFrame(applyReveal); }
     }
 
     const sectionObs = new IntersectionObserver(entries => {
       entries.forEach(e => {
-        if (e.isIntersecting && !fcRunning) { fcRunning = true; drawFC(); }
-        // Reset the lock state when section leaves view (scrolling back up)
+        if (e.isIntersecting && !fcRunning) { fcRunning = true; swRunning = true; drawFC(); drawSW(); }
         if (!e.isIntersecting && e.boundingClientRect.top > 0) {
-          textShownAt = null;
-          scrollLocked = false;
+          textShownAt = null; scrollLocked = false;
         }
       });
     }, { threshold: 0 });
