@@ -386,42 +386,37 @@
     .t4-hours-time { font-size:8px; color:#e8d5b0; font-weight:600; text-align:right; }
     .t4-footer { padding:9px 14px; font-size:8px; color:rgba(232,213,176,0.2); text-align:center; background:#140c05; border-top:1px solid rgba(200,134,10,0.1); }
     /* ═══════════════════════════════════════════════
-       SCROLL WHIRLPOOL — The signature animation
+       WHIRLPOOL INTRO — Code symbols spiral into page
        ═══════════════════════════════════════════════ */
     #whirlpool-container {
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100vh;
-      z-index: 999;
+      z-index: 9998;
       pointer-events: none;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
     }
-    #whirlpool-svg {
+    /* The vortex canvas sits behind the symbols */
+    #vortex-canvas {
       position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
+      inset: 0;
+      width: 100%; height: 100%;
     }
-    .spiral-arm {
-      fill: none;
-      stroke-width: 2.5;
-      stroke-linecap: round;
-      transform-origin: center;
-    }
-    #whirlpool-label {
+    /* Each orbiting code symbol */
+    .wp-sym {
       position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
       font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: rgba(212,93,121,0.8);
-      opacity: 0;
-      z-index: 2;
+      font-weight: 600;
+      color: #d45d79;
+      pointer-events: none;
+      will-change: transform, opacity;
+      transform-origin: center;
+      line-height: 1;
     }
+    /* Scroll nudge at bottom */
     #whirlpool-cta {
       position: absolute;
       bottom: 40px;
@@ -431,88 +426,27 @@
       font-size: 10px;
       letter-spacing: 3px;
       text-transform: uppercase;
-      color: rgba(212,93,121,0.6);
+      color: rgba(212,93,121,0.7);
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 8px;
       opacity: 0;
+      transition: opacity 0.6s;
     }
     #whirlpool-cta .scroll-line {
       width: 1px;
-      height: 40px;
-      background: linear-gradient(to bottom, rgba(212,93,121,0.5), transparent);
-      animation: scrollPulse 1.5s ease-in-out infinite;
+      height: 44px;
+      background: linear-gradient(to bottom, rgba(212,93,121,0.6), transparent);
+      animation: scrollPulse 1.6s ease-in-out infinite;
     }
     @keyframes scrollPulse {
-      0%, 100% { opacity: 0.3; transform: scaleY(0.7); }
-      50% { opacity: 1; transform: scaleY(1); }
-    }
-    /* Whirlpool particle burst */
-    .whirlpool-particle {
-      position: absolute;
-      border-radius: 50%;
-      pointer-events: none;
+      0%, 100% { opacity: 0.25; transform: scaleY(0.6); }
+      50%       { opacity: 1;    transform: scaleY(1);   }
     }
 
     /* ═══════════════════════════════════════════════
-       SCROLL VIDEO / NARRATIVE SECTIONS
-       ═══════════════════════════════════════════════ */
-    .scroll-narrative {
-      position: relative;
-      overflow: hidden;
-    }
-    .scroll-narrative-bg {
-      position: absolute;
-      inset: 0;
-      will-change: transform;
-    }
-    .scroll-narrative-bg::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, transparent 30%, rgba(253,248,245,0.95) 85%, var(--bg) 100%);
-    }
-    .scroll-narrative-content {
-      position: relative;
-      z-index: 2;
-      padding: 120px 80px;
-      max-width: 900px;
-    }
-    .narrative-text {
-      font-family: var(--font-serif);
-      font-size: clamp(32px, 5vw, 64px);
-      font-weight: 300;
-      font-style: italic;
-      color: var(--ink);
-      line-height: 1.15;
-      letter-spacing: -1px;
-      opacity: 0;
-    }
-    .narrative-text em {
-      color: var(--accent);
-      font-style: italic;
-    }
-    .narrative-sub {
-      font-family: var(--font-body);
-      font-size: 16px;
-      color: var(--muted);
-      line-height: 1.7;
-      margin-top: 24px;
-      opacity: 0;
-    }
-    .narrative-accent {
-      width: 60px;
-      height: 3px;
-      background: var(--accent);
-      margin-top: 32px;
-      opacity: 0;
-      transform: scaleX(0);
-      transform-origin: left;
-    }
-
-    /* ═══════════════════════════════════════════════
-       PARALLAX DECORATIVE ELEMENTS
+       PARALLAX / ORGANIC AMBIENT BLOBS
        ═══════════════════════════════════════════════ */
     .parallax-blob {
       position: absolute;
@@ -539,7 +473,137 @@
     }
 
     /* ═══════════════════════════════════════════════
-       LUSION-STYLE SMOOTH SECTION REVEALS
+       AMBIENT MORPHING SVG ORBS
+       ═══════════════════════════════════════════════ */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      will-change: transform;
+    }
+    .orb-inner { width: 100%; height: 100%; border-radius: 50%; }
+    .orb-1 { width: 320px; height: 320px; top: 10%; right: -80px; }
+    .orb-2 { width: 200px; height: 200px; bottom: 15%; left: -40px; }
+    .orb-3 { width: 150px; height: 150px; top: 60%; right: 20%; }
+
+    /* Morphing SVG blobs (ambient layer behind everything) */
+    #ambient-blobs {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    #ambient-blobs svg { position: absolute; }
+
+    /* ═══════════════════════════════════════════════
+       SCROLL-PINNED VIDEO REVEAL
+       ═══════════════════════════════════════════════ */
+    #video-reveal {
+      position: relative;
+      height: 300vh; /* pin distance */
+      background: #110c10;
+    }
+    #video-sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    #video-reveal video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    #video-clip-mask {
+      position: absolute;
+      inset: 0;
+      background: #110c10;
+      /* clip path is animated via JS — starts as full cover, opens to nothing */
+      clip-path: inset(0 0 0 0);
+    }
+    #video-text-overlay {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      padding: 40px;
+    }
+    .video-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(245,224,220,0.5);
+      margin-bottom: 20px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s, transform 0.8s;
+    }
+    .video-headline {
+      font-family: var(--font-serif);
+      font-size: clamp(40px, 6vw, 96px);
+      font-weight: 300;
+      font-style: italic;
+      color: #f5ede8;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s 0.15s, transform 0.9s 0.15s;
+    }
+    .video-headline em { color: #d45d79; font-style: inherit; }
+    #video-progress-bar {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 4;
+    }
+    #video-progress-track {
+      width: 120px;
+      height: 2px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 1px;
+      overflow: hidden;
+    }
+    #video-progress-fill {
+      height: 100%;
+      background: #d45d79;
+      border-radius: 1px;
+      width: 0%;
+      transition: width 0.1s;
+    }
+    #video-progress-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.4);
+    }
+    /* Canvas-only fallback (when no video file is present) */
+    #video-canvas-fallback {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    @media (max-width: 900px) {
+      #video-reveal { height: 200vh; }
+      .video-headline { font-size: clamp(32px, 8vw, 64px); }
+    }
+
+    /* ═══════════════════════════════════════════════
+       LUSION-STYLE TEXT SPLITS & CLIP REVEALS
        ═══════════════════════════════════════════════ */
     .gsap-reveal {
       opacity: 0;
@@ -551,26 +615,37 @@
       opacity: 0;
       transform: translateY(40px) rotate(3deg);
     }
-
-    /* ═══════════════════════════════════════════════
-       FLOATING ORBS (replacing bokeh)
-       ═══════════════════════════════════════════════ */
-    .orb {
-      position: fixed;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 0;
-      will-change: transform;
+    /* Split text wrapper — words flow naturally */
+    .split-word {
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: bottom;
     }
-    .orb-inner {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
+    .split-inner {
+      display: inline-block;
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    /* Clip-path image wipe */
+    .clip-reveal {
+      overflow: hidden;
+      border-radius: 16px;
       position: relative;
     }
-    .orb-1 { width: 320px; height: 320px; top: 10%; right: -80px; }
-    .orb-2 { width: 200px; height: 200px; bottom: 15%; left: -40px; }
-    .orb-3 { width: 150px; height: 150px; top: 60%; right: 20%; }
+    .clip-reveal img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transform: scale(1.1);
+    }
+    .clip-reveal::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(212,93,121,0.08);
+      mix-blend-mode: multiply;
+    }
 
     /* ═══════════════════════════════════════════════
        MAGNETIC BUTTONS
@@ -594,67 +669,67 @@
     }
 
     /* ═══════════════════════════════════════════════
+       SCROLL VELOCITY MARQUEE
+       ═══════════════════════════════════════════════ */
+    .marquee-container {
+      overflow: hidden;
+      padding: 28px 0;
+      position: relative;
+    }
+    .marquee-container::before,
+    .marquee-container::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 120px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .marquee-container::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
+    .marquee-container::after  { right: 0; background: linear-gradient(to left,  var(--bg), transparent); }
+    .marquee-track {
+      display: flex;
+      animation: marqueeSmooth 35s linear infinite;
+    }
+    .marquee-item {
+      font-family: var(--font-body);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--muted);
+      white-space: nowrap;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .marquee-item .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+    @keyframes marqueeSmooth {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ═══════════════════════════════════════════════
        HORIZONTAL SCROLL SHOWCASE (services)
        ═══════════════════════════════════════════════ */
-    .h-scroll-wrapper {
-      overflow: hidden;
-      padding: 80px 0;
-    }
-    .h-scroll-track {
-      display: flex;
-      gap: 24px;
-      width: max-content;
-      padding: 0 80px;
-    }
+    .h-scroll-wrapper { overflow: hidden; padding: 80px 0; }
+    .h-scroll-track { display: flex; gap: 24px; width: max-content; padding: 0 80px; }
     .h-scroll-card {
-      width: 320px;
-      flex-shrink: 0;
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      padding: 40px 32px;
+      width: 320px; flex-shrink: 0;
+      background: var(--surface); border: 1px solid var(--line);
+      border-radius: 24px; padding: 40px 32px;
       transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), box-shadow 0.4s;
       cursor: pointer;
     }
-    .h-scroll-card:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 24px 60px rgba(212,93,121,0.12);
-    }
-    .h-scroll-card-icon {
-      width: 56px;
-      height: 56px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-    .h-scroll-card h3 {
-      font-family: var(--font-body);
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--ink);
-      margin-bottom: 10px;
-    }
-    .h-scroll-card p {
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-    .h-scroll-card .card-tag {
-      display: inline-block;
-      margin-top: 16px;
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--accent);
-      background: rgba(212,93,121,0.08);
-      padding: 4px 12px;
-      border-radius: 999px;
-    }
+    .h-scroll-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 24px 60px rgba(212,93,121,0.12); }
+    .h-scroll-card-icon { width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%); display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 20px; }
+    .h-scroll-card h3 { font-family: var(--font-body); font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 10px; }
+    .h-scroll-card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+    .h-scroll-card .card-tag { display: inline-block; margin-top: 16px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); background: rgba(212,93,121,0.08); padding: 4px 12px; border-radius: 999px; }
 
     /* ═══════════════════════════════════════════════
        MARQUEE — Enhanced fluid motion
@@ -927,19 +1002,35 @@
 </head>
 <body>
 
-  <!-- ══ WHIRLPOOL OVERLAY — Scroll-driven intro animation ══ -->
-  <div id="whirlpool-container">
-    <div id="whirlpool-label">scroll to enter</div>
-    <svg id="whirlpool-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-      <path class="spiral-arm" id="arm1" d="M200,200 Q240,160 260,200 Q280,240 240,260 Q200,280 180,240 Q160,200 200,180 Q240,160 280,180" />
-      <path class="spiral-arm" id="arm2" d="M200,200 Q160,240 180,280 Q200,320 240,300 Q280,280 300,240 Q320,200 280,180 Q240,160 200,180" />
-      <path class="spiral-arm" id="arm3" d="M200,200 Q160,160 140,200 Q120,240 160,260 Q200,280 220,240 Q240,200 200,180 Q160,160 140,180" />
-      <path class="spiral-arm" id="arm4" d="M200,200 Q240,240 220,280 Q200,320 160,300 Q120,280 100,240 Q80,200 120,180 Q160,160 200,180" />
-      <circle id="whirlpool-core" cx="200" cy="200" r="8" fill="#d45d79" opacity="0" />
-      <circle id="whirlpool-ring1" cx="200" cy="200" r="40" fill="none" stroke="rgba(212,93,121,0.3)" stroke-width="1" />
-      <circle id="whirlpool-ring2" cx="200" cy="200" r="80" fill="none" stroke="rgba(234,144,133,0.2)" stroke-width="1" />
-      <circle id="whirlpool-ring3" cx="200" cy="200" r="130" fill="none" stroke="rgba(196,112,144,0.1)" stroke-width="1" />
+  <!-- ══ AMBIENT MORPHING BLOBS (fixed behind everything) ══ -->
+  <div id="ambient-blobs">
+    <svg id="ab1" width="600" height="600" viewBox="0 0 600 600" style="top:-100px;left:-200px;opacity:0.18">
+      <path id="ab1-path" fill="url(#abg1)"/>
+      <defs><radialGradient id="abg1" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#d45d79" stop-opacity="0.7"/>
+        <stop offset="100%" stop-color="#d45d79" stop-opacity="0"/>
+      </radialGradient></defs>
     </svg>
+    <svg id="ab2" width="500" height="500" viewBox="0 0 500 500" style="bottom:-80px;right:-100px;opacity:0.14">
+      <path id="ab2-path" fill="url(#abg2)"/>
+      <defs><radialGradient id="abg2" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#ea9085" stop-opacity="0.6"/>
+        <stop offset="100%" stop-color="#ea9085" stop-opacity="0"/>
+      </radialGradient></defs>
+    </svg>
+    <svg id="ab3" width="380" height="380" viewBox="0 0 380 380" style="top:45%;right:15%;opacity:0.10">
+      <path id="ab3-path" fill="url(#abg3)"/>
+      <defs><radialGradient id="abg3" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#c47090" stop-opacity="0.7"/>
+        <stop offset="100%" stop-color="#c47090" stop-opacity="0"/>
+      </radialGradient></defs>
+    </svg>
+  </div>
+
+  <!-- ══ WHIRLPOOL OVERLAY — Code-symbol vortex that disperses on scroll ══ -->
+  <div id="whirlpool-container">
+    <canvas id="vortex-canvas"></canvas>
+    <!-- symbols are injected by JS -->
     <div id="whirlpool-cta">
       <span>scroll</span>
       <div class="scroll-line"></div>
@@ -1000,9 +1091,9 @@
       <div class="hero-left" id="hero-left">
         <div class="hero-eyebrow gsap-reveal" id="hero-eyebrow">WEB DESIGN STUDIO — ST. JOHNS, FL</div>
         <h1 class="hero-headline" id="hero-headline">
-          <span class="line gsap-reveal" id="hl1">Your website</span>
-          <span class="line light gsap-reveal" id="hl2">should be</span>
-          <span class="line gsap-reveal" id="hl3"><span id="theme-word">beautiful</span></span>
+          <span class="line" id="hl1"><span class="gsap-reveal-char">Y</span><span class="gsap-reveal-char">o</span><span class="gsap-reveal-char">u</span><span class="gsap-reveal-char">r</span><span class="gsap-reveal-char">&nbsp;</span><span class="gsap-reveal-char">w</span><span class="gsap-reveal-char">e</span><span class="gsap-reveal-char">b</span><span class="gsap-reveal-char">s</span><span class="gsap-reveal-char">i</span><span class="gsap-reveal-char">t</span><span class="gsap-reveal-char">e</span></span>
+          <span class="line light" id="hl2"><span class="gsap-reveal-char">s</span><span class="gsap-reveal-char">h</span><span class="gsap-reveal-char">o</span><span class="gsap-reveal-char">u</span><span class="gsap-reveal-char">l</span><span class="gsap-reveal-char">d</span><span class="gsap-reveal-char">&nbsp;</span><span class="gsap-reveal-char">b</span><span class="gsap-reveal-char">e</span></span>
+          <span class="line" id="hl3"><span id="theme-word">beautiful</span></span>
         </h1>
         <p class="hero-sub gsap-reveal" id="hero-sub">Custom websites for local businesses.<br>Hand-coded, not templated.</p>
         <div class="hero-actions gsap-reveal" id="hero-actions">
@@ -1342,6 +1433,26 @@
     </div>
   </section>
 
+  <!-- ══ SCROLL-PINNED VIDEO REVEAL ══ -->
+  <div id="video-reveal">
+    <div id="video-sticky">
+      <!-- Canvas fallback — generative "code rain" when no video present -->
+      <canvas id="video-canvas-fallback"></canvas>
+      <!-- Mask that peels away as you scroll -->
+      <div id="video-clip-mask"></div>
+      <!-- Text that fades in once reveal completes -->
+      <div id="video-text-overlay">
+        <div class="video-eyebrow" id="video-eyebrow">The craft behind every site</div>
+        <h2 class="video-headline" id="video-headline">Hand-coded.<br><em>Never templated.</em></h2>
+      </div>
+      <!-- Progress bar -->
+      <div id="video-progress-bar">
+        <div id="video-progress-track"><div id="video-progress-fill"></div></div>
+        <span id="video-progress-label">000%</span>
+      </div>
+    </div>
+  </div>
+
   <div class="feature-band">
     <div class="feature-quote">"A website that actually works for your business."</div>
     <ul class="feature-list">
@@ -1525,7 +1636,11 @@
   </footer>
 
   <script>
-  // ── PHYSICS CURSOR ──
+  /* ════════════════════════════════════════════════════════
+     MEDIOCRE MARKUP — FULL ANIMATION SYSTEM
+     ════════════════════════════════════════════════════════ */
+
+  /* ── 1. PHYSICS CURSOR ── */
   if (window.innerWidth > 900) {
     const outer = document.createElement('div');
     outer.style.cssText = 'position:fixed;width:36px;height:36px;border:1.5px solid rgba(212,93,121,0.5);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width 0.3s,height 0.3s,border-color 0.3s';
@@ -1552,149 +1667,284 @@
     });
   }
 
-  // ── PARTICLE SYSTEM ──
-  const canvas = document.getElementById('particle-canvas');
-  const ctx = canvas.getContext('2d');
-  let W, H;
-  function resizeCanvas(){ W=canvas.width=canvas.offsetWidth; H=canvas.height=canvas.offsetHeight; }
-  resizeCanvas(); window.addEventListener('resize', resizeCanvas);
-  let particles=[], mouseX=-1000, mouseY=-1000;
-  function initParticles(){
-    particles=[];
-    for(let i=0;i<140;i++) particles.push({
-      x:Math.random()*W, y:Math.random()*H,
-      vx:(Math.random()-0.5)*0.6, vy:(Math.random()-0.5)*0.6,
-      r:Math.random()*2+0.5,
-      color:['#d45d79','#ea9085','#6e5773','#c9b0c0','#e8c8d0'][Math.floor(Math.random()*5)],
-      alpha:Math.random()*0.5+0.15
-    });
+  /* ── 2. PARTICLE SYSTEM (hero) ── */
+  {
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H;
+    const resize = () => { W=canvas.width=canvas.offsetWidth; H=canvas.height=canvas.offsetHeight; };
+    resize(); window.addEventListener('resize', resize);
+    let particles=[], mouseX=-1000, mouseY=-1000;
+    const initP = () => {
+      particles=[];
+      for(let i=0;i<140;i++) particles.push({
+        x:Math.random()*W, y:Math.random()*H,
+        vx:(Math.random()-0.5)*0.6, vy:(Math.random()-0.5)*0.6,
+        r:Math.random()*2+0.5,
+        color:['#d45d79','#ea9085','#6e5773','#c9b0c0','#e8c8d0'][Math.floor(Math.random()*5)],
+        alpha:Math.random()*0.5+0.15
+      });
+    };
+    initP();
+    const hero = document.getElementById('hero');
+    hero.addEventListener('mousemove',e=>{const r=canvas.getBoundingClientRect();mouseX=e.clientX-r.left;mouseY=e.clientY-r.top;});
+    hero.addEventListener('mouseleave',()=>{mouseX=-1000;mouseY=-1000;});
+    (function drawP(){
+      ctx.clearRect(0,0,W,H);
+      particles.forEach((p,i)=>{
+        const dx=p.x-mouseX, dy=p.y-mouseY, dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<60&&dist>0){const f=(60-dist)/60;p.vx+=(dx/dist)*f*0.5;p.vy+=(dy/dist)*f*0.5;}
+        const spd=Math.sqrt(p.vx*p.vx+p.vy*p.vy), maxSpd=1.8;
+        if(spd>maxSpd){p.vx=(p.vx/spd)*maxSpd;p.vy=(p.vy/spd)*maxSpd;}
+        p.vx*=0.98; p.vy*=0.98; p.x+=p.vx; p.y+=p.vy;
+        if(p.x<0)p.x=W; if(p.x>W)p.x=0; if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle=p.color; ctx.globalAlpha=p.alpha; ctx.fill();
+        for(let j=i+1;j<particles.length;j++){
+          const p2=particles[j],dx2=p.x-p2.x,dy2=p.y-p2.y,d2=Math.sqrt(dx2*dx2+dy2*dy2);
+          if(d2<80){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p2.x,p2.y);ctx.strokeStyle=p.color;ctx.globalAlpha=(1-d2/80)*0.09;ctx.lineWidth=0.5;ctx.stroke();}
+        }
+        ctx.globalAlpha=1;
+      });
+      requestAnimationFrame(drawP);
+    })();
   }
-  initParticles();
-  document.getElementById('hero').addEventListener('mousemove',e=>{const r=canvas.getBoundingClientRect();mouseX=e.clientX-r.left;mouseY=e.clientY-r.top;});
-  document.getElementById('hero').addEventListener('mouseleave',()=>{mouseX=-1000;mouseY=-1000;});
-  function drawParticles(){
-    ctx.clearRect(0,0,W,H);
-    particles.forEach((p,i)=>{
-      const dx=p.x-mouseX, dy=p.y-mouseY, dist=Math.sqrt(dx*dx+dy*dy);
-      // repulsion radius: 60px, force: 0.5
-      if(dist<60 && dist>0){ const f=(60-dist)/60; p.vx+=(dx/dist)*f*0.5; p.vy+=(dy/dist)*f*0.5; }
-      const spd=Math.sqrt(p.vx*p.vx+p.vy*p.vy), maxSpd=1.8;
-      if(spd>maxSpd){p.vx=(p.vx/spd)*maxSpd;p.vy=(p.vy/spd)*maxSpd;}
-      p.vx*=0.98; p.vy*=0.98; p.x+=p.vx; p.y+=p.vy;
-      if(p.x<0)p.x=W; if(p.x>W)p.x=0; if(p.y<0)p.y=H; if(p.y>H)p.y=0;
-      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle=p.color; ctx.globalAlpha=p.alpha; ctx.fill();
-      for(let j=i+1;j<particles.length;j++){
-        const p2=particles[j], dx2=p.x-p2.x, dy2=p.y-p2.y, d2=Math.sqrt(dx2*dx2+dy2*dy2);
-        if(d2<80){ ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p2.x,p2.y); ctx.strokeStyle=p.color; ctx.globalAlpha=(1-d2/80)*0.09; ctx.lineWidth=0.5; ctx.stroke(); }
-      }
-      ctx.globalAlpha=1;
-    });
-    requestAnimationFrame(drawParticles);
-  }
-  drawParticles();
 
-  // ── BOKEH SPAWNER ──
-  const decoLayer = document.getElementById('deco-layer');
-  const bokehColors = [
-    'rgba(212,93,121,', 'rgba(234,144,133,', 'rgba(244,194,194,',
-    'rgba(200,110,140,', 'rgba(220,160,170,'
-  ];
-  // Organic blob shapes — randomised border-radius combos
-  const blobShapes = [
-    '60% 40% 55% 45% / 50% 60% 40% 50%',
-    '40% 60% 45% 55% / 60% 40% 55% 45%',
-    '50% 50% 65% 35% / 45% 55% 50% 50%',
-    '35% 65% 40% 60% / 55% 45% 60% 40%',
-    '55% 45% 50% 50% / 40% 60% 45% 55%',
-    '45% 55% 60% 40% / 65% 35% 50% 50%'
-  ];
-  function spawnBokeh() {
-    const b = document.createElement('div');
-    b.className = 'bokeh';
-    const size = 22 + Math.random() * 55;
-    const dur  = 9 + Math.random() * 9;
-    const color = bokehColors[Math.floor(Math.random() * bokehColors.length)];
-    const shape = blobShapes[Math.floor(Math.random() * blobShapes.length)];
-    const opacity = (0.22 + Math.random() * 0.28).toFixed(2);
-    // Spawn well below visible area so it's never seen appearing
-    b.style.cssText = [
-      `left:${5 + Math.random() * 88}%`,
-      `bottom:-${size + 20}px`,          /* always off-screen at start */
-      `width:${size}px`,
-      `height:${size}px`,
-      `border-radius:${shape}`,
-      `background:radial-gradient(ellipse at 38% 36%, ${color}${opacity}), ${color}0.08))`,
-      `animation-duration:${dur}s`,
-      `animation-delay:0s`
-    ].join(';');
-    decoLayer.appendChild(b);
-    setTimeout(() => b.remove(), (dur + 0.5) * 1000);
-  }
-  // Stagger first wave so the page doesn't look empty on load
-  for (let i = 0; i < 5; i++) setTimeout(spawnBokeh, i * 1400);
-  setInterval(spawnBokeh, 1800);
-
-  // ── PHONE 3D TILT (improved) ──
-  const phoneWrapper = document.getElementById('phone-wrapper');
-  const heroSection = document.getElementById('hero');
-
-  // Smooth interpolated values for buttery motion
-  let tiltX = 0, tiltY = 0, targetX = 0, targetY = 0;
-
-  heroSection.addEventListener('mousemove', e => {
-    const rect = heroSection.getBoundingClientRect();
-    targetX = (e.clientX - rect.left) / rect.width - 0.5;
-    targetY = (e.clientY - rect.top) / rect.height - 0.5;
-  });
-
-  heroSection.addEventListener('mouseleave', () => { targetX = 0; targetY = 0; });
-
-  (function tiltLoop() {
-    // Smooth lerp toward target (0.08 factor = nice weight)
-    tiltX += (targetX - tiltX) * 0.08;
-    tiltY += (targetY - tiltY) * 0.08;
-
-    if (phoneWrapper) {
-      const rotY = tiltX * -22;      // wider yaw
-      const rotX = tiltY * 16;       // wider pitch
-      const scale = 1 + (1 - Math.abs(tiltX) - Math.abs(tiltY)) * 0.03; // subtle scale breathing
-      phoneWrapper.style.transform = `rotateY(${rotY}deg) rotateX(${rotX}deg) scale(${scale}) translateZ(30px)`;
-      // Dynamic shadow follows tilt direction
-      const shadowX = tiltX * -40;
-      const shadowY = 30 + tiltY * 20;
-      const shadowBlur = 60 + Math.abs(tiltX) * 20;
-      const shadowOpacity = 0.25 + Math.abs(tiltX) * 0.1;
-      phoneWrapper.style.filter = `drop-shadow(${shadowX}px ${shadowY}px ${shadowBlur}px rgba(0,0,0,${shadowOpacity}))`;
+  /* ── 3. BOKEH SPAWNER ── */
+  {
+    const decoLayer = document.getElementById('deco-layer');
+    const bokehColors=['rgba(212,93,121,','rgba(234,144,133,','rgba(244,194,194,','rgba(200,110,140,','rgba(220,160,170,'];
+    const blobShapes=['60% 40% 55% 45% / 50% 60% 40% 50%','40% 60% 45% 55% / 60% 40% 55% 45%','50% 50% 65% 35% / 45% 55% 50% 50%','35% 65% 40% 60% / 55% 45% 60% 40%','55% 45% 50% 50% / 40% 60% 45% 55%','45% 55% 60% 40% / 65% 35% 50% 50%'];
+    function spawnBokeh(){
+      const b=document.createElement('div'); b.className='bokeh';
+      const size=22+Math.random()*55, dur=9+Math.random()*9;
+      const color=bokehColors[Math.floor(Math.random()*bokehColors.length)];
+      const shape=blobShapes[Math.floor(Math.random()*blobShapes.length)];
+      const opacity=(0.22+Math.random()*0.28).toFixed(2);
+      b.style.cssText=[`left:${5+Math.random()*88}%`,`bottom:-${size+20}px`,`width:${size}px`,`height:${size}px`,`border-radius:${shape}`,`background:radial-gradient(ellipse at 38% 36%, ${color}${opacity}), ${color}0.08))`,`animation-duration:${dur}s`,`animation-delay:0s`].join(';');
+      decoLayer.appendChild(b);
+      setTimeout(()=>b.remove(),(dur+0.5)*1000);
     }
-    requestAnimationFrame(tiltLoop);
-  })();
-
-  const phoneScreen = document.getElementById('phone-screen');
-  if(phoneScreen) {
-    phoneScreen.addEventListener('wheel', e => { e.stopPropagation(); }, { passive: true });
+    for(let i=0;i<5;i++) setTimeout(spawnBokeh,i*1400);
+    setInterval(spawnBokeh,1800);
   }
 
-  // ── PHONE CYCLER (no site theme switching) ──
+  /* ── 4. AMBIENT MORPHING BLOBS ── */
+  {
+    // Spline interpolation for smooth organic blob paths
+    function blobPath(cx, cy, r, pts, seed) {
+      const n = pts || 7;
+      const points = [];
+      for (let i = 0; i < n; i++) {
+        const angle = (i / n) * Math.PI * 2;
+        const variance = 0.38;
+        const rad = r * (1 + (Math.sin(seed + i * 2.3) * variance));
+        points.push([cx + Math.cos(angle) * rad, cy + Math.sin(angle) * rad]);
+      }
+      // Smooth closed catmull-rom
+      let d = 'M ' + points[0][0] + ' ' + points[0][1];
+      for (let i = 0; i < n; i++) {
+        const p0 = points[(i - 1 + n) % n];
+        const p1 = points[i];
+        const p2 = points[(i + 1) % n];
+        const p3 = points[(i + 2) % n];
+        const cp1x = p1[0] + (p2[0] - p0[0]) / 6;
+        const cp1y = p1[1] + (p2[1] - p0[1]) / 6;
+        const cp2x = p2[0] - (p3[0] - p1[0]) / 6;
+        const cp2y = p2[1] - (p3[1] - p1[1]) / 6;
+        d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2[0]} ${p2[1]}`;
+      }
+      return d + ' Z';
+    }
+    let blobT = 0;
+    const ab1p = document.getElementById('ab1-path');
+    const ab2p = document.getElementById('ab2-path');
+    const ab3p = document.getElementById('ab3-path');
+    function animBlobs() {
+      blobT += 0.004;
+      if (ab1p) ab1p.setAttribute('d', blobPath(300, 300, 230, 7, blobT));
+      if (ab2p) ab2p.setAttribute('d', blobPath(250, 250, 195, 6, blobT * 0.7 + 1));
+      if (ab3p) ab3p.setAttribute('d', blobPath(190, 190, 150, 8, blobT * 1.3 + 3));
+      requestAnimationFrame(animBlobs);
+    }
+    animBlobs();
+  }
+
+  /* ── 5. WHIRLPOOL — Code-symbol vortex ── */
+  {
+    const container = document.getElementById('whirlpool-container');
+    const vCanvas   = document.getElementById('vortex-canvas');
+    const vCtx      = vCanvas.getContext('2d');
+    const cta       = document.getElementById('whirlpool-cta');
+    let VW, VH;
+    const resizeV = () => { VW = vCanvas.width = window.innerWidth; VH = vCanvas.height = window.innerHeight; };
+    resizeV(); window.addEventListener('resize', resizeV);
+
+    // Code symbols that orbit the vortex
+    const SYMS = ['</', '/>', '{}', '()', '##', '//', '=>', '[]', '&&', '/*', '*/','<>','::','+=','fn','px','vh','rem','var','url'];
+    const symEls = [];
+    const N = window.innerWidth < 600 ? 12 : 20;
+
+    for (let i = 0; i < N; i++) {
+      const el = document.createElement('div');
+      el.className = 'wp-sym';
+      const sym = SYMS[i % SYMS.length];
+      el.textContent = sym;
+      // Each symbol starts at a different orbit radius and phase
+      const baseR   = 60 + Math.random() * 200;
+      const phase   = (i / N) * Math.PI * 2;
+      const speed   = 0.4 + Math.random() * 0.7; // rad/s
+      const fsize   = 10 + Math.random() * 18;
+      const hue     = Math.random() < 0.6 ? '#d45d79' : (Math.random() < 0.5 ? '#ea9085' : '#6e5773');
+      el.style.fontSize = fsize + 'px';
+      el.style.color = hue;
+      el.style.opacity = '0';
+      el._r     = baseR;
+      el._phase = phase;
+      el._speed = speed;
+      el._fsize = fsize;
+      container.appendChild(el);
+      symEls.push(el);
+    }
+
+    // Vortex canvas — draws spiral trails
+    let vt = 0;
+    let wpDone = false;  // true after scroll dispersal completes
+    let dispProgress = 0;
+
+    function drawVortex() {
+      vCtx.clearRect(0, 0, VW, VH);
+      const cx = VW / 2, cy = VH / 2;
+      // Concentric fading rings
+      const numRings = 5;
+      for (let r = 0; r < numRings; r++) {
+        const radius = 30 + r * 55;
+        const alpha  = (0.12 - r * 0.02) * (1 - dispProgress);
+        if (alpha <= 0) continue;
+        vCtx.beginPath();
+        vCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+        vCtx.strokeStyle = `rgba(212,93,121,${alpha})`;
+        vCtx.lineWidth = 1;
+        vCtx.stroke();
+      }
+      // Spiral arms
+      for (let arm = 0; arm < 3; arm++) {
+        vCtx.beginPath();
+        const offset = (arm / 3) * Math.PI * 2;
+        for (let t = 0; t < Math.PI * 4; t += 0.05) {
+          const rr = t * 28;
+          const x  = cx + Math.cos(t + offset + vt) * rr;
+          const y  = cy + Math.sin(t + offset + vt) * rr;
+          if (t === 0) vCtx.moveTo(x, y); else vCtx.lineTo(x, y);
+        }
+        vCtx.strokeStyle = `rgba(212,93,121,${0.06 * (1 - dispProgress)})`;
+        vCtx.lineWidth = 1.5;
+        vCtx.stroke();
+      }
+    }
+
+    let wpStarted = false;
+    let wpT = 0;
+
+    function animWhirlpool(ts) {
+      if (wpDone) return;
+      vt += 0.012;
+      wpT = ts * 0.001;
+      drawVortex();
+
+      const cx = VW / 2, cy = VH / 2;
+      symEls.forEach((el, i) => {
+        // Orbital position
+        const angle  = el._phase + wpT * el._speed;
+        // Disperse outward as scroll increases
+        const dispR = el._r * (1 + dispProgress * 8);
+        const x = cx + Math.cos(angle) * dispR;
+        const y = cy + Math.sin(angle) * dispR;
+        const scale = 1 + dispProgress * 1.5;
+        const alpha = Math.max(0, 1 - dispProgress * 1.4);
+        el.style.transform = `translate(${x - VW/2}px, ${y - VH/2}px) translate(-50%,-50%) scale(${scale}) rotate(${dispProgress * 360}deg)`;
+        el.style.opacity   = alpha;
+        el.style.left = '50%';
+        el.style.top  = '50%';
+      });
+
+      requestAnimationFrame(animWhirlpool);
+    }
+
+    // Fade in symbols after short delay
+    setTimeout(() => {
+      symEls.forEach((el, i) => {
+        setTimeout(() => {
+          el.style.transition = 'opacity 0.5s';
+          el.style.opacity = '1';
+        }, i * 60);
+      });
+      cta.style.opacity = '1';
+      requestAnimationFrame(animWhirlpool);
+    }, 400);
+
+    // Scroll drives the dispersal
+    let lastSY = 0;
+    window.addEventListener('scroll', () => {
+      const sy = window.scrollY;
+      const threshold = window.innerHeight * 0.6;
+      dispProgress = Math.min(1, sy / threshold);
+
+      if (dispProgress >= 1 && !wpDone) {
+        wpDone = true;
+        container.style.transition = 'opacity 0.4s';
+        container.style.opacity    = '0';
+        setTimeout(() => { container.style.display = 'none'; }, 420);
+      }
+      lastSY = sy;
+    }, { passive: true });
+  }
+
+  /* ── 6. PHONE 3D TILT ── */
+  {
+    const phoneWrapper = document.getElementById('phone-wrapper');
+    const heroSection  = document.getElementById('hero');
+    let tiltX = 0, tiltY = 0, targetX = 0, targetY = 0;
+    heroSection.addEventListener('mousemove', e => {
+      const rect = heroSection.getBoundingClientRect();
+      targetX = (e.clientX - rect.left) / rect.width - 0.5;
+      targetY = (e.clientY - rect.top)  / rect.height - 0.5;
+    });
+    heroSection.addEventListener('mouseleave', () => { targetX = 0; targetY = 0; });
+    (function tiltLoop(){
+      tiltX += (targetX - tiltX) * 0.08;
+      tiltY += (targetY - tiltY) * 0.08;
+      if (phoneWrapper) {
+        const rotY = tiltX * -22, rotX = tiltY * 16;
+        const scale = 1 + (1 - Math.abs(tiltX) - Math.abs(tiltY)) * 0.03;
+        phoneWrapper.style.transform = `rotateY(${rotY}deg) rotateX(${rotX}deg) scale(${scale}) translateZ(30px)`;
+        const shadowX = tiltX * -40, shadowY = 30 + tiltY * 20;
+        const shadowBlur = 60 + Math.abs(tiltX) * 20;
+        const shadowOpacity = 0.25 + Math.abs(tiltX) * 0.1;
+        phoneWrapper.style.filter = `drop-shadow(${shadowX}px ${shadowY}px ${shadowBlur}px rgba(0,0,0,${shadowOpacity}))`;
+      }
+      requestAnimationFrame(tiltLoop);
+    })();
+    const phoneScreen = document.getElementById('phone-screen');
+    if (phoneScreen) phoneScreen.addEventListener('wheel', e => e.stopPropagation(), { passive: true });
+  }
+
+  /* ── 7. PHONE CYCLER ── */
   let currentTpl = 0;
-  const tplCount = 4;
-  let scrollRaf = null;
+  const tplCount  = 4;
+  let scrollRaf   = null;
   let pauseScroll = false;
 
-  // ── PHONE TEMPLATE SWITCHER ──
   function switchPhoneTpl(idx) {
     document.querySelectorAll('.phone-template').forEach((el, i) => {
       el.classList.toggle('active', i === idx);
       if (i === idx) el.scrollTop = 0;
     });
-    document.querySelectorAll('.phone-dot').forEach((d, i) => {
-      d.classList.toggle('active', i === idx);
-    });
+    document.querySelectorAll('.phone-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
     currentTpl = idx;
     startScrollCycle();
   }
 
-  // ── PHONE AUTO-SCROLL (reaches bottom → next template) ──
   function startScrollCycle() {
     if (scrollRaf) cancelAnimationFrame(scrollRaf);
     let lastTime = null, atBottomSince = null, dwellSince = null;
@@ -1711,43 +1961,240 @@
         const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 2;
         if (atBottom) {
           if (!atBottomSince) atBottomSince = ts;
-          if (ts - atBottomSince >= PAUSE_AT_BOTTOM_MS) {
-            switchPhoneTpl((currentTpl + 1) % tplCount);
-            return;
-          }
-        } else {
-          atBottomSince = null;
-          el.scrollTop += (PX_PER_SEC * dt) / 1000;
-        }
+          if (ts - atBottomSince >= PAUSE_AT_BOTTOM_MS) { switchPhoneTpl((currentTpl + 1) % tplCount); return; }
+        } else { atBottomSince = null; el.scrollTop += (PX_PER_SEC * dt) / 1000; }
       } else {
-        // Content fits — dwell for a few seconds then switch
         if (!dwellSince) dwellSince = ts;
-        if (ts - dwellSince >= DWELL_MS) {
-          switchPhoneTpl((currentTpl + 1) % tplCount);
-          return;
-        }
+        if (ts - dwellSince >= DWELL_MS) { switchPhoneTpl((currentTpl + 1) % tplCount); return; }
       }
       scrollRaf = requestAnimationFrame(tick);
     }
     scrollRaf = requestAnimationFrame(tick);
   }
-
   document.getElementById('phone-screen').addEventListener('mouseenter', () => { pauseScroll = true; });
   document.getElementById('phone-screen').addEventListener('mouseleave', () => { pauseScroll = false; });
 
-  // ── SCROLL REVEAL ──
-  document.querySelectorAll('.what-list, .pricing-grid').forEach(container => {
-    Array.from(container.children).forEach((c,i) => { c.style.transitionDelay = (i*0.08)+'s'; });
-  });
-  document.querySelectorAll('.process-step').forEach((el,i) => { el.style.transitionDelay = (i*0.12)+'s'; });
-  const revealObs = new IntersectionObserver((entries,obs) => {
-    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
-  },{threshold:0.1});
-  document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+  /* ── 8. SCROLL-PINNED VIDEO REVEAL (generative canvas fallback) ── */
+  {
+    const revealSection = document.getElementById('video-reveal');
+    const sticky        = document.getElementById('video-sticky');
+    const mask          = document.getElementById('video-clip-mask');
+    const progressFill  = document.getElementById('video-progress-fill');
+    const progressLabel = document.getElementById('video-progress-label');
+    const eyebrow       = document.getElementById('video-eyebrow');
+    const headline      = document.getElementById('video-headline');
+    const fc            = document.getElementById('video-canvas-fallback');
+    const fCtx          = fc.getContext('2d');
 
-  // ── BOOT ──
+    // Size the canvas
+    const sizeFC = () => { fc.width = fc.offsetWidth; fc.height = fc.offsetHeight; };
+    sizeFC(); window.addEventListener('resize', sizeFC);
+
+    // Generative "code rain" on canvas — columns of falling code symbols
+    const COLS_SYMS = ['<','/','>','{','}','(',')',';','#','=','[',']','&','|','0','1','px','em','vh','fn','if','&&','//'];
+    let cols = [];
+    const COL_W = 28;
+    function initCols() {
+      cols = [];
+      const n = Math.ceil(fc.width / COL_W);
+      for (let i = 0; i < n; i++) {
+        cols.push({ x: i * COL_W + COL_W / 2, y: Math.random() * -fc.height, speed: 0.6 + Math.random() * 1.2, chars: [], alpha: 0.3 + Math.random() * 0.5 });
+      }
+    }
+    initCols();
+    window.addEventListener('resize', initCols);
+
+    let fcRaf, fcRunning = false, fcT = 0;
+    function drawFC() {
+      fcT++;
+      fCtx.fillStyle = 'rgba(17,12,16,0.12)';
+      fCtx.fillRect(0, 0, fc.width, fc.height);
+
+      cols.forEach(col => {
+        col.y += col.speed;
+        if (col.y > fc.height + 60) col.y = -20 - Math.random() * 300;
+
+        const sym = COLS_SYMS[Math.floor(Math.random() * COLS_SYMS.length)];
+        // Head glyph — bright rose
+        fCtx.font = '13px "JetBrains Mono", monospace';
+        fCtx.fillStyle = `rgba(212,93,121,${col.alpha})`;
+        fCtx.fillText(sym, col.x, col.y);
+
+        // Trail glyphs — fade to dark
+        for (let t = 1; t <= 8; t++) {
+          const trailSym = COLS_SYMS[Math.floor(Math.random() * COLS_SYMS.length)];
+          const a = col.alpha * (1 - t / 9) * 0.35;
+          fCtx.fillStyle = `rgba(180,80,110,${a})`;
+          fCtx.fillText(trailSym, col.x, col.y - t * 18);
+        }
+      });
+      fcRaf = requestAnimationFrame(drawFC);
+    }
+
+    // Reveal animation driven by scroll position within the section
+    let prevRatio = 0;
+    function onScroll() {
+      if (!revealSection) return;
+      const rect   = revealSection.getBoundingClientRect();
+      const total  = revealSection.offsetHeight - window.innerHeight;
+      const scrolled = -rect.top;
+      const ratio  = Math.max(0, Math.min(1, scrolled / total));
+
+      // Start canvas when section enters
+      if (ratio > 0 && !fcRunning) { fcRunning = true; drawFC(); }
+      if (ratio <= 0 && fcRunning) { fcRunning = false; cancelAnimationFrame(fcRaf); }
+
+      // Mask peels away: inset shrinks from 100% → 0%
+      // Phase 0–0.5: mask opens up like curtains (horizontal)
+      // Phase 0.5–1: text fades in
+      const openPct = Math.max(0, Math.min(1, ratio / 0.65));
+      const hInset  = (1 - openPct) * 52; // % from each side
+      mask.style.clipPath = `inset(0 ${hInset}% 0 ${hInset}%)`;
+      mask.style.opacity  = ratio >= 0.98 ? '0' : '1';
+
+      // Text fade in at 60% scroll
+      if (ratio > 0.62) {
+        const t = Math.min(1, (ratio - 0.62) / 0.3);
+        eyebrow.style.opacity   = t;
+        eyebrow.style.transform = `translateY(${(1 - t) * 20}px)`;
+        headline.style.opacity  = t;
+        headline.style.transform= `translateY(${(1 - t) * 30}px)`;
+      } else {
+        eyebrow.style.opacity = 0; headline.style.opacity = 0;
+      }
+
+      // Progress bar
+      const pct = Math.round(ratio * 100);
+      progressFill.style.width = pct + '%';
+      progressLabel.textContent = String(pct).padStart(3,'0') + '%';
+
+      prevRatio = ratio;
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
+  /* ── 9. GSAP SECTION REVEALS (with GSAP + ScrollTrigger) ── */
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Utility: split element text into word spans
+    function splitWords(el) {
+      const words = el.textContent.trim().split(/\s+/);
+      el.innerHTML = words.map(w => `<span class="split-word"><span class="split-inner">${w}</span></span>`).join(' ');
+      return el.querySelectorAll('.split-inner');
+    }
+
+    // Hero text entrance — staggered word rise
+    gsap.timeline({ delay: 0.3 })
+      .from('#hero-eyebrow',  { opacity:0, y:30, duration:0.7, ease:'power3.out' })
+      .from('#hl1 .gsap-reveal-char, #hl2 .gsap-reveal-char, #hl3 .gsap-reveal-char', { opacity:0, y:50, rotate:4, stagger:0.04, duration:0.8, ease:'power3.out' }, '-=0.4')
+      .from('#hero-sub',      { opacity:0, y:20, duration:0.7, ease:'power2.out' }, '-=0.5')
+      .from('#hero-actions',  { opacity:0, y:20, duration:0.6, ease:'power2.out' }, '-=0.4')
+      .from('#hero-stats .stat', { opacity:0, y:15, stagger:0.1, duration:0.5, ease:'power2.out' }, '-=0.3')
+      .from('#phone-wrapper',  { opacity:0, y:40, duration:1, ease:'power3.out' }, '-=0.8');
+
+    // Section title reveals
+    document.querySelectorAll('.section-title').forEach(el => {
+      const spans = splitWords(el);
+      gsap.from(spans, {
+        scrollTrigger: { trigger: el, start: 'top 80%', once: true },
+        opacity: 0, y: '100%', duration: 0.8, stagger: 0.06, ease: 'power3.out'
+      });
+    });
+
+    // Feature band quote
+    gsap.from('.feature-quote', {
+      scrollTrigger: { trigger: '.feature-band', start: 'top 70%', once: true },
+      opacity: 0, x: -60, duration: 1, ease: 'power3.out'
+    });
+    gsap.from('.feature-list li', {
+      scrollTrigger: { trigger: '.feature-band', start: 'top 70%', once: true },
+      opacity: 0, x: 40, stagger: 0.12, duration: 0.7, ease: 'power2.out', delay: 0.3
+    });
+
+    // What you get — numbers count up on enter
+    document.querySelectorAll('.what-item').forEach((item, i) => {
+      gsap.from(item, {
+        scrollTrigger: { trigger: item, start: 'top 85%', once: true },
+        opacity: 0, y: 40, duration: 0.7, delay: i * 0.08, ease: 'power2.out'
+      });
+    });
+
+    // Pricing cards — stagger + subtle clip-path
+    gsap.from('.price-card', {
+      scrollTrigger: { trigger: '.pricing-grid', start: 'top 80%', once: true },
+      opacity: 0, y: 50, clipPath: 'inset(20% 0% 0% 0%)', stagger: 0.15,
+      duration: 0.9, ease: 'power3.out'
+    });
+
+    // Process steps fan in
+    gsap.from('.process-step', {
+      scrollTrigger: { trigger: '.process-steps', start: 'top 80%', once: true },
+      opacity: 0, y: 60, stagger: 0.18, duration: 0.9, ease: 'power3.out'
+    });
+
+    // CTA mega text
+    gsap.from('.cta h2', {
+      scrollTrigger: { trigger: '.cta', start: 'top 75%', once: true },
+      opacity: 0, y: 80, duration: 1.2, ease: 'power4.out'
+    });
+
+    // Parallax blobs
+    ['#blob1','#blob2','#blob3'].forEach((id, i) => {
+      const el = document.querySelector(id);
+      if (!el) return;
+      gsap.to(el, {
+        scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.5 },
+        y: (i + 1) * -80, ease: 'none'
+      });
+    });
+
+    // Orb parallax
+    gsap.to('#orb1', { scrollTrigger: { scrub: 2 }, y: -120 });
+    gsap.to('#orb2', { scrollTrigger: { scrub: 3 }, y:  100 });
+    gsap.to('#orb3', { scrollTrigger: { scrub: 1.5 }, y: -80 });
+
+    // Ambient blob scroll drift
+    gsap.to('#ab1', { scrollTrigger: { scrub: 4 }, y: -200, x: 80 });
+    gsap.to('#ab2', { scrollTrigger: { scrub: 3 }, y:  150, x: -60 });
+    gsap.to('#ab3', { scrollTrigger: { scrub: 2 }, y: -100 });
+  }
+
+  /* ── 10. SCROLL-VELOCITY MARQUEE ── */
+  {
+    const strip = document.querySelector('.marquee-strip .marquee-track');
+    if (strip) {
+      let vel = 0, lastSY = window.scrollY, baseSpeed = 35; // seconds for full cycle
+      let currentSpeed = baseSpeed;
+      window.addEventListener('scroll', () => {
+        const sy = window.scrollY;
+        vel = Math.abs(sy - lastSY);
+        lastSY = sy;
+      }, { passive: true });
+      setInterval(() => {
+        const target = Math.max(6, baseSpeed - vel * 0.4);
+        currentSpeed += (target - currentSpeed) * 0.08;
+        strip.style.animationDuration = currentSpeed + 's';
+        vel *= 0.85; // decay
+      }, 30);
+    }
+  }
+
+  /* ── 11. STANDARD SCROLL REVEAL (fallback for non-GSAP elements) ── */
+  {
+    document.querySelectorAll('.what-list, .pricing-grid').forEach(c =>
+      Array.from(c.children).forEach((el, i) => { el.style.transitionDelay = (i * 0.08) + 's'; }));
+    document.querySelectorAll('.process-step').forEach((el, i) => { el.style.transitionDelay = (i * 0.12) + 's'; });
+    const obs = new IntersectionObserver((entries, o) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); o.unobserve(e.target); }});
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  }
+
+  /* ── BOOT ── */
   switchPhoneTpl(0);
-
 
   </script>
 </body>
