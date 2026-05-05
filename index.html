@@ -143,12 +143,17 @@
     .floral-vine { position: absolute; pointer-events: none; z-index: 2; opacity: 0.14; }
 
     /* ── PHONE MOCKUP ── */
-    .phone-wrapper { transform-style: preserve-3d; transition: transform 0.1s ease-out; cursor: default; position: relative; display: inline-block; }
+    .phone-wrapper { transform-style: preserve-3d; transition: transform 0.15s ease-out, filter 0.15s ease; cursor: default; position: relative; display: inline-block; }
     .phone-frame {
       width: 290px; height: 580px;
       background: #1a1a2e; border-radius: 42px; padding: 14px;
       box-shadow: 0 0 0 2px #2a2a4a, 0 30px 80px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.06) inset;
       position: relative; display: flex; flex-direction: column; align-items: center;
+      animation: phoneFloat 5s ease-in-out infinite;
+    }
+    @keyframes phoneFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-14px); }
     }
     .phone-notch { width: 80px; height: 20px; background: #111; border-radius: 0 0 14px 14px; margin-bottom: 8px; flex-shrink: 0; position: relative; z-index: 2; }
     .phone-screen { flex: 1; width: 100%; border-radius: 20px; overflow: hidden; position: relative; }
@@ -1225,35 +1230,40 @@
   for (let i = 0; i < 5; i++) setTimeout(spawnBokeh, i * 1400);
   setInterval(spawnBokeh, 1800);
 
-  // ── PHONE 3D TILT + PARALLAX ──
+  // ── PHONE 3D TILT (improved) ──
   const phoneWrapper = document.getElementById('phone-wrapper');
-  const heroLeft = document.querySelector('.hero-left');
   const heroSection = document.getElementById('hero');
+
+  // Smooth interpolated values for buttery motion
+  let tiltX = 0, tiltY = 0, targetX = 0, targetY = 0;
 
   heroSection.addEventListener('mousemove', e => {
     const rect = heroSection.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    if(phoneWrapper) {
-      phoneWrapper.style.transform = `rotateY(${x * -18}deg) rotateX(${y * 12}deg) translateZ(20px)`;
-    }
-    if(heroLeft) {
-      heroLeft.style.transform = `translate(${x * 8}px, ${y * 5}px)`;
-    }
+    targetX = (e.clientX - rect.left) / rect.width - 0.5;
+    targetY = (e.clientY - rect.top) / rect.height - 0.5;
   });
 
-  heroSection.addEventListener('mouseleave', () => {
-    if(phoneWrapper) {
-      phoneWrapper.style.transition = 'transform 0.8s cubic-bezier(0.23,1,0.32,1)';
-      phoneWrapper.style.transform = 'rotateY(0deg) rotateX(0deg) translateZ(0)';
-      setTimeout(()=>{ phoneWrapper.style.transition = 'transform 0.1s ease-out'; }, 800);
+  heroSection.addEventListener('mouseleave', () => { targetX = 0; targetY = 0; });
+
+  (function tiltLoop() {
+    // Smooth lerp toward target (0.08 factor = nice weight)
+    tiltX += (targetX - tiltX) * 0.08;
+    tiltY += (targetY - tiltY) * 0.08;
+
+    if (phoneWrapper) {
+      const rotY = tiltX * -22;      // wider yaw
+      const rotX = tiltY * 16;       // wider pitch
+      const scale = 1 + (1 - Math.abs(tiltX) - Math.abs(tiltY)) * 0.03; // subtle scale breathing
+      phoneWrapper.style.transform = `rotateY(${rotY}deg) rotateX(${rotX}deg) scale(${scale}) translateZ(30px)`;
+      // Dynamic shadow follows tilt direction
+      const shadowX = tiltX * -40;
+      const shadowY = 30 + tiltY * 20;
+      const shadowBlur = 60 + Math.abs(tiltX) * 20;
+      const shadowOpacity = 0.25 + Math.abs(tiltX) * 0.1;
+      phoneWrapper.style.filter = `drop-shadow(${shadowX}px ${shadowY}px ${shadowBlur}px rgba(0,0,0,${shadowOpacity}))`;
     }
-    if(heroLeft) {
-      heroLeft.style.transition = 'transform 0.8s cubic-bezier(0.23,1,0.32,1)';
-      heroLeft.style.transform = 'translate(0,0)';
-      setTimeout(()=>{ heroLeft.style.transition = ''; }, 800);
-    }
-  });
+    requestAnimationFrame(tiltLoop);
+  })();
 
   const phoneScreen = document.getElementById('phone-screen');
   if(phoneScreen) {
