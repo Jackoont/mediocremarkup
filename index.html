@@ -1366,8 +1366,8 @@
     #pricing.in-view .pricing-eyebrow,
     #pricing.in-view .pricing-headline,
     #pricing.in-view .pricing-sub {
-      opacity: 1;
-      transform: translateY(0);
+      opacity: 1 !important;
+      transform: translateY(0) !important;
     }
 
     .pricing-rule {
@@ -1412,17 +1412,13 @@
       position: relative;
       overflow: hidden;
       opacity: 0;
-      transform: translateY(40px);
-      transition:
-        opacity 0.7s ease,
-        transform 0.7s ease,
-        background 0.25s ease !important;
+      transform: translateY(36px);
+      transition: opacity 0.65s ease, transform 0.65s ease, background 0.25s ease;
     }
     .price-card.card-visible {
-      opacity: 1;
-      transform: translateY(0);
+      opacity: 1 !important;
+      transform: translateY(0) !important;
     }
-    /* stagger via inline style set by JS */
 
     /* Top accent line */
     .price-card::before {
@@ -2927,17 +2923,23 @@
 
   /* ── 9. PRICING — canvas + scroll reveals ── */
   {
-    // Canvas: slow drifting code fragments
+    const pricingSection = document.getElementById('pricing');
+
+    // Canvas
     const pc = document.getElementById('pricing-canvas');
-    if (pc) {
+    if (pc && pricingSection) {
       const ctx = pc.getContext('2d');
-      const resize = () => { pc.width = pc.offsetWidth; pc.height = pc.offsetHeight; };
-      resize(); window.addEventListener('resize', resize);
+      // Size canvas from parent section, not itself (it's position:absolute)
+      const resize = () => {
+        pc.width  = pricingSection.offsetWidth;
+        pc.height = pricingSection.offsetHeight;
+      };
+      resize();
+      window.addEventListener('resize', resize);
 
       const SYMS = ['$500','$1,200','$50/mo','</>','{}','→','fn()','px','rem','//','&&','::','*','#'];
       const particles = Array.from({length: 32}, () => ({
-        x: Math.random(),
-        y: Math.random(),
+        x: Math.random(), y: Math.random(),
         vx: (Math.random() - 0.5) * 0.00010,
         vy: 0.00005 + Math.random() * 0.00010,
         sym: SYMS[Math.floor(Math.random() * SYMS.length)],
@@ -2963,27 +2965,36 @@
         requestAnimationFrame(drawPricing);
       }
 
-      const pcObs = new IntersectionObserver(entries => {
+      // Start canvas as soon as any part of the section is visible
+      new IntersectionObserver(entries => {
         if (entries[0].isIntersecting && !pcRunning) { pcRunning = true; drawPricing(); }
         if (!entries[0].isIntersecting) pcRunning = false;
-      }, { threshold: 0 });
-      pcObs.observe(pc);
+      }, { threshold: 0 }).observe(pricingSection);
     }
 
-    // Scroll reveal: add .in-view to section + stagger .card-visible on cards
-    const pricingSection = document.getElementById('pricing');
+    // Reveal: fire as soon as the top edge of the section hits the viewport
     if (pricingSection) {
       const cards = pricingSection.querySelectorAll('.price-card');
+
+      function triggerPricingReveal() {
+        pricingSection.classList.add('in-view');
+        cards.forEach((card, i) => {
+          setTimeout(() => card.classList.add('card-visible'), 150 + i * 130);
+        });
+      }
+
+      // Use threshold:0 so it fires the moment 1px is visible
       const revealObs = new IntersectionObserver(entries => {
         if (entries[0].isIntersecting) {
-          pricingSection.classList.add('in-view');
-          cards.forEach((card, i) => {
-            setTimeout(() => card.classList.add('card-visible'), 300 + i * 140);
-          });
+          triggerPricingReveal();
           revealObs.disconnect();
         }
-      }, { threshold: 0.12 });
+      }, { threshold: 0 });
       revealObs.observe(pricingSection);
+
+      // Safety fallback — if already in view on load (e.g. direct #pricing link)
+      const r = pricingSection.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) triggerPricingReveal();
     }
   }
 
