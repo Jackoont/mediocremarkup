@@ -1232,109 +1232,106 @@
     section:not(#hero) .what-item p { color: #7a4a60 !important; }
 
     /* ══════════════════════════════════
-       PRICING — full rebuild
+       PRICING — light, editorial, airy
        ══════════════════════════════════ */
     #pricing {
-      background: #0e0a0d;
+      background: #fdf8f4;
       position: relative;
-      overflow: visible; /* let the bottom fade bleed into footer */
+      overflow: hidden;
       padding: 0;
-      /* subtle scan-line texture */
-      background-image: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 3px,
-        rgba(212,93,121,0.012) 3px,
-        rgba(212,93,121,0.012) 4px
-      );
     }
 
-    /* Hard colour reset so the section is always opaque dark */
-    #pricing-bg-fill {
-      position: absolute;
-      inset: 0;
-      background: #0e0a0d;
-      z-index: 0;
-    }
-
-    /* The bottom of pricing dissolves into the footer — extends BELOW the section */
-    #pricing-bottom-fade {
-      position: absolute;
-      bottom: -1px;
-      left: 0; right: 0;
-      height: 220px;
-      background: linear-gradient(to bottom, transparent 0%, #0e0a0d 100%);
-      pointer-events: none;
-      z-index: 5;
-    }
-
-    #pricing-canvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.35;
-    }
-
-    /* Two large rose orbs that drift slowly */
+    /* Soft ink-wash blobs drifting in background */
     #pricing-glow {
       position: absolute;
       inset: 0;
       pointer-events: none;
-      z-index: 1;
+      z-index: 0;
       overflow: hidden;
     }
     #pricing-glow::before {
       content: '';
       position: absolute;
-      top: -10%;  left: -5%;
-      width: 70vw; height: 70vw;
-      background: radial-gradient(circle, rgba(212,93,121,0.09) 0%, transparent 60%);
-      animation: pGlowDrift1 12s ease-in-out infinite alternate;
+      top: -15%; right: -10%;
+      width: 65vw; height: 65vw;
+      background: radial-gradient(circle, rgba(212,93,121,0.08) 0%, transparent 65%);
+      animation: pLightDrift1 14s ease-in-out infinite alternate;
+      border-radius: 50%;
     }
     #pricing-glow::after {
       content: '';
       position: absolute;
-      bottom: -10%; right: -5%;
-      width: 55vw; height: 55vw;
-      background: radial-gradient(circle, rgba(234,144,133,0.07) 0%, transparent 60%);
-      animation: pGlowDrift2 9s ease-in-out infinite alternate;
+      bottom: -10%; left: -8%;
+      width: 50vw; height: 50vw;
+      background: radial-gradient(circle, rgba(234,144,133,0.07) 0%, transparent 65%);
+      animation: pLightDrift2 10s ease-in-out infinite alternate;
+      border-radius: 50%;
     }
-    @keyframes pGlowDrift1 {
-      from { transform: translate(0, 0)   scale(1);    opacity: 0.6; }
-      to   { transform: translate(6%, 8%) scale(1.1);  opacity: 1; }
+    @keyframes pLightDrift1 {
+      from { transform: translate(0,0) scale(1); }
+      to   { transform: translate(-4%, 6%) scale(1.08); }
     }
-    @keyframes pGlowDrift2 {
-      from { transform: translate(0, 0)    scale(1);   opacity: 0.5; }
-      to   { transform: translate(-5%, -6%) scale(1.08); opacity: 0.9; }
+    @keyframes pLightDrift2 {
+      from { transform: translate(0,0) scale(1); }
+      to   { transform: translate(5%, -5%) scale(1.06); }
     }
 
-    #pricing .pricing-inner {
-      max-width: 1300px;
-      margin: 0 auto;
-      padding: 120px 80px 180px;
-      position: relative;
-      z-index: 2;
+    /* Faint diagonal ruled lines — like premium stationery */
+    #pricing::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        -45deg,
+        transparent 0px,
+        transparent 40px,
+        rgba(212,93,121,0.025) 40px,
+        rgba(212,93,121,0.025) 41px
+      );
+      pointer-events: none;
+      z-index: 0;
     }
-    @media (max-width: 900px) { #pricing .pricing-inner { padding: 80px 24px 140px; } }
 
-    /* Giant watermark */
+    /* Bottom dissolve into dark footer */
+    #pricing-bottom-fade {
+      position: absolute;
+      bottom: -2px; left: 0; right: 0;
+      height: 260px;
+      background: linear-gradient(to bottom,
+        transparent 0%,
+        rgba(253,248,244,0.0) 20%,
+        #0e0a0d 100%
+      );
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    /* Hide the canvas — not needed on a light bg */
+    #pricing-canvas { display: none; }
+
     #pricing .pricing-bg-word {
       position: absolute;
       font-family: 'Fraunces', serif;
       font-style: italic;
       font-weight: 300;
-      font-size: clamp(180px, 25vw, 400px);
-      color: rgba(212,93,121,0.035);
+      font-size: clamp(160px, 22vw, 380px);
+      color: rgba(212,93,121,0.055);
       line-height: 1;
-      right: -20px; bottom: 100px;
+      right: -10px; bottom: 160px;
       pointer-events: none;
       user-select: none;
       letter-spacing: -8px;
       z-index: 1;
     }
+
+    #pricing .pricing-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 120px 80px 240px;
+      position: relative;
+      z-index: 2;
+    }
+    @media (max-width: 900px) { #pricing .pricing-inner { padding: 80px 24px 200px; } }
 
     /* ── Header ── */
     #pricing .pricing-header { margin-bottom: 80px; }
@@ -1350,14 +1347,15 @@
       gap: 12px;
       margin-bottom: 24px;
       opacity: 0;
-      transform: translateX(-20px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
+      transform: translateX(-16px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
     }
     #pricing .pricing-eyebrow::before {
       content: '';
       display: block;
-      width: 32px; height: 1px;
-      background: rgba(212,93,121,0.5);
+      width: 28px; height: 1px;
+      background: #d45d79;
+      opacity: 0.5;
     }
     #pricing .pricing-headline {
       font-family: 'Fraunces', serif;
@@ -1365,23 +1363,23 @@
       font-weight: 300;
       font-style: italic;
       line-height: 1.02;
-      color: #fff;
+      color: #2a1f2d;
       letter-spacing: -3px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       opacity: 0;
-      transform: translateY(32px);
-      transition: opacity 0.9s 0.15s cubic-bezier(0.16,1,0.3,1),
-                  transform 0.9s 0.15s cubic-bezier(0.16,1,0.3,1);
+      transform: translateY(28px);
+      transition: opacity 0.9s 0.12s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.9s 0.12s cubic-bezier(0.16,1,0.3,1);
     }
     #pricing .pricing-headline em { color: #d45d79; font-style: italic; }
     #pricing .pricing-sub {
       font-size: 15px;
-      color: rgba(240,230,216,0.6);
-      max-width: 460px;
+      color: #6e5773;
+      max-width: 420px;
       line-height: 1.7;
       opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.8s 0.3s ease, transform 0.8s 0.3s ease;
+      transform: translateY(16px);
+      transition: opacity 0.8s 0.28s ease, transform 0.8s 0.28s ease;
     }
 
     #pricing.in-view .pricing-eyebrow,
@@ -1391,15 +1389,15 @@
       transform: translate(0,0) !important;
     }
 
-    /* Animated rule */
+    /* Rule that draws itself */
     .pricing-rule {
-      margin-top: 52px;
+      margin-top: 48px;
       height: 1px;
-      background: linear-gradient(90deg, #d45d79 0%, rgba(212,93,121,0.15) 50%, transparent 100%);
+      background: linear-gradient(90deg, #d45d79 0%, rgba(212,93,121,0.2) 55%, transparent 100%);
       position: relative;
       transform-origin: left;
       transform: scaleX(0);
-      transition: transform 1s 0.5s cubic-bezier(0.16,1,0.3,1);
+      transition: transform 1s 0.45s cubic-bezier(0.16,1,0.3,1);
     }
     #pricing.in-view .pricing-rule { transform: scaleX(1) !important; }
     .pricing-rule::before {
@@ -1409,98 +1407,77 @@
       width: 7px; height: 7px;
       border-radius: 50%;
       background: #d45d79;
-      box-shadow: 0 0 16px 6px rgba(212,93,121,0.6);
-      animation: priceDot 2s ease-in-out infinite;
+      box-shadow: 0 0 0 3px rgba(212,93,121,0.15);
+      animation: priceDotLight 2.5s ease-in-out infinite;
     }
-    @keyframes priceDot {
-      0%, 100% { box-shadow: 0 0 16px 6px rgba(212,93,121,0.6); }
-      50%       { box-shadow: 0 0 28px 10px rgba(212,93,121,0.25); }
+    @keyframes priceDotLight {
+      0%,100% { box-shadow: 0 0 0 3px rgba(212,93,121,0.15); }
+      50%      { box-shadow: 0 0 0 7px rgba(212,93,121,0.08); }
     }
 
-    /* ── GRID ── */
+    /* ── GRID — three tall editorial cards ── */
     .pricing-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 0;
-      border: 1px solid rgba(240,230,216,0.08);
+      gap: 20px;
     }
-    @media (max-width: 900px) { .pricing-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 900px) { .pricing-grid { grid-template-columns: 1fr; gap: 16px; } }
 
-    /* Cards */
     .price-card {
-      background: rgba(14,10,13,0.9) !important;
-      border: none !important;
-      border-right: 1px solid rgba(240,230,216,0.06) !important;
-      border-radius: 0 !important;
-      padding: 52px 44px 48px !important;
+      background: #fff !important;
+      border: 1.5px solid rgba(212,93,121,0.1) !important;
+      border-radius: 4px !important;
+      padding: 48px 40px 44px !important;
       display: flex;
       flex-direction: column;
       position: relative;
       overflow: hidden;
       opacity: 0;
-      transform: translateY(48px);
+      transform: translateY(44px);
       transition:
-        opacity 0.7s ease,
-        transform 0.7s cubic-bezier(0.16,1,0.3,1),
-        background 0.3s ease;
-      cursor: default;
+        opacity 0.65s ease,
+        transform 0.65s cubic-bezier(0.16,1,0.3,1),
+        box-shadow 0.35s ease,
+        border-color 0.35s ease;
+      box-shadow: 0 2px 16px rgba(42,31,45,0.04);
     }
-    .price-card:last-child { border-right: none !important; }
     .price-card.card-visible {
       opacity: 1 !important;
       transform: translateY(0) !important;
     }
-
-    /* Inner glow that expands on hover */
-    .price-card .pc-glow {
-      position: absolute;
-      top: 0; left: 50%;
-      transform: translateX(-50%);
-      width: 300px; height: 300px;
-      background: radial-gradient(circle, rgba(212,93,121,0.0) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
-      transition: background 0.5s ease;
+    .price-card:hover {
+      box-shadow: 0 16px 60px rgba(212,93,121,0.12), 0 2px 8px rgba(42,31,45,0.06) !important;
+      border-color: rgba(212,93,121,0.25) !important;
+      transform: translateY(-6px) !important;
     }
-    .price-card:hover .pc-glow {
-      background: radial-gradient(circle, rgba(212,93,121,0.18) 0%, transparent 70%);
-    }
-    .price-card > *:not(.pc-glow) { position: relative; z-index: 1; }
 
-    /* Top bar — grows from left on hover */
+    /* Coloured top stripe */
     .price-card::before {
       content: '';
       position: absolute;
-      top: 0; left: 0;
-      height: 2px;
-      width: 0%;
-      background: linear-gradient(90deg, #d45d79, rgba(212,93,121,0.3));
-      transition: width 0.5s cubic-bezier(0.16,1,0.3,1);
-      z-index: 2;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, rgba(212,93,121,0.2), rgba(234,144,133,0.1));
+      transition: background 0.4s ease;
     }
-    .price-card:hover::before { width: 100%; }
-    .price-card:hover { background: #130b11 !important; }
+    .price-card:hover::before {
+      background: linear-gradient(90deg, #d45d79, #ea9085);
+    }
 
-    /* Featured */
+    /* Featured — slightly tinted bg, stronger presence */
     .price-card.featured {
-      background: #16080f !important;
+      background: #fff8f6 !important;
+      border-color: rgba(212,93,121,0.3) !important;
+      box-shadow: 0 8px 40px rgba(212,93,121,0.1), 0 2px 8px rgba(42,31,45,0.05) !important;
     }
     .price-card.featured::before {
-      width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, #d45d79, #ea9085);
-      transition: none;
+      background: linear-gradient(90deg, #d45d79, #ea9085) !important;
+      height: 4px;
     }
-    .price-card.featured:hover { background: #1e0d16 !important; }
-    .price-card.featured .pc-glow {
-      background: radial-gradient(circle, rgba(212,93,121,0.15) 0%, transparent 65%);
-      width: 400px; height: 400px;
-      top: -60px;
-      animation: featGlowBreath 4s ease-in-out infinite;
-    }
-    @keyframes featGlowBreath {
-      0%,100% { opacity: 0.8; transform: translateX(-50%) scale(1); }
-      50%      { opacity: 1;   transform: translateX(-50%) scale(1.12); }
+    .price-card.featured:hover {
+      box-shadow: 0 24px 80px rgba(212,93,121,0.18), 0 2px 8px rgba(42,31,45,0.06) !important;
+      border-color: rgba(212,93,121,0.45) !important;
+      transform: translateY(-8px) !important;
     }
 
     /* Tag */
@@ -1509,19 +1486,16 @@
       font-size: 9px !important;
       letter-spacing: 3px !important;
       text-transform: uppercase;
-      background: rgba(240,230,216,0.06) !important;
-      color: rgba(240,230,216,0.5) !important;
-      padding: 5px 13px;
-      border-radius: 0 !important;
-      margin-bottom: 32px !important;
+      background: rgba(212,93,121,0.08) !important;
+      color: #d45d79 !important;
+      padding: 5px 12px;
+      border-radius: 999px !important;
+      margin-bottom: 28px !important;
       display: inline-block;
       width: fit-content;
-      border-left: 2px solid rgba(240,230,216,0.12);
     }
     .price-card.featured .price-tag {
-      background: rgba(212,93,121,0.15) !important;
-      color: #d45d79 !important;
-      border-left-color: #d45d79;
+      background: rgba(212,93,121,0.12) !important;
     }
 
     /* Name */
@@ -1530,23 +1504,21 @@
       font-size: 30px !important;
       font-weight: 300 !important;
       font-style: italic;
-      color: #f0e6d8 !important;
+      color: #2a1f2d !important;
       margin-bottom: 10px !important;
       letter-spacing: -0.5px;
     }
-    .price-card.featured .price-name { color: #fff !important; }
 
     /* Desc */
     .price-desc {
-      font-size: 13px !important;
-      color: rgba(240,230,216,0.55) !important;
-      margin-bottom: 40px !important;
+      font-size: 13.5px !important;
+      color: #6e5773 !important;
+      margin-bottom: 36px !important;
       line-height: 1.7;
       flex: none;
     }
-    .price-card.featured .price-desc { color: rgba(255,255,255,0.7) !important; }
 
-    /* Price number */
+    /* Big number */
     .price-amount {
       font-family: 'Fraunces', serif !important;
       font-size: 88px !important;
@@ -1554,23 +1526,12 @@
       font-style: italic;
       letter-spacing: -4px !important;
       line-height: 0.88 !important;
-      color: rgba(240,230,216,0.9) !important;
-      margin-bottom: 10px !important;
-      transition: color 0.3s ease, text-shadow 0.4s ease;
+      color: #2a1f2d !important;
+      margin-bottom: 8px !important;
+      transition: color 0.3s ease;
     }
-    .price-card:hover .price-amount {
-      color: #fff !important;
-      text-shadow: 0 0 60px rgba(212,93,121,0.3);
-    }
-    .price-card.featured .price-amount {
-      color: #d45d79 !important;
-      text-shadow: 0 0 60px rgba(212,93,121,0.5);
-      animation: featAmountPulse 4s ease-in-out infinite;
-    }
-    @keyframes featAmountPulse {
-      0%,100% { text-shadow: 0 0 60px rgba(212,93,121,0.5); }
-      50%      { text-shadow: 0 0 100px rgba(212,93,121,0.8), 0 0 160px rgba(212,93,121,0.3); }
-    }
+    .price-card:hover .price-amount { color: #d45d79 !important; }
+    .price-card.featured .price-amount { color: #d45d79 !important; }
     .price-amount sup {
       font-size: 24px !important;
       font-weight: 300 !important;
@@ -1586,88 +1547,78 @@
       font-size: 10px !important;
       letter-spacing: 3px !important;
       text-transform: uppercase;
-      color: rgba(240,230,216,0.35) !important;
-      margin-bottom: 40px !important;
+      color: rgba(110,87,115,0.5) !important;
+      margin-bottom: 36px !important;
     }
-    .price-card.featured .price-period { color: rgba(212,93,121,0.7) !important; }
 
     /* Features */
-    .price-features { list-style: none; flex: 1; margin-bottom: 40px !important; }
+    .price-features { list-style: none; flex: 1; margin-bottom: 36px !important; }
     .price-features li {
-      padding: 13px 0 !important;
+      padding: 12px 0 !important;
       font-size: 13.5px !important;
-      color: rgba(240,230,216,0.65) !important;
+      color: #4a3550 !important;
       display: flex;
       align-items: flex-start;
-      gap: 12px;
-      border-top: 1px solid rgba(240,230,216,0.07) !important;
-      transition: color 0.2s;
+      gap: 10px;
+      border-top: 1px solid rgba(110,87,115,0.1) !important;
     }
     .price-features li:first-child { border-top: none !important; }
-    .price-card:hover .price-features li { color: rgba(240,230,216,0.8) !important; }
     .price-features li::before {
       content: '→';
-      color: rgba(212,93,121,0.45) !important;
+      color: #d45d79 !important;
       flex-shrink: 0;
       font-size: 11px;
       margin-top: 2px;
-      transition: color 0.25s, transform 0.25s;
+      display: inline-block;
+      transition: transform 0.2s ease;
     }
-    .price-card:hover .price-features li::before {
-      color: #d45d79 !important;
-      transform: translateX(3px);
-    }
-    .price-card.featured .price-features li { color: rgba(255,255,255,0.8) !important; border-top-color: rgba(255,255,255,0.08) !important; }
-    .price-card.featured .price-features li::before { color: #d45d79 !important; }
+    .price-card:hover .price-features li::before { transform: translateX(3px); }
 
     /* Buttons */
     .price-card .btn {
       width: 100%;
       justify-content: center;
-      border-radius: 0 !important;
+      border-radius: 4px !important;
       font-size: 11px !important;
-      letter-spacing: 3px;
+      letter-spacing: 2.5px;
       text-transform: uppercase;
-      padding: 18px 24px !important;
-      transition: background 0.25s, color 0.25s, border-color 0.25s, transform 0.2s !important;
+      padding: 16px 24px !important;
+      transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s !important;
     }
-    .price-card .btn:hover { transform: none !important; }
     .price-card:not(.featured) .btn {
       background: transparent !important;
-      color: rgba(240,230,216,0.5) !important;
-      border: 1px solid rgba(240,230,216,0.12) !important;
+      color: #6e5773 !important;
+      border: 1.5px solid rgba(110,87,115,0.25) !important;
     }
     .price-card:not(.featured) .btn:hover {
-      background: rgba(240,230,216,0.06) !important;
+      background: #2a1f2d !important;
       color: #f0e6d8 !important;
-      border-color: rgba(240,230,216,0.3) !important;
+      border-color: #2a1f2d !important;
     }
     .price-card.featured .btn {
       background: #d45d79 !important;
       color: #fff !important;
       border: none !important;
-      box-shadow: 0 0 32px rgba(212,93,121,0.4);
-      transition: background 0.25s, box-shadow 0.25s !important;
     }
     .price-card.featured .btn:hover {
-      background: #c04468 !important;
-      box-shadow: 0 0 48px rgba(212,93,121,0.6) !important;
+      background: #b84a65 !important;
+      box-shadow: 0 8px 28px rgba(212,93,121,0.35) !important;
     }
 
     /* Note */
     .pricing-note {
-      margin-top: 48px;
+      margin-top: 44px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       letter-spacing: 1px;
-      color: rgba(240,230,216,0.25);
+      color: rgba(110,87,115,0.5);
       text-align: center;
       opacity: 0;
-      transition: opacity 0.9s 0.7s ease;
+      transition: opacity 0.9s 0.65s ease;
     }
     #pricing.in-view .pricing-note { opacity: 1 !important; }
-    .pricing-note a { color: rgba(212,93,121,0.7); border-bottom: 1px solid rgba(212,93,121,0.25); }
-    .pricing-note a:hover { color: #d45d79; }
+    .pricing-note a { color: #d45d79; border-bottom: 1px solid rgba(212,93,121,0.3); }
+    .pricing-note a:hover { color: #b84a65; }
 
     /* Buttons below the fold */
     section:not(#hero) .btn-primary { background: #d45d79 !important; color: #fff !important; border-color: #d45d79 !important; }
@@ -2245,7 +2196,6 @@
 
   <!-- PRICING -->
   <section id="pricing">
-    <div id="pricing-bg-fill"></div>
     <canvas id="pricing-canvas"></canvas>
     <div id="pricing-glow"></div>
     <div id="pricing-bottom-fade"></div>
@@ -2262,7 +2212,7 @@
       <div class="pricing-grid">
 
         <div class="price-card">
-          <div class="pc-glow"></div>
+
           <span class="price-tag">Starter</span>
           <div class="price-name">Single Page</div>
           <p class="price-desc">One clean page. Your hours, location, services, and a way to contact you. Done right.</p>
@@ -2278,7 +2228,7 @@
         </div>
 
         <div class="price-card featured">
-          <div class="pc-glow"></div>
+
           <span class="price-tag">Most popular</span>
           <div class="price-name">Full Site</div>
           <p class="price-desc">The real thing. Multi-page, animated, built to convert visitors into customers.</p>
@@ -2295,7 +2245,7 @@
         </div>
 
         <div class="price-card">
-          <div class="pc-glow"></div>
+
           <span class="price-tag">Ongoing</span>
           <div class="price-name">Care Plan</div>
           <p class="price-desc">Hosting, updates, backups. The site stays online and you never have to think about it.</p>
@@ -2323,7 +2273,10 @@
     border-top: none;
     padding: 0;
     display: block;
+    position: relative;
   ">
+    <!-- Top fade that merges with the pricing bottom fade -->
+    <div style="position:absolute;top:0;left:0;right:0;height:100px;background:linear-gradient(to bottom,#0e0a0d,transparent);pointer-events:none;z-index:1;"></div>
     <!-- Big CTA block -->
     <div style="
       padding: 100px 80px 80px;
