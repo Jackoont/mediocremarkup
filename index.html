@@ -1238,14 +1238,23 @@
       position: relative;
       overflow: hidden;
     }
+    #pricing-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.55;
+    }
     #pricing .pricing-inner {
       max-width: 1300px;
       margin: 0 auto;
-      padding: 120px 80px 140px;
+      padding: 120px 80px 100px;
       position: relative;
       z-index: 2;
     }
-    @media (max-width: 900px) { #pricing .pricing-inner { padding: 80px 24px 100px; } }
+    @media (max-width: 900px) { #pricing .pricing-inner { padding: 80px 24px 80px; } }
 
     /* Background huge italic number watermark */
     #pricing .pricing-bg-word {
@@ -1305,37 +1314,80 @@
       max-width: 440px;
       line-height: 1.65;
     }
-
-    /* Cards */
-    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
-    @media (max-width: 900px) { .pricing-grid { grid-template-columns: 1fr; gap: 16px; } }
-
-    .price-card {
-      background: #16101a !important;
-      border: none !important;
-      border-radius: 0 !important;
-      padding: 48px 40px !important;
-      display: flex;
-      flex-direction: column;
-      transition: background 0.25s !important;
+    .pricing-rule {
+      margin-top: 48px;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(212,93,121,0.5) 0%, rgba(212,93,121,0.08) 60%, transparent 100%);
       position: relative;
     }
-    .price-card::after {
+    .pricing-rule::before {
       content: '';
       position: absolute;
-      inset: 0;
-      border: 1px solid rgba(240,230,216,0.05);
-      pointer-events: none;
+      left: 0; top: -3px;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #d45d79;
+      box-shadow: 0 0 12px 4px rgba(212,93,121,0.5);
+      animation: priceDot 2s ease-in-out infinite;
     }
-    .price-card:hover { background: #1e1424 !important; }
-    .price-card:hover { box-shadow: none !important; transform: none !important; }
+    @keyframes priceDot {
+      0%, 100% { opacity: 1; box-shadow: 0 0 12px 4px rgba(212,93,121,0.5); }
+      50% { opacity: 0.5; box-shadow: 0 0 20px 8px rgba(212,93,121,0.25); }
+    }
+
+    /* Cards */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: rgba(240,230,216,0.06); /* gap color = subtle grid line */
+      border: 1px solid rgba(240,230,216,0.06);
+    }
+    @media (max-width: 900px) { .pricing-grid { grid-template-columns: 1fr; gap: 1px; } }
+
+    .price-card {
+      background: #0e0a0d !important;
+      border: none !important;
+      border-radius: 0 !important;
+      padding: 52px 44px !important;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.3s, box-shadow 0.3s !important;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Top accent line — dim on regular cards */
+    .price-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: rgba(212,93,121,0.15);
+      transition: background 0.3s;
+    }
+    .price-card:hover::before { background: rgba(212,93,121,0.5); }
+    .price-card:hover { background: #130d17 !important; box-shadow: none !important; transform: none !important; }
 
     .price-card.featured {
-      background: #d45d79 !important;
+      background: #1a0d14 !important;
       border-color: transparent !important;
     }
-    .price-card.featured::after { border-color: transparent; }
-    .price-card.featured:hover { background: #c84d6a !important; }
+    .price-card.featured::before {
+      background: #d45d79;
+      height: 3px;
+    }
+    .price-card.featured:hover { background: #200f19 !important; }
+    /* Subtle rose glow behind the featured card */
+    .price-card.featured::after {
+      content: '';
+      position: absolute;
+      top: -60px; left: 50%; transform: translateX(-50%);
+      width: 260px; height: 260px;
+      background: radial-gradient(circle, rgba(212,93,121,0.18) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .price-card.featured > * { position: relative; z-index: 1; }
 
     .price-tag {
       font-family: 'JetBrains Mono', monospace;
@@ -1377,16 +1429,16 @@
 
     .price-amount {
       font-family: 'Fraunces', serif !important;
-      font-size: 80px !important;
+      font-size: 100px !important;
       font-weight: 300 !important;
       font-style: italic;
-      letter-spacing: -4px !important;
-      line-height: 1 !important;
+      letter-spacing: -5px !important;
+      line-height: 0.9 !important;
       color: #f0e6d8 !important;
-      margin-bottom: 6px !important;
+      margin-bottom: 8px !important;
     }
-    .price-card.featured .price-amount { color: #fff !important; }
-    .price-amount sup { font-size: 24px !important; font-weight: 300 !important; opacity: 0.5; vertical-align: top; margin-top: 14px; display: inline-block; }
+    .price-card.featured .price-amount { color: #d45d79 !important; text-shadow: 0 0 40px rgba(212,93,121,0.4); }
+    .price-amount sup { font-size: 26px !important; font-weight: 300 !important; opacity: 0.45; vertical-align: top; margin-top: 18px; display: inline-block; }
 
     .price-period {
       font-family: 'JetBrains Mono', monospace;
@@ -1587,7 +1639,6 @@
           <span class="line hl-accent" id="hl3"><span id="theme-word">beautiful</span></span>
         </h1>
 
-        <div class="hero-tag">Hand-coded for local businesses</div>
 
         <p class="hero-sub" id="hero-sub">For local businesses that are tired of looking like everyone else online. Built by hand, launched fast, maintained quietly.</p>
 
@@ -2030,6 +2081,7 @@
 
   <!-- PRICING -->
   <section id="pricing">
+    <canvas id="pricing-canvas"></canvas>
     <div class="pricing-bg-word">pricing</div>
     <div class="pricing-inner">
 
@@ -2037,6 +2089,7 @@
         <div class="pricing-eyebrow">What it costs</div>
         <h2 class="pricing-headline">Honest pricing.<br><em>No surprises.</em></h2>
         <p class="pricing-sub">Three options. No contracts, no retainers unless you want one. Just good work at a fair price.</p>
+        <div class="pricing-rule"></div>
       </div>
 
       <div class="pricing-grid">
@@ -2103,9 +2156,11 @@
     padding: 0;
     display: block;
   ">
+    <!-- Thin divider line connecting pricing → footer -->
+    <div style="height:1px;background:rgba(240,230,216,0.06);margin:0 80px;"></div>
     <!-- Big CTA block -->
     <div style="
-      padding: 120px 80px 80px;
+      padding: 100px 80px 80px;
       max-width: 1100px;
       margin: 0 auto;
       display: grid;
@@ -2496,7 +2551,7 @@
         cols.push({
           x: i * COL_W + COL_W / 2,
           y: Math.random() * -fc.height,
-          speed: 0.35 + Math.random() * 0.7,
+          speed: 0.18 + Math.random() * 0.32,
           alpha: 0.25 + Math.random() * 0.45,
           warpX: 0  // lateral distortion driven by scroll
         });
@@ -2516,7 +2571,7 @@
 
       cols.forEach((col, ci) => {
         // Warp: columns oscillate sideways as scroll intensifies
-        col.warpX = Math.sin(Date.now() * 0.002 + ci * 0.7) * rainWarp * 18;
+        col.warpX = 0;
 
         // Speed also increases with warp
         const spd = col.speed * (1 + rainWarp * 3);
@@ -2746,7 +2801,49 @@
     onScroll();
   }
 
-  /* ── 9. GSAP SECTION REVEALS (with GSAP + ScrollTrigger) ── */
+  /* ── 9. PRICING CANVAS — drifting code fragments ── */
+  {
+    const pc = document.getElementById('pricing-canvas');
+    if (pc) {
+      const ctx = pc.getContext('2d');
+      const resize = () => { pc.width = pc.offsetWidth; pc.height = pc.offsetHeight; };
+      resize(); window.addEventListener('resize', resize);
+
+      const SYMS = ['$500','$1,200','$50/mo','</>','{}','→','fn()','px','rem','//','&&','::','*','#'];
+      const particles = Array.from({length: 28}, () => ({
+        x: Math.random(),
+        y: Math.random(),
+        vx: (Math.random() - 0.5) * 0.00012,
+        vy: 0.00008 + Math.random() * 0.00012,
+        sym: SYMS[Math.floor(Math.random() * SYMS.length)],
+        alpha: 0.04 + Math.random() * 0.1,
+        size: 10 + Math.random() * 8,
+      }));
+
+      function drawPricing() {
+        ctx.clearRect(0, 0, pc.width, pc.height);
+        const now = Date.now() * 0.001;
+        particles.forEach(p => {
+          p.x += p.vx + Math.sin(now * 0.4 + p.y * 6) * 0.00008;
+          p.y += p.vy;
+          if (p.y > 1.05) { p.y = -0.05; p.x = Math.random(); p.sym = SYMS[Math.floor(Math.random() * SYMS.length)]; }
+          if (p.x < -0.1) p.x = 1.1;
+          if (p.x > 1.1) p.x = -0.1;
+          ctx.font = `${p.size}px "JetBrains Mono", monospace`;
+          ctx.fillStyle = `rgba(212,93,121,${p.alpha})`;
+          ctx.fillText(p.sym, p.x * pc.width, p.y * pc.height);
+        });
+        requestAnimationFrame(drawPricing);
+      }
+
+      const obs = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) drawPricing();
+      }, { threshold: 0 });
+      obs.observe(pc);
+    }
+  }
+
+  /* ── 10. GSAP SECTION REVEALS (with GSAP + ScrollTrigger) ── */
   if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
 
