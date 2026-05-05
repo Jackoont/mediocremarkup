@@ -169,6 +169,13 @@
     .phone-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(212,93,121,0.25); transition: background 0.3s, transform 0.3s; cursor: pointer; }
     .phone-dot.active { background: #d45d79; transform: scale(1.3); }
 
+    .phone-arrows { position: absolute; bottom: -28px; right: 0; display: flex; gap: 6px; z-index: 10; }
+    .phone-arrow { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid rgba(212,93,121,0.3); background: transparent; color: var(--accent); font-size: 12px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s, color 0.2s, border-color 0.2s; }
+    .phone-arrow:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+    .phone-badge { position: absolute; bottom: -28px; left: 0; font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+    @media (max-width: 900px) { .phone-badge { display: none; } }
+
     /* ══ TEMPLATE 0: MERIDIAN LAW GROUP — Professional ══ */
     #tpl-0 { background:#f7f8fa; font-family:'Inter',sans-serif; }
     .t1-topbar { background:#0f1f3d; padding:5px 14px; display:flex; justify-content:space-between; align-items:center; }
@@ -932,6 +939,11 @@
             <div class="phone-dot" onclick="switchPhoneTpl(2)"></div>
             <div class="phone-dot" onclick="switchPhoneTpl(3)"></div>
           </div>
+          <div class="phone-arrows">
+            <button class="phone-arrow" onclick="switchPhoneTpl((currentTpl - 1 + tplCount) % tplCount)" aria-label="Previous template">←</button>
+            <button class="phone-arrow" onclick="switchPhoneTpl((currentTpl + 1) % tplCount)" aria-label="Next template">→</button>
+          </div>
+          <div class="phone-badge">📱 Mobile-first design</div>
         </div>
       </div>
     </div>
@@ -1292,25 +1304,35 @@
   // ── PHONE AUTO-SCROLL (reaches bottom → next template) ──
   function startScrollCycle() {
     if (scrollRaf) cancelAnimationFrame(scrollRaf);
-    let lastTime = null, atBottomSince = null;
-    const PX_PER_SEC = 14, PAUSE_MS = 1800;
+    let lastTime = null, atBottomSince = null, dwellSince = null;
+    const PX_PER_SEC = 42, PAUSE_AT_BOTTOM_MS = 2000, DWELL_MS = 6000;
     function tick(ts) {
-      if (pauseScroll) { scrollRaf = requestAnimationFrame(tick); return; }
+      if (pauseScroll) { lastTime = null; scrollRaf = requestAnimationFrame(tick); return; }
       if (!lastTime) lastTime = ts;
       const dt = Math.min(ts - lastTime, 50);
       lastTime = ts;
       const el = document.querySelectorAll('.phone-template')[currentTpl];
       if (!el) return;
-      const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 2;
-      if (atBottom) {
-        if (!atBottomSince) atBottomSince = ts;
-        if (ts - atBottomSince >= PAUSE_MS) {
+      const canScroll = el.scrollHeight > el.clientHeight + 2;
+      if (canScroll) {
+        const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 2;
+        if (atBottom) {
+          if (!atBottomSince) atBottomSince = ts;
+          if (ts - atBottomSince >= PAUSE_AT_BOTTOM_MS) {
+            switchPhoneTpl((currentTpl + 1) % tplCount);
+            return;
+          }
+        } else {
+          atBottomSince = null;
+          el.scrollTop += (PX_PER_SEC * dt) / 1000;
+        }
+      } else {
+        // Content fits — dwell for a few seconds then switch
+        if (!dwellSince) dwellSince = ts;
+        if (ts - dwellSince >= DWELL_MS) {
           switchPhoneTpl((currentTpl + 1) % tplCount);
           return;
         }
-      } else {
-        atBottomSince = null;
-        el.scrollTop += (PX_PER_SEC * dt) / 1000;
       }
       scrollRaf = requestAnimationFrame(tick);
     }
