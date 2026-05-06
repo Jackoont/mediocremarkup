@@ -3874,13 +3874,15 @@
     let currentRatio = 0;
     let rafPending   = false;
     let impactDone   = false;
-    let textShownAt  = null;
-    const TEXT_HOLD_MS = 500;
-    let scrollLocked = false;
-    let lockScrollY  = 0;
 
     // Smooth display ratio (lerped) for visual effects — avoids jitter
     let displayRatio = 0;
+
+    // Wheel/touch interception state
+    let intercepting = false;
+    let virtualScrolled = 0;
+    let touchStartY = 0;
+    let doneLockUntil = 0; // timestamp — hold at ratio=1 for a beat before releasing
 
     function applyReveal() {
       rafPending = false;
@@ -3989,48 +3991,146 @@
       }
     }
 
-    function onScroll() {
-      if (!revealSection) return;
+    // ── Compute ratio from real scroll position (used for nav jumps / fallback) ──
+    function getRatioFromScroll() {
+      if (!revealSection) return 0;
+      const rect  = revealSection.getBoundingClientRect();
+      const total = revealSection.offsetHeight - window.innerHeight;
+      return Math.max(0, Math.min(1, -rect.top / total));
+    }
+
+    function setRatio(r) {
+      currentRatio = Math.max(0, Math.min(1, r));
+      if (!rafPending) { rafPending = true; requestAnimationFrame(applyReveal); }
+    }
+
+    // ── Intercept wheel while animation is in progress ──
+    function onWheel(e) {
       if (window._navJumping) return;
 
-      if (scrollLocked) {
-        // Let scroll happen — just keep updating the visual until the brief hold expires
-        if (textShownAt && performance.now() - textShownAt >= TEXT_HOLD_MS) {
-          scrollLocked = false;
+      const rect = revealSection ? revealSection.getBoundingClientRect() : null;
+      if (!rect) return;
+
+      // Only intercept when the section is the one filling the viewport
+      const inSection = rect.top <= 0 && rect.bottom >= window.innerHeight;
+
+      if (!inSection) {
+        // Entered section from top via page scroll — sync virtual position
+        if (currentRatio < 1 && rect.top <= 4 && rect.top > -20) {
+          intercepting = true;
+          const total = revealSection.offsetHeight - window.innerHeight;
+          virtualScrolled = currentRatio * total;
         }
+        return;
       }
 
-      const rect     = revealSection.getBoundingClientRect();
-      const total    = revealSection.offsetHeight - window.innerHeight;
-      const scrolled = -rect.top;
-      currentRatio   = Math.max(0, Math.min(1, scrolled / total));
-
-      if (currentRatio >= 1 && !textShownAt && !window._navJumping) {
-        textShownAt  = performance.now();
-        lockScrollY  = window.scrollY;
-        scrollLocked = true;
-        setTimeout(() => { scrollLocked = false; }, TEXT_HOLD_MS);
+      if (currentRatio >= 1) {
+        // Hold at ratio=1 for a beat — absorb scroll events silently, no jitter
+        e.preventDefault();
+        if (performance.now() >= doneLockUntil) {
+          // Lock expired — release to native scroll
+          intercepting = false;
+        }
+        return;
       }
 
-      if (!rafPending) { rafPending = true; requestAnimationFrame(applyReveal); }
+      // We're mid-animation and section fills viewport — intercept
+      e.preventDefault();
+      intercepting = true;
+
+      const total = revealSection.offsetHeight - window.innerHeight;
+      const rawDelta = e.deltaY;
+      const normalized = e.deltaMode === 1 ? rawDelta * 30
+                       : e.deltaMode === 2 ? rawDelta * 300
+                       : rawDelta;
+      // Tight cap: 40px max per event so you have to actually scroll to get through
+      const capped = Math.max(-40, Math.min(40, normalized));
+      virtualScrolled = Math.max(0, Math.min(total, virtualScrolled + capped));
+      const newRatio = virtualScrolled / total;
+
+      setRatio(newRatio);
+
+      // Just hit the end — start the hold timer
+      if (newRatio >= 1 && doneLockUntil === 0) {
+        doneLockUntil = performance.now() + 800;
+      }
+
+      // Sync real scroll position so layout is correct when we release
+      if (revealSection) {
+        const sectionTop = revealSection.offsetTop;
+        window.scrollTo({ top: sectionTop + virtualScrolled, behavior: 'instant' });
+      }
+    }
+
+    // ── Touch support ──
+    function onTouchStart(e) {
+      touchStartY = e.touches[0].clientY;
+    }
+    function onTouchMove(e) {
+      if (window._navJumping) return;
+      const rect = revealSection ? revealSection.getBoundingClientRect() : null;
+      if (!rect) return;
+      const inSection = rect.top <= 0 && rect.bottom >= window.innerHeight;
+      if (!inSection || currentRatio >= 1) return;
+
+      e.preventDefault();
+      const dy = touchStartY - e.touches[0].clientY;
+      touchStartY = e.touches[0].clientY;
+      const total = revealSection.offsetHeight - window.innerHeight;
+      virtualScrolled = Math.max(0, Math.min(total, virtualScrolled + dy * 1.4));
+      setRatio(virtualScrolled / total);
+
+      if (revealSection) {
+        const sectionTop = revealSection.offsetTop;
+        window.scrollTo({ top: sectionTop + virtualScrolled, behavior: 'instant' });
+      }
+    }
+
+    // ── Fallback: real scroll events (nav jumps, keyboard, scrollbar drags) ──
+    function onScroll() {
+      if (!revealSection || window._navJumping) return;
+      const r = getRatioFromScroll();
+      // Only apply if we're not actively intercepting (avoid fighting ourselves)
+      if (!intercepting) {
+        setRatio(r);
+        const total = revealSection.offsetHeight - window.innerHeight;
+        virtualScrolled = r * total;
+      }
     }
 
     const sectionObs = new IntersectionObserver(entries => {
       entries.forEach(e => {
-        if (e.isIntersecting && !fcRunning) { fcRunning = true; swRunning = true; drawFC(); drawSW(); }
+        if (e.isIntersecting && !fcRunning) {
+          fcRunning = true; swRunning = true; drawFC(); drawSW();
+          // Sync virtual scroll when we enter
+          const total = revealSection.offsetHeight - window.innerHeight;
+          const r = getRatioFromScroll();
+          virtualScrolled = r * total;
+          currentRatio = r;
+        }
         if (!e.isIntersecting && e.boundingClientRect.top > 0) {
-          textShownAt = null; scrollLocked = false;
+          // Scrolled back above — full reset
+          intercepting = false;
+          virtualScrolled = 0;
+          currentRatio = 0;
+          doneLockUntil = 0;
         }
       });
     }, { threshold: 0 });
     if (revealSection) sectionObs.observe(revealSection);
 
-    window.addEventListener('scroll', onScroll, { passive: true });
+    // Non-passive wheel listener so we can preventDefault mid-animation
+    window.addEventListener('wheel',      onWheel,      { passive: false });
+    window.addEventListener('touchstart', onTouchStart, { passive: true  });
+    window.addEventListener('touchmove',  onTouchMove,  { passive: false });
+    window.addEventListener('scroll',     onScroll,     { passive: true  });
     onScroll();
 
     window._videoRevealUnlock = () => {
-      scrollLocked = false;
-      textShownAt  = null;
+      intercepting = false;
+      doneLockUntil = 0;
+      currentRatio = 1;
+      virtualScrolled = revealSection ? revealSection.offsetHeight - window.innerHeight : 0;
     };
   }
 
