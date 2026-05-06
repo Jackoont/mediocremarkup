@@ -1004,128 +1004,6 @@
     .feature-list li::before { content: '→'; position: absolute; left: 0; color: #ea9085; }
     @media (max-width: 900px) { .feature-band { grid-template-columns: 1fr; padding: 60px 24px; gap: 40px; } }
 
-    /* ── BELIEFS SECTION ── */
-    #beliefs {
-      background: #0e0a0d;
-      position: relative;
-      overflow: hidden;
-      padding: 0;
-    }
-    #beliefs::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image: radial-gradient(circle, rgba(212,93,121,0.04) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-    }
-    .beliefs-inner {
-      max-width: 1300px;
-      margin: 0 auto;
-      padding: 160px 80px 140px;
-      position: relative;
-      z-index: 1;
-    }
-    @media (max-width: 900px) { .beliefs-inner { padding: 100px 24px 90px; } }
-
-    .beliefs-eyebrow {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 5px;
-      text-transform: uppercase;
-      color: rgba(212,93,121,0.6);
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 80px;
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-    #beliefs.b-visible .beliefs-eyebrow { opacity: 1; transform: translateY(0); }
-    .beliefs-eyebrow::before {
-      content: '';
-      display: block;
-      width: 32px; height: 1px;
-      background: rgba(212,93,121,0.5);
-    }
-
-    .belief-line {
-      display: flex;
-      align-items: baseline;
-      gap: 28px;
-      padding: 40px 0;
-      border-top: 1px solid rgba(240,230,216,0.06);
-      cursor: default;
-      position: relative;
-    }
-    .belief-line:last-of-type { border-bottom: 1px solid rgba(240,230,216,0.06); }
-
-    .belief-num {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 2px;
-      color: rgba(212,93,121,0.35);
-      flex-shrink: 0;
-      width: 32px;
-      transition: color 0.3s ease;
-    }
-    .belief-line:hover .belief-num { color: #d45d79; }
-
-    .belief-text {
-      font-family: 'Fraunces', serif;
-      font-size: clamp(32px, 4.5vw, 68px);
-      font-weight: 300;
-      font-style: italic;
-      line-height: 1.08;
-      letter-spacing: -1.5px;
-      color: rgba(240,230,216,0.15);
-      transition: color 0.6s cubic-bezier(0.16,1,0.3,1);
-      will-change: color;
-    }
-    .belief-line.b-lit .belief-text { color: #f0e6d8; }
-    .belief-text em { color: #d45d79; font-style: italic; }
-
-    .belief-arrow {
-      margin-left: auto;
-      font-size: 18px;
-      color: rgba(212,93,121,0);
-      flex-shrink: 0;
-      transition: color 0.4s ease, transform 0.4s cubic-bezier(0.16,1,0.3,1);
-      transform: translateX(-12px);
-    }
-    .belief-line:hover .belief-arrow {
-      color: rgba(212,93,121,0.5);
-      transform: translateX(0);
-    }
-
-    .beliefs-closer {
-      margin-top: 80px;
-      display: flex;
-      align-items: center;
-      gap: 40px;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.8s 0.4s ease, transform 0.8s 0.4s ease;
-    }
-    #beliefs.b-visible .beliefs-closer { opacity: 1; transform: translateY(0); }
-    .beliefs-closer-line {
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(90deg, rgba(212,93,121,0.4) 0%, transparent 100%);
-      transform-origin: left;
-      transform: scaleX(0);
-      transition: transform 1.2s 0.6s cubic-bezier(0.16,1,0.3,1);
-    }
-    #beliefs.b-visible .beliefs-closer-line { transform: scaleX(1); }
-    .beliefs-closer-text {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: rgba(240,230,216,0.2);
-      white-space: nowrap;
-    }
 
     /* ── SECTIONS ── */
     section { padding: 0; max-width: none; margin: 0; position: relative; }
@@ -2211,45 +2089,6 @@
     </div>
   </div>
 
-  <!-- ══ BELIEFS SECTION ══ -->
-  <section id="beliefs">
-    <div class="beliefs-inner">
-      <div class="beliefs-eyebrow">What we believe</div>
-
-      <div class="belief-line">
-        <span class="belief-num">01</span>
-        <p class="belief-text">Templates are a <em>shortcut</em> to forgettable.</p>
-        <span class="belief-arrow">→</span>
-      </div>
-      <div class="belief-line">
-        <span class="belief-num">02</span>
-        <p class="belief-text">Speed without craft is just <em>noise</em>.</p>
-        <span class="belief-arrow">→</span>
-      </div>
-      <div class="belief-line">
-        <span class="belief-num">03</span>
-        <p class="belief-text">Your site is the first thing a client <em>judges</em> you by.</p>
-        <span class="belief-arrow">→</span>
-      </div>
-      <div class="belief-line">
-        <span class="belief-num">04</span>
-        <p class="belief-text">Good design is invisible. <em>Bad design</em> isn't.</p>
-        <span class="belief-arrow">→</span>
-      </div>
-      <div class="belief-line">
-        <span class="belief-num">05</span>
-        <p class="belief-text">Every pixel on a screen is a <em>decision</em>.</p>
-        <span class="belief-arrow">→</span>
-      </div>
-
-      <div class="beliefs-closer">
-        <div class="beliefs-closer-line"></div>
-        <span class="beliefs-closer-text">That's why we hand-code everything</span>
-        <div class="beliefs-closer-line" style="background:linear-gradient(90deg,transparent,rgba(212,93,121,0.4));"></div>
-      </div>
-    </div>
-  </section>
-
   <div id="light-zone"></div><!-- preserved for JS refs -->
 
   <!-- PRICING -->
@@ -2398,31 +2237,123 @@
      MEDIOCRE MARKUP — FULL ANIMATION SYSTEM
      ════════════════════════════════════════════════════════ */
 
-  /* ── 1. PHYSICS CURSOR ── */
+  /* ── 1. IMMERSIVE CURSOR ── */
   if (window.innerWidth > 900) {
-    const outer = document.createElement('div');
-    outer.style.cssText = 'position:fixed;width:36px;height:36px;border:1.5px solid rgba(212,93,121,0.5);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width 0.3s,height 0.3s,border-color 0.3s';
-    const inner = document.createElement('div');
-    inner.style.cssText = 'position:fixed;width:6px;height:6px;background:#d45d79;border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%)';
-    document.body.appendChild(outer); document.body.appendChild(inner);
-    let mx=0,my=0,ox=0,oy=0,ix=0,iy=0,ovx=0,ovy=0;
-    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
-    (function loop(){
-      const oax=(mx-ox)*0.1,oay=(my-oy)*0.1;
-      ovx=(ovx+oax)*0.75; ovy=(ovy+oay)*0.75;
-      ox+=ovx; oy+=ovy; ix+=(mx-ix)*0.5; iy+=(my-iy)*0.5;
-      outer.style.left=ox+'px'; outer.style.top=oy+'px';
-      inner.style.left=ix+'px'; inner.style.top=iy+'px';
-      const speed=Math.sqrt(ovx*ovx+ovy*ovy);
-      const angle=Math.atan2(ovy,ovx)*180/Math.PI;
-      const stretch=Math.min(speed*0.15,0.6);
-      outer.style.transform=`translate(-50%,-50%) rotate(${angle}deg) scaleX(${1+stretch}) scaleY(${1-stretch*0.5})`;
+    /* --- DOM elements --- */
+    const dot   = document.createElement('div');   // tiny exact dot
+    const ring  = document.createElement('div');   // lagging magnetic ring
+    const label = document.createElement('div');   // contextual text label
+    const trail = document.createElement('canvas'); // ink tail canvas
+
+    dot.id   = 'cur-dot';
+    ring.id  = 'cur-ring';
+    label.id = 'cur-label';
+    trail.id = 'cur-trail';
+
+    dot.style.cssText   = 'position:fixed;width:5px;height:5px;background:#d45d79;border-radius:50%;pointer-events:none;z-index:10001;transform:translate(-50%,-50%);transition:transform 0.15s ease,background 0.3s ease;mix-blend-mode:normal;';
+    ring.style.cssText  = 'position:fixed;width:38px;height:38px;border:1px solid rgba(212,93,121,0.45);border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%);will-change:left,top,transform;';
+    label.style.cssText = 'position:fixed;pointer-events:none;z-index:10002;font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#d45d79;opacity:0;transform:translate(18px,-50%);white-space:nowrap;transition:opacity 0.25s ease;top:0;left:0;';
+    trail.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9998;width:100%;height:100%;';
+    trail.width  = window.innerWidth;
+    trail.height = window.innerHeight;
+    window.addEventListener('resize', () => { trail.width = window.innerWidth; trail.height = window.innerHeight; });
+
+    document.body.append(trail, ring, dot, label);
+    const tctx = trail.getContext('2d');
+
+    /* --- state --- */
+    let mx = window.innerWidth/2, my = window.innerHeight/2;
+    let rx = mx, ry = my, rvx = 0, rvy = 0;
+    let ix = mx, iy = my;
+    let hovering = false, clicking = false;
+    let trailPoints = [];  // [{x,y,age}]
+    const TRAIL_LEN = 28;
+
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    document.addEventListener('mousedown', () => { clicking = true;  dot.style.transform = 'translate(-50%,-50%) scale(2.5)'; });
+    document.addEventListener('mouseup',   () => { clicking = false; dot.style.transform = hovering ? 'translate(-50%,-50%) scale(0)' : 'translate(-50%,-50%) scale(1)'; });
+
+    /* --- interactive targets --- */
+    const interactiveLabel = el => {
+      if (el.matches('a[href^="mailto"]')) return 'write us';
+      if (el.matches('.price-card,.price-card *')) return 'select';
+      if (el.matches('.what-item,.what-item *')) return 'details';
+      if (el.matches('.showcase-label,.showcase-label *')) return 'preview';
+      if (el.matches('a,button,.btn')) return 'open';
+      return '';
+    };
+
+    document.querySelectorAll('a,button,.btn,.service-chip,.price-card,.what-item,.showcase-label').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        hovering = true;
+        const lbl = interactiveLabel(el);
+        label.textContent = lbl;
+        label.style.opacity = lbl ? '1' : '0';
+        dot.style.transform = 'translate(-50%,-50%) scale(0)';
+        ring.style.borderColor = '#d45d79';
+        ring.style.width = ring.style.height = '54px';
+        ring.style.background = 'rgba(212,93,121,0.06)';
+        ring.style.backdropFilter = 'blur(2px)';
+      });
+      el.addEventListener('mouseleave', () => {
+        hovering = false;
+        label.style.opacity = '0';
+        dot.style.transform = 'translate(-50%,-50%) scale(1)';
+        ring.style.borderColor = 'rgba(212,93,121,0.45)';
+        ring.style.width = ring.style.height = '38px';
+        ring.style.background = 'transparent';
+        ring.style.backdropFilter = 'none';
+      });
+    });
+
+    /* --- animation loop --- */
+    (function loop() {
+      /* dot snaps instantly */
+      ix += (mx - ix) * 0.55;
+      iy += (my - iy) * 0.55;
+      dot.style.left = ix + 'px';
+      dot.style.top  = iy + 'px';
+
+      /* ring springs with slight lag */
+      const ax = (mx - rx) * 0.12;
+      const ay = (my - ry) * 0.12;
+      rvx = (rvx + ax) * 0.72;
+      rvy = (rvy + ay) * 0.72;
+      rx += rvx; ry += rvy;
+      const speed = Math.sqrt(rvx*rvx + rvy*rvy);
+      const angle = Math.atan2(rvy, rvx) * 180 / Math.PI;
+      const sq = Math.min(speed * 0.07, 0.45);
+      ring.style.left = rx + 'px';
+      ring.style.top  = ry + 'px';
+      ring.style.transform = `translate(-50%,-50%) rotate(${angle}deg) scaleX(${1+sq}) scaleY(${1-sq*0.5})`;
+      ring.style.transition = hovering
+        ? 'width 0.35s cubic-bezier(0.16,1,0.3,1),height 0.35s cubic-bezier(0.16,1,0.3,1),border-color 0.3s,background 0.3s'
+        : 'width 0.35s cubic-bezier(0.16,1,0.3,1),height 0.35s cubic-bezier(0.16,1,0.3,1),border-color 0.3s';
+
+      /* label follows ring */
+      label.style.left = (rx + 22) + 'px';
+      label.style.top  = ry + 'px';
+
+      /* ink trail */
+      trailPoints.push({ x: ix, y: iy, age: 0 });
+      if (trailPoints.length > TRAIL_LEN) trailPoints.shift();
+      tctx.clearRect(0, 0, trail.width, trail.height);
+      if (trailPoints.length > 2) {
+        for (let i = 1; i < trailPoints.length; i++) {
+          const t = i / trailPoints.length;
+          const p = trailPoints[i], pp = trailPoints[i-1];
+          tctx.beginPath();
+          tctx.moveTo(pp.x, pp.y);
+          tctx.lineTo(p.x, p.y);
+          tctx.strokeStyle = `rgba(212,93,121,${t * t * 0.35})`;
+          tctx.lineWidth = t * 2.5;
+          tctx.lineCap = 'round';
+          tctx.stroke();
+        }
+      }
+
       requestAnimationFrame(loop);
     })();
-    document.querySelectorAll('a,button,.service-chip,.price-card,.what-item,.process-step').forEach(el=>{
-      el.addEventListener('mouseenter',()=>{outer.style.width='56px';outer.style.height='56px';outer.style.borderColor='#d45d79';inner.style.background='#ea9085'});
-      el.addEventListener('mouseleave',()=>{outer.style.width='36px';outer.style.height='36px';outer.style.borderColor='rgba(212,93,121,0.5)';inner.style.background='#d45d79'});
-    });
   }
 
   /* ── 2. PARTICLE SYSTEM (hero) ── */
@@ -3174,33 +3105,6 @@
     gsap.to('#ab3', { scrollTrigger: { scrub: 2 }, y: -100 });
   }
 
-  /* ── 10. BELIEFS SCROLL REVEAL ── */
-  {
-    const beliefs = document.getElementById('beliefs');
-    const lines   = beliefs ? beliefs.querySelectorAll('.belief-line') : [];
-
-    if (beliefs && lines.length) {
-      // Section-level: eyebrow + closer animate in
-      const sectionObs = new IntersectionObserver(([e]) => {
-        if (e.isIntersecting) { beliefs.classList.add('b-visible'); sectionObs.disconnect(); }
-      }, { threshold: 0.05 });
-      sectionObs.observe(beliefs);
-
-      // Per-line: light up as each crosses ~30% of viewport
-      const lineObs = new IntersectionObserver(entries => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            e.target.classList.add('b-lit');
-          } else if (e.boundingClientRect.top > 0) {
-            // scrolled back up — dim it again
-            e.target.classList.remove('b-lit');
-          }
-        });
-      }, { threshold: 0.35 });
-
-      lines.forEach(l => lineObs.observe(l));
-    }
-  }
 
   /* ── 11. STANDARD SCROLL REVEAL (fallback for non-GSAP elements) ── */
   {
