@@ -1026,7 +1026,7 @@
     }
     #dive-letterbox-top { top: 0; }
     #dive-letterbox-bottom { bottom: 0; }
-    /* Edge speed-streak vignette — the "air rushing past" effect */
+    /* Edge vignette — soft cream fade at screen edges only */
     #dive-edge-vignette {
       position: absolute;
       inset: 0;
@@ -1034,10 +1034,10 @@
       z-index: 7;
       opacity: 0;
       background:
-        linear-gradient(to right,  rgba(254,249,244,0.85) 0%, transparent 20%, transparent 80%, rgba(254,249,244,0.85) 100%),
-        linear-gradient(to bottom, rgba(254,249,244,0.85) 0%, transparent 20%, transparent 80%, rgba(254,249,244,0.85) 100%);
+        linear-gradient(to right, rgba(254,249,244,0.70) 0%, transparent 14%, transparent 86%, rgba(254,249,244,0.70) 100%),
+        linear-gradient(to bottom, rgba(254,249,244,0.55) 0%, transparent 12%, transparent 88%, rgba(254,249,244,0.55) 100%);
     }
-    /* Radial portal glow — coral bloom at center during approach */
+    /* Horizon glow — warm coral band at vanishing point */
     #dive-portal-glow {
       position: absolute;
       inset: 0;
@@ -1045,13 +1045,10 @@
       z-index: 3;
       opacity: 0;
       background:
-        radial-gradient(ellipse 40% 34% at 50% 50%,
-          rgba(240,99,90,0.30) 0%,
-          rgba(240,99,90,0.12) 45%,
-          transparent 70%),
-        radial-gradient(ellipse 70% 58% at 50% 50%,
-          rgba(244,162,97,0.10) 0%,
-          transparent 65%);
+        radial-gradient(ellipse 80% 12% at 50% 50%,
+          rgba(240,99,90,0.22) 0%,
+          rgba(240,99,90,0.06) 55%,
+          transparent 100%);
     }
     /* Speed-streak canvas — motion lines flying at viewer */
     #speed-canvas {
@@ -2608,7 +2605,7 @@
           line-height:1.0;
           letter-spacing:-0.5px;
           margin-bottom:36px;
-        ">Let's build something<br><em style="color:#F0635A;">worth remembering.</em></h2>
+        ">Let's build something<br><em style="color:#F0635A;">not actually mediocre.</em></h2>
         <a href="mailto:mediocremanager@outlook.com" style="
           font-family:'JetBrains Mono',monospace;
           font-size:15px;
@@ -3533,45 +3530,46 @@
     };
     sizeCanvases(); window.addEventListener('resize', sizeCanvases);
 
-    // ── STAR-FIELD / WARP PARTICLES ──
-    // Each particle is a star that shoots from center outward — classic warp drive.
-    // On a light background we draw dark ink stripes that elongate with speed.
-    const GLYPH_SET = ['</', '/>', '{}', '()', '=>', '&&', '//', '[]', '+=', 'fn', 'px', 'vh', 'rem', '/*', '*/', '0', '1'];
-    const STAR_COUNT = 260;
-    let stars = [];
+    // ── PERSPECTIVE GRID + FALLING CODE COLUMNS ──
+    // A vanishing-point grid floor/ceiling rushes toward the viewer as they scroll.
+    // Columns of code glyphs fall through it — like rain through venetian blinds.
+    // Grounded, cinematic, not trippy.
 
-    function mkStar(W, H) {
-      // Spawn at centre with a random angle
-      const angle = Math.random() * Math.PI * 2;
-      const spawnR = Math.random() * 40; // small cluster at origin
+    const GLYPHS = ['</', '/>', '{}', '()', '=>', '&&', '//', '[]', '+=', 'fn',
+                    'px', 'vh', 'rem', '/*', '*/', '00', '01', '10', '11', ';;'];
+
+    // Code column particles — fall from top, spaced in vertical lanes
+    const COL_COUNT = 22;
+    let cols = [];
+
+    function initCols() {
+      cols = [];
+      const W = fc.width, H = fc.height;
+      for (let i = 0; i < COL_COUNT; i++) {
+        cols.push(mkCol(W, H, true));
+      }
+    }
+
+    function mkCol(W, H, preplace) {
+      const laneX = (Math.random() * 0.92 + 0.04) * W; // avoid very edges
       return {
-        angle,
-        r:      spawnR,
-        speed:  0.6 + Math.random() * 1.8,      // base radial speed
-        maxR:   Math.sqrt(W * W + H * H) * 0.65,
-        alpha:  0.25 + Math.random() * 0.55,
-        width:  0.4 + Math.random() * 1.1,
-        // some carry a glyph label for the code-rain feel
-        glyph:  Math.random() < 0.28
-                  ? GLYPH_SET[Math.floor(Math.random() * GLYPH_SET.length)]
-                  : null,
-        glyphSz: 9 + Math.random() * 8,
-        // colour: mostly coral, occasional plum accent
-        hue:    Math.random() < 0.75 ? '240,99,90' : '180,60,100',
+        x:     laneX,
+        y:     preplace ? Math.random() * H : -20,
+        speed: 0.6 + Math.random() * 1.4,
+        glyphs: Array.from({ length: 8 + Math.floor(Math.random() * 10) }, () =>
+          GLYPHS[Math.floor(Math.random() * GLYPHS.length)]
+        ),
+        spacing: 18 + Math.random() * 8,
+        alpha:  0.18 + Math.random() * 0.38,
+        size:   10 + Math.random() * 5,
+        accent: Math.random() < 0.18, // bright coral accent column
+        // trail: how many glyphs are bright vs fading
+        headBright: 2 + Math.floor(Math.random() * 2),
       };
     }
 
-    function initStars() {
-      stars = [];
-      const W = fc.width, H = fc.height;
-      for (let i = 0; i < STAR_COUNT; i++) {
-        const s = mkStar(W, H);
-        s.r = Math.random() * s.maxR * 0.9; // pre-spread so screen isn't empty on entry
-        stars.push(s);
-      }
-    }
-    initStars();
-    window.addEventListener('resize', () => { initStars(); });
+    initCols();
+    window.addEventListener('resize', initCols);
 
     let fcRaf, fcRunning = false;
     let diveRatio = 0;
@@ -3579,202 +3577,201 @@
 
     function drawFC() {
       const W = fc.width, H = fc.height;
-      const cx = W / 2, cy = H / 2;
 
-      // Motion-blur trail — shorter trail = sharper streaks at high speed
-      const trailAlpha = diveRatio < 0.5
-        ? 0.22 + diveRatio * 0.20       // entry: long creamy trail = nice blur
-        : 0.42 - (diveRatio - 0.5) * 0.04; // peak: medium trail, streaks pop
-      fCtx.fillStyle = `rgba(254,249,244,${Math.max(0.18, trailAlpha)})`;
-      fCtx.fillRect(0, 0, W, H);
+      // Full clear each frame — grid is drawn cleanly, no motion blur smear
+      fCtx.clearRect(0, 0, W, H);
 
-      // Speed curve: accelerates smoothly to impact, eases slightly after
-      const warp = diveRatio < 0.72
-        ? Math.pow(diveRatio, 1.4) * 5.5
-        : Math.pow(0.72, 1.4) * 5.5 * (1 - (diveRatio - 0.72) / 0.35 * 0.45);
+      // Speed multiplier: how fast columns fall
+      const speed = 1 + Math.pow(diveRatio, 1.3) * 7;
+      // Overall opacity envelope
+      const vis = Math.min(1, diveRatio / 0.15);
 
-      stars.forEach(s => {
-        const speedMult = s.speed * (1 + warp);
-        s.r += speedMult;
+      // ── PERSPECTIVE GRID ──
+      // Two planes: floor (bottom half) and ceiling (top half), both converge to horizon
+      const vpx = W / 2;
+      const vpy = H * 0.5; // horizon sits dead centre
+      const gridIntensity = Math.min(1, diveRatio * 2.2);
 
-        // Recycle when off-screen
-        if (s.r > s.maxR) {
-          Object.assign(s, mkStar(W, H));
-          s.r = 0;
-        }
+      // How far the grid has "scrolled" (drives the cross-bar animation)
+      const scrollOff = (performance.now() * 0.00018 * (1 + diveRatio * 4)) % 1;
 
-        // Positions: tail at previous r, head at current r
-        const tailR  = Math.max(0, s.r - speedMult * (3 + warp * 2.5));
-        const x1 = cx + Math.cos(s.angle) * tailR;
-        const y1 = cy + Math.sin(s.angle) * tailR;
-        const x2 = cx + Math.cos(s.angle) * s.r;
-        const y2 = cy + Math.sin(s.angle) * s.r;
+      // Vertical rail lines — converge to VP
+      const RAILS = 14;
+      for (let i = 0; i <= RAILS; i++) {
+        const t = i / RAILS; // 0..1 across screen width
+        const screenX = t * W;
+        // At the horizon the line is at vpx; at screen edges it fans out
+        const floorAlpha = 0.10 * gridIntensity * (1 - Math.abs(t - 0.5) * 1.2);
+        if (floorAlpha < 0.003) continue;
 
-        // Fade in from centre, fade toward edge
-        const rFrac = s.r / s.maxR;
-        const edgeFade = rFrac < 0.08 ? rFrac / 0.08 : rFrac > 0.82 ? (1 - rFrac) / 0.18 : 1;
-        const a = s.alpha * edgeFade * Math.min(1, 0.2 + diveRatio * 1.4);
-        if (a < 0.01) return;
-
-        // Streak line
-        const grad = fCtx.createLinearGradient(x1, y1, x2, y2);
-        grad.addColorStop(0, `rgba(${s.hue},0)`);
-        grad.addColorStop(0.35, `rgba(${s.hue},${(a * 0.5).toFixed(3)})`);
-        grad.addColorStop(1,   `rgba(${s.hue},${a.toFixed(3)})`);
         fCtx.beginPath();
-        fCtx.moveTo(x1, y1);
-        fCtx.lineTo(x2, y2);
-        fCtx.strokeStyle = grad;
-        fCtx.lineWidth = s.width * (1 + rFrac * 0.6);
+        fCtx.moveTo(vpx + (screenX - vpx) * 0.001, vpy); // near-vanishing
+        fCtx.lineTo(screenX, H);
+        const gf = fCtx.createLinearGradient(vpx, vpy, screenX, H);
+        gf.addColorStop(0, `rgba(240,99,90,0)`);
+        gf.addColorStop(0.35, `rgba(240,99,90,${(floorAlpha * 0.6).toFixed(3)})`);
+        gf.addColorStop(1,   `rgba(240,99,90,${floorAlpha.toFixed(3)})`);
+        fCtx.strokeStyle = gf;
+        fCtx.lineWidth = 0.75;
         fCtx.stroke();
 
-        // Glyph label at head — visible while slow, streaks away at speed
-        if (s.glyph && warp < 3.5 && rFrac > 0.06 && rFrac < 0.85) {
-          const ga = a * Math.max(0, 1 - warp / 3.5) * 0.85;
-          if (ga > 0.04) {
-            fCtx.globalAlpha = ga;
-            fCtx.font = `500 ${s.glyphSz}px "JetBrains Mono", monospace`;
-            fCtx.fillStyle = `rgb(${s.hue})`;
-            fCtx.textAlign = 'center';
-            fCtx.textBaseline = 'middle';
-            fCtx.fillText(s.glyph, x2, y2);
-            fCtx.globalAlpha = 1;
-          }
-        }
-      });
-
-      // Central bloom — warm coral radial glow that pulses with speed
-      if (diveRatio > 0.05) {
-        const bloA = Math.pow(diveRatio, 1.2) * 0.22 * (1 + Math.sin(performance.now() * 0.003) * 0.12);
-        const bloR = W * (0.12 + diveRatio * 0.18);
-        const grd = fCtx.createRadialGradient(cx, cy, 0, cx, cy, bloR);
-        grd.addColorStop(0,   `rgba(240,99,90,${bloA.toFixed(3)})`);
-        grd.addColorStop(0.45,`rgba(244,162,122,${(bloA * 0.35).toFixed(3)})`);
-        grd.addColorStop(1,   'rgba(254,249,244,0)');
-        fCtx.fillStyle = grd;
-        fCtx.fillRect(0, 0, W, H);
+        // Ceiling mirror
+        fCtx.beginPath();
+        fCtx.moveTo(vpx + (screenX - vpx) * 0.001, vpy);
+        fCtx.lineTo(screenX, 0);
+        const gc = fCtx.createLinearGradient(vpx, vpy, screenX, 0);
+        gc.addColorStop(0, `rgba(240,99,90,0)`);
+        gc.addColorStop(0.35, `rgba(240,99,90,${(floorAlpha * 0.4).toFixed(3)})`);
+        gc.addColorStop(1,   `rgba(240,99,90,${(floorAlpha * 0.7).toFixed(3)})`);
+        fCtx.strokeStyle = gc;
+        fCtx.lineWidth = 0.75;
+        fCtx.stroke();
       }
 
-      // Soft cream vignette at edges — keeps centre open and edges dreamy
-      const vg = fCtx.createRadialGradient(cx, cy, W * 0.25, cx, cy, W * 0.82);
-      vg.addColorStop(0, 'rgba(254,249,244,0)');
-      vg.addColorStop(1, `rgba(254,249,244,${(0.38 + diveRatio * 0.28).toFixed(3)})`);
-      fCtx.fillStyle = vg;
-      fCtx.fillRect(0, 0, W, H);
+      // Horizontal cross-bars — zoom toward viewer as they scroll
+      const BARS = 10;
+      for (let i = 0; i < BARS; i++) {
+        // Each bar has a depth value 0 (far/horizon) to 1 (close/edge)
+        const rawDepth = ((i / BARS) + scrollOff) % 1;
+        // Ease depth so bars accelerate as they approach
+        const depth = Math.pow(rawDepth, 1.6);
+
+        // Floor bar: y interpolates from vpy (far) to H (close)
+        const fy = vpy + (H - vpy) * depth;
+        // At this depth, how wide is it? Interpolate from 0 width to full W
+        const halfW = (W / 2) * depth;
+        const barAlpha = 0.08 * gridIntensity * depth * (depth > 0.9 ? (1 - depth) / 0.1 : 1);
+        if (barAlpha < 0.003) continue;
+
+        fCtx.beginPath();
+        fCtx.moveTo(vpx - halfW, fy);
+        fCtx.lineTo(vpx + halfW, fy);
+        fCtx.strokeStyle = `rgba(240,99,90,${barAlpha.toFixed(3)})`;
+        fCtx.lineWidth = 0.75;
+        fCtx.stroke();
+
+        // Ceiling bar
+        const cy2 = vpy - (vpy) * depth;
+        fCtx.beginPath();
+        fCtx.moveTo(vpx - halfW, cy2);
+        fCtx.lineTo(vpx + halfW, cy2);
+        fCtx.strokeStyle = `rgba(240,99,90,${(barAlpha * 0.7).toFixed(3)})`;
+        fCtx.lineWidth = 0.75;
+        fCtx.stroke();
+      }
+
+      // Horizon accent line — a single sharp coral rule at the vanishing point
+      if (gridIntensity > 0.1) {
+        const horizA = Math.min(0.55, gridIntensity * 0.55);
+        const horizGrad = fCtx.createLinearGradient(0, vpy, W, vpy);
+        horizGrad.addColorStop(0,   'rgba(240,99,90,0)');
+        horizGrad.addColorStop(0.2, `rgba(240,99,90,${horizA.toFixed(3)})`);
+        horizGrad.addColorStop(0.5, `rgba(240,99,90,${horizA.toFixed(3)})`);
+        horizGrad.addColorStop(0.8, `rgba(240,99,90,${horizA.toFixed(3)})`);
+        horizGrad.addColorStop(1,   'rgba(240,99,90,0)');
+        fCtx.beginPath();
+        fCtx.moveTo(0, vpy);
+        fCtx.lineTo(W, vpy);
+        fCtx.strokeStyle = horizGrad;
+        fCtx.lineWidth = 1;
+        fCtx.stroke();
+      }
+
+      // ── FALLING CODE COLUMNS ──
+      cols.forEach((col, ci) => {
+        col.y += col.speed * speed;
+        const totalH = col.glyphs.length * col.spacing;
+        if (col.y - totalH > H + 40) {
+          cols[ci] = mkCol(W, H, false);
+          return;
+        }
+
+        col.glyphs.forEach((sym, gi) => {
+          const gy = col.y - gi * col.spacing;
+          if (gy < -col.spacing || gy > H + col.spacing) return;
+
+          // Head glyphs are bright, trail fades
+          const isBright = gi < col.headBright;
+          const trailFade = isBright ? 1 : Math.max(0, 1 - (gi - col.headBright) / (col.glyphs.length - col.headBright));
+          const a = col.alpha * trailFade * vis;
+          if (a < 0.008) return;
+
+          fCtx.globalAlpha = a;
+          fCtx.font = `500 ${col.size}px "JetBrains Mono", monospace`;
+
+          if (col.accent && isBright) {
+            fCtx.fillStyle = '#F0635A';
+          } else if (isBright) {
+            fCtx.fillStyle = '#2B2547';
+          } else {
+            // Fading trail: plum to coral gradient per-glyph
+            const mix = 1 - trailFade;
+            const r = Math.round(43  + (240 - 43)  * mix);
+            const g = Math.round(37  + (99  - 37)  * mix);
+            const b = Math.round(71  + (90  - 71)  * mix);
+            fCtx.fillStyle = `rgb(${r},${g},${b})`;
+          }
+
+          fCtx.textAlign = 'center';
+          fCtx.textBaseline = 'middle';
+          fCtx.fillText(sym, col.x, gy);
+        });
+        fCtx.globalAlpha = 1;
+      });
 
       fcRaf = requestAnimationFrame(drawFC);
     }
 
-    // ── TUNNEL GRID LINES — perspective rails converging to vanishing point ──
-    // Replaces floating rings with a grid that gives true spatial depth on light bg.
-    let tunnelT = 0;
-
+    // ── TUNNEL CANVAS — unused in new design, kept for shockwave z-ordering ──
     function drawTunnel() {
-      const W = tc.width, H = tc.height;
-      const vpx = W / 2, vpy = H / 2;
-      tCtx.clearRect(0, 0, W, H);
-
-      if (diveRatio < 0.06) { requestAnimationFrame(drawTunnel); return; }
-
-      const now = performance.now() * 0.00045;
-      const intensity = Math.min(1, diveRatio * 1.6);
-
-      // Radial spoke lines — like a wheel hub shooting out from VP
-      const SPOKES = 18;
-      for (let i = 0; i < SPOKES; i++) {
-        const angle = (i / SPOKES) * Math.PI * 2;
-        // Animate each spoke slightly for shimmer
-        const shimmer = Math.sin(now * 2.1 + i * 0.55) * 0.012;
-        const a = (0.06 + shimmer * 0.5) * intensity;
-        if (a < 0.005) continue;
-        tCtx.beginPath();
-        tCtx.moveTo(vpx, vpy);
-        const ex = vpx + Math.cos(angle) * W;
-        const ey = vpy + Math.sin(angle) * W;
-        tCtx.lineTo(ex, ey);
-        const g = tCtx.createLinearGradient(vpx, vpy, ex, ey);
-        g.addColorStop(0,    `rgba(240,99,90,${(a * 1.8).toFixed(3)})`);
-        g.addColorStop(0.25, `rgba(240,99,90,${(a * 0.9).toFixed(3)})`);
-        g.addColorStop(0.7,  `rgba(240,99,90,${(a * 0.25).toFixed(3)})`);
-        g.addColorStop(1,    'rgba(240,99,90,0)');
-        tCtx.strokeStyle = g;
-        tCtx.lineWidth = 0.8;
-        tCtx.stroke();
-      }
-
-      // Concentric ellipses zooming outward — warp rings
-      const RINGS = 12;
-      const scrollPhase = (now * 0.9) % 1;
-      for (let i = 0; i < RINGS; i++) {
-        const phase = ((i / RINGS) + scrollPhase) % 1;
-        // ease-in so rings snap in fast then coast
-        const p = Math.pow(phase, 0.55);
-        const rx = W * 0.72 * p;
-        const ry = H * 0.50 * p;
-        if (rx < 2) continue;
-        const distFade = p > 0.88 ? (1 - p) / 0.12 : 1;
-        const nearFade  = p < 0.05 ? p / 0.05 : 1;
-        const a = 0.28 * intensity * distFade * nearFade * (i % 3 === 0 ? 1.0 : 0.45);
-        if (a < 0.004) continue;
-        tCtx.beginPath();
-        tCtx.ellipse(vpx, vpy, rx, ry, 0, 0, Math.PI * 2);
-        tCtx.strokeStyle = `rgba(240,99,90,${a.toFixed(3)})`;
-        tCtx.lineWidth = p < 0.4 ? 0.5 : 1;
-        tCtx.stroke();
-      }
-
+      tCtx.clearRect(0, 0, tc.width, tc.height);
       requestAnimationFrame(drawTunnel);
     }
     drawTunnel();
 
-    // ── SPEED STREAKS — burst outward from center on impact ──
+    // ── SPEED STREAKS — horizontal blurs shoot across on impact ──
     let streaks = [];
 
     function spawnStreaks(count) {
       const W = sc.width, H = sc.height;
       for (let i = 0; i < count; i++) {
-        const angle = Math.random() * Math.PI * 2;
-        const r0    = 10 + Math.random() * 60;
+        // Streaks shoot horizontally left or right from random Y
+        const goRight = Math.random() < 0.5;
         streaks.push({
-          angle,
-          r:      r0,
-          speed:  22 + Math.random() * 38,
-          len:    80 + Math.random() * 220,
-          alpha:  0.55 + Math.random() * 0.45,
-          width:  0.6 + Math.random() * 2.2,
-          hue:    Math.random() < 0.6 ? '240,99,90' : '43,37,71',
-          life:   1.0,
-          decay:  0.028 + Math.random() * 0.022,
+          x:     goRight ? 0 : W,
+          y:     H * (0.1 + Math.random() * 0.8),
+          vx:    (goRight ? 1 : -1) * (30 + Math.random() * 55),
+          len:   60 + Math.random() * 200,
+          alpha: 0.35 + Math.random() * 0.50,
+          width: 0.5 + Math.random() * 1.8,
+          hue:   Math.random() < 0.65 ? '240,99,90' : '43,37,71',
+          life:  1.0,
+          decay: 0.022 + Math.random() * 0.028,
         });
       }
     }
 
     function drawStreaks() {
       const W = sc.width, H = sc.height;
-      const cx = W / 2, cy = H / 2;
       sCtx.clearRect(0, 0, W, H);
 
       streaks = streaks.filter(s => s.life > 0.02);
       streaks.forEach(s => {
-        s.r    += s.speed * (0.6 + s.life * 0.4);
+        s.x    += s.vx;
         s.life -= s.decay;
-        const a = s.alpha * Math.pow(s.life, 1.4) * Math.min(1, diveRatio * 2);
-        if (a < 0.008) return;
+        const a = s.alpha * Math.pow(s.life, 1.2);
+        if (a < 0.008 || s.x < -s.len || s.x > W + s.len) return;
 
-        const x1 = cx + Math.cos(s.angle) * s.r;
-        const y1 = cy + Math.sin(s.angle) * s.r;
-        const x2 = cx + Math.cos(s.angle) * (s.r + s.len * s.life);
-        const y2 = cy + Math.sin(s.angle) * (s.r + s.len * s.life);
-
-        const g = sCtx.createLinearGradient(x1, y1, x2, y2);
+        const x2 = s.x + (s.vx > 0 ? -s.len : s.len) * s.life;
+        const g = sCtx.createLinearGradient(s.x, s.y, x2, s.y);
         g.addColorStop(0,   `rgba(${s.hue},${a.toFixed(3)})`);
-        g.addColorStop(0.5, `rgba(${s.hue},${(a * 0.5).toFixed(3)})`);
+        g.addColorStop(0.6, `rgba(${s.hue},${(a * 0.4).toFixed(3)})`);
         g.addColorStop(1,   `rgba(${s.hue},0)`);
         sCtx.beginPath();
-        sCtx.moveTo(x1, y1);
-        sCtx.lineTo(x2, y2);
+        sCtx.moveTo(s.x, s.y);
+        sCtx.lineTo(x2, s.y);
         sCtx.strokeStyle = g;
-        sCtx.lineWidth = s.width * s.life;
+        sCtx.lineWidth = s.width;
         sCtx.stroke();
       });
 
@@ -3782,18 +3779,17 @@
     }
     drawStreaks();
 
-    // ── SHOCKWAVE RINGS ── ink ripples on light bg
+    // ── SHOCKWAVE RINGS — concentric ink circles on impact ──
     let rings = [];
     let swRaf;
     let swRunning = false;
 
     function fireShockwave() {
       const cx = sw.width / 2, cy = sw.height / 2;
-      // 3 sets: coral filled burst, thin coral rings, dark plum rings
       const sets = [
-        { color: '240,99,90',  count: 5, speedBase: 4,  alphaBase: 0.75, lw: 2.5 },
-        { color: '43,37,71',   count: 3, speedBase: 8,  alphaBase: 0.45, lw: 1.2 },
-        { color: '244,162,97', count: 2, speedBase: 14, alphaBase: 0.55, lw: 1.8 },
+        { color: '240,99,90', count: 4, speedBase: 5,  alphaBase: 0.65, lw: 2.0 },
+        { color: '43,37,71',  count: 3, speedBase: 10, alphaBase: 0.40, lw: 1.0 },
+        { color: '244,162,97',count: 2, speedBase: 18, alphaBase: 0.50, lw: 1.5 },
       ];
       let delay = 0;
       sets.forEach(set => {
@@ -3801,15 +3797,15 @@
           setTimeout(() => {
             rings.push({
               cx, cy, r: 0,
-              maxR:  Math.max(sw.width, sw.height) * 0.9,
-              alpha: set.alphaBase - i * 0.08,
+              maxR:  Math.max(sw.width, sw.height) * 0.88,
+              alpha: set.alphaBase - i * 0.07,
               lineW: set.lw,
-              speed: set.speedBase + i * 5,
+              speed: set.speedBase + i * 4,
               color: set.color,
             });
-          }, delay + i * 55);
+          }, delay + i * 50);
         }
-        delay += 80;
+        delay += 75;
       });
     }
 
@@ -3819,21 +3815,17 @@
       rings.forEach(ring => {
         ring.r += ring.speed;
         const t = ring.r / ring.maxR;
-        const a = ring.alpha * Math.pow(1 - t, 1.6);
+        const a = ring.alpha * Math.pow(1 - t, 1.8);
         if (a < 0.005) return;
-
-        // Main ring
         swCtx.beginPath();
         swCtx.arc(ring.cx, ring.cy, ring.r, 0, Math.PI * 2);
         swCtx.strokeStyle = `rgba(${ring.color},${a.toFixed(3)})`;
-        swCtx.lineWidth = ring.lineW * (1 - t * 0.5);
+        swCtx.lineWidth = ring.lineW * (1 - t * 0.4);
         swCtx.stroke();
-
-        // Soft glow halo
         swCtx.beginPath();
         swCtx.arc(ring.cx, ring.cy, ring.r, 0, Math.PI * 2);
-        swCtx.strokeStyle = `rgba(${ring.color},${(a * 0.18).toFixed(3)})`;
-        swCtx.lineWidth = ring.lineW * 8 * (1 - t);
+        swCtx.strokeStyle = `rgba(${ring.color},${(a * 0.15).toFixed(3)})`;
+        swCtx.lineWidth = ring.lineW * 7 * (1 - t);
         swCtx.stroke();
       });
       swRaf = requestAnimationFrame(drawSW);
@@ -3863,16 +3855,16 @@
 
       const stickyEl = document.getElementById('video-sticky');
 
-      // 1. Coral ink-wash flash — overlay goes coral then fades, looks dramatic on cream
+      // 1. Sharp coral flash — hits hard then bleeds out
       const flashEl = mask;
-      flashEl.style.background = 'rgba(240,99,90,0.18)';
+      flashEl.style.background = 'rgba(240,99,90,0.22)';
       flashEl.style.mixBlendMode = 'multiply';
-      flashEl.style.transition = 'opacity 0.04s';
+      flashEl.style.transition = 'none';
       flashEl.style.opacity = '1';
       setTimeout(() => {
-        flashEl.style.transition = 'opacity 0.7s cubic-bezier(0.16,1,0.3,1)';
+        flashEl.style.transition = 'opacity 0.65s cubic-bezier(0.16,1,0.3,1)';
         flashEl.style.opacity = '0';
-      }, 40);
+      }, 35);
 
       // 2. Chromatic aberration — split on light bg shows as colour fringing
       const chroma = document.getElementById('dive-chroma');
