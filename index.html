@@ -2970,10 +2970,52 @@
       return pw.getBoundingClientRect();
     }
 
+    // ── Showcase headline word targets ──
+    // Resolved once the showcase section is in the DOM and has layout.
+    // Returns array of {x,y} viewport coords, one per word, or null.
+    let _scTargets = null;
+    function getScTargets() {
+      if (_scTargets) return _scTargets;
+      const el = document.getElementById('sc-headline');
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      if (!r.width) return null;
+      // "What your site feels like \n in a customer's hand."
+      // Lay targets out in two rows matching the headline's visual layout
+      const words = ['What', 'your', 'site', 'feels', 'like', "in a customer's", 'hand.'];
+      const row1 = ['What', 'your', 'site', 'feels', 'like'];
+      const row2 = ["in a customer's", 'hand.'];
+      const lineH = r.height / 2.2;
+      const out = [];
+      row1.forEach((w, i) => out.push({
+        word: w,
+        x: r.left + r.width * (0.08 + (i / (row1.length - 1)) * 0.84),
+        y: r.top + lineH * 0.5,
+        accent: false,
+      }));
+      row2.forEach((w, i) => out.push({
+        word: w,
+        x: r.left + r.width * (0.18 + (i / (row2.length - 1)) * 0.64),
+        y: r.top + lineH * 1.6,
+        accent: true,
+      }));
+      _scTargets = out;
+      return out;
+    }
+
+    // header assembly state (runs during the fall phase)
+    let hState = 'waiting'; // waiting → assembling → holding → dissolving
+    let hFrames = 0;
+    let hRevealFired = false;
+    // which sym indices are "header" syms (every other one, up to 7)
+    const HEADER_INDICES = new Set(
+      Array.from({ length: Math.min(7, N) }, (_, k) => k * 2).filter(k => k < N)
+    );
+
     function animWhirlpool(ts) {
       if (wpDone) return;
       wpT = ts * 0.001;
-      vCtx.clearRect(0, 0, VW, VH);  // clean slate every frame — zero streaks
+      vCtx.clearRect(0, 0, VW, VH);
 
       const cx = VW / 2, cy = VH / 2;
 
@@ -2985,6 +3027,32 @@
         fallProg = Math.max(0, Math.min(1, (enterY - pr.top) / (enterY - readyY)));
       }
 
+      // Try to resolve sc targets once the section scrolls near
+      const scTargets = (hState !== 'done') ? getScTargets() : null;
+
+      // Advance header state machine based on header syms' positions
+      if (hState === 'assembling' && scTargets) {
+        const headerSyms = syms.filter((s, i) => HEADER_INDICES.has(i));
+        const allLanded = headerSyms.every(s =>
+          s.state === 'header' && Math.hypot(s.hx - s.x, s.hy - s.y) < 12
+        );
+        if (allLanded) { hState = 'holding'; hFrames = 0; }
+      }
+      if (hState === 'holding') {
+        hFrames++;
+        // After ~50 frames (~0.85s), reveal the real headline and start dissolve
+        if (hFrames > 50 && !hRevealFired) {
+          hRevealFired = true;
+          document.getElementById('sc-headline')?.classList.add('sc-in');
+        }
+        if (hFrames > 75) hState = 'dissolving';
+      }
+      if (hState === 'dissolving') {
+        const headerDone = syms.filter((s, i) => HEADER_INDICES.has(i))
+          .every(s => s.state === 'fall' || s.state === 'impact' || s.state === 'done');
+        if (headerDone) hState = 'done';
+      }
+
       syms.forEach((s, i) => {
         if (s.state === 'done') return;
 
@@ -2992,28 +3060,70 @@
           const angle = s.phase + wpT * s.speed;
           s.x = cx + Math.cos(angle) * s.r;
           s.y = cy + Math.sin(angle) * s.r;
-
-          // Fade in on boot
           s.alpha = Math.min(1, s.alpha + 0.04);
 
-          // Stagger into fall as phone scrolls into view
           if (fallProg > (i / N) * 0.6) {
-            s.state = 'fall';
-            const kickSpeed = 2.5 + Math.random() * 3;
-            s.vx = Math.cos(s.phase) * kickSpeed * 0.5 + (Math.random() - 0.5) * 2;
-            s.vy = -2 - Math.random() * 3;
+            const isHeader = HEADER_INDICES.has(i);
+            if (isHeader && scTargets && hState === 'waiting') {
+              // First header sym triggers assembly
+              hState = 'assembling';
+            }
+            if (isHeader && scTargets && (hState === 'assembling' || hState === 'holding')) {
+              // Fly to showcase headline word target
+              s.state = 'header';
+              s.vx = 0; s.vy = 0;
+              const tgt = scTargets[i % scTargets.length];
+              s.hx = tgt.x; s.hy = tgt.y;
+              s.hword = tgt.word;
+              s.haccent = tgt.accent;
+              s.hfsize = Math.min(72, Math.max(32, VW * 0.05));
+            } else {
+              // Normal fall into phone
+              s.state = 'fall';
+              const kickSpeed = 2.5 + Math.random() * 3;
+              s.vx = Math.cos(s.phase) * kickSpeed * 0.5 + (Math.random() - 0.5) * 2;
+              s.vy = -2 - Math.random() * 3;
+            }
           }
+
+        } else if (s.state === 'header') {
+          const dx = s.hx - s.x, dy = s.hy - s.y;
+          const dist = Math.hypot(dx, dy);
+          const pull = 0.09 + (1 - Math.min(1, dist / 500)) * 0.09;
+          s.vx += dx * pull;
+          s.vy += dy * pull;
+          s.vx *= 0.83;
+          s.vy *= 0.83;
+          s.x += s.vx;
+          s.y += s.vy;
+
+          // Once dissolving, transition to fall so they finish in the phone
+          if (hState === 'dissolving' || hState === 'done') {
+            s.state = 'fall';
+            s.vx += (Math.random() - 0.5) * 2;
+            s.vy += (Math.random() - 0.5) * 2;
+          }
+
+          // Draw as headline word
+          vCtx.save();
+          vCtx.globalAlpha = Math.max(0, s.alpha);
+          vCtx.font = `700 ${s.hfsize}px 'DM Serif Display', serif`;
+          vCtx.fillStyle = s.haccent ? '#d45d79' : '#f0e6d8';
+          vCtx.textAlign = 'center';
+          vCtx.textBaseline = 'middle';
+          if (s.haccent) { vCtx.shadowColor = 'rgba(212,93,121,0.45)'; vCtx.shadowBlur = 14; }
+          vCtx.fillText(s.hword, s.x, s.y);
+          vCtx.restore();
+          return;
 
         } else if (s.state === 'fall') {
           const pr2 = getPhoneRect();
           if (!pr2) return;
-
           const anchor  = PHONE_ANCHORS_NORM[i % PHONE_ANCHORS_NORM.length];
           const targetX = pr2.left + anchor.x * pr2.width;
           const targetY = pr2.top  + anchor.y * pr2.height;
           const dx = targetX - s.x, dy = targetY - s.y;
           const dist = Math.hypot(dx, dy);
-
           const proximity = 1 - Math.min(1, dist / 350);
           const homing = 0.012 + proximity * proximity * 0.08;
           s.vx += dx * homing;
@@ -3022,7 +3132,6 @@
           s.vy *= 0.91;
           s.x += s.vx;
           s.y += s.vy;
-
           if (dist < 16) {
             s.state = 'impact';
             const pf = document.querySelector('.phone-frame');
@@ -3038,7 +3147,6 @@
           if (s.alpha <= 0) { s.alpha = 0; s.state = 'done'; return; }
         }
 
-        // Draw on canvas — cleared every frame so no trails possible
         vCtx.save();
         vCtx.globalAlpha = s.alpha;
         vCtx.font = `600 ${s.fsize}px 'JetBrains Mono', monospace`;
@@ -3049,7 +3157,6 @@
         vCtx.restore();
       });
 
-      // All done → fire flicker
       if (!wpDone && syms.every(s => s.state === 'done')) {
         wpDone = true;
         container.style.transition = 'opacity 0.3s';
@@ -3084,6 +3191,7 @@
           syms.forEach(s => { s.alpha = 0; s.state = 'done'; });
           container.style.opacity = '0';
           container.style.display = 'none';
+          if (!hRevealFired) { hRevealFired = true; document.getElementById('sc-headline')?.classList.add('sc-in'); }
           window._wpSymbolsDone = true;
           document.dispatchEvent(new CustomEvent('wp-symbols-done'));
         }
@@ -3416,11 +3524,12 @@
       initFrags();
       physLoop();
 
-      // Text fades in immediately
+      // Text fades in immediately — sc-headline withheld; whirlpool reveals it.
+      // If whirlpool already finished (fast scroll), reveal headline immediately.
       setTimeout(() => {
         document.getElementById('sc-eyebrow')?.classList.add('sc-in');
-        document.getElementById('sc-headline')?.classList.add('sc-in');
         document.getElementById('sc-tagline')?.classList.add('sc-in');
+        if (window._wpSymbolsDone) document.getElementById('sc-headline')?.classList.add('sc-in');
       }, 80);
 
       // If symbols are already done (fast scroll), flicker right away
