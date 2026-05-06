@@ -425,141 +425,78 @@
     .floral-vine { position: absolute; pointer-events: none; z-index: 2; opacity: 0.14; }
 
     /* ══════════════════════════════════════
-       SHOWCASE — scroll-pinned phone stage
+       SHOWCASE — immersive phone stage
        ══════════════════════════════════════ */
     #showcase {
       position: relative;
       background: #0c090b;
-      height: 500vh;
-    }
-    #sc-bg {
-      position: fixed;
-      inset: 0; width: 100%; height: 100%;
-      pointer-events: none; z-index: 0;
-      opacity: 0; transition: opacity 0.6s ease;
-    }
-    #sc-bg.sc-active { opacity: 1; }
-    #sc-sticky {
-      position: sticky; top: 0; height: 100vh;
-      display: grid;
-      grid-template-columns: 1fr 280px 1fr;
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
       align-items: center;
-      padding: 0 64px;
-      z-index: 2; overflow: hidden;
+      justify-content: center;
+      padding: 100px 24px 120px;
     }
-
-    /* Left */
-    #sc-left { padding-right: 48px; }
+    #sc-physics-canvas {
+      position: absolute;
+      inset: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 1;
+    }
+    #sc-glow-bg {
+      position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 60% 55% at 50% 60%, rgba(212,93,121,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 30% 20%, rgba(234,144,133,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 75% 80%, rgba(28,17,24,0.8) 0%, transparent 70%);
+    }
+    #sc-inner {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 0;
+    }
     #sc-eyebrow {
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
-      color: rgba(212,93,121,0.6); margin-bottom: 18px;
+      color: rgba(212,93,121,0.55); margin-bottom: 20px;
+      opacity: 0; transform: translateY(16px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
     }
+    #sc-eyebrow.sc-in { opacity: 1; transform: translateY(0); }
     #sc-headline {
       font-family: 'Fraunces', serif;
-      font-size: clamp(24px,2.8vw,42px); font-weight: 300; font-style: italic;
-      color: #f0e6d8; line-height: 1.1; letter-spacing: -1px; margin-bottom: 14px;
+      font-size: clamp(32px,5vw,72px); font-weight: 300; font-style: italic;
+      color: #f0e6d8; line-height: 1.05; letter-spacing: -2px;
+      text-align: center; margin-bottom: 56px;
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.8s 0.1s ease, transform 0.8s 0.1s ease;
     }
-    #sc-headline em { color: #d45d79; }
-    #sc-sub {
-      font-size: 13.5px; color: rgba(240,230,216,0.4);
-      line-height: 1.65; margin-bottom: 36px;
-    }
-    #sc-tabs { display: flex; flex-direction: column; gap: 7px; margin-bottom: 36px; }
-    .sc-tab {
-      display: flex; align-items: center; gap: 12px;
-      padding: 10px 16px;
-      border: 1px solid rgba(240,230,216,0.07); border-radius: 8px;
-      background: transparent; color: rgba(240,230,216,0.3);
-      font-family: 'JetBrains Mono', monospace; font-size: 11px;
-      letter-spacing: 1.5px; text-transform: uppercase;
-      cursor: none; transition: all 0.25s ease; text-align: left;
-    }
-    .sc-tab:hover { border-color: rgba(212,93,121,0.2); color: rgba(240,230,216,0.55); }
-    .sc-tab.active {
-      border-color: rgba(212,93,121,0.5); color: #f0e6d8;
-      background: rgba(212,93,121,0.08);
-    }
-    .sc-tab-icon { font-size: 14px; }
-    #sc-prog-wrap {
-      width: 100%; height: 2px;
-      background: rgba(240,230,216,0.07); border-radius: 1px;
-      margin-bottom: 10px; overflow: hidden;
-    }
-    #sc-prog-fill {
-      height: 100%; background: #d45d79; border-radius: 1px;
-      width: 25%; transition: width 0.55s cubic-bezier(0.16,1,0.3,1);
-    }
-    #sc-hint {
-      font-family: 'JetBrains Mono', monospace; font-size: 9px;
-      letter-spacing: 2px; text-transform: uppercase;
-      color: rgba(240,230,216,0.18);
-      animation: scHint 2.5s ease-in-out infinite;
-      transition: opacity 0.4s;
-    }
-    @keyframes scHint { 0%,100%{opacity:.4} 50%{opacity:1} }
-
-    /* Phone column */
+    #sc-headline.sc-in { opacity: 1; transform: translateY(0); }
+    #sc-headline em { color: #d45d79; font-style: italic; }
     #sc-phone-col {
       display: flex; flex-direction: column; align-items: center;
       position: relative;
     }
-    /* Annotation bubbles */
-    .sc-ann {
-      position: absolute; display: flex; align-items: center;
-      gap: 8px; pointer-events: none; z-index: 10;
-      opacity: 0; transition: opacity 0.5s ease;
+    #sc-tagline {
+      margin-top: 52px; text-align: center;
+      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: rgba(240,230,216,0.18);
+      opacity: 0; transition: opacity 0.8s 0.5s ease;
     }
-    .sc-ann.vis { opacity: 1; }
-    .sc-ann-dot {
-      width: 6px; height: 6px; border-radius: 50%; background: #d45d79;
-      flex-shrink: 0; box-shadow: 0 0 0 3px rgba(212,93,121,.2);
-      animation: annPulse 2s ease-in-out infinite;
-    }
-    @keyframes annPulse {
-      0%,100%{box-shadow:0 0 0 3px rgba(212,93,121,.2)}
-      50%{box-shadow:0 0 0 7px rgba(212,93,121,.06)}
-    }
-    .sc-ann-line { width: 36px; height: 1px; flex-shrink: 0; background: linear-gradient(90deg,#d45d79,rgba(212,93,121,.15)); }
-    .sc-ann-txt {
-      font-family: 'JetBrains Mono', monospace; font-size: 9px;
-      letter-spacing: 1px; text-transform: uppercase;
-      color: rgba(240,230,216,.4); line-height: 1.5; white-space: nowrap;
-    }
-    .sc-ann.right { flex-direction: row-reverse; }
-    .sc-ann.right .sc-ann-line { background: linear-gradient(90deg,rgba(212,93,121,.15),#d45d79); }
-    .sc-ann.right .sc-ann-txt { text-align: right; }
-
-    #sc-badge {
-      margin-top: 16px;
+    #sc-tagline.sc-in { opacity: 1; }
+    #sc-name-pill {
+      margin-top: 20px;
       font-family: 'JetBrains Mono', monospace; font-size: 10px;
       letter-spacing: 2px; text-transform: uppercase;
-      color: rgba(212,93,121,.7); border: 1px solid rgba(212,93,121,.2);
-      padding: 5px 14px; border-radius: 999px; transition: opacity 0.3s;
+      color: rgba(212,93,121,.65); border: 1px solid rgba(212,93,121,.2);
+      padding: 5px 16px; border-radius: 999px;
+      transition: opacity 0.35s ease;
+      opacity: 0;
     }
+    #sc-name-pill.sc-in { opacity: 1; }
 
-    /* Right */
-    #sc-right { padding-left: 48px; }
-    .sc-feat {
-      transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16,1,0.3,1);
-    }
-    .sc-feat.hidden { display: none; }
-    .sc-feat-icon { font-size: 26px; margin-bottom: 12px; display: block; }
-    .sc-feat h3 {
-      font-family: 'Fraunces', serif; font-size: 21px;
-      font-weight: 300; font-style: italic; color: #f0e6d8; margin-bottom: 9px;
-    }
-    .sc-feat p {
-      font-size: 13px; color: rgba(240,230,216,.45);
-      line-height: 1.6; margin-bottom: 18px;
-    }
-    .sc-feat ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
-    .sc-feat ul li {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px;
-      letter-spacing: .5px; color: rgba(240,230,216,.35);
-      padding-left: 18px; position: relative;
-    }
-    .sc-feat ul li::before { content:'→'; position:absolute; left:0; color:rgba(212,93,121,.55); }
+    /* sc-right removed — new layout is single centered column */
 
     /* ── PHONE MOCKUP ── */
     .phone-wrapper {
@@ -621,10 +558,8 @@
     }
 
     @media (max-width:900px) {
-      #showcase { height: auto; }
-      #sc-sticky { position:relative; grid-template-columns:1fr; height:auto; padding:72px 24px; gap:40px; }
-      #sc-left,#sc-right { padding:0; max-width:100%; }
-      .sc-ann { display:none; }
+      #showcase { padding: 80px 16px 100px; }
+      #sc-headline { font-size: clamp(28px, 8vw, 48px); margin-bottom: 40px; }
     }
     .phone-notch { width: 80px; height: 20px; background: #111; border-radius: 0 0 14px 14px; margin-bottom: 8px; flex-shrink: 0; position: relative; z-index: 2; }
     .phone-screen { flex: 1; width: 100%; border-radius: 20px; overflow: hidden; position: relative; }
@@ -1926,39 +1861,15 @@
   </section>
 
   <section id="showcase">
-    <canvas id="sc-bg"></canvas>
-    <div id="sc-sticky">
+    <div id="sc-glow-bg"></div>
+    <canvas id="sc-physics-canvas"></canvas>
 
-      <!-- LEFT -->
-      <div id="sc-left">
-        <div id="sc-eyebrow">/ Mobile-first design</div>
-        <h2 id="sc-headline">What your site looks like<br><em>in a customer's hand.</em></h2>
-        <p id="sc-sub">Every site we build is phone-first. Tap an industry to see a real custom design.</p>
-        <div id="sc-tabs">
-          <button class="sc-tab active" data-idx="0" onclick="scGoTo(0)"><span class="sc-tab-icon">⚖</span><span>Law Firm</span></button>
-          <button class="sc-tab" data-idx="1" onclick="scGoTo(1)"><span class="sc-tab-icon">🌸</span><span>Floral Studio</span></button>
-          <button class="sc-tab" data-idx="2" onclick="scGoTo(2)"><span class="sc-tab-icon">🏠</span><span>Real Estate</span></button>
-          <button class="sc-tab" data-idx="3" onclick="scGoTo(3)"><span class="sc-tab-icon">☕</span><span>Coffee Shop</span></button>
-        </div>
-        <div id="sc-prog-wrap"><div id="sc-prog-fill"></div></div>
-        <div id="sc-hint">scroll to cycle  ↓</div>
-      </div>
+    <div id="sc-inner">
+      <div id="sc-eyebrow">/ Mobile-first design</div>
+      <h2 id="sc-headline">What your site looks like<br><em>in a customer's hand.</em></h2>
 
       <!-- PHONE -->
       <div id="sc-phone-col">
-        <div class="sc-ann" id="sc-ann-0" style="top:15%;left:-148px;">
-          <div class="sc-ann-dot"></div><div class="sc-ann-line"></div>
-          <div class="sc-ann-txt">Mobile-first<br>layout</div>
-        </div>
-        <div class="sc-ann right" id="sc-ann-1" style="top:44%;right:-158px;">
-          <div class="sc-ann-dot"></div><div class="sc-ann-line"></div>
-          <div class="sc-ann-txt">Hand-coded<br>interactions</div>
-        </div>
-        <div class="sc-ann" id="sc-ann-2" style="bottom:20%;left:-130px;">
-          <div class="sc-ann-dot"></div><div class="sc-ann-line"></div>
-          <div class="sc-ann-txt">Loads in<br>&lt; 1 second</div>
-        </div>
-
         <canvas id="phone-burst-canvas"></canvas>
         <div id="showcase-depth-ring"></div>
         <div class="phone-wrapper" id="phone-wrapper">
@@ -2273,44 +2184,17 @@
             <div class="phone-home-bar"></div>
           </div>
           <div class="phone-dots" id="phone-dots">
-            <div class="phone-dot active" onclick="scGoTo(0)"></div>
-            <div class="phone-dot" onclick="scGoTo(1)"></div>
-            <div class="phone-dot" onclick="scGoTo(2)"></div>
-            <div class="phone-dot" onclick="scGoTo(3)"></div>
+            <div class="phone-dot active"></div>
+            <div class="phone-dot"></div>
+            <div class="phone-dot"></div>
+            <div class="phone-dot"></div>
           </div>
         </div>
-        <div id="sc-badge">Meridian Law Group</div>
-      </div>
+        <div id="sc-name-pill">Meridian Law Group</div>
+      </div><!-- /sc-phone-col -->
 
-      <!-- RIGHT -->
-      <div id="sc-right">
-        <div class="sc-feat" id="sc-feat-0">
-          <span class="sc-feat-icon">⚖</span>
-          <h3>Meridian Law Group</h3>
-          <p>Trust-first design that turns visitors into consultation requests.</p>
-          <ul><li>Hero with trust signals</li><li>Practice area cards</li><li>Attorney profiles</li><li>One-tap call button</li></ul>
-        </div>
-        <div class="sc-feat hidden" id="sc-feat-1">
-          <span class="sc-feat-icon">🌸</span>
-          <h3>Bloom &amp; Co.</h3>
-          <p>Romantic, editorial design that makes every arrangement look like art.</p>
-          <ul><li>Full-bleed photo hero</li><li>Seasonal collections</li><li>Custom order flow</li><li>Maps &amp; hours</li></ul>
-        </div>
-        <div class="sc-feat hidden" id="sc-feat-2">
-          <span class="sc-feat-icon">🏠</span>
-          <h3>Coastal Properties</h3>
-          <p>Clean, confident design that puts properties front and center.</p>
-          <ul><li>Featured listings</li><li>Agent bios</li><li>Tour booking</li><li>Market snapshot</li></ul>
-        </div>
-        <div class="sc-feat hidden" id="sc-feat-3">
-          <span class="sc-feat-icon">☕</span>
-          <h3>Eleven North Coffee</h3>
-          <p>Warm and inviting — designed for regulars and first-timers alike.</p>
-          <ul><li>Menu with photos</li><li>Loyalty program UI</li><li>Order-ahead hook</li><li>Hours &amp; location</li></ul>
-        </div>
-      </div>
-
-    </div><!-- /sc-sticky -->
+      <div id="sc-tagline">Every industry. Every vision. Hand-coded.</div>
+    </div><!-- /sc-inner -->
   </section>
 
   <!-- ══ SCROLL-PINNED VIDEO REVEAL ══ -->
@@ -2826,201 +2710,282 @@
     }, { passive: true });
   }
 
-  /* ── 6. SHOWCASE — scroll-pinned phone stage ── */
+  /* ── 6 & 7. SHOWCASE — immersive physics phone stage ── */
   {
-    const showcase   = document.getElementById('showcase');
-    const scBg       = document.getElementById('sc-bg');
-    const progFill   = document.getElementById('sc-prog-fill');
-    const hint       = document.getElementById('sc-hint');
-    const badge      = document.getElementById('sc-badge');
-    const depthRing  = document.getElementById('showcase-depth-ring');
-    const burstCanvas= document.getElementById('phone-burst-canvas');
-    const phoneWrap  = document.getElementById('phone-wrapper');
-    const anns       = document.querySelectorAll('.sc-ann');
-    const STEPS = 4;
+    const showcase    = document.getElementById('showcase');
+    const physCanvas  = document.getElementById('sc-physics-canvas');
+    const burstCanvas = document.getElementById('phone-burst-canvas');
+    const depthRing   = document.getElementById('showcase-depth-ring');
+    const phoneWrap   = document.getElementById('phone-wrapper');
+    const namePill    = document.getElementById('sc-name-pill');
     const NAMES = ['Meridian Law Group','Bloom & Co.','Coastal Properties','Eleven North Coffee'];
-    const PALETTES = [
-      { bg:[15,22,45],  ac:[200,169,110] },
-      { bg:[28,12,22],  ac:[212,93,121]  },
-      { bg:[8,18,32],   ac:[90,155,200]  },
-      { bg:[20,12,6],   ac:[195,135,70]  },
+    let currentTpl = 0;
+    const tplCount = 4;
+    let scVisible = false, landed = false, tiltOn = false;
+    let gx = 0, gy = 0, tx = 0, ty = 0;
+    let pauseScroll = false, scrollRaf = null;
+
+    /* ── Physics canvas: floating UI fragments ── */
+    const pc = physCanvas ? physCanvas.getContext('2d') : null;
+    const FRAGMENTS = [
+      { text: '⚖ Law · $500',     w: 98,  h: 26 },
+      { text: 'Mobile-first',      w: 88,  h: 24 },
+      { text: '7-day delivery',    w: 100, h: 24 },
+      { text: '</>',               w: 36,  h: 36 },
+      { text: '4.9 ★',            w: 58,  h: 26 },
+      { text: '$624,900',          w: 90,  h: 26 },
+      { text: 'Free Consult',      w: 94,  h: 24 },
+      { text: '↗ +38% CTR',       w: 90,  h: 26 },
+      { text: 'Est. 1998',         w: 72,  h: 24 },
+      { text: 'Hand-coded',        w: 86,  h: 24 },
+      { text: '{ }',               w: 34,  h: 34 },
+      { text: '2,400+ cases',      w: 100, h: 24 },
+      { text: 'Bloom & Co.',       w: 86,  h: 26 },
+      { text: '<1s load',          w: 72,  h: 24 },
+      { text: '☕ On Tap',         w: 72,  h: 26 },
+      { text: '🌸 Weddings',       w: 90,  h: 26 },
+      { text: 'A-rated schools',   w: 106, h: 24 },
+      { text: '0 px bug',          w: 70,  h: 24 },
     ];
 
-    /* Ambient BG morphs per industry */
-    let bgT=0, bgGoal=0;
-    if (scBg) {
-      const bc=scBg.getContext('2d');
-      const rsz=()=>{scBg.width=innerWidth;scBg.height=innerHeight;};
-      rsz(); window.addEventListener('resize',rsz);
-      (function bgLoop(){
-        bgT+=(bgGoal-bgT)*.035;
-        const i0=Math.floor(bgT)%STEPS, i1=Math.ceil(bgT)%STEPS, f=bgT%1;
-        const L=(a,b)=>a+(b-a)*f;
-        const P0=PALETTES[i0],P1=PALETTES[i1];
-        const bgr=L(P0.bg[0],P1.bg[0]),bgg=L(P0.bg[1],P1.bg[1]),bgb=L(P0.bg[2],P1.bg[2]);
-        const acr=L(P0.ac[0],P1.ac[0]),acg=L(P0.ac[1],P1.ac[1]),acb=L(P0.ac[2],P1.ac[2]);
-        const g=bc.createRadialGradient(innerWidth*.5,innerHeight*.45,0,innerWidth*.5,innerHeight*.45,innerWidth*.72);
-        g.addColorStop(0,`rgba(${Math.round(acr)},${Math.round(acg)},${Math.round(acb)},0.1)`);
-        g.addColorStop(0.38,`rgba(${Math.round(bgr)},${Math.round(bgg)},${Math.round(bgb)},0.75)`);
-        g.addColorStop(1,`rgba(10,7,9,1)`);
-        bc.fillStyle=g; bc.fillRect(0,0,scBg.width,scBg.height);
-        requestAnimationFrame(bgLoop);
-      })();
-    }
-
-    /* Particle burst */
-    function fireBurst(){
-      if(!burstCanvas)return;
-      const bc2=burstCanvas.getContext('2d');
-      const W=burstCanvas.offsetWidth||260,H=burstCanvas.offsetHeight||520;
-      burstCanvas.width=W;burstCanvas.height=H;
-      const pts=Array.from({length:32},()=>{
-        const a=Math.random()*Math.PI*2,s=2+Math.random()*5;
-        return{x:W/2,y:H/2,vx:Math.cos(a)*s,vy:Math.sin(a)*s-1.2,
-               r:1.2+Math.random()*2.2,al:.85,col:Math.random()<.6?'#d45d79':'#ea9085'};
+    let frags = [];
+    function initFrags() {
+      if (!physCanvas) return;
+      physCanvas.width  = physCanvas.offsetWidth;
+      physCanvas.height = physCanvas.offsetHeight;
+      const W = physCanvas.width, H = physCanvas.height;
+      frags = FRAGMENTS.map((f, i) => {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 0.12 + Math.random() * 0.22;
+        return {
+          ...f,
+          x: 60 + Math.random() * (W - 120),
+          y: 40 + Math.random() * (H - 80),
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          alpha: 0.07 + Math.random() * 0.13,
+          targetAlpha: 0.07 + Math.random() * 0.13,
+          rot: (Math.random() - 0.5) * 0.08,
+          rotV: (Math.random() - 0.5) * 0.0006,
+          isCode: f.text === '</>' || f.text === '{ }',
+        };
       });
-      (function bl(){
-        bc2.clearRect(0,0,W,H);let any=false;
-        pts.forEach(p=>{
-          p.vy+=.12;p.x+=p.vx;p.y+=p.vy;p.vx*=.97;p.al*=.93;
-          if(p.al<.02)return;any=true;
-          bc2.beginPath();bc2.arc(p.x,p.y,p.r,0,Math.PI*2);
-          bc2.fillStyle=p.col;bc2.globalAlpha=p.al;bc2.fill();bc2.globalAlpha=1;
+    }
+
+    let mouseX = -9999, mouseY = -9999;
+    document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+
+    function drawFrags() {
+      if (!pc || !physCanvas) return;
+      const W = physCanvas.width, H = physCanvas.height;
+      pc.clearRect(0, 0, W, H);
+      if (!scVisible) return;
+
+      const rect = physCanvas.getBoundingClientRect();
+      const lmx = mouseX - rect.left, lmy = mouseY - rect.top;
+
+      frags.forEach(f => {
+        /* mouse repulsion */
+        const dx = f.x - lmx, dy = f.y - lmy;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 140) {
+          const force = (140 - dist) / 140 * 0.18;
+          f.vx += (dx / dist) * force;
+          f.vy += (dy / dist) * force;
+        }
+
+        /* gentle center gravity */
+        f.vx += (W / 2 - f.x) * 0.000015;
+        f.vy += (H / 2 - f.y) * 0.000015;
+
+        f.vx *= 0.985; f.vy *= 0.985;
+        f.x += f.vx; f.y += f.vy;
+        f.rot += f.rotV;
+
+        /* bounce walls */
+        const hw = f.w / 2 + 8;
+        if (f.x < hw)     { f.x = hw;     f.vx = Math.abs(f.vx) * 0.6; }
+        if (f.x > W - hw) { f.x = W - hw; f.vx = -Math.abs(f.vx) * 0.6; }
+        if (f.y < 16)      { f.y = 16;     f.vy = Math.abs(f.vy) * 0.6; }
+        if (f.y > H - 16)  { f.y = H - 16; f.vy = -Math.abs(f.vy) * 0.6; }
+
+        /* draw */
+        pc.save();
+        pc.translate(f.x, f.y);
+        pc.rotate(f.rot);
+        pc.globalAlpha = f.alpha;
+
+        if (f.isCode) {
+          pc.font = `bold 15px 'JetBrains Mono', monospace`;
+          pc.fillStyle = '#d45d79';
+          pc.textAlign = 'center';
+          pc.textBaseline = 'middle';
+          pc.fillText(f.text, 0, 0);
+        } else {
+          const pad = 10;
+          const rx = -f.w / 2 - pad, ry = -f.h / 2 - 2, rw = f.w + pad * 2, rh = f.h + 4, cr = 6;
+          pc.beginPath();
+          pc.moveTo(rx + cr, ry);
+          pc.lineTo(rx + rw - cr, ry); pc.arcTo(rx + rw, ry, rx + rw, ry + cr, cr);
+          pc.lineTo(rx + rw, ry + rh - cr); pc.arcTo(rx + rw, ry + rh, rx + rw - cr, ry + rh, cr);
+          pc.lineTo(rx + cr, ry + rh); pc.arcTo(rx, ry + rh, rx, ry + rh - cr, cr);
+          pc.lineTo(rx, ry + cr); pc.arcTo(rx, ry, rx + cr, ry, cr);
+          pc.closePath();
+          pc.strokeStyle = 'rgba(212,93,121,0.35)';
+          pc.lineWidth = 1;
+          pc.stroke();
+          pc.fillStyle = 'rgba(28,17,24,0.55)';
+          pc.fill();
+          pc.font = `10px 'JetBrains Mono', monospace`;
+          pc.fillStyle = 'rgba(240,230,216,0.7)';
+          pc.textAlign = 'center';
+          pc.textBaseline = 'middle';
+          pc.fillText(f.text, 0, 0);
+        }
+        pc.restore();
+      });
+    }
+
+    function physLoop() { drawFrags(); requestAnimationFrame(physLoop); }
+
+    window.addEventListener('resize', () => {
+      if (!physCanvas) return;
+      physCanvas.width  = physCanvas.offsetWidth;
+      physCanvas.height = physCanvas.offsetHeight;
+    });
+
+    /* ── Particle burst on template switch ── */
+    function fireBurst() {
+      if (!burstCanvas) return;
+      const bc = burstCanvas.getContext('2d');
+      const W = burstCanvas.offsetWidth || 260, H = burstCanvas.offsetHeight || 520;
+      burstCanvas.width = W; burstCanvas.height = H;
+      const pts = Array.from({ length: 32 }, () => {
+        const a = Math.random() * Math.PI * 2, s = 2 + Math.random() * 5;
+        return { x: W / 2, y: H / 2, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 1.2,
+                 r: 1.2 + Math.random() * 2.2, al: 0.85,
+                 col: Math.random() < 0.6 ? '#d45d79' : '#ea9085' };
+      });
+      (function bl() {
+        bc.clearRect(0, 0, W, H); let any = false;
+        pts.forEach(p => {
+          p.vy += 0.12; p.x += p.vx; p.y += p.vy; p.vx *= 0.97; p.al *= 0.93;
+          if (p.al < 0.02) return; any = true;
+          bc.beginPath(); bc.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          bc.fillStyle = p.col; bc.globalAlpha = p.al; bc.fill(); bc.globalAlpha = 1;
         });
-        if(any)requestAnimationFrame(bl);else bc2.clearRect(0,0,W,H);
+        if (any) requestAnimationFrame(bl); else bc.clearRect(0, 0, W, H);
       })();
     }
 
-    /* 3D flip transition */
-    function flipTo(idx){
-      if(!phoneWrap)return;
-      phoneWrap.style.transition='transform 0.32s cubic-bezier(0.4,0,1,1),opacity 0.2s';
-      phoneWrap.style.transform='rotateY(90deg) scale(0.9)';
-      phoneWrap.style.opacity='0.35';
-      setTimeout(()=>{
-        switchPhoneTpl(idx);
-        updateUI(idx);
-        phoneWrap.style.transition='transform 0.38s cubic-bezier(0,0,0.2,1.15),opacity 0.25s';
-        phoneWrap.style.transform='rotateY(0deg) scale(1)';
-        phoneWrap.style.opacity='1';
-        fireBurst();
-      },320);
-    }
-
-    /* Sync UI to step */
-    function updateUI(idx){
-      document.querySelectorAll('.sc-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
-      document.querySelectorAll('.sc-feat').forEach((c,i)=>c.classList.toggle('hidden',i!==idx));
-      document.querySelectorAll('.phone-dot').forEach((d,i)=>d.classList.toggle('active',i===idx));
-      if(progFill)progFill.style.width=((idx+1)/STEPS*100)+'%';
-      if(badge){badge.style.opacity='0';setTimeout(()=>{badge.textContent=NAMES[idx];badge.style.opacity='1';},200);}
-      bgGoal=idx;
-    }
-
-    /* Scroll driver */
-    let lastStep=-1,scVisible=false,tiltOn=false,landed=false;
-    let gx=0,gy=0,tx=0,ty=0;
-
-    function onScScroll(){
-      if(!showcase||!scVisible)return;
-      const rect=showcase.getBoundingClientRect();
-      const total=showcase.offsetHeight-innerHeight;
-      const pct=Math.max(0,Math.min(1,-rect.top/total));
-      const step=Math.min(STEPS-1,Math.floor(pct*STEPS));
-      if(step!==lastStep){lastStep=step;flipTo(step);}
-      if(hint&&pct>0.04)hint.style.opacity='0';
-    }
-    window.addEventListener('scroll',onScScroll,{passive:true});
-
-    /* Entrance */
-    new IntersectionObserver(([e])=>{
-      scVisible=e.isIntersecting;
-      if(scBg)scBg.classList.toggle('sc-active',e.isIntersecting);
-      if(e.isIntersecting&&!landed){
-        landed=true;
-        setTimeout(()=>{
-          if(phoneWrap)phoneWrap.classList.add('phone-landed');
-          if(depthRing)setTimeout(()=>depthRing.classList.add('ring-pop'),90);
-          setTimeout(fireBurst,340);
-          anns.forEach((a,i)=>setTimeout(()=>a.classList.add('vis'),580+i*180));
-          setTimeout(()=>{if(phoneWrap){phoneWrap.classList.add('phone-settled');tiltOn=true;}},1050);
-        },80);
+    /* ── Phone template switcher ── */
+    function switchPhoneTpl(idx) {
+      document.querySelectorAll('.phone-template').forEach((el, i) => {
+        el.classList.toggle('active', i === idx);
+        if (i === idx) el.scrollTop = 0;
+      });
+      document.querySelectorAll('.phone-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+      currentTpl = idx;
+      if (namePill) {
+        namePill.style.opacity = '0';
+        setTimeout(() => { namePill.textContent = NAMES[idx]; namePill.style.opacity = '1'; }, 220);
       }
-    },{threshold:0.05}).observe(showcase);
+    }
 
-    /* Mouse tilt */
-    document.addEventListener('mousemove',e=>{
-      if(!tiltOn||!scVisible)return;
-      const r=showcase.getBoundingClientRect();
-      gx=(e.clientX-r.left)/r.width-.5;
-      gy=(e.clientY-r.top)/r.height-.5;
+    /* ── 3D flip on template change ── */
+    function flipTo(idx) {
+      if (!phoneWrap) return;
+      phoneWrap.style.transition = 'transform 0.32s cubic-bezier(0.4,0,1,1), opacity 0.2s';
+      phoneWrap.style.transform  = 'rotateY(90deg) scale(0.9)';
+      phoneWrap.style.opacity    = '0.35';
+      setTimeout(() => {
+        switchPhoneTpl(idx);
+        phoneWrap.style.transition = 'transform 0.38s cubic-bezier(0,0,0.2,1.15), opacity 0.25s';
+        phoneWrap.style.transform  = tiltOn ? '' : 'rotateY(0deg) scale(1)';
+        phoneWrap.style.opacity    = '1';
+        fireBurst();
+        startScrollCycle();
+      }, 320);
+    }
+
+    /* ── Auto-scroll cycler ── */
+    function startScrollCycle() {
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      let lastTime = null, atBottomSince = null, dwellSince = null;
+      const PX_PER_SEC = 42, PAUSE_AT_BOTTOM_MS = 2000, DWELL_MS = 6000;
+      function tick(ts) {
+        if (pauseScroll) { lastTime = null; scrollRaf = requestAnimationFrame(tick); return; }
+        if (!lastTime) lastTime = ts;
+        const dt = Math.min(ts - lastTime, 50); lastTime = ts;
+        const el = document.querySelectorAll('.phone-template')[currentTpl];
+        if (!el) return;
+        const canScroll = el.scrollHeight > el.clientHeight + 2;
+        if (canScroll) {
+          const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 2;
+          if (atBottom) {
+            if (!atBottomSince) atBottomSince = ts;
+            if (ts - atBottomSince >= PAUSE_AT_BOTTOM_MS) { flipTo((currentTpl + 1) % tplCount); return; }
+          } else { atBottomSince = null; el.scrollTop += (PX_PER_SEC * dt) / 1000; }
+        } else {
+          if (!dwellSince) dwellSince = ts;
+          if (ts - dwellSince >= DWELL_MS) { flipTo((currentTpl + 1) % tplCount); return; }
+        }
+        scrollRaf = requestAnimationFrame(tick);
+      }
+      scrollRaf = requestAnimationFrame(tick);
+    }
+
+    const phoneScreen = document.getElementById('phone-screen');
+    if (phoneScreen) {
+      phoneScreen.addEventListener('mouseenter', () => { pauseScroll = true; });
+      phoneScreen.addEventListener('mouseleave', () => { pauseScroll = false; });
+      phoneScreen.addEventListener('wheel', e => e.stopPropagation(), { passive: true });
+    }
+
+    /* ── Mouse tilt ── */
+    document.addEventListener('mousemove', e => {
+      if (!tiltOn || !scVisible) return;
+      const r = showcase.getBoundingClientRect();
+      gx = (e.clientX - r.left) / r.width - 0.5;
+      gy = (e.clientY - r.top)  / r.height - 0.5;
     });
-    (function tiltLoop(){
-      tx+=(gx-tx)*.08;ty+=(gy-ty)*.08;
-      if(phoneWrap&&tiltOn){
-        const ry=tx*-18,rx=ty*12;
-        phoneWrap.style.transform=`rotateY(${ry}deg) rotateX(${rx}deg) scale(1.01) translateZ(16px)`;
-        phoneWrap.style.filter=`drop-shadow(${tx*-28}px ${26+ty*14}px ${48+Math.abs(tx)*14}px rgba(0,0,0,${.2+Math.abs(tx)*.08}))`;
+    (function tiltLoop() {
+      tx += (gx - tx) * 0.08; ty += (gy - ty) * 0.08;
+      if (phoneWrap && tiltOn) {
+        const ry = tx * -16, rx = ty * 10;
+        phoneWrap.style.transform = `rotateY(${ry}deg) rotateX(${rx}deg) scale(1.01) translateZ(16px)`;
+        phoneWrap.style.filter = `drop-shadow(${tx * -24}px ${24 + ty * 12}px ${44 + Math.abs(tx) * 12}px rgba(0,0,0,${0.22 + Math.abs(tx) * 0.07}))`;
       }
       requestAnimationFrame(tiltLoop);
     })();
 
-    const phoneScreen=document.getElementById('phone-screen');
-    if(phoneScreen)phoneScreen.addEventListener('wheel',e=>e.stopPropagation(),{passive:true});
-
-    window.scGoTo=idx=>{if(idx===lastStep)return;lastStep=idx;flipTo(idx);};
-  }
-
-  /* ── 7. PHONE CYCLER ── */
-  let currentTpl = 0;
-  const tplCount  = 4;
-  let scrollRaf   = null;
-  let pauseScroll = false;
-
-  function switchPhoneTpl(idx) {
-    document.querySelectorAll('.phone-template').forEach((el, i) => {
-      el.classList.toggle('active', i === idx);
-      if (i === idx) el.scrollTop = 0;
-    });
-    document.querySelectorAll('.phone-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
-    document.querySelectorAll('.showcase-label').forEach(l => {
-      const active = parseInt(l.dataset.idx) === idx;
-      l.classList.toggle('active', active);
-      l.style.color = active ? '#d45d79' : 'rgba(240,230,216,0.35)';
-      l.style.borderColor = active ? 'rgba(212,93,121,0.4)' : 'rgba(255,255,255,0.07)';
-    });
-    currentTpl = idx;
-    startScrollCycle();
-  }
-
-  function startScrollCycle() {
-    if (scrollRaf) cancelAnimationFrame(scrollRaf);
-    let lastTime = null, atBottomSince = null, dwellSince = null;
-    const PX_PER_SEC = 42, PAUSE_AT_BOTTOM_MS = 2000, DWELL_MS = 6000;
-    function tick(ts) {
-      if (pauseScroll) { lastTime = null; scrollRaf = requestAnimationFrame(tick); return; }
-      if (!lastTime) lastTime = ts;
-      const dt = Math.min(ts - lastTime, 50);
-      lastTime = ts;
-      const el = document.querySelectorAll('.phone-template')[currentTpl];
-      if (!el) return;
-      const canScroll = el.scrollHeight > el.clientHeight + 2;
-      if (canScroll) {
-        const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 2;
-        if (atBottom) {
-          if (!atBottomSince) atBottomSince = ts;
-          if (ts - atBottomSince >= PAUSE_AT_BOTTOM_MS) { switchPhoneTpl((currentTpl + 1) % tplCount); return; }
-        } else { atBottomSince = null; el.scrollTop += (PX_PER_SEC * dt) / 1000; }
-      } else {
-        if (!dwellSince) dwellSince = ts;
-        if (ts - dwellSince >= DWELL_MS) { switchPhoneTpl((currentTpl + 1) % tplCount); return; }
+    /* ── Entrance ── */
+    new IntersectionObserver(([e]) => {
+      scVisible = e.isIntersecting;
+      if (e.isIntersecting && !landed) {
+        landed = true;
+        initFrags();
+        physLoop();
+        /* reveal text */
+        setTimeout(() => {
+          document.getElementById('sc-eyebrow')?.classList.add('sc-in');
+          document.getElementById('sc-headline')?.classList.add('sc-in');
+          document.getElementById('sc-tagline')?.classList.add('sc-in');
+        }, 80);
+        /* drop phone */
+        setTimeout(() => {
+          if (phoneWrap) phoneWrap.classList.add('phone-landed');
+          if (depthRing) setTimeout(() => depthRing.classList.add('ring-pop'), 90);
+          setTimeout(fireBurst, 340);
+          setTimeout(() => {
+            namePill?.classList.add('sc-in');
+            if (phoneWrap) { phoneWrap.classList.add('phone-settled'); tiltOn = true; }
+            startScrollCycle();
+          }, 1050);
+        }, 200);
       }
-      scrollRaf = requestAnimationFrame(tick);
-    }
-    scrollRaf = requestAnimationFrame(tick);
+    }, { threshold: 0.1 }).observe(showcase);
   }
-  document.getElementById('phone-screen').addEventListener('mouseenter', () => { pauseScroll = true; });
-  document.getElementById('phone-screen').addEventListener('mouseleave', () => { pauseScroll = false; });
 
   /* ── 8. SCROLL-PINNED VIDEO REVEAL (generative canvas fallback) ── */
   {
