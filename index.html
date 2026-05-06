@@ -836,13 +836,13 @@
     #whirlpool-container {
       position: fixed;
       top: 0; left: 0;
-      width: 100%; height: 100vh;
+      width: 100%; height: 100%;
       z-index: 9998;
       pointer-events: none;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      overflow: visible;
     }
     /* The vortex canvas sits behind the symbols */
     #vortex-canvas {
@@ -2855,7 +2855,7 @@
       const baseR = 60 + Math.random() * 200;
       const phase = (i / N) * Math.PI * 2;
       const speed = 0.4 + Math.random() * 0.7;
-      const fsize = 10 + Math.random() * 18;
+      const fsize = 14 + Math.random() * 20;
       const hue   = Math.random() < 0.6 ? '#d45d79' : (Math.random() < 0.5 ? '#ea9085' : '#6e5773');
       el.style.fontSize = fsize + 'px';
       el.style.color = hue;
@@ -2924,43 +2924,14 @@
     // Impact flashes drawn on sym-fall canvas
     let impacts = []; // { x, y, r, maxR, alpha }
 
+    // ── ORBIT + FALL ANIMATION ──
+    // fallProg is driven by phone's actual viewport position —
+    // orbit while phone is off-screen, fall only when phone is visible.
+
     function getPhoneRect() {
       const pw = document.getElementById('phone-wrapper');
       if (!pw) return null;
-      const r = pw.getBoundingClientRect();
-      const sc = document.getElementById('showcase');
-      const scr = sc ? sc.getBoundingClientRect() : { top: 0, left: 0 };
-      return {
-        left:   r.left   - scr.left,
-        top:    r.top    - scr.top,
-        width:  r.width,
-        height: r.height,
-      };
-    }
-
-    function resolveAnchors() {
-      const pr = getPhoneRect();
-      if (!pr) return false;
-      PHONE_ANCHORS_NORM.forEach((a, i) => {
-        if (fallStates[i]) {
-          fallStates[i].tx = pr.left + a.x * pr.width;
-          fallStates[i].ty = pr.top  + a.y * pr.height;
-        }
-      });
-      return true;
-    }
-
-    // ── ORBIT + FALL ANIMATION ──
-    // Symbols stay in the fixed overlay the entire time — no canvas handoff.
-    // Fall phase flies them directly to the phone's viewport position,
-    // so the effect works regardless of scroll speed.
-
-    function getPhoneScreenPos() {
-      // Returns phone center in viewport coords (works at any scroll position)
-      const pw = document.getElementById('phone-wrapper');
-      if (!pw) return null;
-      const r = pw.getBoundingClientRect();
-      return { cx: r.left + r.width * 0.5, cy: r.top + r.height * 0.5, w: r.width, h: r.height };
+      return pw.getBoundingClientRect();
     }
 
     function animWhirlpool(ts) {
@@ -2969,7 +2940,16 @@
       vCtx.clearRect(0, 0, VW, VH);
 
       const cx = VW / 2, cy = VH / 2;
-      const fallProg = Math.max(0, (dispProgress - 0.55) / 0.45);
+
+      // fallProg: 0 when phone top is at viewport bottom, 1 when phone center is at 60% viewport
+      const pr = getPhoneRect();
+      let fallProg = 0;
+      if (pr) {
+        // Phone top enters viewport at pr.top = VH, phone center at 60% when pr.top = VH*0.6 - pr.height/2
+        const enterY = VH;          // phone just entering
+        const readyY = VH * 0.55;   // phone well on screen — fall completes here
+        fallProg = Math.max(0, Math.min(1, (enterY - pr.top) / (enterY - readyY)));
+      }
 
       symEls.forEach((el, i) => {
         const fs = fallStates[i];
@@ -2980,62 +2960,82 @@
           const oy = cy + Math.sin(angle) * el._r;
           fs.x = ox; fs.y = oy;
 
-          // Fade slightly as scroll begins, disappear cleanly if we skip fast
-          const alpha = Math.max(0, 1 - dispProgress * 0.4);
+          // Orbit: glow fades as fall approaches
           el.style.left = '50%';
           el.style.top  = '50%';
           el.style.transform = `translate(${ox - cx}px, ${oy - cy}px) translate(-50%,-50%)`;
-          el.style.opacity = alpha;
+          el.style.opacity = '1';
+          el.style.textShadow = '';
 
-          // Staggered trigger into fall phase
-          if (fallProg > (i / N) * 0.7) {
+          // Stagger symbols into fall as phone scrolls into view
+          const myThreshold = (i / N) * 0.6;
+          if (fallProg > myThreshold) {
             fs.phase = 'fall';
-            fs.vx = (Math.random() - 0.5) * 2;
-            fs.vy = 1.5 + Math.random() * 2;
+            fs.x = ox; fs.y = oy;
+            // Give each symbol a distinctive initial kick so paths visibly diverge
+            const kickSpeed = 2.5 + Math.random() * 3;
+            fs.vx = Math.cos(el._phase) * kickSpeed * 0.5 + (Math.random() - 0.5) * 2;
+            fs.vy = -2 - Math.random() * 3; // upward arc before gravity pulls down
             el.style.transition = 'none';
           }
 
         } else if (fs.phase === 'fall') {
-          // Get phone position in current viewport space (live, works at any scroll)
-          const pp = getPhoneScreenPos();
-          const targetX = pp ? pp.cx + (PHONE_ANCHORS_NORM[i % PHONE_ANCHORS_NORM.length].x - 0.5) * pp.w : VW / 2;
-          const targetY = pp ? pp.cy + (PHONE_ANCHORS_NORM[i % PHONE_ANCHORS_NORM.length].y - 0.5) * pp.h : VH * 0.8;
+          const pr2 = getPhoneRect();
+          if (!pr2) { requestAnimationFrame(animWhirlpool); return; }
 
-          // Pull toward phone target — stronger as symbol gets closer
-          const dx = targetX - fs.x, dy = targetY - fs.y;
+          // Each symbol targets its own anchor point on the phone frame
+          const anchor = PHONE_ANCHORS_NORM[i % PHONE_ANCHORS_NORM.length];
+          const targetX = pr2.left + anchor.x * pr2.width;
+          const targetY = pr2.top  + anchor.y * pr2.height;
+
+          const dx = targetX - fs.x;
+          const dy = targetY - fs.y;
           const dist = Math.hypot(dx, dy);
-          const pull = Math.min(0.06, 120 / (dist * dist + 1));
-          fs.vx += dx * pull;
-          fs.vy += dy * pull + 0.18; // gravity
-          fs.vx *= 0.92;
-          fs.vy *= 0.92;
+
+          // Homing: weak at distance (let arc carry naturally), strong near target
+          const proximity = 1 - Math.min(1, dist / 350);
+          const homingStrength = 0.012 + proximity * proximity * 0.08;
+          fs.vx += dx * homingStrength;
+          fs.vy += dy * homingStrength + 0.35; // gravity pulls downward
+          fs.vx *= 0.91; // less friction = longer visible arcs
+          fs.vy *= 0.91;
 
           fs.x += fs.vx;
           fs.y += fs.vy;
 
+          // Speed-based glow — faster = brighter streak so you can track each one
+          const speed = Math.hypot(fs.vx, fs.vy);
+          const glow = Math.min(1, speed / 18);
+          const r = Math.round(212 + glow * 43);
+          const g = Math.round(93  - glow * 20);
+          const b = Math.round(121 + glow * 30);
+          el.style.textShadow = `0 0 ${6 + glow * 14}px rgba(${r},${g},${b},${0.7 + glow * 0.3}), 0 0 ${2 + glow * 6}px #fff`;
+          el.style.fontSize = (el._fsize * (1 + glow * 0.15)) + 'px'; // slight scale-up at speed
+
+          // Position: translate from center of the fixed container
           el.style.left = '50%';
           el.style.top  = '50%';
           el.style.transform = `translate(${fs.x - VW/2}px, ${fs.y - VH/2}px) translate(-50%,-50%)`;
           el.style.opacity = '1';
 
-          // Arrived at phone — impact flash + fade
-          if (dist < 18) {
+          // Landed — flash phone frame
+          if (dist < 16) {
             fs.phase = 'impact';
-            // Brief glow on phone frame
+            el.style.textShadow = '0 0 20px rgba(212,93,121,1), 0 0 8px #fff';
             const pf = document.querySelector('.phone-frame');
             if (pf) {
-              pf.style.transition = 'box-shadow 0.06s';
-              pf.style.boxShadow = '0 0 0 2px #2a2a4a, 0 28px 70px rgba(0,0,0,.35), 0 0 22px 6px rgba(212,93,121,0.6), 0 0 0 1px rgba(255,255,255,.06) inset';
-              setTimeout(() => { pf.style.transition = 'box-shadow 0.7s'; pf.style.boxShadow = ''; }, 70);
+              pf.style.transition = 'box-shadow 0.05s';
+              pf.style.boxShadow = '0 0 0 2px #2a2a4a, 0 28px 70px rgba(0,0,0,.35), 0 0 28px 10px rgba(212,93,121,0.7), 0 0 0 1px rgba(255,255,255,.06) inset';
+              setTimeout(() => { pf.style.transition = 'box-shadow 1s'; pf.style.boxShadow = ''; }, 80);
             }
           }
 
         } else if (fs.phase === 'impact') {
-          // Fade out in place
           const cur = parseFloat(el.style.opacity) || 1;
-          const next = cur - 0.06;
+          const next = cur - 0.025; // slow fade — ~40 frames = ~650ms to disappear
           if (next <= 0) {
             el.style.opacity = '0';
+            el.style.textShadow = '';
             fs.phase = 'done';
           } else {
             el.style.opacity = next;
@@ -3043,12 +3043,12 @@
         }
       });
 
-      // All symbols done → finish
+      // All symbols done → fire flicker
       if (!wpDone && fallStates.every(fs => fs.phase === 'done')) {
         wpDone = true;
-        container.style.transition = 'opacity 0.4s';
+        container.style.transition = 'opacity 0.3s';
         container.style.opacity = '0';
-        setTimeout(() => { container.style.display = 'none'; }, 420);
+        setTimeout(() => { container.style.display = 'none'; }, 320);
         window._wpSymbolsDone = true;
         document.dispatchEvent(new CustomEvent('wp-symbols-done'));
       }
@@ -3070,19 +3070,23 @@
 
     window.addEventListener('scroll', () => {
       const sy = window.scrollY;
-      const threshold = window.innerHeight * 0.85;
-      dispProgress = Math.min(1, sy / threshold);
       if (sy > 10) cta.style.opacity = '0';
 
-      // Fast-scroll past: clean up immediately
-      if (dispProgress >= 1 && !wpDone) {
-        wpDone = true;
-        symEls.forEach(el => { el.style.opacity = '0'; });
-        container.style.transition = 'opacity 0.25s';
-        container.style.opacity = '0';
-        setTimeout(() => { container.style.display = 'none'; }, 260);
-        window._wpSymbolsDone = true;
-        document.dispatchEvent(new CustomEvent('wp-symbols-done'));
+      // Legacy dispProgress kept for fast-skip detection only
+      dispProgress = Math.min(1, sy / (window.innerHeight * 1.6));
+
+      // If user scrolled well past showcase and we're not done, force-close cleanly
+      const showcaseEl = document.getElementById('showcase');
+      if (!wpDone && showcaseEl) {
+        const scr = showcaseEl.getBoundingClientRect();
+        if (scr.bottom < 0) {
+          wpDone = true;
+          symEls.forEach(el => { el.style.opacity = '0'; });
+          container.style.opacity = '0';
+          container.style.display = 'none';
+          window._wpSymbolsDone = true;
+          document.dispatchEvent(new CustomEvent('wp-symbols-done'));
+        }
       }
     }, { passive: true });
   }
@@ -3346,47 +3350,63 @@
       const screen    = document.getElementById('phone-screen');
       if (!screenOff) return;
 
-      // 3 rapid CRT flicker flashes
-      const flickers = [0, 80, 160, 240, 340];
-      flickers.forEach((t, i) => {
+      // Slow, dramatic CRT boot — flickers spread over 1.4s so you can follow each one
+      // Pattern: dark → flash bright → dim → flicker rapidly → hold bright → sweep
+      const flickers = [
+        { t:   0, op: '0.10', tr: '0.08s' },  // dim — starting to wake
+        { t: 180, op: '0.92', tr: '0.06s' },  // first flash
+        { t: 320, op: '0.20', tr: '0.10s' },  // fall back dark
+        { t: 500, op: '0.80', tr: '0.05s' },  // flash
+        { t: 620, op: '0.05', tr: '0.08s' },  // almost on
+        { t: 740, op: '0.75', tr: '0.04s' },  // quick flutter
+        { t: 820, op: '0.08', tr: '0.06s' },  // nearly there
+        { t: 920, op: '0.60', tr: '0.04s' },  // last stutter
+        { t:1020, op: '0.04', tr: '0.15s' },  // settles dim — ready for sweep
+      ];
+      flickers.forEach(({ t, op, tr }) => {
         setTimeout(() => {
-          screenOff.style.transition = 'opacity 0.04s';
-          screenOff.style.opacity = (i % 2 === 0) ? '0.15' : '0.85';
+          screenOff.style.transition = `opacity ${tr}`;
+          screenOff.style.opacity = op;
         }, t);
       });
 
-      // After flickers: sweep scan-line top to bottom
+      // After flicker sequence: sweep scan-line slowly top to bottom
       setTimeout(() => {
-        screenOff.style.transition = 'opacity 0.12s';
-        screenOff.style.opacity = '0.05';
+        screenOff.style.transition = 'opacity 0.2s';
+        screenOff.style.opacity = '0.04';
         if (sweep) {
           sweep.style.opacity = '1';
           sweep.style.top = '0px';
           const screenH = screen ? screen.offsetHeight : 440;
-          const duration = 320;
+          const duration = 700; // slow sweep — 700ms so you can watch it travel
           const start = performance.now();
           const animate = (now) => {
             const t = Math.min(1, (now - start) / duration);
-            sweep.style.top = (t * screenH) + 'px';
+            // ease-in-out for a more organic feel
+            const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+            sweep.style.top = (ease * screenH) + 'px';
+            // Sweep line pulses slightly brighter as it passes midpoint
+            const brightness = 0.8 + Math.sin(t * Math.PI) * 0.2;
+            sweep.style.opacity = brightness.toFixed(2);
             if (t < 1) requestAnimationFrame(animate);
             else {
               sweep.style.opacity = '0';
-              // Screen fully on — fade out the black overlay
-              screenOff.style.transition = 'opacity 0.25s';
+              // Screen fully on — fade out the black overlay slowly
+              screenOff.style.transition = 'opacity 0.5s';
               screenOff.style.opacity = '0';
               // Fire burst + settle
-              setTimeout(fireBurst, 80);
+              setTimeout(fireBurst, 120);
               setTimeout(() => {
                 if (phoneWrap) { phoneWrap.classList.add('phone-settled'); tiltOn = true; }
                 namePill?.classList.add('sc-in');
                 if (depthRing) depthRing.classList.add('ring-pop');
                 startScrollCycle();
-              }, 300);
+              }, 400);
             }
           };
           requestAnimationFrame(animate);
         }
-      }, 500);
+      }, 1200);
     }
 
     /* ── Entrance ── */
