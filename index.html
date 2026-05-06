@@ -926,12 +926,21 @@
     #ambient-blobs svg { position: absolute; }
 
     /* ═══════════════════════════════════════════════
-       SCROLL-PINNED VIDEO REVEAL
+       SCROLL-PINNED DIVE REVEAL
        ═══════════════════════════════════════════════ */
     #video-reveal {
       position: relative;
-      height: 300vh;
+      height: 400vh;
       background: #0e0a0d;
+    }
+    /* Showcase bottom dissolves into dive via matching color — no visible seam */
+    #video-reveal::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 60vh;
+      background: linear-gradient(to bottom, #0e0a0d 0%, transparent 100%);
+      pointer-events: none; z-index: 8;
     }
     /* Bottom of video-reveal bleeds into pricing */
     #video-reveal::after {
@@ -958,6 +967,16 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
+      /* Perspective for 3D depth on child elements */
+      perspective: 900px;
+      perspective-origin: 50% 50%;
+    }
+    /* The inner wrapper that gets Z-pushed on scroll */
+    #video-inner-3d {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      will-change: transform;
     }
     #video-reveal video {
       position: absolute;
@@ -968,31 +987,104 @@
       opacity: 0;
       transition: opacity 0.4s;
     }
-    /* Shockwave flash layer — flares white then fades */
+    /* Cinematic letterbox — top and bottom bars that close in on enter */
+    #dive-letterbox-top,
+    #dive-letterbox-bottom {
+      position: absolute;
+      left: 0; right: 0;
+      height: 0;
+      background: #000;
+      z-index: 12;
+      pointer-events: none;
+      transition: height 0s;
+    }
+    #dive-letterbox-top { top: 0; }
+    #dive-letterbox-bottom { bottom: 0; }
+    /* Edge speed-streak vignette — the "air rushing past" effect */
+    #dive-edge-vignette {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 7;
+      opacity: 0;
+      background:
+        linear-gradient(to right,  rgba(0,0,0,0.85) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.85) 100%),
+        linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.85) 100%);
+    }
+    /* Radial portal glow — rose bloom at center during approach */
+    #dive-portal-glow {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 3;
+      opacity: 0;
+      background: radial-gradient(ellipse 55% 45% at 50% 50%,
+        rgba(212,93,121,0.22) 0%,
+        rgba(212,93,121,0.08) 40%,
+        transparent 70%);
+    }
+    /* Speed-streak canvas — motion lines flying at viewer */
+    #speed-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 6;
+      opacity: 0;
+    }
+    /* Shockwave flash layer */
     #video-clip-mask {
       position: absolute;
       inset: 0;
       background: #fff;
       opacity: 0;
       pointer-events: none;
-      z-index: 5;
+      z-index: 9;
       mix-blend-mode: overlay;
     }
-    /* Shockwave ring canvas — drawn on top of code rain */
+    /* Chromatic aberration overlay — splits RGB on impact */
+    #dive-chroma {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10;
+      opacity: 0;
+      mix-blend-mode: screen;
+      background: transparent;
+    }
+    /* Shockwave ring canvas */
     #shockwave-canvas {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       pointer-events: none;
-      z-index: 4;
+      z-index: 8;
+    }
+    /* Canvas-only fallback (code rain) */
+    #video-canvas-fallback {
+      position: absolute;
+      inset: -5%;
+      width: 110%;
+      height: 110%;
+      will-change: transform;
+    }
+    /* Tunnel ring overlay — concentric circles that converge inward */
+    #tunnel-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0;
     }
     #video-text-overlay {
       position: relative;
-      z-index: 6;
+      z-index: 11;
       text-align: center;
       padding: 40px;
-      /* starts invisible, slams in via JS */
     }
     .video-eyebrow {
       font-family: var(--font-mono);
@@ -1015,6 +1107,18 @@
       max-width: 680px;
     }
     .video-headline em { color: #d45d79; font-style: inherit; }
+    /* Word-level text reveal spans */
+    .vhl-word {
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: bottom;
+      margin: 0 3px;
+    }
+    .vhl-inner {
+      display: inline-block;
+      transform: translateY(110%) rotate(4deg);
+      opacity: 0;
+    }
     #video-progress-bar {
       position: absolute;
       bottom: 40px;
@@ -1023,7 +1127,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      z-index: 4;
+      z-index: 11;
     }
     #video-progress-track {
       width: 120px;
@@ -1045,16 +1149,52 @@
       letter-spacing: 2px;
       color: rgba(255,255,255,0.4);
     }
-    /* Canvas-only fallback (when no video file is present) */
-    #video-canvas-fallback {
+    /* Dive depth indicator — replaces old progress bar label feel */
+    #dive-depth-hud {
+      position: absolute;
+      bottom: 44px;
+      right: 48px;
+      z-index: 11;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    #dive-depth-hud .hud-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(212,93,121,0.45);
+    }
+    #dive-depth-hud .hud-value {
+      font-family: var(--font-mono);
+      font-size: 22px;
+      letter-spacing: -1px;
+      color: rgba(240,230,216,0.7);
+      line-height: 1;
+    }
+    /* Scan-line flicker overlay */
+    #dive-scanlines {
       position: absolute;
       inset: 0;
-      width: 100%;
-      height: 100%;
+      pointer-events: none;
+      z-index: 7;
+      opacity: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(0,0,0,0.08) 3px,
+        rgba(0,0,0,0.08) 4px
+      );
     }
     @media (max-width: 900px) {
-      #video-reveal { height: 200vh; }
-      .video-headline { font-size: clamp(32px, 8vw, 64px); }
+      #video-reveal { height: 280vh; }
+      .video-headline { font-size: clamp(28px, 8vw, 52px); }
+      #dive-depth-hud { display: none; }
     }
 
     /* ═══════════════════════════════════════════════
@@ -2236,19 +2376,42 @@
     <div id="sc-bottom-pad"></div>
   </section>
 
-  <!-- ══ SCROLL-PINNED VIDEO REVEAL ══ -->
+  <!-- ══ SCROLL-PINNED DIVE REVEAL ══ -->
   <div id="video-reveal">
     <div id="video-sticky">
-      <!-- Code rain background -->
-      <canvas id="video-canvas-fallback"></canvas>
+      <!-- 3D inner that gets Z-pushed -->
+      <div id="video-inner-3d">
+        <!-- Code rain background -->
+        <canvas id="video-canvas-fallback"></canvas>
+      </div>
+      <!-- Tunnel rings (perspective convergence) -->
+      <canvas id="tunnel-canvas"></canvas>
+      <!-- Speed streaks flying past -->
+      <canvas id="speed-canvas"></canvas>
+      <!-- Radial portal glow -->
+      <div id="dive-portal-glow"></div>
+      <!-- Edge vignette (motion blur sides) -->
+      <div id="dive-edge-vignette"></div>
+      <!-- Scan lines -->
+      <div id="dive-scanlines"></div>
       <!-- Shockwave ring canvas -->
       <canvas id="shockwave-canvas"></canvas>
+      <!-- Chromatic aberration layer -->
+      <div id="dive-chroma"></div>
       <!-- White flash layer -->
       <div id="video-clip-mask"></div>
+      <!-- Cinematic letterbox -->
+      <div id="dive-letterbox-top"></div>
+      <div id="dive-letterbox-bottom"></div>
       <!-- Text that slams in -->
       <div id="video-text-overlay">
         <div class="video-eyebrow" id="video-eyebrow">The craft behind every build</div>
-        <h2 class="video-headline" id="video-headline">Organic code.<br><em>Not just a template with your logo on it.</em></h2>
+        <h2 class="video-headline" id="video-headline"></h2>
+      </div>
+      <!-- Depth HUD -->
+      <div id="dive-depth-hud">
+        <div class="hud-label">depth</div>
+        <div class="hud-value" id="dive-depth-val">000</div>
       </div>
       <!-- Progress bar -->
       <div id="video-progress-bar">
@@ -3045,7 +3208,7 @@
     updateNav();
   }
 
-  /* ── 8. SCROLL-PINNED VIDEO REVEAL (generative canvas fallback) ── */
+  /* ── 8. SCROLL-PINNED DIVE REVEAL ── */
   {
     const revealSection = document.getElementById('video-reveal');
     const mask          = document.getElementById('video-clip-mask');
@@ -3055,100 +3218,275 @@
     const headline      = document.getElementById('video-headline');
     const fc            = document.getElementById('video-canvas-fallback');
     const fCtx          = fc.getContext('2d');
+    const inner3d       = document.getElementById('video-inner-3d');
+    const portalGlow    = document.getElementById('dive-portal-glow');
+    const edgeVignette  = document.getElementById('dive-edge-vignette');
+    const scanlines     = document.getElementById('dive-scanlines');
+    const depthHud      = document.getElementById('dive-depth-hud');
+    const depthVal      = document.getElementById('dive-depth-val');
+    const lbTop         = document.getElementById('dive-letterbox-top');
+    const lbBottom      = document.getElementById('dive-letterbox-bottom');
+
+    // Populate headline with word-wrapped spans for staggered reveal
+    const HEADLINE_TEXT = [
+      { text: 'Organic code.', em: false },
+      { text: 'Not just a template', em: false },
+      { text: 'with your logo on it.', em: true }
+    ];
+    HEADLINE_TEXT.forEach((seg, si) => {
+      const line = document.createElement('span');
+      line.style.display = 'block';
+      seg.text.split(' ').forEach((word, wi) => {
+        const wrap = document.createElement('span');
+        wrap.className = 'vhl-word';
+        const inner = document.createElement('span');
+        inner.className = 'vhl-inner';
+        inner.textContent = (wi > 0 ? ' ' : '') + word + ' ';
+        if (seg.em) inner.style.color = '#d45d79';
+        wrap.appendChild(inner);
+        line.appendChild(wrap);
+      });
+      headline.appendChild(line);
+    });
 
     // ── SIZE CANVASES ──
     const sw   = document.getElementById('shockwave-canvas');
     const swCtx = sw.getContext('2d');
+    const tc   = document.getElementById('tunnel-canvas');
+    const tCtx = tc.getContext('2d');
+    const sc   = document.getElementById('speed-canvas');
+    const sCtx = sc.getContext('2d');
+
     const sizeCanvases = () => {
-      fc.width  = fc.offsetWidth;  fc.height  = fc.offsetHeight;
-      sw.width  = sw.offsetWidth;  sw.height  = sw.offsetHeight;
+      const w = fc.parentElement.offsetWidth || window.innerWidth;
+      const h = fc.parentElement.offsetHeight || window.innerHeight;
+      // fc is 110% size for zoom headroom
+      fc.width = Math.ceil(w * 1.15); fc.height = Math.ceil(h * 1.15);
+      sw.width  = w; sw.height  = h;
+      tc.width  = w; tc.height  = h;
+      sc.width  = w; sc.height  = h;
     };
     sizeCanvases(); window.addEventListener('resize', sizeCanvases);
 
-    // ── CODE RAIN ──
-    const COLS_SYMS = ['</', '/>', '{}', '()', '=>', '&&', '//', '#', '[]', '+=', 'var', 'fn', 'px', 'vh', 'rem', 'url', '/*', '*/', '0', '1'];
+    // ── 3D PERSPECTIVE CODE RAIN ──
+    // Each column has a virtual Z depth — as dive progresses they converge to VP
+    const COLS_SYMS = ['</', '/>', '{}', '()', '=>', '&&', '//', '#', '[]', '+=', 'fn', 'px', 'vh', 'rem', '/*', '*/', '0', '1', '→', '◆'];
     let cols = [];
-    const COL_W = 32;
+    const COL_W = 28;
+
     function initCols() {
       cols = [];
-      const n = Math.ceil(fc.width / COL_W);
+      const n = Math.ceil((fc.width / COL_W) * 1.2);
       for (let i = 0; i < n; i++) {
+        const xFrac = (i + 0.5) / n; // 0..1 across width
         cols.push({
-          x: i * COL_W + COL_W / 2,
+          xFrac,                           // normalized position
           y: Math.random() * -fc.height,
-          speed: 0.18 + Math.random() * 0.32,
-          alpha: 0.25 + Math.random() * 0.45,
-          warpX: 0  // lateral distortion driven by scroll
+          speed: 0.14 + Math.random() * 0.28,
+          alpha: 0.2 + Math.random() * 0.5,
+          z: 0.4 + Math.random() * 0.6,   // depth layer (0=back, 1=front)
+          phase: Math.random() * Math.PI * 2
         });
       }
+      // Sort back-to-front
+      cols.sort((a, b) => a.z - b.z);
     }
     initCols();
     window.addEventListener('resize', initCols);
 
     let fcRaf, fcRunning = false;
-    let rainWarp = 0; // 0 = calm, 1 = max warp (scroll approaches trigger)
+    let diveRatio = 0;   // 0 = top of section, 1 = full depth
+    let impactFired = false;
 
     function drawFC() {
-      // Trailing fade — higher alpha = cleaner, no color smear
-      const fadeAlpha = 0.22 + rainWarp * 0.06;
-      fCtx.fillStyle = `rgba(17,12,16,${fadeAlpha})`;
-      fCtx.fillRect(0, 0, fc.width, fc.height);
+      const W = fc.width, H = fc.height;
+      const vpX = W / 2, vpY = H / 2;
 
-      cols.forEach((col, ci) => {
-        // Warp: columns oscillate sideways as scroll intensifies
-        col.warpX = 0;
+      // As dive progresses, background becomes deeper/darker with slight desaturation
+      const bgDark = 0.15 + diveRatio * 0.10;
+      fCtx.fillStyle = `rgba(14,10,13,${bgDark})`;
+      fCtx.fillRect(0, 0, W, H);
 
-        // Speed also increases with warp
-        const spd = col.speed * (1 + rainWarp * 3);
+      cols.forEach(col => {
+        // Perspective: columns converge toward vanishing point as dive deepens
+        // Full convergence factor — how much the column X is pulled toward center
+        const convergence = diveRatio * diveRatio * 0.72; // eased quadratic
+        // Physical x: lerp between spread position and vanishing point X
+        const spreadX = col.xFrac * W;
+        const ax = spreadX + (vpX - spreadX) * convergence * (1 - col.z * 0.5);
+
+        // Scale: near columns appear larger
+        const scale = 0.65 + col.z * 0.55 + convergence * col.z * 0.8;
+
+        // Speed: front columns faster, all accelerate with dive
+        const spd = col.speed * scale * (1 + diveRatio * 4.5);
         col.y += spd;
-        if (col.y > fc.height + 60) {
-          col.y = -20 - Math.random() * 200;
-          col.warpX = 0;
+        if (col.y > H * 1.1) {
+          col.y = -20 - Math.random() * H * 0.3;
         }
 
         const sym = COLS_SYMS[Math.floor(Math.random() * COLS_SYMS.length)];
-        const ax  = col.x + col.warpX;
+        const fontSize = Math.round((9 + col.z * 9) * scale);
 
-        // Head glyph — brighter rose
-        fCtx.font = `${12 + rainWarp * 4}px "JetBrains Mono", monospace`;
-        const headAlpha = Math.min(1, col.alpha + rainWarp * 0.4);
-        fCtx.fillStyle = `rgba(212,93,121,${headAlpha})`;
+        // Color shifts toward brighter rose as dive deepens
+        const roseIntensity = col.alpha * (0.5 + diveRatio * 0.7) * (0.6 + col.z * 0.5);
+        const headBrightness = Math.min(1, roseIntensity + diveRatio * 0.35);
+
+        fCtx.font = `${fontSize}px "JetBrains Mono", monospace`;
+        fCtx.fillStyle = `rgba(212,93,121,${Math.min(0.95, headBrightness)})`;
         fCtx.fillText(sym, ax, col.y);
 
-        // Trail
-        const trailLen = Math.floor(6 + rainWarp * 10);
+        // Trail — longer and brighter as dive deepens
+        const trailLen = Math.floor((4 + col.z * 8) * (1 + diveRatio * 2.5));
         for (let t = 1; t <= trailLen; t++) {
           const trailSym = COLS_SYMS[Math.floor(Math.random() * COLS_SYMS.length)];
-          const a = col.alpha * (1 - t / (trailLen + 1)) * 0.4;
-          fCtx.fillStyle = `rgba(180,70,100,${a})`;
-          fCtx.fillText(trailSym, ax, col.y - t * 16);
+          const fadeFrac = 1 - t / (trailLen + 1);
+          const ta = roseIntensity * fadeFrac * 0.45;
+          fCtx.fillStyle = `rgba(180,60,95,${ta})`;
+          fCtx.fillText(trailSym, ax, col.y - t * (fontSize + 2));
         }
       });
 
-      // Vignette
-      const vg = fCtx.createRadialGradient(fc.width/2, fc.height/2, fc.width*0.1, fc.width/2, fc.height/2, fc.width*0.72);
-      vg.addColorStop(0, 'rgba(17,12,16,0)');
-      vg.addColorStop(1, 'rgba(17,12,16,0.65)');
+      // Central convergence glow — blooms outward as dive deepens
+      if (diveRatio > 0.1) {
+        const glowA = Math.pow(diveRatio, 1.8) * 0.18;
+        const grad = fCtx.createRadialGradient(vpX, vpY, 0, vpX, vpY, W * 0.4);
+        grad.addColorStop(0, `rgba(212,93,121,${glowA})`);
+        grad.addColorStop(0.5, `rgba(212,93,121,${glowA * 0.3})`);
+        grad.addColorStop(1, 'rgba(212,93,121,0)');
+        fCtx.fillStyle = grad;
+        fCtx.fillRect(0, 0, W, H);
+      }
+
+      // Edge vignette baked into canvas
+      const vg = fCtx.createRadialGradient(vpX, vpY, W * 0.08, vpX, vpY, W * 0.75);
+      vg.addColorStop(0, 'rgba(14,10,13,0)');
+      vg.addColorStop(1, `rgba(14,10,13,${0.55 + diveRatio * 0.2})`);
       fCtx.fillStyle = vg;
-      fCtx.fillRect(0, 0, fc.width, fc.height);
+      fCtx.fillRect(0, 0, W, H);
 
       fcRaf = requestAnimationFrame(drawFC);
     }
 
+    // ── TUNNEL RINGS (perspective convergence rings) ──
+    let tunnelPhase = 0;
+
+    function drawTunnel() {
+      const W = tc.width, H = tc.height;
+      const cx = W / 2, cy = H / 2;
+      tCtx.clearRect(0, 0, W, H);
+
+      if (diveRatio < 0.08) { requestAnimationFrame(drawTunnel); return; }
+
+      const ringCount = 10;
+      const t = performance.now() * 0.0012;
+      tunnelPhase = t;
+
+      for (let i = 0; i < ringCount; i++) {
+        // Ring i has a depth value that animates forward
+        const depth = ((i / ringCount) + tunnelPhase * 0.35) % 1;
+        // Perspective scale: rings closer to viewer are bigger
+        const perspScale = Math.pow(depth, 0.7);
+        const rx = (W * 0.75) * perspScale;
+        const ry = (H * 0.55) * perspScale;
+        const alpha = (1 - perspScale) * diveRatio * 0.55 * (i % 2 === 0 ? 1 : 0.5);
+
+        if (alpha < 0.005 || rx < 2) continue;
+
+        tCtx.beginPath();
+        tCtx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+        tCtx.strokeStyle = `rgba(212,93,121,${alpha})`;
+        tCtx.lineWidth = (1 - perspScale) * 2.5;
+        tCtx.stroke();
+      }
+
+      requestAnimationFrame(drawTunnel);
+    }
+    drawTunnel();
+
+    // ── SPEED STREAKS ──
+    let streaks = [];
+    let streakRaf;
+
+    function spawnStreaks(count) {
+      const W = sc.width, H = sc.height;
+      const cx = W / 2, cy = H / 2;
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const startR = 30 + Math.random() * 80;
+        const length = 60 + Math.random() * 180;
+        const speed = 18 + Math.random() * 28;
+        streaks.push({
+          angle, r: startR, length, speed,
+          alpha: 0.6 + Math.random() * 0.4,
+          width: 0.5 + Math.random() * 1.5,
+          life: 1.0
+        });
+      }
+    }
+
+    function drawStreaks() {
+      const W = sc.width, H = sc.height;
+      const cx = W / 2, cy = H / 2;
+      sCtx.clearRect(0, 0, W, H);
+
+      streaks = streaks.filter(s => s.life > 0.02);
+      streaks.forEach(s => {
+        s.r += s.speed;
+        s.life -= 0.04;
+        const a = s.alpha * s.life * s.life * diveRatio;
+        if (a < 0.01) return;
+
+        const x1 = cx + Math.cos(s.angle) * s.r;
+        const y1 = cy + Math.sin(s.angle) * s.r;
+        const x2 = cx + Math.cos(s.angle) * (s.r + s.length);
+        const y2 = cy + Math.sin(s.angle) * (s.r + s.length);
+
+        const grad = sCtx.createLinearGradient(x1, y1, x2, y2);
+        grad.addColorStop(0, `rgba(212,93,121,${a})`);
+        grad.addColorStop(0.4, `rgba(240,200,210,${a * 0.7})`);
+        grad.addColorStop(1, 'rgba(212,93,121,0)');
+
+        sCtx.beginPath();
+        sCtx.moveTo(x1, y1);
+        sCtx.lineTo(x2, y2);
+        sCtx.strokeStyle = grad;
+        sCtx.lineWidth = s.width;
+        sCtx.stroke();
+      });
+
+      streakRaf = requestAnimationFrame(drawStreaks);
+    }
+    drawStreaks();
+
     // ── SHOCKWAVE RINGS ──
-    // Each ring: { r, maxR, alpha, lineW, born }
     let rings = [];
     let swRaf;
     let swRunning = false;
 
     function fireShockwave() {
       const cx = sw.width / 2, cy = sw.height / 2;
-      // Fire 4 rings in quick succession
-      for (let i = 0; i < 4; i++) {
-        setTimeout(() => {
-          rings.push({ cx, cy, r: 0, maxR: Math.max(sw.width, sw.height) * 0.85, alpha: 0.9 - i * 0.15, lineW: 3 - i * 0.5, speed: 14 + i * 8 });
-        }, i * 80);
-      }
+      // Fire 6 rings in quick succession — 2 sets: rose + white
+      const sets = [
+        { color: '212,93,121', count: 4, speedBase: 12 },
+        { color: '255,210,220', count: 2, speedBase: 22 }
+      ];
+      let delay = 0;
+      sets.forEach(set => {
+        for (let i = 0; i < set.count; i++) {
+          setTimeout(() => {
+            rings.push({
+              cx, cy, r: 0,
+              maxR: Math.max(sw.width, sw.height) * 0.95,
+              alpha: 0.85 - i * 0.12,
+              lineW: 2.5 - i * 0.3,
+              speed: set.speedBase + i * 9,
+              color: set.color
+            });
+          }, delay + i * 65);
+        }
+        delay += 90;
+      });
     }
 
     function drawSW() {
@@ -3157,138 +3495,224 @@
       rings.forEach(ring => {
         ring.r += ring.speed;
         const t = ring.r / ring.maxR;
-        const a = ring.alpha * (1 - t) * (1 - t); // quadratic fade
+        const a = ring.alpha * (1 - t) * (1 - t);
         swCtx.beginPath();
         swCtx.arc(ring.cx, ring.cy, ring.r, 0, Math.PI * 2);
-        swCtx.strokeStyle = `rgba(212,93,121,${a})`;
-        swCtx.lineWidth = ring.lineW * (1 - t * 0.7);
+        swCtx.strokeStyle = `rgba(${ring.color},${a})`;
+        swCtx.lineWidth = ring.lineW * (1 - t * 0.6);
         swCtx.stroke();
-        // Glow ring
+        // Outer glow
         swCtx.beginPath();
         swCtx.arc(ring.cx, ring.cy, ring.r, 0, Math.PI * 2);
-        swCtx.strokeStyle = `rgba(255,180,200,${a * 0.3})`;
-        swCtx.lineWidth = ring.lineW * 4 * (1 - t);
+        swCtx.strokeStyle = `rgba(${ring.color},${a * 0.25})`;
+        swCtx.lineWidth = ring.lineW * 5 * (1 - t);
         swCtx.stroke();
       });
       swRaf = requestAnimationFrame(drawSW);
     }
 
-    // ── TEXT SLAM ANIMATION ──
-    // Uses a quick glitch sequence then settles
+    // ── SCREEN SHAKE ──
+    function screenShake(el, intensity, duration) {
+      const start = performance.now();
+      const tick = () => {
+        const elapsed = performance.now() - start;
+        if (elapsed >= duration) { el.style.transform = ''; return; }
+        const t = elapsed / duration;
+        const decay = 1 - t;
+        const dx = (Math.random() - 0.5) * intensity * 2 * decay;
+        const dy = (Math.random() - 0.5) * intensity * 2 * decay;
+        el.style.transform = `translate(${dx}px, ${dy}px)`;
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }
+
+    // ── TEXT WORD REVEAL ──
     let textRevealed = false;
     function slamText() {
       if (textRevealed) return;
       textRevealed = true;
 
-      const eyebrowEl  = eyebrow;
-      const headlineEl = headline;
-      const flashEl    = mask;
+      const flashEl = mask;
 
-      // 1. White flash
-      flashEl.style.transition = 'opacity 0.06s';
-      flashEl.style.opacity = '0.7';
+      // 1. White flash + chromatic aberration
+      flashEl.style.transition = 'opacity 0.05s';
+      flashEl.style.opacity = '0.85';
       setTimeout(() => {
-        flashEl.style.transition = 'opacity 0.5s';
+        flashEl.style.transition = 'opacity 0.6s';
         flashEl.style.opacity = '0';
-      }, 60);
+      }, 50);
 
-      // 2. Fire shockwave rings
-      setTimeout(fireShockwave, 40);
-
-      // 3. Eyebrow glitch-in
-      setTimeout(() => {
-        eyebrowEl.style.opacity = '1';
-        eyebrowEl.style.transform = 'translateY(0) skewX(-8deg)';
-        eyebrowEl.style.transition = 'none';
+      // Brief chromatic aberration
+      const chroma = document.getElementById('dive-chroma');
+      if (chroma) {
+        chroma.style.transition = 'none';
+        chroma.style.opacity = '1';
+        chroma.style.background = 'linear-gradient(90deg, rgba(255,0,80,0.12) 0%, transparent 40%, rgba(0,200,255,0.10) 100%)';
         setTimeout(() => {
-          eyebrowEl.style.transform = 'translateY(0) skewX(3deg)';
-          setTimeout(() => {
-            eyebrowEl.style.transform = 'translateY(0) skewX(0deg)';
-            eyebrowEl.style.transition = 'transform 0.3s cubic-bezier(0.4,0,0.2,1)';
-          }, 80);
-        }, 60);
-      }, 120);
-
-      // 4. Headline slams in from below — each line staggers
-      const lines = headlineEl.querySelectorAll('.slam-line');
-      if (lines.length === 0) {
-        // No split lines — just slam the whole thing
-        headlineEl.style.opacity    = '1';
-        headlineEl.style.transform  = 'translateY(40px) scaleY(1.2)';
-        headlineEl.style.transition = 'none';
-        setTimeout(() => {
-          headlineEl.style.transform  = 'translateY(-6px) scaleY(0.97)';
-          headlineEl.style.transition = 'transform 0.15s ease-out';
-          setTimeout(() => {
-            headlineEl.style.transform  = 'translateY(0) scaleY(1)';
-            headlineEl.style.transition = 'transform 0.25s cubic-bezier(0.4,0,0.2,1)';
-          }, 150);
-        }, 200);
-      } else {
-        lines.forEach((line, i) => {
-          setTimeout(() => {
-            line.style.opacity    = '1';
-            line.style.transform  = 'translateY(30px) scaleY(1.15)';
-            line.style.transition = 'none';
-            setTimeout(() => {
-              line.style.transform  = 'translateY(-4px) scaleY(0.98)';
-              line.style.transition = 'transform 0.12s ease-out';
-              setTimeout(() => {
-                line.style.transform  = 'translateY(0) scaleY(1)';
-                line.style.transition = 'transform 0.2s cubic-bezier(0.4,0,0.2,1)';
-              }, 120);
-            }, 180);
-          }, 200 + i * 90);
-        });
-        headlineEl.style.opacity = '1';
+          chroma.style.transition = 'opacity 0.4s';
+          chroma.style.opacity = '0';
+        }, 120);
       }
+
+      // 2. Screen shake
+      const stickyEl = document.getElementById('video-sticky');
+      screenShake(stickyEl, 6, 400);
+
+      // 3. Fire shockwave rings
+      setTimeout(fireShockwave, 30);
+      setTimeout(() => spawnStreaks(60), 0);
+      setTimeout(() => spawnStreaks(40), 120);
+
+      // 4. Eyebrow glitch-in
+      setTimeout(() => {
+        eyebrow.style.opacity = '1';
+        eyebrow.style.transition = 'none';
+        eyebrow.style.transform = 'translateX(-12px) skewX(-10deg)';
+        setTimeout(() => {
+          eyebrow.style.transition = 'transform 0.4s cubic-bezier(0.16,1,0.3,1)';
+          eyebrow.style.transform = 'translateX(0) skewX(0)';
+        }, 60);
+      }, 100);
+
+      // 5. Words slam in staggered — each word individually
+      const allInners = headline.querySelectorAll('.vhl-inner');
+      allInners.forEach((inner, i) => {
+        setTimeout(() => {
+          inner.style.transition = 'none';
+          inner.style.transform = 'translateY(120%) rotate(6deg)';
+          inner.style.opacity = '1';
+          requestAnimationFrame(() => {
+            inner.style.transition = 'transform 0.5s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease';
+            inner.style.transform = 'translateY(0) rotate(0deg)';
+          });
+        }, 160 + i * 45);
+      });
+      headline.style.opacity = '1';
     }
 
     // ── SCROLL STATE ──
     let currentRatio = 0;
     let rafPending   = false;
-    let shockFired   = false;
+    let impactDone   = false;
     let textShownAt  = null;
-    const TEXT_HOLD_MS = 1000;
+    const TEXT_HOLD_MS = 1400;
     let scrollLocked = false;
     let lockScrollY  = 0;
+
+    // Smooth display ratio (lerped) for visual effects — avoids jitter
+    let displayRatio = 0;
 
     function applyReveal() {
       rafPending = false;
       const ratio = currentRatio;
 
+      // Lerp display ratio for smooth visual updates
+      displayRatio += (ratio - displayRatio) * 0.12;
+      diveRatio = displayRatio;
+
+      // Start code rain as soon as we enter
       if (ratio > 0 && !fcRunning) { fcRunning = true; drawFC(); drawSW(); swRunning = true; }
       if (ratio <= 0 && fcRunning) {
         fcRunning = false; swRunning = false;
         cancelAnimationFrame(fcRaf); cancelAnimationFrame(swRaf);
         swCtx.clearRect(0, 0, sw.width, sw.height);
+        diveRatio = 0; displayRatio = 0;
       }
 
-      // Rain warp: ramp up aggressively from 40% scroll onward
-      rainWarp = Math.max(0, Math.min(1, (ratio - 0.30) / 0.45));
+      // ── Phase 0→0.35: approach ──
+      // Showcase bottom blends perfectly — nothing visible yet except faint glow warming up
+      const approachT = Math.max(0, Math.min(1, displayRatio / 0.35));
 
-      // At 75% — fire the shockwave + slam the text
-      if (ratio >= 0.75 && !shockFired) {
-        shockFired = true;
+      // ── Phase 0.2→0.6: letterbox cinches in ──
+      const lbT = Math.max(0, Math.min(1, (displayRatio - 0.20) / 0.40));
+      const lbH = Math.round(lbT * lbT * 80); // max ~80px each side
+      lbTop.style.height    = lbH + 'px';
+      lbBottom.style.height = lbH + 'px';
+
+      // ── Phase 0.15→0.7: edge vignette deepens ──
+      const evA = Math.max(0, Math.min(0.88, (displayRatio - 0.15) / 0.55));
+      edgeVignette.style.opacity = evA.toFixed(3);
+
+      // ── Phase 0.1→0.65: portal glow blooms ──
+      const pgA = Math.max(0, Math.min(1, (displayRatio - 0.10) / 0.55));
+      portalGlow.style.opacity = (pgA * pgA * 0.85).toFixed(3);
+
+      // ── Phase 0.25→0.65: speed canvas fades in ──
+      const spA = Math.max(0, Math.min(1, (displayRatio - 0.25) / 0.40));
+      sc.style.opacity = (spA * 0.7).toFixed(3);
+
+      // Continuously spawn streaks as we dive
+      if (displayRatio > 0.3 && displayRatio < 0.9 && Math.random() < displayRatio * 0.15) {
+        spawnStreaks(Math.floor(displayRatio * 4));
+      }
+
+      // ── Phase 0.3→0.75: tunnel rings appear ──
+      const tunA = Math.max(0, Math.min(1, (displayRatio - 0.30) / 0.45));
+      tc.style.opacity = (tunA * 0.75).toFixed(3);
+
+      // ── Phase 0.2→0.75: scanlines phase in ──
+      const slA = Math.max(0, Math.min(1, (displayRatio - 0.20) / 0.55));
+      scanlines.style.opacity = (slA * 0.45).toFixed(3);
+
+      // ── Phase 0.15→0.65: depth HUD fades in ──
+      if (displayRatio > 0.15) {
+        depthHud.style.opacity = Math.min(1, (displayRatio - 0.15) / 0.3).toFixed(3);
+        const depthNum = Math.round(displayRatio * 999);
+        depthVal.textContent = String(depthNum).padStart(3, '0');
+      } else {
+        depthHud.style.opacity = '0';
+      }
+
+      // ── Phase 0.3→0.75: 3D Z-push — code rain zooms toward viewer ──
+      // inner3d is inside a perspective container — push it back in Z as dive approaches
+      const zPush = Math.max(0, Math.min(1, (displayRatio - 0.05) / 0.70));
+      const zVal  = -280 * (1 - zPush * zPush); // starts 280px back, comes to 0
+      const scaleVal = 1 + zPush * 0.08;
+      inner3d.style.transform = `translateZ(${zVal}px) scale(${scaleVal.toFixed(4)})`;
+
+      // ── Phase 0.72: IMPACT — fire shockwave, slam text ──
+      if (displayRatio >= 0.72 && !impactDone) {
+        impactDone = true;
         slamText();
       }
-      // Reset if scrolled back
-      if (ratio < 0.5 && shockFired) {
-        shockFired    = false;
-        textRevealed  = false;
-        rings         = [];
-        eyebrow.style.opacity   = '0';
-        headline.style.opacity  = '0';
+      // Reset on scroll back
+      if (displayRatio < 0.50 && impactDone) {
+        impactDone   = false;
+        textRevealed = false;
+        rings        = [];
+        eyebrow.style.opacity = '0';
+        headline.style.opacity = '0';
+        headline.querySelectorAll('.vhl-inner').forEach(el => {
+          el.style.transition = 'none';
+          el.style.transform  = 'translateY(110%) rotate(4deg)';
+          el.style.opacity    = '0';
+        });
+      }
+
+      // ── Phase 0.75→1: letterbox eases back open after slam ──
+      if (displayRatio > 0.80) {
+        const openT = Math.min(1, (displayRatio - 0.80) / 0.20);
+        const openH = Math.round(lbH * (1 - openT));
+        lbTop.style.height    = openH + 'px';
+        lbBottom.style.height = openH + 'px';
+        scanlines.style.opacity = (slA * (1 - openT * 0.8)).toFixed(3);
       }
 
       const pct = Math.round(ratio * 100);
       progressFill.style.width = pct + '%';
       progressLabel.textContent = String(pct).padStart(3, '0') + '%';
+
+      // Keep ticking while visible so lerp catches up
+      if (fcRunning && Math.abs(displayRatio - ratio) > 0.001) {
+        rafPending = true;
+        requestAnimationFrame(applyReveal);
+      }
     }
 
     function onScroll() {
       if (!revealSection) return;
-      if (window._navJumping) return;  // nav jump in progress — stay out of the way
+      if (window._navJumping) return;
 
       if (scrollLocked) {
         window.scrollTo({ top: lockScrollY, behavior: 'instant' });
@@ -3304,8 +3728,8 @@
       currentRatio   = Math.max(0, Math.min(1, scrolled / total));
 
       if (currentRatio >= 1 && !textShownAt && !window._navJumping) {
-        textShownAt = performance.now();
-        lockScrollY = window.scrollY;
+        textShownAt  = performance.now();
+        lockScrollY  = window.scrollY;
         scrollLocked = true;
         setTimeout(() => { scrollLocked = false; }, TEXT_HOLD_MS);
       }
@@ -3586,11 +4010,10 @@
       transformOrigin: '50% 50%',
     });
 
-    // Video reveal entrance: slide up slightly from below
-    gsap.fromTo('#video-sticky', { y: 30 }, {
-      scrollTrigger: { trigger: '#video-reveal', start: 'top bottom', end: 'top top', scrub: 1 },
-      y: 0,
-      ease: 'none',
+    // Dive reveal — portal glow pulses on approach before section is pinned
+    gsap.fromTo('#dive-portal-glow', { opacity: 0 }, {
+      scrollTrigger: { trigger: '#video-reveal', start: 'top 85%', end: 'top 40%', scrub: 1.5 },
+      opacity: 0.35, ease: 'none',
     });
   }
 
