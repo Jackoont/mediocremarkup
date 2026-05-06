@@ -1019,7 +1019,7 @@
       position: absolute;
       left: 0; right: 0;
       height: 0;
-      background: #000;
+      background: #2B2547;
       z-index: 12;
       pointer-events: none;
       transition: height 0s;
@@ -1034,8 +1034,8 @@
       z-index: 7;
       opacity: 0;
       background:
-        linear-gradient(to right,  rgba(0,0,0,0.85) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.85) 100%),
-        linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.85) 100%);
+        linear-gradient(to right,  rgba(254,249,244,0.85) 0%, transparent 20%, transparent 80%, rgba(254,249,244,0.85) 100%),
+        linear-gradient(to bottom, rgba(254,249,244,0.85) 0%, transparent 20%, transparent 80%, rgba(254,249,244,0.85) 100%);
     }
     /* Radial portal glow — rose bloom at center during approach */
     #dive-portal-glow {
@@ -1117,7 +1117,7 @@
       font-size: 11px;
       letter-spacing: 4px;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.5);
+      color: rgba(240,99,90,0.7);
       margin-bottom: 24px;
       opacity: 0;
     }
@@ -1126,14 +1126,14 @@
       font-size: clamp(32px, 4.4vw, 68px);
       font-weight: 400;
       font-style: italic;
-      color: #ffffff;
+      color: #2B2547;
       line-height: 1.12;
       letter-spacing: -0.5px;
       opacity: 0;
       max-width: 760px;
-      text-shadow: 0 2px 40px rgba(0,0,0,0.6);
+      text-shadow: 0 2px 20px rgba(254,249,244,0.8);
     }
-    .video-headline em { color: #ffffff; font-style: italic; opacity: 0.88; }
+    .video-headline em { color: #F0635A; font-style: italic; opacity: 1; }
     /* Word-level text reveal spans */
     .vhl-word {
       display: inline-block;
@@ -1159,7 +1159,7 @@
     #video-progress-track {
       width: 120px;
       height: 2px;
-      background: rgba(255,255,255,0.15);
+      background: rgba(43,37,71,0.15);
       border-radius: 1px;
       overflow: hidden;
     }
@@ -1174,7 +1174,7 @@
       font-family: var(--font-mono);
       font-size: 10px;
       letter-spacing: 2px;
-      color: rgba(255,255,255,0.4);
+      color: rgba(43,37,71,0.4);
     }
     /* Dive depth indicator — replaces old progress bar label feel */
     #dive-depth-hud {
@@ -1200,7 +1200,7 @@
       font-family: var(--font-mono);
       font-size: 22px;
       letter-spacing: -1px;
-      color: rgba(250,250,248,0.7);
+      color: rgba(43,37,71,0.6);
       line-height: 1;
     }
     /* Scan-line flicker overlay */
@@ -1214,8 +1214,8 @@
         to bottom,
         transparent 0px,
         transparent 3px,
-        rgba(0,0,0,0.08) 3px,
-        rgba(0,0,0,0.08) 4px
+        rgba(43,37,71,0.05) 3px,
+        rgba(43,37,71,0.05) 4px
       );
     }
     @media (max-width: 900px) {
@@ -3572,7 +3572,7 @@
 
       // Trail fade — clear fast enough that no persistent smears remain
       const trailAlpha = Math.max(0.35, 0.55 - diveRatio * 0.1);
-      fCtx.fillStyle = `rgba(43,37,71,${trailAlpha})`;
+      fCtx.fillStyle = `rgba(254,249,244,${trailAlpha})`;
       fCtx.fillRect(0, 0, W, H);
 
       // Speed ramps toward impact then gentles out
@@ -3641,8 +3641,8 @@
 
       // Edge vignette baked into canvas
       const vg = fCtx.createRadialGradient(vpX, vpY, W * 0.08, vpX, vpY, W * 0.75);
-      vg.addColorStop(0, 'rgba(43,37,71,0)');
-      vg.addColorStop(1, `rgba(43,37,71,${0.55 + diveRatio * 0.2})`);
+      vg.addColorStop(0, 'rgba(254,249,244,0)');
+      vg.addColorStop(1, `rgba(254,249,244,${0.55 + diveRatio * 0.2})`);
       fCtx.fillStyle = vg;
       fCtx.fillRect(0, 0, W, H);
 
