@@ -112,7 +112,7 @@
       position: absolute;
       bottom: 0; left: 0; right: 0;
       height: 35vh;
-      background: linear-gradient(to bottom, transparent 0%, rgba(14,10,13,0.7) 60%, #0e0a0d 100%);
+      background: linear-gradient(to bottom, transparent 0%, rgba(14,10,13,0.75) 55%, #0e0a0d 100%);
       pointer-events: none;
       z-index: 5;
     }
@@ -435,15 +435,27 @@
        ══════════════════════════════════════ */
     #showcase {
       position: relative;
-      background: #0c090b;
+      background: #0e0a0d;
       min-height: 100vh;
       overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 100px 24px 120px;
+      padding: 100px 24px 0;
+      opacity: 0; /* GSAP drives entrance */
     }
+    /* Seamless bleed into video-reveal below */
+    #showcase::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 260px;
+      background: linear-gradient(to bottom, transparent 0%, rgba(14,10,13,0.8) 45%, #0e0a0d 100%);
+      pointer-events: none; z-index: 5;
+    }
+    /* Padding block that sits below the canvas so content clears the fade */
+    #sc-bottom-pad { height: 180px; width: 100%; flex-shrink: 0; }
     #sc-physics-canvas {
       position: absolute;
       inset: 0; width: 100%; height: 100%;
@@ -452,9 +464,9 @@
     #sc-glow-bg {
       position: absolute; inset: 0; z-index: 0; pointer-events: none;
       background:
-        radial-gradient(ellipse 60% 55% at 50% 60%, rgba(212,93,121,0.07) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 30% at 30% 20%, rgba(234,144,133,0.04) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 40% at 75% 80%, rgba(28,17,24,0.8) 0%, transparent 70%);
+        radial-gradient(ellipse 60% 55% at 50% 55%, rgba(212,93,121,0.065) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 30% 20%, rgba(234,144,133,0.035) 0%, transparent 60%),
+        radial-gradient(ellipse 70% 50% at 50% 100%, rgba(17,12,16,0.9) 0%, transparent 60%);
     }
     #sc-inner {
       position: relative; z-index: 2;
@@ -911,8 +923,8 @@
        ═══════════════════════════════════════════════ */
     #video-reveal {
       position: relative;
-      height: 300vh; /* pin distance */
-      background: #110c10;
+      height: 300vh;
+      background: #0e0a0d;
     }
     #video-sticky {
       position: sticky;
@@ -2201,6 +2213,7 @@
 
       <div id="sc-tagline">Every industry. Every vision. Hand-coded.</div>
     </div><!-- /sc-inner -->
+    <div id="sc-bottom-pad"></div>
   </section>
 
   <!-- ══ SCROLL-PINNED VIDEO REVEAL ══ -->
@@ -3535,6 +3548,23 @@
       opacity: 0,
       ease: 'none',
     });
+    // Showcase entrance — rises from below as hero exits
+    gsap.fromTo('#showcase', { y: 60, opacity: 0 }, {
+      scrollTrigger: { trigger: '#showcase', start: 'top 92%', end: 'top 30%', scrub: 1.4 },
+      y: 0, opacity: 1, ease: 'none',
+    });
+    // Showcase inner rises a little slower for depth
+    gsap.fromTo('#sc-inner', { y: 40 }, {
+      scrollTrigger: { trigger: '#showcase', start: 'top 85%', end: 'top 15%', scrub: 1.8 },
+      y: 0, ease: 'none',
+    });
+    // Physics canvas scales up as showcase enters — feels like zooming in
+    gsap.fromTo('#sc-physics-canvas', { scale: 1.08, opacity: 0 }, {
+      scrollTrigger: { trigger: '#showcase', start: 'top 90%', end: 'top 20%', scrub: 1.2 },
+      scale: 1, opacity: 1, ease: 'none',
+      transformOrigin: '50% 50%',
+    });
+
     // Video reveal entrance: slide up slightly from below
     gsap.fromTo('#video-sticky', { y: 30 }, {
       scrollTrigger: { trigger: '#video-reveal', start: 'top bottom', end: 'top top', scrub: 1 },
