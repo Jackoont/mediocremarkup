@@ -440,8 +440,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 100px 24px 0;
+      justify-content: flex-start;
+      padding: 160px 24px 0;
     }
     /* Top fade — hard ceiling that bleeds from hero's solid #0e0a0d bottom */
     #showcase::before {
@@ -527,16 +527,33 @@
     .phone-wrapper {
       transform-style: preserve-3d;
       cursor: default; position: relative; display: inline-block;
-      opacity: 0;
-      transform: translateY(-60px) scale(0.9);
-    }
-    .phone-wrapper.phone-landed {
-      opacity: 1; transform: translateY(0) scale(1);
-      transition: opacity 0.85s cubic-bezier(0.16,1,0.3,1),
-                  transform 0.85s cubic-bezier(0.16,1,0.3,1);
+      opacity: 1;
+      transform: translateY(0) scale(1);
     }
     .phone-wrapper.phone-settled {
       transition: transform 0.15s ease-out, filter 0.15s ease;
+    }
+    /* Screen-off overlay — covers screen with black until flicker-to-life */
+    #phone-screen-off {
+      position: absolute;
+      inset: 0;
+      background: #000;
+      border-radius: 20px;
+      z-index: 30;
+      pointer-events: none;
+      opacity: 1;
+    }
+    /* CRT scanline sweep element */
+    #phone-crt-sweep {
+      position: absolute;
+      left: 0; right: 0;
+      height: 3px;
+      background: rgba(212,93,121,0.9);
+      box-shadow: 0 0 12px 4px rgba(212,93,121,0.6), 0 0 2px 1px #fff;
+      z-index: 31;
+      pointer-events: none;
+      opacity: 0;
+      top: 0;
     }
     .phone-frame {
       width: 250px; height: 500px;
@@ -2056,6 +2073,8 @@
             <div class="phone-notch"></div>
             <div class="phone-scanline"></div>
             <div class="phone-screen" id="phone-screen">
+              <div id="phone-screen-off"></div>
+              <div id="phone-crt-sweep"></div>
               <div class="phone-templates-wrap" id="phone-templates-wrap">
 
                 <!-- TEMPLATE 0: MERIDIAN LAW GROUP — Professional -->
@@ -3317,43 +3336,99 @@
       requestAnimationFrame(tiltLoop);
     })();
 
+    /* ── Phone flicker-to-life ── */
+    let flickerDone = false;
+    function flickerToLife() {
+      if (flickerDone) return;
+      flickerDone = true;
+      const screenOff = document.getElementById('phone-screen-off');
+      const sweep     = document.getElementById('phone-crt-sweep');
+      const screen    = document.getElementById('phone-screen');
+      if (!screenOff) return;
+
+      // 3 rapid CRT flicker flashes
+      const flickers = [0, 80, 160, 240, 340];
+      flickers.forEach((t, i) => {
+        setTimeout(() => {
+          screenOff.style.transition = 'opacity 0.04s';
+          screenOff.style.opacity = (i % 2 === 0) ? '0.15' : '0.85';
+        }, t);
+      });
+
+      // After flickers: sweep scan-line top to bottom
+      setTimeout(() => {
+        screenOff.style.transition = 'opacity 0.12s';
+        screenOff.style.opacity = '0.05';
+        if (sweep) {
+          sweep.style.opacity = '1';
+          sweep.style.top = '0px';
+          const screenH = screen ? screen.offsetHeight : 440;
+          const duration = 320;
+          const start = performance.now();
+          const animate = (now) => {
+            const t = Math.min(1, (now - start) / duration);
+            sweep.style.top = (t * screenH) + 'px';
+            if (t < 1) requestAnimationFrame(animate);
+            else {
+              sweep.style.opacity = '0';
+              // Screen fully on — fade out the black overlay
+              screenOff.style.transition = 'opacity 0.25s';
+              screenOff.style.opacity = '0';
+              // Fire burst + settle
+              setTimeout(fireBurst, 80);
+              setTimeout(() => {
+                if (phoneWrap) { phoneWrap.classList.add('phone-settled'); tiltOn = true; }
+                namePill?.classList.add('sc-in');
+                if (depthRing) depthRing.classList.add('ring-pop');
+                startScrollCycle();
+              }, 300);
+            }
+          };
+          requestAnimationFrame(animate);
+        }
+      }, 500);
+    }
+
     /* ── Entrance ── */
     function doShowcaseReveal() {
       if (landed) return;
       landed = true;
       initFrags();
       physLoop();
+
+      // Text fades in immediately
       setTimeout(() => {
         document.getElementById('sc-eyebrow')?.classList.add('sc-in');
         document.getElementById('sc-headline')?.classList.add('sc-in');
         document.getElementById('sc-tagline')?.classList.add('sc-in');
       }, 80);
-      // Phone drops in after symbols have had a moment to land on it
-      const phoneDelay = window._wpSymbolsDone ? 200 : 600;
-      setTimeout(() => {
-        if (phoneWrap) phoneWrap.classList.add('phone-landed');
-        if (depthRing) setTimeout(() => depthRing.classList.add('ring-pop'), 90);
-        setTimeout(fireBurst, 340);
-        setTimeout(() => {
-          namePill?.classList.add('sc-in');
-          if (phoneWrap) { phoneWrap.classList.add('phone-settled'); tiltOn = true; }
-          startScrollCycle();
-        }, 1050);
-      }, phoneDelay);
+
+      // If symbols are already done (fast scroll), flicker right away
+      // Otherwise flickerToLife is called by wp-symbols-done
+      if (window._wpSymbolsDone) {
+        setTimeout(flickerToLife, 300);
+      }
     }
 
-    // Prefer waiting for symbols to arrive, but fall back if user jumps straight here
-    document.addEventListener('wp-symbols-done', doShowcaseReveal);
+    // Symbols done → trigger flicker
+    document.addEventListener('wp-symbols-done', () => {
+      doShowcaseReveal();
+      setTimeout(flickerToLife, 200);
+    });
 
     new IntersectionObserver(([e]) => {
       scVisible = e.isIntersecting;
       if (e.isIntersecting && !landed) {
-        // If symbols are already done or whirlpool was skipped, reveal immediately
         if (window._wpSymbolsDone || window.scrollY > window.innerHeight * 0.95) {
           doShowcaseReveal();
         } else {
-          // Otherwise give symbols 2.5s to arrive before forcing the reveal
-          setTimeout(() => { if (!landed) doShowcaseReveal(); }, 2500);
+          // Give symbols up to 2.8s then force reveal with flicker
+          setTimeout(() => {
+            if (!landed) doShowcaseReveal();
+          }, 400);
+          setTimeout(() => {
+            if (!window._wpSymbolsDone) flickerToLife();
+          }, 2800);
         }
       }
     }, { threshold: 0.01 }).observe(showcase);
