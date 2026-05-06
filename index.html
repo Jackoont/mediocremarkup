@@ -3880,6 +3880,7 @@
 
     // Wheel/touch interception state
     let intercepting = false;
+    let animDone = false;      // permanent — once animation finishes, never intercept again
     let virtualScrolled = 0;
     let touchStartY = 0;
     let doneLockUntil = null; // timestamp — hold at ratio=1 for a beat before releasing
@@ -4006,61 +4007,50 @@
 
     // ── Intercept wheel while animation is in progress ──
     function onWheel(e) {
-      if (window._navJumping) return;
+      if (window._navJumping || animDone) return;
 
       const rect = revealSection ? revealSection.getBoundingClientRect() : null;
       if (!rect) return;
 
-      // Only intercept when the section is the one filling the viewport
       const inSection = rect.top <= 0 && rect.bottom >= window.innerHeight;
+      if (!inSection) return;
 
-      if (!inSection) {
-        // Entered section from top via page scroll — sync virtual position
-        if (currentRatio < 1 && rect.top <= 4 && rect.top > -20) {
-          intercepting = true;
-          const total = revealSection.offsetHeight - window.innerHeight;
-          virtualScrolled = currentRatio * total;
-        }
-        return;
-      }
-
-      if (currentRatio >= 1) {
-        // Hold at ratio=1 — absorb wheel events silently so there's no jitter
-        e.preventDefault();
-        if (doneLockUntil !== null && performance.now() >= doneLockUntil) {
-          // Lock expired — release to native scroll
-          intercepting = false;
-          doneLockUntil = null;
-        }
-        return;
-      }
-
-      // Mid-animation — intercept
+      // Section is filling the viewport — intercept unconditionally until animDone
       e.preventDefault();
-      intercepting = true;
 
+      // In the hold window: absorb events silently, then release permanently
+      if (doneLockUntil !== null) {
+        if (performance.now() >= doneLockUntil) {
+          animDone = true;
+          doneLockUntil = null;
+          // Scroll past the section end so native scroll continues naturally
+          if (revealSection) {
+            const sectionEnd = revealSection.offsetTop + revealSection.offsetHeight - window.innerHeight;
+            window.scrollTo({ top: sectionEnd + 1, behavior: 'instant' });
+          }
+        }
+        return;
+      }
+
+      // Mid-animation — drive ratio from wheel delta
+      intercepting = true;
       const total = revealSection.offsetHeight - window.innerHeight;
       const rawDelta = e.deltaY;
       const normalized = e.deltaMode === 1 ? rawDelta * 30
                        : e.deltaMode === 2 ? rawDelta * 300
                        : rawDelta;
-      // 80px cap: comfortable scroll speed without blasting through the animation
       const capped = Math.max(-80, Math.min(80, normalized));
       virtualScrolled = Math.max(0, Math.min(total, virtualScrolled + capped));
       const newRatio = virtualScrolled / total;
 
       setRatio(newRatio);
 
-      // Just hit the end — start the hold timer once
+      // Hit the end — arm the hold timer
       if (newRatio >= 1 && doneLockUntil === null) {
         doneLockUntil = performance.now() + 700;
       }
 
-      // Sync real scroll position so layout is correct when we release
-      if (revealSection) {
-        const sectionTop = revealSection.offsetTop;
-        window.scrollTo({ top: sectionTop + virtualScrolled, behavior: 'instant' });
-      }
+      window.scrollTo({ top: revealSection.offsetTop + virtualScrolled, behavior: 'instant' });
     }
 
     // ── Touch support ──
@@ -4112,6 +4102,7 @@
         if (!e.isIntersecting && e.boundingClientRect.top > 0) {
           // Scrolled back above — full reset
           intercepting = false;
+          animDone = false;
           virtualScrolled = 0;
           currentRatio = 0;
           doneLockUntil = null;
@@ -4129,6 +4120,7 @@
 
     window._videoRevealUnlock = () => {
       intercepting = false;
+      animDone = true;
       doneLockUntil = null;
       currentRatio = 1;
       virtualScrolled = revealSection ? revealSection.offsetHeight - window.innerHeight : 0;
