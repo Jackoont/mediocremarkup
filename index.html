@@ -111,8 +111,8 @@
       content: '';
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      height: 35vh;
-      background: linear-gradient(to bottom, transparent 0%, rgba(14,10,13,0.75) 55%, #0e0a0d 100%);
+      height: 45vh;
+      background: linear-gradient(to bottom, transparent 0%, rgba(14,10,13,0.6) 45%, #0e0a0d 100%);
       pointer-events: none;
       z-index: 5;
     }
@@ -437,7 +437,6 @@
       position: relative;
       background: #0e0a0d;
       min-height: 100vh;
-      overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -445,17 +444,26 @@
       padding: 100px 24px 0;
       opacity: 0; /* GSAP drives entrance */
     }
-    /* Seamless bleed into video-reveal below */
+    /* Top fade — blends from hero */
+    #showcase::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 200px;
+      background: linear-gradient(to bottom, #0e0a0d 0%, transparent 100%);
+      pointer-events: none; z-index: 5;
+    }
+    /* Bottom fade — blends into video-reveal */
     #showcase::after {
       content: '';
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      height: 260px;
-      background: linear-gradient(to bottom, transparent 0%, rgba(14,10,13,0.8) 45%, #0e0a0d 100%);
+      height: 300px;
+      background: linear-gradient(to bottom, transparent 0%, #0e0a0d 100%);
       pointer-events: none; z-index: 5;
     }
-    /* Padding block that sits below the canvas so content clears the fade */
-    #sc-bottom-pad { height: 180px; width: 100%; flex-shrink: 0; }
+    /* Padding block so content clears the bottom fade */
+    #sc-bottom-pad { height: 220px; width: 100%; flex-shrink: 0; }
     #sc-physics-canvas {
       position: absolute;
       inset: 0; width: 100%; height: 100%;
@@ -926,6 +934,23 @@
       height: 300vh;
       background: #0e0a0d;
     }
+    /* Bottom of video-reveal bleeds into pricing */
+    #video-reveal::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 260px;
+      background: linear-gradient(to bottom, transparent 0%, #0e0a0d 100%);
+      pointer-events: none; z-index: 10;
+    }
+    /* Pricing top absorbs from video-reveal bottom */
+    #pricing-top-fade {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 280px;
+      background: linear-gradient(to bottom, #0e0a0d 0%, transparent 100%);
+      pointer-events: none; z-index: 3;
+    }
     #video-sticky {
       position: sticky;
       top: 0;
@@ -1254,11 +1279,7 @@
 
     body { background: #0e0a0d; }
 
-    /* Feature band */
-    .feature-band { background: #2a1f2d !important; }
-    .feature-quote { color: #f0e6d8 !important; }
-    .feature-list li { color: rgba(240,230,216,0.8) !important; }
-    .feature-list li::before { color: #ea9085 !important; }
+    /* feature-band removed from layout */
 
     /* Beliefs section inherits dark bg — no overrides needed */
 
@@ -2242,6 +2263,7 @@
 
   <!-- PRICING -->
   <section id="pricing">
+    <div id="pricing-top-fade"></div>
     <canvas id="pricing-canvas"></canvas>
     <div id="pricing-glow"></div>
     <div id="pricing-bottom-fade"></div>
