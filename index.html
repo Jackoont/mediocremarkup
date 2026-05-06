@@ -2062,7 +2062,7 @@
         </div>
 
         <div class="hero-stats" id="hero-stats">
-          <div class="stat"><span class="stat-num">$500</span><span class="stat-label">to get started</span></div>
+          <div class="stat"><span class="stat-num">$600</span><span class="stat-label">to get started</span></div>
           <div class="stat"><span class="stat-num">7 days</span><span class="stat-label">to launch</span></div>
           <div class="stat"><span class="stat-num">$50/mo</span><span class="stat-label">to keep it running</span></div>
         </div>
@@ -2521,12 +2521,13 @@
           <span class="price-tag">Starter</span>
           <div class="price-name">Single Page</div>
           <p class="price-desc">One focused page. Your hours, services, location, and a contact form. Clean and done right.</p>
-          <div class="price-amount"><sup>$</sup>500</div>
+          <div class="price-amount"><sup>$</sup>600</div>
           <div class="price-period">One-time</div>
           <ul class="price-features">
             <li>Custom design, nothing recycled</li>
             <li>Mobile responsive</li>
             <li>Contact form included</li>
+            <li>SEO foundations</li>
             <li>Delivered in ~7 days</li>
           </ul>
           <a href="mailto:mediocremanager@outlook.com" class="btn">Get started →</a>
@@ -3109,7 +3110,7 @@
     /* ── Physics canvas: floating UI fragments ── */
     const pc = physCanvas ? physCanvas.getContext('2d') : null;
     const FRAGMENTS = [
-      { text: '⚖ Law · $500',     w: 98,  h: 26 },
+      { text: '⚖ Law · $600',     w: 98,  h: 26 },
       { text: 'Mobile-first',      w: 88,  h: 24 },
       { text: '7-day delivery',    w: 100, h: 24 },
       { text: '</>',               w: 36,  h: 36 },
@@ -3273,9 +3274,123 @@
       }
     }
 
+    /* ── Symbol scatter/regroup on page flip ── */
+    {
+      const SCATTER_SYMS = ['</', '/>', '{}', '()', '//', '=>', '[]', '&&', '/*', '*/', 'fn', 'px', 'vh', 'rem', 'var', '::'];
+      const sfCanvas = document.getElementById('sym-fall-canvas');
+      const sfCtx = sfCanvas ? sfCanvas.getContext('2d') : null;
+      let sfRaf = null;
+      let sfParticles = [];
+
+      function resizeSF() {
+        if (!sfCanvas) return;
+        sfCanvas.width  = sfCanvas.offsetWidth  * (window.devicePixelRatio || 1);
+        sfCanvas.height = sfCanvas.offsetHeight * (window.devicePixelRatio || 1);
+        sfCtx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+      }
+      resizeSF();
+      window.addEventListener('resize', resizeSF);
+
+      window.fireSymbolScatter = function() {
+        if (!sfCtx || !phoneWrap) return;
+        resizeSF();
+        const pr = phoneWrap.getBoundingClientRect();
+        const sc = showcase.getBoundingClientRect();
+        const cx = pr.left - sc.left + pr.width * 0.5;
+        const cy = pr.top  - sc.top  + pr.height * 0.5;
+        const W  = sfCanvas.offsetWidth;
+        const H  = sfCanvas.offsetHeight;
+        const N  = 18;
+
+        sfParticles = Array.from({ length: N }, (_, i) => {
+          // bias angles toward left/right sides and down so they "fall to sides"
+          const sideAngle = (Math.random() < 0.5 ? -1 : 1) * (Math.PI * 0.2 + Math.random() * Math.PI * 0.55);
+          const downBias  = Math.random() * 0.6; // slight downward pull
+          const angle = sideAngle + downBias;
+          const speed = 2.8 + Math.random() * 3.4;
+          return {
+            text:   SCATTER_SYMS[i % SCATTER_SYMS.length],
+            x:      cx + (Math.random() - 0.5) * pr.width * 0.6,
+            y:      cy + (Math.random() - 0.5) * pr.height * 0.4,
+            vx:     Math.cos(angle) * speed,
+            vy:     Math.sin(angle) * speed,
+            alpha:  0.85 + Math.random() * 0.15,
+            size:   12 + Math.random() * 9,
+            color:  Math.random() < 0.6 ? '#d45d79' : (Math.random() < 0.5 ? '#ea9085' : '#6e5773'),
+            phase:  'scatter',   // scatter → drift → regroup → done
+            age:    0,
+            // regroup target: loose ring around phone center
+            orbitR: pr.width * 0.62 + Math.random() * pr.width * 0.28,
+            orbitAngle: (i / N) * Math.PI * 2,
+          };
+        });
+
+        if (sfRaf) cancelAnimationFrame(sfRaf);
+        const startTs = performance.now();
+
+        function tick(ts) {
+          const elapsed = ts - startTs;
+          sfCtx.clearRect(0, 0, W, H);
+          let anyAlive = false;
+
+          sfParticles.forEach(p => {
+            if (p.alpha <= 0) return;
+            anyAlive = true;
+            p.age = elapsed;
+
+            if (p.phase === 'scatter') {
+              // Pure momentum, mild gravity drag
+              p.vy += 0.18;
+              p.vx *= 0.97;
+              p.vy *= 0.97;
+              p.x += p.vx;
+              p.y += p.vy;
+              // After ~300ms start re-homing
+              if (elapsed > 300) p.phase = 'regroup';
+
+            } else if (p.phase === 'regroup') {
+              // Spiral back toward orbit ring around phone center
+              const targetX = cx + Math.cos(p.orbitAngle + elapsed * 0.0014) * p.orbitR;
+              const targetY = cy + Math.sin(p.orbitAngle + elapsed * 0.0014) * p.orbitR * 0.55;
+              const dx = targetX - p.x, dy = targetY - p.y;
+              const dist = Math.hypot(dx, dy);
+              const pull = 0.06 + (1 - Math.min(1, dist / 320)) * 0.09;
+              p.vx += dx * pull;
+              p.vy += dy * pull;
+              p.vx *= 0.88;
+              p.vy *= 0.88;
+              p.x += p.vx;
+              p.y += p.vy;
+              // Fade out once close enough and elapsed > 700ms
+              if (elapsed > 700 && dist < 40) p.phase = 'fade';
+
+            } else if (p.phase === 'fade') {
+              p.alpha -= 0.022;
+              if (p.alpha < 0) p.alpha = 0;
+            }
+
+            sfCtx.save();
+            sfCtx.globalAlpha = Math.max(0, p.alpha);
+            sfCtx.font = `600 ${p.size}px 'JetBrains Mono', monospace`;
+            sfCtx.fillStyle = p.color;
+            sfCtx.textAlign = 'center';
+            sfCtx.textBaseline = 'middle';
+            sfCtx.fillText(p.text, p.x, p.y);
+            sfCtx.restore();
+          });
+
+          if (anyAlive) sfRaf = requestAnimationFrame(tick);
+          else sfCtx.clearRect(0, 0, W, H);
+        }
+
+        sfRaf = requestAnimationFrame(tick);
+      };
+    }
+
     /* ── 3D flip on template change ── */
     function flipTo(idx) {
       if (!phoneWrap) return;
+      window.fireSymbolScatter();
       phoneWrap.style.transition = 'transform 0.32s cubic-bezier(0.4,0,1,1), opacity 0.2s';
       phoneWrap.style.transform  = 'rotateY(90deg) scale(0.9)';
       phoneWrap.style.opacity    = '0.35';
@@ -4211,7 +4326,7 @@
       resize();
       window.addEventListener('resize', resize);
 
-      const SYMS = ['$500','$1,200','$50/mo','</>','{}','→','fn()','px','rem','//','&&','::','*','#'];
+      const SYMS = ['$600','$1,200','$50/mo','</>','{}','→','fn()','px','rem','//','&&','::','*','#'];
       const particles = Array.from({length: 32}, () => ({
         x: Math.random(), y: Math.random(),
         vx: (Math.random() - 0.5) * 0.00010,
