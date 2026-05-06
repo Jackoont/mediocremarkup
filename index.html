@@ -2755,14 +2755,16 @@
     const resize = () => { W=canvas.width=canvas.offsetWidth; H=canvas.height=canvas.offsetHeight; };
     resize(); window.addEventListener('resize', resize);
     let particles=[], mouseX=-1000, mouseY=-1000;
+    const SYM_POOL = ['</', '/>', '{}', '()', '=>', '[]', '//', '+=', 'fn', 'px', 'vh', '&&', 'rem', '/*'];
     const initP = () => {
       particles=[];
-      for(let i=0;i<140;i++) particles.push({
+      for(let i=0;i<100;i++) particles.push({
         x:Math.random()*W, y:Math.random()*H,
-        vx:(Math.random()-0.5)*0.6, vy:(Math.random()-0.5)*0.6,
-        r:Math.random()*2+0.5,
+        vx:(Math.random()-0.5)*0.4, vy:(Math.random()-0.5)*0.4,
+        sym: SYM_POOL[Math.floor(Math.random()*SYM_POOL.length)],
+        fs: 7 + Math.random() * 5,   // 7–12px — very small, subtle
         color:['#d45d79','#c04468','#8b3a54','#ea9085','#b87a8a'][Math.floor(Math.random()*5)],
-        alpha:Math.random()*0.5+0.15
+        alpha:(Math.random()*0.18+0.06)  // very faint — 0.06–0.24
       });
     };
     initP();
@@ -2773,16 +2775,21 @@
       ctx.clearRect(0,0,W,H);
       particles.forEach((p,i)=>{
         const dx=p.x-mouseX, dy=p.y-mouseY, dist=Math.sqrt(dx*dx+dy*dy);
-        if(dist<60&&dist>0){const f=(60-dist)/60;p.vx+=(dx/dist)*f*0.5;p.vy+=(dy/dist)*f*0.5;}
-        const spd=Math.sqrt(p.vx*p.vx+p.vy*p.vy), maxSpd=1.8;
+        if(dist<60&&dist>0){const f=(60-dist)/60;p.vx+=(dx/dist)*f*0.4;p.vy+=(dy/dist)*f*0.4;}
+        const spd=Math.sqrt(p.vx*p.vx+p.vy*p.vy), maxSpd=1.4;
         if(spd>maxSpd){p.vx=(p.vx/spd)*maxSpd;p.vy=(p.vy/spd)*maxSpd;}
         p.vx*=0.98; p.vy*=0.98; p.x+=p.vx; p.y+=p.vy;
         if(p.x<0)p.x=W; if(p.x>W)p.x=0; if(p.y<0)p.y=H; if(p.y>H)p.y=0;
-        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-        ctx.fillStyle=p.color; ctx.globalAlpha=p.alpha; ctx.fill();
+        // Draw tiny symbol instead of dot
+        ctx.globalAlpha=p.alpha;
+        ctx.font=`600 ${p.fs}px 'JetBrains Mono',monospace`;
+        ctx.fillStyle=p.color;
+        ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText(p.sym,p.x,p.y);
+        // Constellation lines between nearby symbols
         for(let j=i+1;j<particles.length;j++){
           const p2=particles[j],dx2=p.x-p2.x,dy2=p.y-p2.y,d2=Math.sqrt(dx2*dx2+dy2*dy2);
-          if(d2<80){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p2.x,p2.y);ctx.strokeStyle=p.color;ctx.globalAlpha=(1-d2/80)*0.09;ctx.lineWidth=0.5;ctx.stroke();}
+          if(d2<90){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p2.x,p2.y);ctx.strokeStyle=p.color;ctx.globalAlpha=(1-d2/90)*0.06;ctx.lineWidth=0.5;ctx.stroke();}
         }
         ctx.globalAlpha=1;
       });
@@ -2861,7 +2868,7 @@
       r:      60 + Math.random() * 200,
       phase:  (i / N) * Math.PI * 2,
       speed:  0.4 + Math.random() * 0.7,
-      fsize:  20 + Math.random() * 22,
+      fsize:  16 + Math.random() * 12,
       color:  Math.random() < 0.6 ? '#d45d79' : (Math.random() < 0.5 ? '#ea9085' : '#6e5773'),
       // animation state
       state:  'orbit',   // orbit | fall | impact | done
@@ -3555,6 +3562,10 @@
 
         const fs   = Math.round(g.size * perspScale * (1 + convergence * g.z));
         const roseA = g.alpha * (0.35 + diveRatio * 0.65) * (0.5 + g.z * 0.6);
+
+        // Skip glyphs too close to canvas edge — prevents half-drawn clipped text
+        const margin = fs + 4;
+        if (cx < margin || cx > W - margin || cy < margin || cy > H - margin) return;
 
         fCtx.save();
         fCtx.translate(cx, cy);
