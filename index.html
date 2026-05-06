@@ -4077,14 +4077,26 @@
       }
     }
 
-    // ── Fallback: real scroll events (nav jumps, keyboard, scrollbar drags) ──
+    // ── Fallback: real scroll events (keyboard, scrollbar, programmatic) ──
     function onScroll() {
       if (!revealSection || window._navJumping) return;
-      const r = getRatioFromScroll();
-      // Only apply if we're not actively intercepting (avoid fighting ourselves)
+
+      const rect  = revealSection.getBoundingClientRect();
+      const total = revealSection.offsetHeight - window.innerHeight;
+
+      // Fast-scroll overshoot guard: if animation isn't done and user has scrolled
+      // past the section bottom, snap them back to the section end instantly
+      if (!animDone && rect.bottom < window.innerHeight) {
+        window.scrollTo({ top: revealSection.offsetTop + total, behavior: 'instant' });
+        setRatio(1);
+        virtualScrolled = total;
+        if (doneLockUntil === null) doneLockUntil = performance.now() + 700;
+        return;
+      }
+
       if (!intercepting) {
+        const r = Math.max(0, Math.min(1, -rect.top / total));
         setRatio(r);
-        const total = revealSection.offsetHeight - window.innerHeight;
         virtualScrolled = r * total;
       }
     }
@@ -4111,11 +4123,25 @@
     }, { threshold: 0 });
     if (revealSection) sectionObs.observe(revealSection);
 
+    // Block keyboard scroll keys while animation is running
+    function onKeyDown(e) {
+      if (window._navJumping || animDone) return;
+      const keys = { ' ': 1, PageDown: 1, PageUp: 1, ArrowDown: 1, ArrowUp: 1, End: 1 };
+      if (!keys[e.key]) return;
+      const rect = revealSection ? revealSection.getBoundingClientRect() : null;
+      if (!rect) return;
+      // Only block when we own the viewport
+      const nearSection = rect.top <= 10 && rect.bottom > 0;
+      if (!nearSection) return;
+      e.preventDefault();
+    }
+
     // Non-passive wheel listener so we can preventDefault mid-animation
     window.addEventListener('wheel',      onWheel,      { passive: false });
     window.addEventListener('touchstart', onTouchStart, { passive: true  });
     window.addEventListener('touchmove',  onTouchMove,  { passive: false });
     window.addEventListener('scroll',     onScroll,     { passive: true  });
+    window.addEventListener('keydown',    onKeyDown,    { passive: false });
     onScroll();
 
     window._videoRevealUnlock = () => {
