@@ -59,9 +59,7 @@
     .price-card.featured { background: var(--accent); border-color: var(--accent); }
     .feature-band { background: var(--ink); }
     .feature-quote { color: var(--bg); }
-    .marquee-strip { background: var(--muted); }
-    .marquee-track span { color: var(--bg); }
-    .process-circle { background: var(--accent); }
+.process-circle { background: var(--accent); }
     .cta h2 em { color: var(--accent); }
     .service-chip:hover { background: var(--accent); border-color: var(--accent); }
     .what-tag { background: var(--accent2); }
@@ -950,51 +948,6 @@
     }
 
     /* ═══════════════════════════════════════════════
-       SCROLL VELOCITY MARQUEE
-       ═══════════════════════════════════════════════ */
-    .marquee-container {
-      overflow: hidden;
-      padding: 28px 0;
-      position: relative;
-    }
-    .marquee-container::before,
-    .marquee-container::after {
-      content: '';
-      position: absolute;
-      top: 0; bottom: 0;
-      width: 120px;
-      z-index: 2;
-      pointer-events: none;
-    }
-    .marquee-container::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
-    .marquee-container::after  { right: 0; background: linear-gradient(to left,  var(--bg), transparent); }
-    .marquee-track {
-      display: flex;
-      animation: marqueeSmooth 35s linear infinite;
-    }
-    .marquee-item {
-      font-family: var(--font-body);
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--muted);
-      white-space: nowrap;
-      padding: 0 20px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    .marquee-item .dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-      flex-shrink: 0;
-    }
-    @keyframes marqueeSmooth {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
-    }
-
-    /* ═══════════════════════════════════════════════
        HORIZONTAL SCROLL SHOWCASE (services)
        ═══════════════════════════════════════════════ */
     .h-scroll-wrapper { overflow: hidden; padding: 80px 0; }
@@ -1011,59 +964,6 @@
     .h-scroll-card h3 { font-family: var(--font-body); font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 10px; }
     .h-scroll-card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
     .h-scroll-card .card-tag { display: inline-block; margin-top: 16px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); background: rgba(212,93,121,0.08); padding: 4px 12px; border-radius: 999px; }
-
-    /* ═══════════════════════════════════════════════
-       MARQUEE — Enhanced fluid motion
-       ═══════════════════════════════════════════════ */
-    .marquee-container {
-      overflow: hidden;
-      padding: 28px 0;
-      position: relative;
-    }
-    .marquee-container::before,
-    .marquee-container::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 120px;
-      z-index: 2;
-      pointer-events: none;
-    }
-    .marquee-container::before {
-      left: 0;
-      background: linear-gradient(to right, var(--bg), transparent);
-    }
-    .marquee-container::after {
-      right: 0;
-      background: linear-gradient(to left, var(--bg), transparent);
-    }
-    .marquee-track {
-      display: flex;
-      animation: marqueeSmooth 35s linear infinite;
-    }
-    .marquee-item {
-      font-family: var(--font-body);
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--muted);
-      white-space: nowrap;
-      padding: 0 20px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    .marquee-item .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-      flex-shrink: 0;
-    }
-    @keyframes marqueeSmooth {
-      from { transform: translateX(0); }
-      to { transform: translateX(-50%); }
-    }
 
     /* ═══════════════════════════════════════════════
        IMAGE REVEAL with clip-path
@@ -1104,12 +1004,128 @@
     .feature-list li::before { content: '→'; position: absolute; left: 0; color: #ea9085; }
     @media (max-width: 900px) { .feature-band { grid-template-columns: 1fr; padding: 60px 24px; gap: 40px; } }
 
-    /* ── MARQUEE ── */
-    .marquee-strip { background: #6e5773; overflow: hidden; padding: 20px 0; }
-    .marquee-track { display: flex; width: max-content; animation: marquee 40s linear infinite; }
-    .marquee-track span { font-family: var(--font-body); font-size: 18px; font-weight: 700; color: #e9e2d0; white-space: nowrap; padding: 0 24px; }
-    .marquee-sep { color: #ea9085 !important; font-weight: 400 !important; font-size: 14px !important; padding: 0 8px !important; }
-    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    /* ── BELIEFS SECTION ── */
+    #beliefs {
+      background: #0e0a0d;
+      position: relative;
+      overflow: hidden;
+      padding: 0;
+    }
+    #beliefs::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(212,93,121,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+    .beliefs-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 160px 80px 140px;
+      position: relative;
+      z-index: 1;
+    }
+    @media (max-width: 900px) { .beliefs-inner { padding: 100px 24px 90px; } }
+
+    .beliefs-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: rgba(212,93,121,0.6);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 80px;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    #beliefs.b-visible .beliefs-eyebrow { opacity: 1; transform: translateY(0); }
+    .beliefs-eyebrow::before {
+      content: '';
+      display: block;
+      width: 32px; height: 1px;
+      background: rgba(212,93,121,0.5);
+    }
+
+    .belief-line {
+      display: flex;
+      align-items: baseline;
+      gap: 28px;
+      padding: 40px 0;
+      border-top: 1px solid rgba(240,230,216,0.06);
+      cursor: default;
+      position: relative;
+    }
+    .belief-line:last-of-type { border-bottom: 1px solid rgba(240,230,216,0.06); }
+
+    .belief-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: rgba(212,93,121,0.35);
+      flex-shrink: 0;
+      width: 32px;
+      transition: color 0.3s ease;
+    }
+    .belief-line:hover .belief-num { color: #d45d79; }
+
+    .belief-text {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(32px, 4.5vw, 68px);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.08;
+      letter-spacing: -1.5px;
+      color: rgba(240,230,216,0.15);
+      transition: color 0.6s cubic-bezier(0.16,1,0.3,1);
+      will-change: color;
+    }
+    .belief-line.b-lit .belief-text { color: #f0e6d8; }
+    .belief-text em { color: #d45d79; font-style: italic; }
+
+    .belief-arrow {
+      margin-left: auto;
+      font-size: 18px;
+      color: rgba(212,93,121,0);
+      flex-shrink: 0;
+      transition: color 0.4s ease, transform 0.4s cubic-bezier(0.16,1,0.3,1);
+      transform: translateX(-12px);
+    }
+    .belief-line:hover .belief-arrow {
+      color: rgba(212,93,121,0.5);
+      transform: translateX(0);
+    }
+
+    .beliefs-closer {
+      margin-top: 80px;
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s 0.4s ease, transform 0.8s 0.4s ease;
+    }
+    #beliefs.b-visible .beliefs-closer { opacity: 1; transform: translateY(0); }
+    .beliefs-closer-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(212,93,121,0.4) 0%, transparent 100%);
+      transform-origin: left;
+      transform: scaleX(0);
+      transition: transform 1.2s 0.6s cubic-bezier(0.16,1,0.3,1);
+    }
+    #beliefs.b-visible .beliefs-closer-line { transform: scaleX(1); }
+    .beliefs-closer-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(240,230,216,0.2);
+      white-space: nowrap;
+    }
 
     /* ── SECTIONS ── */
     section { padding: 0; max-width: none; margin: 0; position: relative; }
@@ -1214,10 +1230,7 @@
     .feature-list li { color: rgba(240,230,216,0.8) !important; }
     .feature-list li::before { color: #ea9085 !important; }
 
-    /* Marquee */
-    .marquee-strip { background: #6e5773 !important; }
-    .marquee-track span { color: #f0e6d8 !important; }
-    .marquee-sep { color: #ea9085 !important; }
+    /* Beliefs section inherits dark bg — no overrides needed */
 
     /* Section dividers + labels */
     .divider { background: rgba(110,87,115,0.15) !important; }
@@ -2198,28 +2211,46 @@
     </div>
   </div>
 
-  <!-- ══ BELOW-FOLD LIGHT ZONE ══ -->
-  <div id="light-zone">
+  <!-- ══ BELIEFS SECTION ══ -->
+  <section id="beliefs">
+    <div class="beliefs-inner">
+      <div class="beliefs-eyebrow">What we believe</div>
 
-  <!-- MARQUEE -->
-  <div class="marquee-strip">
-    <div class="marquee-track" id="marquee-track">
-      <span>Hand-coded</span><span class="marquee-sep">●</span>
-      <span>No templates</span><span class="marquee-sep">●</span>
-      <span>Mobile-first</span><span class="marquee-sep">●</span>
-      <span>Hosted &amp; maintained</span><span class="marquee-sep">●</span>
-      <span>Fast turnaround</span><span class="marquee-sep">●</span>
-      <span>Local businesses</span><span class="marquee-sep">●</span>
-      <span>Hand-coded</span><span class="marquee-sep">●</span>
-      <span>No templates</span><span class="marquee-sep">●</span>
-      <span>Mobile-first</span><span class="marquee-sep">●</span>
-      <span>Hosted &amp; maintained</span><span class="marquee-sep">●</span>
-      <span>Fast turnaround</span><span class="marquee-sep">●</span>
-      <span>Local businesses</span><span class="marquee-sep">●</span>
+      <div class="belief-line">
+        <span class="belief-num">01</span>
+        <p class="belief-text">Templates are a <em>shortcut</em> to forgettable.</p>
+        <span class="belief-arrow">→</span>
+      </div>
+      <div class="belief-line">
+        <span class="belief-num">02</span>
+        <p class="belief-text">Speed without craft is just <em>noise</em>.</p>
+        <span class="belief-arrow">→</span>
+      </div>
+      <div class="belief-line">
+        <span class="belief-num">03</span>
+        <p class="belief-text">Your site is the first thing a client <em>judges</em> you by.</p>
+        <span class="belief-arrow">→</span>
+      </div>
+      <div class="belief-line">
+        <span class="belief-num">04</span>
+        <p class="belief-text">Good design is invisible. <em>Bad design</em> isn't.</p>
+        <span class="belief-arrow">→</span>
+      </div>
+      <div class="belief-line">
+        <span class="belief-num">05</span>
+        <p class="belief-text">Every pixel on a screen is a <em>decision</em>.</p>
+        <span class="belief-arrow">→</span>
+      </div>
+
+      <div class="beliefs-closer">
+        <div class="beliefs-closer-line"></div>
+        <span class="beliefs-closer-text">That's why we hand-code everything</span>
+        <div class="beliefs-closer-line" style="background:linear-gradient(90deg,transparent,rgba(212,93,121,0.4));"></div>
+      </div>
     </div>
-  </div>
+  </section>
 
-  </div><!-- /light-zone -->
+  <div id="light-zone"></div><!-- preserved for JS refs -->
 
   <!-- PRICING -->
   <section id="pricing">
@@ -3143,23 +3174,31 @@
     gsap.to('#ab3', { scrollTrigger: { scrub: 2 }, y: -100 });
   }
 
-  /* ── 10. SCROLL-VELOCITY MARQUEE ── */
+  /* ── 10. BELIEFS SCROLL REVEAL ── */
   {
-    const strip = document.querySelector('.marquee-strip .marquee-track');
-    if (strip) {
-      let vel = 0, lastSY = window.scrollY, baseSpeed = 35; // seconds for full cycle
-      let currentSpeed = baseSpeed;
-      window.addEventListener('scroll', () => {
-        const sy = window.scrollY;
-        vel = Math.abs(sy - lastSY);
-        lastSY = sy;
-      }, { passive: true });
-      setInterval(() => {
-        const target = Math.max(6, baseSpeed - vel * 0.4);
-        currentSpeed += (target - currentSpeed) * 0.08;
-        strip.style.animationDuration = currentSpeed + 's';
-        vel *= 0.85; // decay
-      }, 30);
+    const beliefs = document.getElementById('beliefs');
+    const lines   = beliefs ? beliefs.querySelectorAll('.belief-line') : [];
+
+    if (beliefs && lines.length) {
+      // Section-level: eyebrow + closer animate in
+      const sectionObs = new IntersectionObserver(([e]) => {
+        if (e.isIntersecting) { beliefs.classList.add('b-visible'); sectionObs.disconnect(); }
+      }, { threshold: 0.05 });
+      sectionObs.observe(beliefs);
+
+      // Per-line: light up as each crosses ~30% of viewport
+      const lineObs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('b-lit');
+          } else if (e.boundingClientRect.top > 0) {
+            // scrolled back up — dim it again
+            e.target.classList.remove('b-lit');
+          }
+        });
+      }, { threshold: 0.35 });
+
+      lines.forEach(l => lineObs.observe(l));
     }
   }
 
