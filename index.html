@@ -48,6 +48,11 @@
 
     /* Apply variables to existing styles */
     body { background: var(--bg); color: var(--ink); font-family: var(--font-body); overflow-x: hidden; min-height: 100vh; cursor: none; font-size: 15px; line-height: 1.6; transition: background 1.2s ease, color 1.2s ease; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(212,93,121,0.35); border-radius: 2px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(212,93,121,0.65); }
+    html { scrollbar-width: thin; scrollbar-color: rgba(212,93,121,0.35) transparent; }
     nav { background: var(--ink); transition: background 1.2s ease; }
     .hero { background: linear-gradient(160deg, var(--bg) 0%, var(--surface) 100%); transition: background 1.2s ease; }
     #theme-word { color: var(--accent); border-bottom: 3px solid var(--accent); transition: color 1.2s ease, border-color 1.2s ease; }
@@ -68,7 +73,8 @@
     a { color: inherit; text-decoration: none; }
 
     /* ── NAV ── */
-    nav { position: fixed; top: 0; left: 0; right: 0; height: 64px; background: rgba(14,10,13,0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(240,230,216,0.06); display: flex; align-items: center; justify-content: space-between; padding: 0 48px; z-index: 500; transition: background 0.4s ease; }
+    nav { position: fixed; top: 0; left: 0; right: 0; height: 64px; background: rgba(14,10,13,0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(240,230,216,0.06); display: flex; align-items: center; justify-content: space-between; padding: 0 48px; z-index: 500; transition: background 0.4s ease, transform 0.45s cubic-bezier(0.4,0,0.2,1), opacity 0.45s ease; }
+    nav.nav-hidden { transform: translateY(-100%); opacity: 0; pointer-events: none; }
     .nav-left { display: flex; align-items: center; }
     nav img { display: block; filter: brightness(0) invert(1); }
     .nav-sep { width: 1px; height: 20px; background: rgba(233,226,208,0.3); margin: 0 16px; flex-shrink: 0; }
@@ -2985,6 +2991,24 @@
         }, 200);
       }
     }, { threshold: 0.1 }).observe(showcase);
+  }
+
+  /* ── 8a. NAV HIDE/SHOW ON HERO EXIT ── */
+  {
+    const nav = document.querySelector('nav');
+    const hero = document.getElementById('hero');
+    let navHidden = false;
+    function updateNav() {
+      if (!hero || !nav) return;
+      const heroBottom = hero.getBoundingClientRect().bottom;
+      const shouldHide = heroBottom < 0;
+      if (shouldHide !== navHidden) {
+        navHidden = shouldHide;
+        nav.classList.toggle('nav-hidden', shouldHide);
+      }
+    }
+    window.addEventListener('scroll', updateNav, { passive: true });
+    updateNav();
   }
 
   /* ── 8. SCROLL-PINNED VIDEO REVEAL (generative canvas fallback) ── */
