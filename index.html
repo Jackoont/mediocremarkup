@@ -3004,14 +3004,6 @@
           fs.y += fs.vy;
 
           // Speed-based glow — faster = brighter streak so you can track each one
-          const speed = Math.hypot(fs.vx, fs.vy);
-          const glow = Math.min(1, speed / 18);
-          const r = Math.round(212 + glow * 43);
-          const g = Math.round(93  - glow * 20);
-          const b = Math.round(121 + glow * 30);
-          el.style.textShadow = `0 0 ${6 + glow * 14}px rgba(${r},${g},${b},${0.7 + glow * 0.3}), 0 0 ${2 + glow * 6}px #fff`;
-          el.style.fontSize = (el._fsize * (1 + glow * 0.15)) + 'px'; // slight scale-up at speed
-
           // Position: translate from center of the fixed container
           el.style.left = '50%';
           el.style.top  = '50%';
@@ -3021,7 +3013,7 @@
           // Landed — flash phone frame
           if (dist < 16) {
             fs.phase = 'impact';
-            el.style.textShadow = '0 0 20px rgba(212,93,121,1), 0 0 8px #fff';
+            el.style.textShadow = '';
             const pf = document.querySelector('.phone-frame');
             if (pf) {
               pf.style.transition = 'box-shadow 0.05s';
