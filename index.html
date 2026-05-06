@@ -860,6 +860,8 @@
       will-change: transform, opacity;
       transform-origin: center;
       line-height: 1;
+      isolation: isolate;
+      backface-visibility: hidden;
     }
     /* Scroll nudge at bottom */
     #whirlpool-cta {
@@ -2845,31 +2847,22 @@
     resizeV(); window.addEventListener('resize', resizeV);
 
     const SYMS = ['</', '/>', '{}', '()', '//', '=>', '[]', '&&', '/*', '*/', '<>', '::', '+=', 'fn', 'px', 'vh', 'rem', 'var', 'url', '##'];
-    const symEls = [];
     const N = window.innerWidth < 600 ? 12 : 20;
 
-    for (let i = 0; i < N; i++) {
-      const el = document.createElement('div');
-      el.className = 'wp-sym';
-      el.textContent = SYMS[i % SYMS.length];
-      const baseR = 60 + Math.random() * 200;
-      const phase = (i / N) * Math.PI * 2;
-      const speed = 0.4 + Math.random() * 0.7;
-      const fsize = 14 + Math.random() * 20;
-      const hue   = Math.random() < 0.6 ? '#d45d79' : (Math.random() < 0.5 ? '#ea9085' : '#6e5773');
-      el.style.fontSize = fsize + 'px';
-      el.style.color = hue;
-      el.style.opacity = '0';
-      el._r     = baseR;
-      el._phase = phase;
-      el._speed = speed;
-      el._fsize = fsize;
-      // current screen position (populated by orbit loop)
-      el._sx = VW / 2;
-      el._sy = VH / 2;
-      container.appendChild(el);
-      symEls.push(el);
-    }
+    // All symbols are canvas-drawn — no DOM elements, no compositing streaks
+    const syms = Array.from({ length: N }, (_, i) => ({
+      text:   SYMS[i % SYMS.length],
+      r:      60 + Math.random() * 200,
+      phase:  (i / N) * Math.PI * 2,
+      speed:  0.4 + Math.random() * 0.7,
+      fsize:  14 + Math.random() * 20,
+      color:  Math.random() < 0.6 ? '#d45d79' : (Math.random() < 0.5 ? '#ea9085' : '#6e5773'),
+      // animation state
+      state:  'orbit',   // orbit | fall | impact | done
+      x: 0, y: 0,
+      vx: 0, vy: 0,
+      alpha: 0,          // fades in on boot
+    }));
 
     // ── STATES: orbit → fall → land ──
     // dispProgress 0→0.6: pure orbit
@@ -2905,28 +2898,7 @@
       { x: 0.5,   y: 0.55 },  // screen center
     ];
 
-    // Per-symbol fall state (populated when fall begins)
-    const fallStates = symEls.map((el, i) => ({
-      el,
-      // start pos from orbit
-      x: VW / 2, y: VH / 2,
-      // velocity
-      vx: 0, vy: 0,
-      // target anchor on phone (set when phone rect is known)
-      tx: 0, ty: 0,
-      // phase: 'fall' → 'swarm' → 'land' → 'done'
-      phase: 'orbit',
-      landed: false,
-      landDelay: i * 55,  // stagger landings
-      landT: 0,           // time since landing started
-    }));
-
-    // Impact flashes drawn on sym-fall canvas
-    let impacts = []; // { x, y, r, maxR, alpha }
-
-    // ── ORBIT + FALL ANIMATION ──
-    // fallProg is driven by phone's actual viewport position —
-    // orbit while phone is off-screen, fall only when phone is visible.
+    // ── ORBIT + FALL ANIMATION — fully canvas-drawn, no DOM elements ──
 
     function getPhoneRect() {
       const pw = document.getElementById('phone-wrapper');
@@ -2937,83 +2909,58 @@
     function animWhirlpool(ts) {
       if (wpDone) return;
       wpT = ts * 0.001;
-      vCtx.clearRect(0, 0, VW, VH);
+      vCtx.clearRect(0, 0, VW, VH);  // clean slate every frame — zero streaks
 
       const cx = VW / 2, cy = VH / 2;
 
-      // fallProg: 0 when phone top is at viewport bottom, 1 when phone center is at 60% viewport
       const pr = getPhoneRect();
       let fallProg = 0;
       if (pr) {
-        // Phone top enters viewport at pr.top = VH, phone center at 60% when pr.top = VH*0.6 - pr.height/2
-        const enterY = VH;          // phone just entering
-        const readyY = VH * 0.55;   // phone well on screen — fall completes here
+        const enterY = VH;
+        const readyY = VH * 0.55;
         fallProg = Math.max(0, Math.min(1, (enterY - pr.top) / (enterY - readyY)));
       }
 
-      symEls.forEach((el, i) => {
-        const fs = fallStates[i];
+      syms.forEach((s, i) => {
+        if (s.state === 'done') return;
 
-        if (fs.phase === 'orbit') {
-          const angle = el._phase + wpT * el._speed;
-          const ox = cx + Math.cos(angle) * el._r;
-          const oy = cy + Math.sin(angle) * el._r;
-          fs.x = ox; fs.y = oy;
+        if (s.state === 'orbit') {
+          const angle = s.phase + wpT * s.speed;
+          s.x = cx + Math.cos(angle) * s.r;
+          s.y = cy + Math.sin(angle) * s.r;
 
-          // Orbit: glow fades as fall approaches
-          el.style.left = '50%';
-          el.style.top  = '50%';
-          el.style.transform = `translate(${ox - cx}px, ${oy - cy}px) translate(-50%,-50%)`;
-          el.style.opacity = '1';
-          el.style.textShadow = '';
+          // Fade in on boot
+          s.alpha = Math.min(1, s.alpha + 0.04);
 
-          // Stagger symbols into fall as phone scrolls into view
-          const myThreshold = (i / N) * 0.6;
-          if (fallProg > myThreshold) {
-            fs.phase = 'fall';
-            fs.x = ox; fs.y = oy;
-            // Give each symbol a distinctive initial kick so paths visibly diverge
+          // Stagger into fall as phone scrolls into view
+          if (fallProg > (i / N) * 0.6) {
+            s.state = 'fall';
             const kickSpeed = 2.5 + Math.random() * 3;
-            fs.vx = Math.cos(el._phase) * kickSpeed * 0.5 + (Math.random() - 0.5) * 2;
-            fs.vy = -2 - Math.random() * 3; // upward arc before gravity pulls down
-            el.style.transition = 'none';
+            s.vx = Math.cos(s.phase) * kickSpeed * 0.5 + (Math.random() - 0.5) * 2;
+            s.vy = -2 - Math.random() * 3;
           }
 
-        } else if (fs.phase === 'fall') {
+        } else if (s.state === 'fall') {
           const pr2 = getPhoneRect();
-          if (!pr2) { requestAnimationFrame(animWhirlpool); return; }
+          if (!pr2) return;
 
-          // Each symbol targets its own anchor point on the phone frame
-          const anchor = PHONE_ANCHORS_NORM[i % PHONE_ANCHORS_NORM.length];
+          const anchor  = PHONE_ANCHORS_NORM[i % PHONE_ANCHORS_NORM.length];
           const targetX = pr2.left + anchor.x * pr2.width;
           const targetY = pr2.top  + anchor.y * pr2.height;
-
-          const dx = targetX - fs.x;
-          const dy = targetY - fs.y;
+          const dx = targetX - s.x, dy = targetY - s.y;
           const dist = Math.hypot(dx, dy);
 
-          // Homing: weak at distance (let arc carry naturally), strong near target
           const proximity = 1 - Math.min(1, dist / 350);
-          const homingStrength = 0.012 + proximity * proximity * 0.08;
-          fs.vx += dx * homingStrength;
-          fs.vy += dy * homingStrength + 0.35; // gravity pulls downward
-          fs.vx *= 0.91; // less friction = longer visible arcs
-          fs.vy *= 0.91;
+          const homing = 0.012 + proximity * proximity * 0.08;
+          s.vx += dx * homing;
+          s.vy += dy * homing + 0.35;
+          s.vx *= 0.91;
+          s.vy *= 0.91;
+          s.x += s.vx;
+          s.y += s.vy;
 
-          fs.x += fs.vx;
-          fs.y += fs.vy;
-
-          // Speed-based glow — faster = brighter streak so you can track each one
-          // Position: translate from center of the fixed container
-          el.style.left = '50%';
-          el.style.top  = '50%';
-          el.style.transform = `translate(${fs.x - VW/2}px, ${fs.y - VH/2}px) translate(-50%,-50%)`;
-          el.style.opacity = '1';
-
-          // Landed — flash phone frame
           if (dist < 16) {
-            fs.phase = 'impact';
-            el.style.textShadow = '';
+            s.state = 'impact';
             const pf = document.querySelector('.phone-frame');
             if (pf) {
               pf.style.transition = 'box-shadow 0.05s';
@@ -3022,21 +2969,24 @@
             }
           }
 
-        } else if (fs.phase === 'impact') {
-          const cur = parseFloat(el.style.opacity) || 1;
-          const next = cur - 0.025; // slow fade — ~40 frames = ~650ms to disappear
-          if (next <= 0) {
-            el.style.opacity = '0';
-            el.style.textShadow = '';
-            fs.phase = 'done';
-          } else {
-            el.style.opacity = next;
-          }
+        } else if (s.state === 'impact') {
+          s.alpha -= 0.025;
+          if (s.alpha <= 0) { s.alpha = 0; s.state = 'done'; return; }
         }
+
+        // Draw on canvas — cleared every frame so no trails possible
+        vCtx.save();
+        vCtx.globalAlpha = s.alpha;
+        vCtx.font = `600 ${s.fsize}px var(--font-mono, monospace)`;
+        vCtx.fillStyle = s.color;
+        vCtx.textAlign = 'center';
+        vCtx.textBaseline = 'middle';
+        vCtx.fillText(s.text, s.x, s.y);
+        vCtx.restore();
       });
 
-      // All symbols done → fire flicker
-      if (!wpDone && fallStates.every(fs => fs.phase === 'done')) {
+      // All done → fire flicker
+      if (!wpDone && syms.every(s => s.state === 'done')) {
         wpDone = true;
         container.style.transition = 'opacity 0.3s';
         container.style.opacity = '0';
@@ -3050,12 +3000,6 @@
 
     // ── BOOT ──
     setTimeout(() => {
-      symEls.forEach((el, i) => {
-        setTimeout(() => {
-          el.style.transition = 'opacity 0.5s';
-          el.style.opacity = '1';
-        }, i * 60);
-      });
       cta.style.opacity = '1';
       requestAnimationFrame(animWhirlpool);
     }, 400);
@@ -3073,7 +3017,7 @@
         const scr = showcaseEl.getBoundingClientRect();
         if (scr.bottom < 0) {
           wpDone = true;
-          symEls.forEach(el => { el.style.opacity = '0'; });
+          syms.forEach(s => { s.alpha = 0; s.state = 'done'; });
           container.style.opacity = '0';
           container.style.display = 'none';
           window._wpSymbolsDone = true;
