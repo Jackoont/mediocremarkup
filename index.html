@@ -2839,10 +2839,16 @@
     const vCanvas   = document.getElementById('vortex-canvas');
     const vCtx      = vCanvas.getContext('2d');
     const cta       = document.getElementById('whirlpool-cta');
-    let VW, VH;
+    let VW, VH, DPR;
     const resizeV = () => {
-      VW = vCanvas.width = window.innerWidth;
-      VH = vCanvas.height = window.innerHeight;
+      DPR = window.devicePixelRatio || 1;
+      VW = window.innerWidth;
+      VH = window.innerHeight;
+      vCanvas.width  = VW * DPR;
+      vCanvas.height = VH * DPR;
+      vCanvas.style.width  = VW + 'px';
+      vCanvas.style.height = VH + 'px';
+      vCtx.scale(DPR, DPR);
     };
     resizeV(); window.addEventListener('resize', resizeV);
 
@@ -2855,7 +2861,7 @@
       r:      60 + Math.random() * 200,
       phase:  (i / N) * Math.PI * 2,
       speed:  0.4 + Math.random() * 0.7,
-      fsize:  14 + Math.random() * 20,
+      fsize:  20 + Math.random() * 22,
       color:  Math.random() < 0.6 ? '#d45d79' : (Math.random() < 0.5 ? '#ea9085' : '#6e5773'),
       // animation state
       state:  'orbit',   // orbit | fall | impact | done
@@ -2977,7 +2983,7 @@
         // Draw on canvas — cleared every frame so no trails possible
         vCtx.save();
         vCtx.globalAlpha = s.alpha;
-        vCtx.font = `600 ${s.fsize}px var(--font-mono, monospace)`;
+        vCtx.font = `600 ${s.fsize}px 'JetBrains Mono', monospace`;
         vCtx.fillStyle = s.color;
         vCtx.textAlign = 'center';
         vCtx.textBaseline = 'middle';
@@ -3508,8 +3514,8 @@
       const W = fc.width, H = fc.height;
       const vpX = W / 2, vpY = H / 2;
 
-      // Trail fade — semi-transparent fill creates motion blur naturally
-      const trailAlpha = Math.max(0.10, 0.22 - diveRatio * 0.08);
+      // Trail fade — clear fast enough that no persistent smears remain
+      const trailAlpha = Math.max(0.35, 0.55 - diveRatio * 0.1);
       fCtx.fillStyle = `rgba(14,10,13,${trailAlpha})`;
       fCtx.fillRect(0, 0, W, H);
 
