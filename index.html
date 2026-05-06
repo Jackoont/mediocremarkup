@@ -1091,22 +1091,23 @@
       font-size: 11px;
       letter-spacing: 4px;
       text-transform: uppercase;
-      color: rgba(245,224,220,0.55);
-      margin-bottom: 20px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 24px;
       opacity: 0;
     }
     .video-headline {
       font-family: var(--font-serif);
-      font-size: clamp(28px, 3.8vw, 58px);
+      font-size: clamp(32px, 4.4vw, 68px);
       font-weight: 300;
       font-style: italic;
-      color: #f5ede8;
-      line-height: 1.15;
-      letter-spacing: -1px;
+      color: #ffffff;
+      line-height: 1.12;
+      letter-spacing: -1.5px;
       opacity: 0;
-      max-width: 680px;
+      max-width: 760px;
+      text-shadow: 0 2px 40px rgba(0,0,0,0.6);
     }
-    .video-headline em { color: #d45d79; font-style: inherit; }
+    .video-headline em { color: #ffffff; font-style: italic; opacity: 0.88; }
     /* Word-level text reveal spans */
     .vhl-word {
       display: inline-block;
@@ -3132,18 +3133,23 @@
         if (fs.phase === 'offscreen') handoffToShowcase(fs, fs.el);
       });
 
-      // When all symbols are done, hide container and trigger phone reveal
-      if (!wpDone && fallStates.every(fs => fs.phase === 'done' || fs.phase === 'orbit')) {
-        const allFalling = fallStates.filter(fs => fs.phase !== 'orbit');
-        if (allFalling.length > 0 && allFalling.every(fs => fs.phase === 'done')) {
-          wpDone = true;
-          container.style.transition = 'opacity 0.5s';
-          container.style.opacity    = '0';
-          setTimeout(() => { container.style.display = 'none'; }, 520);
-          // Trigger phone landing if not already done
-          window._wpSymbolsDone = true;
-          document.dispatchEvent(new CustomEvent('wp-symbols-done'));
-        }
+      // If wpDone was forced externally, mark all remaining orbit/fall symbols done
+      if (wpDone) {
+        fallStates.forEach(fs => {
+          if (fs.phase !== 'done') { fs.phase = 'done'; fs.el.style.opacity = '0'; }
+        });
+        return;
+      }
+
+      // When all falling symbols have landed, finish the sequence
+      const nonOrbit = fallStates.filter(fs => fs.phase !== 'orbit');
+      if (nonOrbit.length > 0 && nonOrbit.every(fs => fs.phase === 'done')) {
+        wpDone = true;
+        container.style.transition = 'opacity 0.5s';
+        container.style.opacity    = '0';
+        setTimeout(() => { container.style.display = 'none'; }, 520);
+        window._wpSymbolsDone = true;
+        document.dispatchEvent(new CustomEvent('wp-symbols-done'));
       }
     }, 80);
 
@@ -3159,14 +3165,56 @@
       requestAnimationFrame(animWhirlpool);
     }, 400);
 
-    window.addEventListener('scroll', () => {
-      const sy = window.scrollY;
-      const threshold = window.innerHeight * 0.85;
-      dispProgress = Math.min(1, sy / threshold);
+    // ── SCROLL CONTROL ──
+    // During the fall phase (dispProgress 0.55→1.0) we gently resist fast scrolls
+    // so the illusion always plays out. We don't hard-lock — just slow the user down.
+    let lastScrollY = 0;
+    let scrollVelocity = 0;
+    let brakeActive = false;
+    let brakeScrollY = 0;
 
-      // Hide CTA as soon as scroll starts
+    function onWpScroll() {
+      const sy = window.scrollY;
+      scrollVelocity = sy - lastScrollY;
+      lastScrollY = sy;
+
+      const threshold = window.innerHeight * 0.85;
+      const rawProg = sy / threshold;
+
+      // When fall phase kicks in (rawProg > 0.55) and user scrolls fast,
+      // hold scroll position for a beat so the animation catches up.
+      const fallPhaseActive = rawProg > 0.55 && rawProg < 1.05 && !wpDone;
+      if (fallPhaseActive && scrollVelocity > 22 && !brakeActive) {
+        brakeActive = true;
+        brakeScrollY = sy;
+        // Lock for up to 420ms — enough for symbols to start falling
+        window.scrollTo({ top: brakeScrollY, behavior: 'instant' });
+        setTimeout(() => {
+          brakeActive = false;
+        }, 420);
+      }
+
+      if (brakeActive) {
+        window.scrollTo({ top: brakeScrollY, behavior: 'instant' });
+        return;
+      }
+
+      dispProgress = Math.min(1, rawProg);
       if (sy > 10) cta.style.opacity = '0';
-    }, { passive: true });
+
+      // If user scrolled all the way past before animation finished, force-close
+      if (rawProg >= 1.0 && !wpDone) {
+        wpDone = true;
+        container.style.transition = 'opacity 0.3s';
+        container.style.opacity = '0';
+        setTimeout(() => { container.style.display = 'none'; }, 320);
+        window._wpSymbolsDone = true;
+        document.dispatchEvent(new CustomEvent('wp-symbols-done'));
+      }
+    }
+
+    // Non-passive so we can call scrollTo inside if needed
+    window.addEventListener('scroll', onWpScroll, { passive: false });
   }
 
   /* ── 6 & 7. SHOWCASE — immersive physics phone stage ── */
@@ -3499,20 +3547,19 @@
 
     // Populate headline with word-wrapped spans for staggered reveal
     const HEADLINE_TEXT = [
-      { text: 'Organic code.', em: false },
-      { text: 'Not just a template', em: false },
-      { text: 'with your logo on it.', em: true }
+      'Organic code.',
+      'Not a template',
+      'with your logo on it.',
     ];
-    HEADLINE_TEXT.forEach((seg, si) => {
+    HEADLINE_TEXT.forEach(text => {
       const line = document.createElement('span');
       line.style.display = 'block';
-      seg.text.split(' ').forEach((word, wi) => {
+      text.split(' ').forEach((word, wi) => {
         const wrap = document.createElement('span');
         wrap.className = 'vhl-word';
         const inner = document.createElement('span');
         inner.className = 'vhl-inner';
-        inner.textContent = (wi > 0 ? ' ' : '') + word + ' ';
-        if (seg.em) inner.style.color = '#d45d79';
+        inner.textContent = (wi > 0 ? ' ' : '') + word + ' ';
         wrap.appendChild(inner);
         line.appendChild(wrap);
       });
