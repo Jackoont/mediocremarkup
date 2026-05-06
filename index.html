@@ -2373,6 +2373,8 @@
 
       <div id="sc-tagline">Every industry. Every vision. Hand-coded.</div>
     </div><!-- /sc-inner -->
+    <!-- Symbol arrival canvas — receives falling hero symbols -->
+    <canvas id="sym-fall-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:20;"></canvas>
     <div id="sc-bottom-pad"></div>
   </section>
 
@@ -2809,32 +2811,39 @@
     animBlobs();
   }
 
-  /* ── 5. WHIRLPOOL — Code-symbol vortex ── */
+  /* ── 5. WHIRLPOOL — Symbol vortex → fall → phone reassembly ── */
   {
     const container = document.getElementById('whirlpool-container');
     const vCanvas   = document.getElementById('vortex-canvas');
     const vCtx      = vCanvas.getContext('2d');
     const cta       = document.getElementById('whirlpool-cta');
+    const symFallCanvas = document.getElementById('sym-fall-canvas');
+    const sfCtx     = symFallCanvas ? symFallCanvas.getContext('2d') : null;
+
     let VW, VH;
-    const resizeV = () => { VW = vCanvas.width = window.innerWidth; VH = vCanvas.height = window.innerHeight; };
+    const resizeV = () => {
+      VW = vCanvas.width = window.innerWidth;
+      VH = vCanvas.height = window.innerHeight;
+      if (symFallCanvas) {
+        symFallCanvas.width  = symFallCanvas.offsetWidth  || window.innerWidth;
+        symFallCanvas.height = symFallCanvas.offsetHeight || window.innerHeight;
+      }
+    };
     resizeV(); window.addEventListener('resize', resizeV);
 
-    // Code symbols that orbit the vortex
-    const SYMS = ['</', '/>', '{}', '()', '##', '//', '=>', '[]', '&&', '/*', '*/','<>','::','+=','fn','px','vh','rem','var','url'];
+    const SYMS = ['</', '/>', '{}', '()', '//', '=>', '[]', '&&', '/*', '*/', '<>', '::', '+=', 'fn', 'px', 'vh', 'rem', 'var', 'url', '##'];
     const symEls = [];
     const N = window.innerWidth < 600 ? 12 : 20;
 
     for (let i = 0; i < N; i++) {
       const el = document.createElement('div');
       el.className = 'wp-sym';
-      const sym = SYMS[i % SYMS.length];
-      el.textContent = sym;
-      // Each symbol starts at a different orbit radius and phase
-      const baseR   = 60 + Math.random() * 200;
-      const phase   = (i / N) * Math.PI * 2;
-      const speed   = 0.4 + Math.random() * 0.7; // rad/s
-      const fsize   = 10 + Math.random() * 18;
-      const hue     = Math.random() < 0.6 ? '#d45d79' : (Math.random() < 0.5 ? '#ea9085' : '#6e5773');
+      el.textContent = SYMS[i % SYMS.length];
+      const baseR = 60 + Math.random() * 200;
+      const phase = (i / N) * Math.PI * 2;
+      const speed = 0.4 + Math.random() * 0.7;
+      const fsize = 10 + Math.random() * 18;
+      const hue   = Math.random() < 0.6 ? '#d45d79' : (Math.random() < 0.5 ? '#ea9085' : '#6e5773');
       el.style.fontSize = fsize + 'px';
       el.style.color = hue;
       el.style.opacity = '0';
@@ -2842,49 +2851,303 @@
       el._phase = phase;
       el._speed = speed;
       el._fsize = fsize;
+      // current screen position (populated by orbit loop)
+      el._sx = VW / 2;
+      el._sy = VH / 2;
       container.appendChild(el);
       symEls.push(el);
     }
 
-    // Vortex canvas — draws spiral trails
-    let vt = 0;
-    let wpDone = false;  // true after scroll dispersal completes
+    // ── STATES: orbit → fall → land ──
+    // dispProgress 0→0.6: pure orbit
+    // dispProgress 0.6→1.0: symbols break orbit, fall downward with gravity
+    // After all landed: whirlpool hides, phone reveal triggers
+    let wpDone      = false;
+    let fallStarted = false;
+    let wpT         = 0;
     let dispProgress = 0;
 
-    function drawVortex() {
-      vCtx.clearRect(0, 0, VW, VH);
-      // Pure black — symbols are the only visual element
+    // Phone frame anchor points — normalized 0..1, resolved to px when needed
+    // These sit on the phone frame edges: corners, notch, sides, bottom bar
+    const PHONE_ANCHORS_NORM = [
+      { x: 0.5,   y: 0.18 },  // notch top
+      { x: 0.35,  y: 0.22 },  // notch left
+      { x: 0.65,  y: 0.22 },  // notch right
+      { x: 0.18,  y: 0.28 },  // top-left corner
+      { x: 0.82,  y: 0.28 },  // top-right corner
+      { x: 0.12,  y: 0.5  },  // left mid
+      { x: 0.88,  y: 0.5  },  // right mid
+      { x: 0.18,  y: 0.75 },  // bottom-left
+      { x: 0.82,  y: 0.75 },  // bottom-right
+      { x: 0.5,   y: 0.82 },  // home bar
+      { x: 0.3,   y: 0.88 },  // bottom left
+      { x: 0.7,   y: 0.88 },  // bottom right
+      { x: 0.5,   y: 0.92 },  // very bottom
+      { x: 0.14,  y: 0.4  },  // left side button
+      { x: 0.86,  y: 0.38 },  // right side button top
+      { x: 0.86,  y: 0.48 },  // right side button bottom
+      { x: 0.5,   y: 0.12 },  // top edge center
+      { x: 0.25,  y: 0.15 },  // top left quarter
+      { x: 0.75,  y: 0.15 },  // top right quarter
+      { x: 0.5,   y: 0.55 },  // screen center
+    ];
+
+    // Per-symbol fall state (populated when fall begins)
+    const fallStates = symEls.map((el, i) => ({
+      el,
+      // start pos from orbit
+      x: VW / 2, y: VH / 2,
+      // velocity
+      vx: 0, vy: 0,
+      // target anchor on phone (set when phone rect is known)
+      tx: 0, ty: 0,
+      // phase: 'fall' → 'swarm' → 'land' → 'done'
+      phase: 'orbit',
+      landed: false,
+      landDelay: i * 55,  // stagger landings
+      landT: 0,           // time since landing started
+    }));
+
+    // Impact flashes drawn on sym-fall canvas
+    let impacts = []; // { x, y, r, maxR, alpha }
+
+    function getPhoneRect() {
+      const pw = document.getElementById('phone-wrapper');
+      if (!pw) return null;
+      const r = pw.getBoundingClientRect();
+      const sc = document.getElementById('showcase');
+      const scr = sc ? sc.getBoundingClientRect() : { top: 0, left: 0 };
+      return {
+        left:   r.left   - scr.left,
+        top:    r.top    - scr.top,
+        width:  r.width,
+        height: r.height,
+      };
     }
 
-    let wpStarted = false;
-    let wpT = 0;
+    function resolveAnchors() {
+      const pr = getPhoneRect();
+      if (!pr) return false;
+      PHONE_ANCHORS_NORM.forEach((a, i) => {
+        if (fallStates[i]) {
+          fallStates[i].tx = pr.left + a.x * pr.width;
+          fallStates[i].ty = pr.top  + a.y * pr.height;
+        }
+      });
+      return true;
+    }
 
+    // ── ORBIT ANIMATION ──
     function animWhirlpool(ts) {
       if (wpDone) return;
-      vt += 0.012;
       wpT = ts * 0.001;
-      drawVortex();
+      vCtx.clearRect(0, 0, VW, VH);
 
       const cx = VW / 2, cy = VH / 2;
+      const orbitProg = Math.min(1, dispProgress / 0.55); // 0→1 during orbit phase
+      const fallProg  = Math.max(0, (dispProgress - 0.55) / 0.45); // 0→1 during fall phase
+
       symEls.forEach((el, i) => {
-        // Orbital position
-        const angle  = el._phase + wpT * el._speed;
-        // Disperse outward as scroll increases
-        const dispR = el._r * (1 + dispProgress * 8);
-        const x = cx + Math.cos(angle) * dispR;
-        const y = cy + Math.sin(angle) * dispR;
-        const scale = 1 + dispProgress * 1.5;
-        const alpha = Math.max(0, 1 - dispProgress * 1.4);
-        el.style.transform = `translate(${x - VW/2}px, ${y - VH/2}px) translate(-50%,-50%) scale(${scale}) rotate(${dispProgress * 360}deg)`;
-        el.style.opacity   = alpha;
-        el.style.left = '50%';
-        el.style.top  = '50%';
+        const fs = fallStates[i];
+        if (fs.phase === 'orbit') {
+          // Normal orbit
+          const angle = el._phase + wpT * el._speed;
+          const r     = el._r;
+          const ox = cx + Math.cos(angle) * r;
+          const oy = cy + Math.sin(angle) * r;
+          el._sx = ox; el._sy = oy;
+          const alpha = Math.max(0, 1 - orbitProg * 0.3);
+          el.style.left = '50%';
+          el.style.top  = '50%';
+          el.style.transform = `translate(${ox - cx}px, ${oy - cy}px) translate(-50%,-50%)`;
+          el.style.opacity = alpha;
+
+          // Trigger fall when fallProg kicks in, staggered per symbol
+          if (fallProg > (i / N) * 0.6) {
+            fs.phase = 'fall';
+            fs.x = ox; fs.y = oy;
+            // Assign velocity: generally downward with spread
+            const angleDrift = (Math.random() - 0.5) * 0.8;
+            fs.vx = Math.cos(Math.PI / 2 + angleDrift) * (1 + Math.random() * 3);
+            fs.vy = 2 + Math.random() * 4;
+            el.style.transition = 'none';
+          }
+
+        } else if (fs.phase === 'fall') {
+          // Gravity fall toward phone anchor area
+          const pr = getPhoneRect();
+          const phoneScreenY = pr
+            ? (document.getElementById('showcase')?.getBoundingClientRect().top ?? 0) + pr.top + pr.height * 0.5
+            : VH * 1.3;
+
+          // Gentle gravity + slight pull toward phone center X
+          const phoneCenterX = pr
+            ? (document.getElementById('showcase')?.getBoundingClientRect().left ?? 0) + pr.left + pr.width * 0.5
+            : VW / 2;
+
+          fs.vx += (phoneCenterX - fs.x) * 0.0008;
+          fs.vy += 0.22; // gravity
+          fs.vx *= 0.97;
+          fs.vy = Math.min(fs.vy, 14);
+
+          fs.x += fs.vx;
+          fs.y += fs.vy;
+
+          el.style.left = '50%';
+          el.style.top  = '50%';
+          el.style.transform = `translate(${fs.x - VW/2}px, ${fs.y - VH/2}px) translate(-50%,-50%)`;
+          el.style.opacity = '1';
+
+          // When it falls below viewport or reaches phone zone — switch to swarm
+          if (fs.y > VH + 40) {
+            fs.phase = 'offscreen';
+            el.style.opacity = '0';
+          }
+        }
+        // 'offscreen' and 'done' phases handled by sfCtx loop
       });
 
       requestAnimationFrame(animWhirlpool);
     }
 
-    // Fade in symbols after short delay
+    // ── SHOWCASE CANVAS: swarm particles + impact flashes ──
+    let sfParticles = []; // symbols that have entered the showcase canvas world
+
+    function drawSymFall() {
+      if (!sfCtx || !symFallCanvas) return;
+      // Lazy-size: offsetWidth may be 0 until showcase scrolls into view
+      if (!symFallCanvas.width || !symFallCanvas.height) {
+        symFallCanvas.width  = symFallCanvas.offsetWidth  || window.innerWidth;
+        symFallCanvas.height = symFallCanvas.offsetHeight || window.innerHeight;
+      }
+      const W = symFallCanvas.width, H = symFallCanvas.height;
+      sfCtx.clearRect(0, 0, W, H);
+
+      // Draw impact rings
+      impacts = impacts.filter(imp => imp.r < imp.maxR);
+      impacts.forEach(imp => {
+        imp.r += 2.5;
+        const t = imp.r / imp.maxR;
+        const a = imp.alpha * (1 - t) * (1 - t);
+        sfCtx.beginPath();
+        sfCtx.arc(imp.x, imp.y, imp.r, 0, Math.PI * 2);
+        sfCtx.strokeStyle = `rgba(212,93,121,${a})`;
+        sfCtx.lineWidth = 1.5 * (1 - t);
+        sfCtx.stroke();
+      });
+
+      // Draw swarm particles (symbols that landed in showcase canvas space)
+      sfParticles = sfParticles.filter(p => !p.dead);
+      sfParticles.forEach(p => {
+        if (p.phase === 'swarm') {
+          // Orbit around target point for a moment then home in
+          p.orbitT += 0.04;
+          p.homeT  += 0.015;
+          const orbitR  = p.orbitR * Math.max(0, 1 - p.homeT * 1.2);
+          const ox = p.tx + Math.cos(p.orbitAngle + p.orbitT) * orbitR;
+          const oy = p.ty + Math.sin(p.orbitAngle + p.orbitT) * orbitR;
+          // Lerp toward target
+          p.x += (ox - p.x) * 0.08;
+          p.y += (oy - p.y) * 0.08;
+
+          if (p.homeT > 0.9) p.phase = 'landing';
+        } else if (p.phase === 'landing') {
+          p.x += (p.tx - p.x) * 0.18;
+          p.y += (p.ty - p.y) * 0.18;
+          const dist = Math.hypot(p.tx - p.x, p.ty - p.y);
+          if (dist < 3) {
+            p.phase = 'impact';
+            // fire impact flash
+            impacts.push({ x: p.tx, y: p.ty, r: 0, maxR: 28 + Math.random() * 20, alpha: 0.9 });
+            // glow the phone frame briefly
+            const pf = document.querySelector('.phone-frame');
+            if (pf) {
+              pf.style.transition = 'box-shadow 0.08s';
+              pf.style.boxShadow = '0 0 0 2px #2a2a4a, 0 28px 70px rgba(0,0,0,.35), 0 0 18px 4px rgba(212,93,121,0.55), 0 0 0 1px rgba(255,255,255,.06) inset';
+              setTimeout(() => {
+                pf.style.transition = 'box-shadow 0.6s';
+                pf.style.boxShadow = '';
+              }, 80);
+            }
+          }
+        } else if (p.phase === 'impact') {
+          p.alpha -= 0.04;
+          if (p.alpha <= 0) { p.dead = true; return; }
+        }
+
+        if (p.dead) return;
+        const dispAlpha = p.phase === 'impact' ? p.alpha * 0.5 : p.alpha;
+        sfCtx.save();
+        sfCtx.globalAlpha = Math.max(0, dispAlpha);
+        sfCtx.font = `${p.fsize}px 'JetBrains Mono', monospace`;
+        sfCtx.fillStyle = p.color;
+        sfCtx.textAlign = 'center';
+        sfCtx.textBaseline = 'middle';
+        sfCtx.fillText(p.text, p.x, p.y);
+        sfCtx.restore();
+      });
+
+      requestAnimationFrame(drawSymFall);
+    }
+    drawSymFall();
+
+    // Called by whirlpool when a symbol goes offscreen —
+    // hand it off to the showcase canvas as a swarm particle
+    function handoffToShowcase(fs, el) {
+      if (!resolveAnchors()) return;
+      const scRect = document.getElementById('showcase')?.getBoundingClientRect();
+      if (!scRect) return;
+
+      // Entry point: top of showcase canvas, same X as where symbol left screen
+      const entryX = fs.x - (scRect.left);
+      const entryY = 0;
+
+      const anchorIdx = fallStates.indexOf(fs);
+      const anchor = PHONE_ANCHORS_NORM[anchorIdx % PHONE_ANCHORS_NORM.length];
+      const pr = getPhoneRect();
+      const tx = pr ? pr.left + anchor.x * pr.width  : symFallCanvas.width / 2;
+      const ty = pr ? pr.top  + anchor.y * pr.height : symFallCanvas.height / 2;
+
+      sfParticles.push({
+        x: entryX, y: entryY,
+        tx, ty,
+        text:  el.textContent,
+        fsize: el._fsize,
+        color: el.style.color,
+        alpha: 1,
+        phase: 'swarm',
+        orbitR:     30 + Math.random() * 50,
+        orbitAngle: Math.random() * Math.PI * 2,
+        orbitT:     0,
+        homeT:      0,
+        dead: false,
+      });
+      el.style.opacity = '0';
+      fs.phase = 'done';
+    }
+
+    // Poll for offscreen symbols and hand them off
+    setInterval(() => {
+      fallStates.forEach(fs => {
+        if (fs.phase === 'offscreen') handoffToShowcase(fs, fs.el);
+      });
+
+      // When all symbols are done, hide container and trigger phone reveal
+      if (!wpDone && fallStates.every(fs => fs.phase === 'done' || fs.phase === 'orbit')) {
+        const allFalling = fallStates.filter(fs => fs.phase !== 'orbit');
+        if (allFalling.length > 0 && allFalling.every(fs => fs.phase === 'done')) {
+          wpDone = true;
+          container.style.transition = 'opacity 0.5s';
+          container.style.opacity    = '0';
+          setTimeout(() => { container.style.display = 'none'; }, 520);
+          // Trigger phone landing if not already done
+          window._wpSymbolsDone = true;
+          document.dispatchEvent(new CustomEvent('wp-symbols-done'));
+        }
+      }
+    }, 80);
+
+    // ── BOOT ──
     setTimeout(() => {
       symEls.forEach((el, i) => {
         setTimeout(() => {
@@ -2896,20 +3159,13 @@
       requestAnimationFrame(animWhirlpool);
     }, 400);
 
-    // Scroll drives the dispersal
-    let lastSY = 0;
     window.addEventListener('scroll', () => {
       const sy = window.scrollY;
-      const threshold = window.innerHeight * 0.6;
+      const threshold = window.innerHeight * 0.85;
       dispProgress = Math.min(1, sy / threshold);
 
-      if (dispProgress >= 1 && !wpDone) {
-        wpDone = true;
-        container.style.transition = 'opacity 0.4s';
-        container.style.opacity    = '0';
-        setTimeout(() => { container.style.display = 'none'; }, 420);
-      }
-      lastSY = sy;
+      // Hide CTA as soon as scroll starts
+      if (sy > 10) cta.style.opacity = '0';
     }, { passive: true });
   }
 
@@ -3163,29 +3419,43 @@
     })();
 
     /* ── Entrance ── */
+    function doShowcaseReveal() {
+      if (landed) return;
+      landed = true;
+      initFrags();
+      physLoop();
+      setTimeout(() => {
+        document.getElementById('sc-eyebrow')?.classList.add('sc-in');
+        document.getElementById('sc-headline')?.classList.add('sc-in');
+        document.getElementById('sc-tagline')?.classList.add('sc-in');
+      }, 80);
+      // Phone drops in after symbols have had a moment to land on it
+      const phoneDelay = window._wpSymbolsDone ? 200 : 600;
+      setTimeout(() => {
+        if (phoneWrap) phoneWrap.classList.add('phone-landed');
+        if (depthRing) setTimeout(() => depthRing.classList.add('ring-pop'), 90);
+        setTimeout(fireBurst, 340);
+        setTimeout(() => {
+          namePill?.classList.add('sc-in');
+          if (phoneWrap) { phoneWrap.classList.add('phone-settled'); tiltOn = true; }
+          startScrollCycle();
+        }, 1050);
+      }, phoneDelay);
+    }
+
+    // Prefer waiting for symbols to arrive, but fall back if user jumps straight here
+    document.addEventListener('wp-symbols-done', doShowcaseReveal);
+
     new IntersectionObserver(([e]) => {
       scVisible = e.isIntersecting;
       if (e.isIntersecting && !landed) {
-        landed = true;
-        initFrags();
-        physLoop();
-        /* reveal text */
-        setTimeout(() => {
-          document.getElementById('sc-eyebrow')?.classList.add('sc-in');
-          document.getElementById('sc-headline')?.classList.add('sc-in');
-          document.getElementById('sc-tagline')?.classList.add('sc-in');
-        }, 80);
-        /* drop phone */
-        setTimeout(() => {
-          if (phoneWrap) phoneWrap.classList.add('phone-landed');
-          if (depthRing) setTimeout(() => depthRing.classList.add('ring-pop'), 90);
-          setTimeout(fireBurst, 340);
-          setTimeout(() => {
-            namePill?.classList.add('sc-in');
-            if (phoneWrap) { phoneWrap.classList.add('phone-settled'); tiltOn = true; }
-            startScrollCycle();
-          }, 1050);
-        }, 200);
+        // If symbols are already done or whirlpool was skipped, reveal immediately
+        if (window._wpSymbolsDone || window.scrollY > window.innerHeight * 0.95) {
+          doShowcaseReveal();
+        } else {
+          // Otherwise give symbols 2.5s to arrive before forcing the reveal
+          setTimeout(() => { if (!landed) doShowcaseReveal(); }, 2500);
+        }
       }
     }, { threshold: 0.01 }).observe(showcase);
   }
@@ -3319,7 +3589,11 @@
         const scale = 0.65 + col.z * 0.55 + convergence * col.z * 0.8;
 
         // Speed: front columns faster, all accelerate with dive
-        const spd = col.speed * scale * (1 + diveRatio * 4.5);
+        // Speed ramps up toward impact then settles back after
+        const diveAccel = diveRatio < 0.72
+          ? diveRatio * 2.2
+          : 0.72 * 2.2 * (1 - (diveRatio - 0.72) / 0.28 * 0.65);
+        const spd = col.speed * scale * (1 + diveAccel);
         col.y += spd;
         if (col.y > H * 1.1) {
           col.y = -20 - Math.random() * H * 0.3;
@@ -3468,8 +3742,8 @@
       const cx = sw.width / 2, cy = sw.height / 2;
       // Fire 6 rings in quick succession — 2 sets: rose + white
       const sets = [
-        { color: '212,93,121', count: 4, speedBase: 12 },
-        { color: '255,210,220', count: 2, speedBase: 22 }
+        { color: '212,93,121', count: 4, speedBase: 5 },
+        { color: '255,210,220', count: 2, speedBase: 9 }
       ];
       let delay = 0;
       sets.forEach(set => {
@@ -3480,7 +3754,7 @@
               maxR: Math.max(sw.width, sw.height) * 0.95,
               alpha: 0.85 - i * 0.12,
               lineW: 2.5 - i * 0.3,
-              speed: set.speedBase + i * 9,
+              speed: set.speedBase + i * 4,
               color: set.color
             });
           }, delay + i * 65);
