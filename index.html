@@ -14,7 +14,7 @@
   <meta name="description" content="Custom websites for local businesses. Beautiful, professional, polished, memorable, effective.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
@@ -23,7 +23,7 @@
       --ink: #2a1f2d; --muted: #6e5773; --accent: #d45d79; --accent2: #ea9085;
       --line: rgba(110,87,115,0.1);
       --font-body: 'Inter', sans-serif;
-      --font-serif: 'Fraunces', serif;
+      --font-serif: 'DM Serif Display', serif;
       --font-mono: 'JetBrains Mono', monospace;
       transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
@@ -122,9 +122,9 @@
     /* Giant background number — decorative */
     .hero-bg-num {
       position: absolute;
-      font-family: 'Fraunces', serif;
+      font-family: 'DM Serif Display', serif;
       font-size: clamp(300px, 40vw, 600px);
-      font-weight: 300;
+      font-weight: 400;
       font-style: italic;
       color: rgba(212,93,121,0.04);
       line-height: 1;
@@ -133,7 +133,7 @@
       transform: translateY(-50%);
       pointer-events: none;
       user-select: none;
-      letter-spacing: -10px;
+      letter-spacing: -4px;
       z-index: 1;
     }
 
@@ -207,17 +207,17 @@
 
     /* Headline — massive, mixed weight */
     .hero-headline {
-      font-family: 'Fraunces', serif;
+      font-family: 'DM Serif Display', serif;
       font-size: clamp(52px, 7.5vw, 108px);
-      font-weight: 300;
+      font-weight: 400;
       font-style: italic;
-      line-height: 1.05;
-      letter-spacing: -3px;
+      line-height: 1.0;
+      letter-spacing: -1px;
       margin-bottom: 32px;
       color: #f0e6d8;
     }
     .hero-headline .line { display: block; }
-    .hero-headline .hl-dim { color: rgba(240,230,216,0.25); }
+    .hero-headline .hl-dim { color: rgba(240,230,216,0.32); }
     .hero-headline .hl-accent { color: #d45d79; }
     .hero-headline .hl-outlined {
       -webkit-text-stroke: 1.5px rgba(240,230,216,0.35);
@@ -243,10 +243,10 @@
     .hero-tag::before { content: '◆'; font-size: 5px; }
 
     .hero-sub {
-      font-size: 15px;
-      max-width: 400px;
+      font-size: 16px;
+      max-width: 420px;
       line-height: 1.7;
-      color: rgba(240,230,216,0.45);
+      color: rgba(240,230,216,0.52);
       margin-bottom: 36px;
     }
 
@@ -271,9 +271,9 @@
       border-left: 1.5px solid rgba(212,93,121,0.3);
     }
     .stat-num {
-      font-family: 'Fraunces', serif;
+      font-family: 'DM Serif Display', serif;
       font-size: 26px;
-      font-weight: 300;
+      font-weight: 400;
       font-style: italic;
       line-height: 1;
       color: #f0e6d8;
@@ -289,11 +289,12 @@
     /* Right column content */
     .hero-right-card {
       background: rgba(240,230,216,0.04);
-      border: 1px solid rgba(240,230,216,0.07);
+      border: 1px solid rgba(240,230,216,0.09);
       border-radius: 16px;
       padding: 28px 32px;
       width: 100%;
       max-width: 380px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 4px 24px rgba(0,0,0,0.15);
     }
     .hero-right-card-label {
       font-family: var(--font-mono);
@@ -311,10 +312,10 @@
     }
     .hero-right-card-list li {
       font-size: 13px;
-      color: rgba(240,230,216,0.6);
+      color: rgba(240,230,216,0.65);
       padding-left: 16px;
       position: relative;
-      line-height: 1.4;
+      line-height: 1.5;
     }
     .hero-right-card-list li::before {
       content: '→';
@@ -489,9 +490,9 @@
     }
     #sc-eyebrow.sc-in { opacity: 1; transform: translateY(0); }
     #sc-headline {
-      font-family: 'Fraunces', serif;
-      font-size: clamp(32px,5vw,72px); font-weight: 300; font-style: italic;
-      color: #f0e6d8; line-height: 1.05; letter-spacing: -2px;
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(32px,5vw,72px); font-weight: 400; font-style: italic;
+      color: #f0e6d8; line-height: 1.05; letter-spacing: -0.5px;
       text-align: center; margin-bottom: 56px;
       opacity: 0; transform: translateY(24px);
       transition: opacity 0.8s 0.1s ease, transform 0.8s 0.1s ease;
@@ -538,7 +539,7 @@
       position: absolute;
       inset: 0;
       background: #000;
-      border-radius: 20px;
+      border-radius: 28px;
       z-index: 30;
       pointer-events: none;
       opacity: 1;
@@ -557,9 +558,16 @@
     }
     .phone-frame {
       width: 250px; height: 500px;
-      background: #1a1a2e; border-radius: 40px; padding: 12px;
-      box-shadow: 0 0 0 2px #2a2a4a, 0 28px 70px rgba(0,0,0,.35),
-                  0 0 0 1px rgba(255,255,255,.06) inset;
+      background: linear-gradient(160deg, #2c2c2e 0%, #1c1c1e 60%, #141414 100%);
+      border-radius: 42px; padding: 12px;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.12),
+        0 0 0 2px rgba(0,0,0,0.8),
+        0 0 0 3px rgba(255,255,255,0.05),
+        0 32px 80px rgba(0,0,0,0.6),
+        0 8px 20px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        inset 0 -1px 0 rgba(0,0,0,0.4);
       position: relative; display: flex; flex-direction: column; align-items: center;
     }
     .phone-wrapper.phone-settled .phone-frame {
@@ -568,7 +576,7 @@
     @keyframes phoneFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
     .phone-scanline {
       position: absolute; inset: 0; z-index: 20; pointer-events: none;
-      border-radius: 20px; overflow: hidden;
+      border-radius: 28px; overflow: hidden;
     }
     .phone-scanline::after {
       content: ''; position: absolute; left: 0; right: 0;
@@ -603,10 +611,10 @@
       #showcase { padding: 80px 16px 100px; }
       #sc-headline { font-size: clamp(28px, 8vw, 48px); margin-bottom: 40px; }
     }
-    .phone-notch { width: 80px; height: 20px; background: #111; border-radius: 0 0 14px 14px; margin-bottom: 8px; flex-shrink: 0; position: relative; z-index: 2; }
-    .phone-screen { flex: 1; width: 100%; border-radius: 20px; overflow: hidden; position: relative; }
+    .phone-notch { width: 72px; height: 22px; background: #0a0a0a; border-radius: 0 0 16px 16px; margin-bottom: 6px; flex-shrink: 0; position: relative; z-index: 2; box-shadow: inset 0 -1px 0 rgba(255,255,255,0.04); }
+    .phone-screen { flex: 1; width: 100%; border-radius: 28px; overflow: hidden; position: relative; }
     .phone-screen::-webkit-scrollbar { display: none; }
-    .phone-home-bar { width: 80px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin-top: 8px; flex-shrink: 0; }
+    .phone-home-bar { width: 90px; height: 4px; background: rgba(255,255,255,0.18); border-radius: 999px; margin-top: 8px; flex-shrink: 0; }
 
     /* ── PHONE TEMPLATE SWITCHER ── */
     .phone-templates-wrap { position: absolute; inset: 0; }
@@ -1117,11 +1125,11 @@
     .video-headline {
       font-family: var(--font-serif);
       font-size: clamp(32px, 4.4vw, 68px);
-      font-weight: 300;
+      font-weight: 400;
       font-style: italic;
       color: #ffffff;
       line-height: 1.12;
-      letter-spacing: -1.5px;
+      letter-spacing: -0.5px;
       opacity: 0;
       max-width: 760px;
       text-shadow: 0 2px 40px rgba(0,0,0,0.6);
@@ -1528,16 +1536,16 @@
     /* Watermark */
     #pricing .pricing-bg-word {
       position: absolute;
-      font-family: 'Fraunces', serif;
+      font-family: 'DM Serif Display', serif;
       font-style: italic;
-      font-weight: 300;
+      font-weight: 400;
       font-size: clamp(160px, 22vw, 360px);
       color: rgba(212,93,121,0.04);
       line-height: 1;
       right: -10px; bottom: 140px;
       pointer-events: none;
       user-select: none;
-      letter-spacing: -8px;
+      letter-spacing: -2px;
       z-index: 1;
     }
 
@@ -1574,13 +1582,13 @@
       background: #d45d79;
     }
     #pricing .pricing-headline {
-      font-family: 'Fraunces', serif;
+      font-family: 'DM Serif Display', serif;
       font-size: clamp(48px, 6.5vw, 92px);
-      font-weight: 300;
+      font-weight: 400;
       font-style: italic;
       line-height: 1.02;
       color: #f0e6d8;
-      letter-spacing: -3px;
+      letter-spacing: -0.5px;
       margin-bottom: 20px;
       opacity: 0;
       transform: translateY(28px);
@@ -1720,13 +1728,13 @@
 
     /* Name */
     .price-name {
-      font-family: 'Fraunces', serif !important;
+      font-family: 'DM Serif Display', serif !important;
       font-size: 28px !important;
-      font-weight: 300 !important;
+      font-weight: 400 !important;
       font-style: italic;
       color: #f0e6d8 !important;
       margin-bottom: 10px !important;
-      letter-spacing: -0.5px;
+      letter-spacing: 0px;
     }
 
     /* Desc */
@@ -1741,11 +1749,11 @@
 
     /* Big price — the hero of each card */
     .price-amount {
-      font-family: 'Fraunces', serif !important;
+      font-family: 'DM Serif Display', serif !important;
       font-size: 84px !important;
-      font-weight: 300 !important;
+      font-weight: 400 !important;
       font-style: italic;
-      letter-spacing: -4px !important;
+      letter-spacing: -1px !important;
       line-height: 0.88 !important;
       color: #f0e6d8 !important;
       margin-bottom: 10px !important;
@@ -1755,7 +1763,7 @@
     .price-card.featured .price-amount { color: #d45d79 !important; }
     .price-amount sup {
       font-size: 22px !important;
-      font-weight: 300 !important;
+      font-weight: 400 !important;
       opacity: 0.45;
       vertical-align: top;
       margin-top: 14px;
@@ -1899,10 +1907,53 @@
 
 
     /* Feature band */
+
+    /* ── GRAIN / NOISE texture — gives light sections physicality ── */
+    @keyframes grainShift {
+      0%,100% { transform: translate(0,0); }
+      25%      { transform: translate(-1%,-1%); }
+      50%      { transform: translate(1%,0.5%); }
+      75%      { transform: translate(-0.5%,1%); }
+    }
+    .grain-overlay {
+      position: fixed; inset: -50%; width: 200%; height: 200%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      background-size: 256px 256px;
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 9990;
+      animation: grainShift 0.15s steps(1) infinite;
+      mix-blend-mode: overlay;
+    }
+
+    /* ── VISUAL RHYMING — shared decorative line motif ── */
+    .section-rule {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 20px;
+    }
+    .section-rule::before {
+      content: '';
+      display: block;
+      width: 28px; height: 1px;
+      background: rgba(212,93,121,0.5);
+      flex-shrink: 0;
+    }
+
+    /* Consistent mono label style used across sections */
+    .mono-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      color: rgba(212,93,121,0.6);
+    }
   </style>
 
 </head>
 <body>
+
+  <!-- ══ GRAIN TEXTURE OVERLAY — subtle physicality ══ -->
+  <div class="grain-overlay" aria-hidden="true"></div>
 
   <!-- ══ AMBIENT MORPHING BLOBS (fixed behind everything) ══ -->
   <div id="ambient-blobs">
@@ -1953,7 +2004,7 @@
     <div class="nav-left">
       <a href="#"><img src="logo_transparent.png" height="48" alt="Mediocre Markup"></a>
       <div class="nav-sep"></div>
-      <span class="nav-tagline">Websites that outperform average</span>
+      <span class="nav-tagline">Custom websites for local businesses</span>
     </div>
     <div class="nav-links">
       <a href="#what" class="hide-mobile">Work</a>
@@ -2003,7 +2054,7 @@
         </h1>
 
 
-        <p class="hero-sub" id="hero-sub">For local businesses that are tired of looking like everyone else online. Built by hand, launched fast, maintained quietly.</p>
+        <p class="hero-sub" id="hero-sub">Custom websites for local businesses that want to look like they mean it. Hand-coded, launched in days, maintained without the headaches.</p>
 
         <div class="hero-actions" id="hero-actions">
           <a href="#contact" onclick="jumpToContact(event)" class="btn btn-primary magnetic-btn">Start a project →</a>
@@ -2011,17 +2062,17 @@
         </div>
 
         <div class="hero-stats" id="hero-stats">
-          <div class="stat"><span class="stat-num">$500</span><span class="stat-label">Starting price</span></div>
-          <div class="stat"><span class="stat-num">7</span><span class="stat-label">Days to launch</span></div>
-          <div class="stat"><span class="stat-num">$50</span><span class="stat-label">Monthly care</span></div>
+          <div class="stat"><span class="stat-num">$500</span><span class="stat-label">to get started</span></div>
+          <div class="stat"><span class="stat-num">7 days</span><span class="stat-label">to launch</span></div>
+          <div class="stat"><span class="stat-num">$50/mo</span><span class="stat-label">to keep it running</span></div>
         </div>
       </div>
 
       <!-- RIGHT — feature card + availability chip -->
       <div class="hero-right" id="hero-right">
         <!-- Availability chip -->
-        <div style="display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(240,230,216,0.35);border:1px solid rgba(240,230,216,0.07);border-radius:999px;padding:7px 16px;">
-          <span style="width:6px;height:6px;border-radius:50%;background:#4ade80;display:inline-block;animation:statusPulse 2s ease-in-out infinite;"></span>
+        <div style="display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(240,230,216,0.4);border:1px solid rgba(240,230,216,0.1);border-radius:999px;padding:7px 16px;background:rgba(255,255,255,0.02);backdrop-filter:blur(8px);">
+          <span style="width:6px;height:6px;border-radius:50%;background:#4ade80;display:inline-block;animation:statusPulse 2s ease-in-out infinite;box-shadow:0 0 6px rgba(74,222,128,0.5);"></span>
           Accepting new clients
         </div>
 
@@ -2029,17 +2080,17 @@
         <div class="hero-right-card">
           <div class="hero-right-card-label">What you actually get</div>
           <ul class="hero-right-card-list">
-            <li>A site written in real HTML, CSS &amp; JS — nothing between you and your visitors</li>
-            <li>Mobile-first. Loads fast. Looks sharp on every screen</li>
-            <li>Delivered in ~7 days for a single page, ~14 for a full site</li>
-            <li>SEO foundations, contact forms, Google Analytics — all included</li>
-            <li>Optional $50/mo care plan: hosting, updates, backups handled</li>
+            <li>Hand-coded in real HTML, CSS &amp; JS — no page builders, no bloat</li>
+            <li>Mobile-first. Fast loads. Sharp on every screen and browser</li>
+            <li>Single page in ~7 days. Full site in ~14. No dragging feet</li>
+            <li>SEO setup, contact form, and Google Analytics — all included</li>
+            <li>$50/mo care plan covers hosting, backups, and small updates</li>
           </ul>
         </div>
 
         <!-- Quoted testimonial-style callout -->
         <div style="max-width:380px;width:100%;padding:20px 24px;border-left:2px solid rgba(212,93,121,0.3);background:rgba(212,93,121,0.04);border-radius:0 8px 8px 0;">
-          <p style="font-family:'Fraunces',serif;font-size:15px;font-style:italic;font-weight:300;color:rgba(240,230,216,0.55);line-height:1.6;margin-bottom:10px;">"The kind of site that actually convinces a stranger to become a customer."</p>
+          <p style="font-family:'DM Serif Display',serif;font-size:16px;font-style:italic;font-weight:400;color:rgba(240,230,216,0.6);line-height:1.55;margin-bottom:10px;">"The kind of site that actually convinces a stranger to become a customer."</p>
           <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(212,93,121,0.5);">— The whole point</span>
         </div>
       </div>
@@ -2063,8 +2114,8 @@
     <canvas id="sc-physics-canvas"></canvas>
 
     <div id="sc-inner">
-      <div id="sc-eyebrow">/ Mobile-first design</div>
-      <h2 id="sc-headline">What your site looks like<br><em>in a customer's hand.</em></h2>
+      <div id="sc-eyebrow">/ Real work. Real clients.</div>
+      <h2 id="sc-headline">What your site feels like<br><em>in a customer's hand.</em></h2>
 
       <!-- PHONE -->
       <div id="sc-phone-col">
@@ -2393,7 +2444,7 @@
         <div id="sc-name-pill">Meridian Law Group</div>
       </div><!-- /sc-phone-col -->
 
-      <div id="sc-tagline">Every industry. Every vision. Hand-coded.</div>
+      <div id="sc-tagline">Every industry. Built from scratch. No shortcuts.</div>
     </div><!-- /sc-inner -->
     <!-- Symbol arrival canvas — receives falling hero symbols -->
     <canvas id="sym-fall-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:20;"></canvas>
@@ -2429,7 +2480,7 @@
       <div id="dive-letterbox-bottom"></div>
       <!-- Text that slams in -->
       <div id="video-text-overlay">
-        <div class="video-eyebrow" id="video-eyebrow">The craft behind every build</div>
+        <div class="video-eyebrow" id="video-eyebrow">Built by hand. Every time.</div>
         <h2 class="video-headline" id="video-headline"></h2>
       </div>
       <!-- Depth HUD -->
@@ -2457,9 +2508,9 @@
     <div class="pricing-inner">
 
       <div class="pricing-header">
-        <div class="pricing-eyebrow">What it costs</div>
-        <h2 class="pricing-headline">Honest pricing.<br><em>No surprises.</em></h2>
-        <p class="pricing-sub">Three options. No contracts, no retainers unless you want one. Just good work at a fair price.</p>
+        <div class="pricing-eyebrow">Simple, honest pricing</div>
+        <h2 class="pricing-headline">Fair prices.<br><em>No fine print.</em></h2>
+        <p class="pricing-sub">Three options. No monthly retainers, no contracts, no surprise invoices. Pay once and own it.</p>
         <div class="pricing-rule"></div>
       </div>
 
@@ -2469,7 +2520,7 @@
 
           <span class="price-tag">Starter</span>
           <div class="price-name">Single Page</div>
-          <p class="price-desc">One clean page. Your hours, location, services, and a way to contact you. Done right.</p>
+          <p class="price-desc">One focused page. Your hours, services, location, and a contact form. Clean and done right.</p>
           <div class="price-amount"><sup>$</sup>500</div>
           <div class="price-period">One-time</div>
           <ul class="price-features">
@@ -2485,7 +2536,7 @@
 
           <span class="price-tag">Most popular</span>
           <div class="price-name">Full Site</div>
-          <p class="price-desc">The real thing. Multi-page, animated, built to convert visitors into customers.</p>
+          <p class="price-desc">The real thing. Multi-page, animated, and built to turn visitors into paying customers.</p>
           <div class="price-amount"><sup>$</sup>1,200</div>
           <div class="price-period">One-time</div>
           <ul class="price-features">
@@ -2502,7 +2553,7 @@
 
           <span class="price-tag">Ongoing</span>
           <div class="price-name">Care Plan</div>
-          <p class="price-desc">Hosting, updates, backups. The site stays online and you never have to think about it.</p>
+          <p class="price-desc">Hosting, backups, and small edits — handled. Your site stays online and you never have to think about it.</p>
           <div class="price-amount"><sup>$</sup>50</div>
           <div class="price-period">Per month</div>
           <ul class="price-features">
@@ -2516,7 +2567,7 @@
 
       </div>
 
-      <p class="pricing-note">Questions? Email <a href="mailto:mediocremanager@outlook.com">mediocremanager@outlook.com</a> — no pitch, just a straight answer.</p>
+      <p class="pricing-note">Have a question? Email <a href="mailto:mediocremanager@outlook.com">mediocremanager@outlook.com</a> — you'll get a real answer, not a sales call.</p>
 
     </div>
   </section>
@@ -2544,18 +2595,18 @@
       <div>
         <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(212,93,121,0.6);margin-bottom:24px;display:flex;align-items:center;gap:10px;">
           <span style="display:inline-block;width:28px;height:1px;background:rgba(212,93,121,0.4);"></span>
-          Ready to build
+          Let's talk
         </div>
         <h2 style="
-          font-family:'Fraunces',serif;
+          font-family:'DM Serif Display',serif;
           font-size:clamp(40px,6vw,88px);
-          font-weight:300;
+          font-weight:400;
           font-style:italic;
           color:#f0e6d8;
-          line-height:0.95;
-          letter-spacing:-2px;
+          line-height:1.0;
+          letter-spacing:-0.5px;
           margin-bottom:36px;
-        ">Let's build something<br><em style="color:#d45d79;">not actually mediocre.</em></h2>
+        ">Let's build something<br><em style="color:#d45d79;">worth remembering.</em></h2>
         <a href="mailto:mediocremanager@outlook.com" style="
           font-family:'JetBrains Mono',monospace;
           font-size:15px;
@@ -2569,7 +2620,7 @@
       </div>
       <div style="display:flex;flex-direction:column;gap:6px;text-align:right;">
         <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(240,230,216,0.2);">Based in</span>
-        <span style="font-family:'Fraunces',serif;font-size:18px;font-weight:300;font-style:italic;color:rgba(240,230,216,0.4);">St. Johns, FL</span>
+        <span style="font-family:'DM Serif Display',serif;font-size:18px;font-weight:400;font-style:italic;color:rgba(240,230,216,0.4);">St. Johns, FL</span>
       </div>
     </div>
     <!-- Bottom bar -->
@@ -2584,7 +2635,7 @@
       gap:12px;
     " class="footer-bottom-bar">
       <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(240,230,216,0.2);">© 2026 Mediocre Markup</span>
-      <span style="font-family:'Fraunces',serif;font-size:13px;font-weight:300;font-style:italic;color:rgba(240,230,216,0.2);">Websites that outperform average</span>
+      <span style="font-family:'DM Serif Display',serif;font-size:13px;font-weight:400;font-style:italic;color:rgba(240,230,216,0.2);">Websites that outperform average</span>
       <a href="mailto:mediocremanager@outlook.com" style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:rgba(240,230,216,0.2);text-decoration:none;transition:color 0.2s;" onmouseenter="this.style.color='#d45d79'" onmouseleave="this.style.color='rgba(240,230,216,0.2)'">mediocremanager@outlook.com</a>
     </div>
   </footer>
