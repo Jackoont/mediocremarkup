@@ -3882,7 +3882,7 @@
     let intercepting = false;
     let virtualScrolled = 0;
     let touchStartY = 0;
-    let doneLockUntil = 0; // timestamp — hold at ratio=1 for a beat before releasing
+    let doneLockUntil = null; // timestamp — hold at ratio=1 for a beat before releasing
 
     function applyReveal() {
       rafPending = false;
@@ -4025,16 +4025,17 @@
       }
 
       if (currentRatio >= 1) {
-        // Hold at ratio=1 for a beat — absorb scroll events silently, no jitter
+        // Hold at ratio=1 — absorb wheel events silently so there's no jitter
         e.preventDefault();
-        if (performance.now() >= doneLockUntil) {
+        if (doneLockUntil !== null && performance.now() >= doneLockUntil) {
           // Lock expired — release to native scroll
           intercepting = false;
+          doneLockUntil = null;
         }
         return;
       }
 
-      // We're mid-animation and section fills viewport — intercept
+      // Mid-animation — intercept
       e.preventDefault();
       intercepting = true;
 
@@ -4043,16 +4044,16 @@
       const normalized = e.deltaMode === 1 ? rawDelta * 30
                        : e.deltaMode === 2 ? rawDelta * 300
                        : rawDelta;
-      // Tight cap: 40px max per event so you have to actually scroll to get through
-      const capped = Math.max(-40, Math.min(40, normalized));
+      // 80px cap: comfortable scroll speed without blasting through the animation
+      const capped = Math.max(-80, Math.min(80, normalized));
       virtualScrolled = Math.max(0, Math.min(total, virtualScrolled + capped));
       const newRatio = virtualScrolled / total;
 
       setRatio(newRatio);
 
-      // Just hit the end — start the hold timer
-      if (newRatio >= 1 && doneLockUntil === 0) {
-        doneLockUntil = performance.now() + 800;
+      // Just hit the end — start the hold timer once
+      if (newRatio >= 1 && doneLockUntil === null) {
+        doneLockUntil = performance.now() + 700;
       }
 
       // Sync real scroll position so layout is correct when we release
@@ -4113,7 +4114,7 @@
           intercepting = false;
           virtualScrolled = 0;
           currentRatio = 0;
-          doneLockUntil = 0;
+          doneLockUntil = null;
         }
       });
     }, { threshold: 0 });
@@ -4128,7 +4129,7 @@
 
     window._videoRevealUnlock = () => {
       intercepting = false;
-      doneLockUntil = 0;
+      doneLockUntil = null;
       currentRatio = 1;
       virtualScrolled = revealSection ? revealSection.offsetHeight - window.innerHeight : 0;
     };
