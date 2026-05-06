@@ -3875,7 +3875,7 @@
     let rafPending   = false;
     let impactDone   = false;
     let textShownAt  = null;
-    const TEXT_HOLD_MS = 1400;
+    const TEXT_HOLD_MS = 500;
     let scrollLocked = false;
     let lockScrollY  = 0;
 
@@ -3994,11 +3994,10 @@
       if (window._navJumping) return;
 
       if (scrollLocked) {
-        window.scrollTo({ top: lockScrollY, behavior: 'instant' });
+        // Let scroll happen — just keep updating the visual until the brief hold expires
         if (textShownAt && performance.now() - textShownAt >= TEXT_HOLD_MS) {
           scrollLocked = false;
         }
-        return;
       }
 
       const rect     = revealSection.getBoundingClientRect();
