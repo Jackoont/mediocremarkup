@@ -104,7 +104,7 @@
       overflow: hidden;
       display: grid;
       grid-template-rows: 1fr auto;
-      background: #2B2547;
+      background: #FEF9F4;
     }
     /* Bottom vignette — swallows the bottom quarter of the hero entirely */
     .hero::after {
@@ -112,7 +112,7 @@
       position: absolute;
       bottom: 0; left: 0; right: 0;
       height: 55vh;
-      background: linear-gradient(to bottom, transparent 0%, rgba(43,37,71,0.5) 30%, rgba(43,37,71,0.92) 70%, #2B2547 100%);
+      background: linear-gradient(to bottom, transparent 0%, rgba(254,249,244,0.5) 30%, rgba(254,249,244,0.92) 70%, #FEF9F4 100%);
       pointer-events: none;
       z-index: 6;
     }
@@ -214,13 +214,13 @@
       line-height: 1.0;
       letter-spacing: -1px;
       margin-bottom: 32px;
-      color: #FAFAF8;
+      color: #2B2547;
     }
     .hero-headline .line { display: block; }
-    .hero-headline .hl-dim { color: rgba(250,250,248,0.32); }
+    .hero-headline .hl-dim { color: rgba(43,37,71,0.35); }
     .hero-headline .hl-accent { color: #F0635A; }
     .hero-headline .hl-outlined {
-      -webkit-text-stroke: 1.5px rgba(250,250,248,0.35);
+      -webkit-text-stroke: 1.5px rgba(43,37,71,0.35);
       color: transparent;
     }
     #theme-word { color: #F0635A; }
@@ -246,7 +246,7 @@
       font-size: 16px;
       max-width: 420px;
       line-height: 1.7;
-      color: rgba(250,250,248,0.85);
+      color: rgba(43,37,71,0.7);
       margin-bottom: 36px;
     }
 
@@ -276,32 +276,32 @@
       font-weight: 400;
       font-style: italic;
       line-height: 1;
-      color: #FAFAF8;
+      color: #2B2547;
     }
     .stat-label {
       font-family: var(--font-mono);
       font-size: 9px;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: rgba(250,250,248,0.65);
+      color: rgba(43,37,71,0.55);
     }
 
     /* Right column content */
     .hero-right-card {
-      background: rgba(250,250,248,0.04);
-      border: 1px solid rgba(250,250,248,0.09);
+      background: rgba(43,37,71,0.04);
+      border: 1px solid rgba(43,37,71,0.09);
       border-radius: 16px;
       padding: 28px 32px;
       width: 100%;
       max-width: 380px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 4px 24px rgba(0,0,0,0.15);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 4px 24px rgba(43,37,71,0.06);
     }
     .hero-right-card-label {
       font-family: var(--font-mono);
       font-size: 9px;
       letter-spacing: 3px;
       text-transform: uppercase;
-      color: rgba(240,99,90,0.5);
+      color: rgba(240,99,90,0.6);
       margin-bottom: 16px;
     }
     .hero-right-card-list {
@@ -312,7 +312,7 @@
     }
     .hero-right-card-list li {
       font-size: 13px;
-      color: rgba(250,250,248,0.65);
+      color: rgba(43,37,71,0.65);
       padding-left: 16px;
       position: relative;
       line-height: 1.5;
@@ -359,7 +359,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 20px 80px;
-      border-top: 1px solid rgba(250,250,248,0.05);
+      border-top: 1px solid rgba(43,37,71,0.08);
       position: relative;
       z-index: 4;
     }
@@ -384,7 +384,7 @@
       font-size: 10px;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: rgba(250,250,248,0.6);
+      color: rgba(43,37,71,0.5);
     }
     .hero-status-scroll {
       display: flex;
@@ -394,7 +394,7 @@
       font-size: 10px;
       letter-spacing: 3px;
       text-transform: uppercase;
-      color: rgba(250,250,248,0.55);
+      color: rgba(43,37,71,0.45);
     }
     .hero-status-line {
       width: 40px;
@@ -436,7 +436,7 @@
        ══════════════════════════════════════ */
     #showcase {
       position: relative;
-      background: #2B2547;
+      background: #FEF9F4;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -444,22 +444,22 @@
       justify-content: flex-start;
       padding: 160px 24px 0;
     }
-    /* Top fade — hard ceiling that bleeds from hero's solid #2B2547 bottom */
+    /* Top fade */
     #showcase::before {
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0;
       height: 280px;
-      background: linear-gradient(to bottom, #2B2547 0%, #2B2547 25%, transparent 100%);
+      background: linear-gradient(to bottom, #FEF9F4 0%, #FEF9F4 25%, transparent 100%);
       pointer-events: none; z-index: 6;
     }
-    /* Bottom fade — blends into video-reveal */
+    /* Bottom fade */
     #showcase::after {
       content: '';
       position: absolute;
       bottom: 0; left: 0; right: 0;
       height: 300px;
-      background: linear-gradient(to bottom, transparent 0%, #2B2547 100%);
+      background: linear-gradient(to bottom, transparent 0%, #FEF9F4 100%);
       pointer-events: none; z-index: 5;
     }
     /* Padding block so content clears the bottom fade */
@@ -472,9 +472,8 @@
     #sc-glow-bg {
       position: absolute; inset: 0; z-index: 0; pointer-events: none;
       background:
-        radial-gradient(ellipse 60% 55% at 50% 55%, rgba(240,99,90,0.065) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 30% at 30% 20%, rgba(244,162,97,0.035) 0%, transparent 60%),
-        radial-gradient(ellipse 70% 50% at 50% 100%, rgba(17,12,16,0.9) 0%, transparent 60%);
+        radial-gradient(ellipse 60% 55% at 50% 55%, rgba(240,99,90,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 30% 20%, rgba(244,162,97,0.04) 0%, transparent 60%);
     }
     #sc-inner {
       position: relative; z-index: 2;
@@ -492,7 +491,7 @@
     #sc-headline {
       font-family: 'DM Serif Display', serif;
       font-size: clamp(32px,5vw,72px); font-weight: 400; font-style: italic;
-      color: #FAFAF8; line-height: 1.05; letter-spacing: -0.5px;
+      color: #2B2547; line-height: 1.05; letter-spacing: -0.5px;
       text-align: center; margin-bottom: 56px;
       opacity: 0; transform: translateY(24px);
       transition: opacity 0.8s 0.1s ease, transform 0.8s 0.1s ease;
@@ -507,7 +506,7 @@
       margin-top: 52px; text-align: center;
       font-family: 'JetBrains Mono', monospace; font-size: 11px;
       letter-spacing: 3px; text-transform: uppercase;
-      color: rgba(250,250,248,0.18);
+      color: rgba(43,37,71,0.25);
       opacity: 0; transition: opacity 0.8s 0.5s ease;
     }
     #sc-tagline.sc-in { opacity: 1; }
@@ -958,7 +957,7 @@
     #video-reveal {
       position: relative;
       height: 400vh;
-      background: #2B2547;
+      background: #FEF9F4;
     }
     /* Showcase bottom dissolves into dive via matching color — no visible seam */
     #video-reveal::before {
@@ -966,7 +965,7 @@
       position: absolute;
       top: 0; left: 0; right: 0;
       height: 60vh;
-      background: linear-gradient(to bottom, #2B2547 0%, transparent 100%);
+      background: linear-gradient(to bottom, #FEF9F4 0%, transparent 100%);
       pointer-events: none; z-index: 8;
     }
     /* Bottom of video-reveal bleeds into pricing */
@@ -975,7 +974,7 @@
       position: absolute;
       bottom: 0; left: 0; right: 0;
       height: 260px;
-      background: linear-gradient(to bottom, transparent 0%, #2B2547 100%);
+      background: linear-gradient(to bottom, transparent 0%, #FEF9F4 100%);
       pointer-events: none; z-index: 10;
     }
     /* Pricing top absorbs from video-reveal bottom */
@@ -983,7 +982,7 @@
       position: absolute;
       top: 0; left: 0; right: 0;
       height: 280px;
-      background: linear-gradient(to bottom, #2B2547 0%, transparent 100%);
+      background: linear-gradient(to bottom, #FEF9F4 0%, transparent 100%);
       pointer-events: none; z-index: 3;
     }
     #video-sticky {
@@ -1341,10 +1340,10 @@
     }
 
     /* ── FEATURE BAND ── */
-    .feature-band { background: #2B2547; padding: 80px 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-    .feature-quote { font-family: var(--font-body); font-size: clamp(24px, 3vw, 40px); font-weight: 300; font-style: italic; color: #e9e2d0; line-height: 1.3; }
+    .feature-band { background: #F5EFE6; padding: 80px 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .feature-quote { font-family: var(--font-body); font-size: clamp(24px, 3vw, 40px); font-weight: 300; font-style: italic; color: #2B2547; line-height: 1.3; }
     .feature-list { list-style: none; display: flex; flex-direction: column; gap: 16px; }
-    .feature-list li { color: rgba(233,226,208,0.8); font-size: 15px; padding-left: 24px; position: relative; }
+    .feature-list li { color: rgba(43,37,71,0.7); font-size: 15px; padding-left: 24px; position: relative; }
     .feature-list li::before { content: '→'; position: absolute; left: 0; color: #F4A261; }
     @media (max-width: 900px) { .feature-band { grid-template-columns: 1fr; padding: 60px 24px; gap: 40px; } }
 
@@ -1444,7 +1443,7 @@
        Matches the hero's rose / parchment / plum palette.
        Warm, editorial, cohesive — not pink-overload. */
 
-    body { background: #2B2547; }
+    body { background: #FEF9F4; }
 
     /* feature-band removed from layout */
 
@@ -1466,9 +1465,8 @@
        PRICING — warm ink, unique, readable
        ══════════════════════════════════ */
 
-    /* The section itself is a warm deep plum — not black, not light */
     #pricing {
-      background: #1c1118;
+      background: #FEF9F4;
       position: relative;
       overflow: hidden;
       padding: 0;
@@ -1528,7 +1526,7 @@
       position: absolute;
       bottom: -2px; left: 0; right: 0;
       height: 200px;
-      background: linear-gradient(to bottom, transparent 0%, #2B2547 100%);
+      background: linear-gradient(to bottom, transparent 0%, #FEF9F4 100%);
       pointer-events: none;
       z-index: 4;
     }
@@ -1587,7 +1585,7 @@
       font-weight: 400;
       font-style: italic;
       line-height: 1.02;
-      color: #FAFAF8;
+      color: #2B2547;
       letter-spacing: -0.5px;
       margin-bottom: 20px;
       opacity: 0;
@@ -1598,7 +1596,7 @@
     #pricing .pricing-headline em { color: #F0635A; }
     #pricing .pricing-sub {
       font-size: 15px;
-      color: rgba(250,250,248,0.55);
+      color: rgba(43,37,71,0.6);
       max-width: 420px;
       line-height: 1.7;
       opacity: 0;
@@ -1647,10 +1645,10 @@
     }
     @media (max-width: 900px) { .pricing-grid { grid-template-columns: 1fr; gap: 16px; } }
 
-    /* Cards — warm frosted glass panels */
+    /* Cards — warm panels */
     .price-card {
-      background: rgba(255,245,240,0.05) !important;
-      border: 1px solid rgba(240,220,210,0.1) !important;
+      background: rgba(255,255,255,0.8) !important;
+      border: 1px solid rgba(43,37,71,0.1) !important;
       border-radius: 2px !important;
       padding: 48px 40px 44px !important;
       display: flex;
@@ -1678,7 +1676,7 @@
         border-color 0.35s ease !important;
     }
     .price-card.card-visible:hover {
-      background: rgba(255,245,240,0.09) !important;
+      background: rgba(255,255,255,0.95) !important;
       border-color: rgba(240,99,90,0.3) !important;
       transform: translateY(-7px) !important;
     }
@@ -1732,7 +1730,7 @@
       font-size: 28px !important;
       font-weight: 400 !important;
       font-style: italic;
-      color: #FAFAF8 !important;
+      color: #2B2547 !important;
       margin-bottom: 10px !important;
       letter-spacing: 0px;
     }
@@ -1740,12 +1738,12 @@
     /* Desc */
     .price-desc {
       font-size: 13.5px !important;
-      color: rgba(250,250,248,0.55) !important;
+      color: rgba(43,37,71,0.55) !important;
       margin-bottom: 36px !important;
       line-height: 1.7;
       flex: none;
     }
-    .price-card.featured .price-desc { color: rgba(250,250,248,0.7) !important; }
+    .price-card.featured .price-desc { color: rgba(43,37,71,0.7) !important; }
 
     /* Big price — the hero of each card */
     .price-amount {
@@ -1755,11 +1753,11 @@
       font-style: italic;
       letter-spacing: -1px !important;
       line-height: 0.88 !important;
-      color: #FAFAF8 !important;
+      color: #2B2547 !important;
       margin-bottom: 10px !important;
       transition: color 0.4s ease;
     }
-    .price-card.card-visible:hover .price-amount { color: #fff !important; }
+    .price-card.card-visible:hover .price-amount { color: #2B2547 !important; }
     .price-card.featured .price-amount { color: #F4A261 !important; }
     .price-amount sup {
       font-size: 22px !important;
@@ -1776,26 +1774,26 @@
       font-size: 10px !important;
       letter-spacing: 3px !important;
       text-transform: uppercase;
-      color: rgba(250,250,248,0.3) !important;
+      color: rgba(43,37,71,0.35) !important;
       margin-bottom: 36px !important;
     }
-    .price-card.featured .price-period { color: rgba(244,162,97,0.6) !important; }
+    .price-card.featured .price-period { color: rgba(244,162,97,0.8) !important; }
 
     /* Features — clearly readable */
     .price-features { list-style: none; flex: 1; margin-bottom: 40px !important; }
     .price-features li {
       padding: 12px 0 !important;
       font-size: 14px !important;
-      color: rgba(250,250,248,0.65) !important;
+      color: rgba(43,37,71,0.65) !important;
       display: flex;
       align-items: flex-start;
       gap: 10px;
-      border-top: 1px solid rgba(250,250,248,0.07) !important;
+      border-top: 1px solid rgba(43,37,71,0.08) !important;
       transition: color 0.25s ease;
     }
     .price-features li:first-child { border-top: none !important; }
-    .price-card.card-visible:hover .price-features li { color: rgba(250,250,248,0.88) !important; }
-    .price-card.featured .price-features li { color: rgba(250,250,248,0.78) !important; }
+    .price-card.card-visible:hover .price-features li { color: rgba(43,37,71,0.85) !important; }
+    .price-card.featured .price-features li { color: rgba(43,37,71,0.75) !important; }
     .price-features li::before {
       content: '→';
       color: rgba(244,162,97,0.5) !important;
@@ -1842,12 +1840,12 @@
     /* Non-featured */
     .price-card:not(.featured) .btn {
       background: transparent !important;
-      color: rgba(250,250,248,0.6) !important;
-      border: 1px solid rgba(250,250,248,0.18) !important;
+      color: rgba(43,37,71,0.6) !important;
+      border: 1px solid rgba(43,37,71,0.2) !important;
     }
     .price-card:not(.featured) .btn:hover {
-      color: #FAFAF8 !important;
-      border-color: rgba(250,250,248,0.4) !important;
+      color: #2B2547 !important;
+      border-color: rgba(43,37,71,0.4) !important;
     }
 
     /* Featured — solid, unmissable */
@@ -1869,7 +1867,7 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       letter-spacing: 1px;
-      color: rgba(250,250,248,0.25);
+      color: rgba(43,37,71,0.35);
       text-align: center;
       opacity: 0;
       transition: opacity 0.9s 0.7s ease;
@@ -1901,9 +1899,9 @@
     .cta-email:hover { color: #F0635A !important; border-bottom-color: #F0635A !important; }
 
     /* Footer */
-    .footer-copy, .footer-tagline { color: rgba(250,250,248,0.55) !important; }
-    .footer-email { color: rgba(250,250,248,0.55) !important; }
-    .footer-email:hover { color: #F4A261 !important; }
+    .footer-copy, .footer-tagline { color: #888880 !important; }
+    .footer-email { color: #888880 !important; }
+    .footer-email:hover { color: #F0635A !important; }
 
 
     /* Feature band */
@@ -2058,7 +2056,7 @@
 
         <div class="hero-actions" id="hero-actions">
           <a href="#contact" onclick="jumpToContact(event)" class="btn btn-primary magnetic-btn" style="font-size:15px;padding:15px 32px;box-shadow:0 4px 20px rgba(240,99,90,0.35);">Start a project →</a>
-          <a href="#pricing" onclick="jumpToPricing(event)" class="btn" style="background:transparent;color:rgba(250,250,248,0.9);border:1.5px solid rgba(250,250,248,0.4);border-radius:999px;padding:13px 28px;font-size:14px;font-weight:600;transition:all 0.2s;">See pricing</a>
+          <a href="#pricing" onclick="jumpToPricing(event)" class="btn" style="background:transparent;color:rgba(43,37,71,0.8);border:1.5px solid rgba(43,37,71,0.25);border-radius:999px;padding:13px 28px;font-size:14px;font-weight:600;transition:all 0.2s;">See pricing</a>
         </div>
 
         <div class="hero-stats" id="hero-stats">
@@ -2071,7 +2069,7 @@
       <!-- RIGHT — feature card + availability chip -->
       <div class="hero-right" id="hero-right">
         <!-- Availability chip -->
-        <div style="display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(250,250,248,0.4);border:1px solid rgba(250,250,248,0.1);border-radius:999px;padding:7px 16px;background:rgba(255,255,255,0.02);backdrop-filter:blur(8px);">
+        <div style="display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(43,37,71,0.45);border:1px solid rgba(43,37,71,0.12);border-radius:999px;padding:7px 16px;background:rgba(255,255,255,0.5);backdrop-filter:blur(8px);">
           <span style="width:6px;height:6px;border-radius:50%;background:#4ade80;display:inline-block;animation:statusPulse 2s ease-in-out infinite;box-shadow:0 0 6px rgba(74,222,128,0.5);"></span>
           Accepting new clients
         </div>
@@ -2090,7 +2088,7 @@
 
         <!-- Quoted testimonial-style callout -->
         <div style="max-width:380px;width:100%;padding:20px 24px;border-left:2px solid rgba(240,99,90,0.3);background:rgba(240,99,90,0.04);border-radius:0 8px 8px 0;">
-          <p style="font-family:'DM Serif Display',serif;font-size:16px;font-style:italic;font-weight:400;color:rgba(250,250,248,0.6);line-height:1.55;margin-bottom:10px;">"The kind of site that actually convinces a stranger to become a customer."</p>
+          <p style="font-family:'DM Serif Display',serif;font-size:16px;font-style:italic;font-weight:400;color:rgba(43,37,71,0.65);line-height:1.55;margin-bottom:10px;">"The kind of site that actually convinces a stranger to become a customer."</p>
           <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(240,99,90,0.5);">— The whole point</span>
         </div>
       </div>
@@ -2574,14 +2572,14 @@
 
   <!-- FOOTER / CTA -->
   <footer id="contact" style="
-    background: #2B2547;
+    background: #FEF9F4;
     border-top: none;
     padding: 0;
     display: block;
     position: relative;
   ">
     <!-- Top fade that merges with the pricing bottom fade -->
-    <div style="position:absolute;top:0;left:0;right:0;height:100px;background:linear-gradient(to bottom,#2B2547,transparent);pointer-events:none;z-index:1;"></div>
+    <div style="position:absolute;top:0;left:0;right:0;height:100px;background:linear-gradient(to bottom,#FEF9F4,transparent);pointer-events:none;z-index:1;"></div>
     <!-- Big CTA block -->
     <div style="
       padding: 100px 80px 80px;
@@ -2602,7 +2600,7 @@
           font-size:clamp(40px,6vw,88px);
           font-weight:400;
           font-style:italic;
-          color:#FAFAF8;
+          color:#2B2547;
           line-height:1.0;
           letter-spacing:-0.5px;
           margin-bottom:36px;
@@ -2610,22 +2608,22 @@
         <a href="mailto:mediocremanager@outlook.com" style="
           font-family:'JetBrains Mono',monospace;
           font-size:15px;
-          color:rgba(250,250,248,0.55);
+          color:rgba(43,37,71,0.5);
           letter-spacing:0.5px;
-          border-bottom:1px solid rgba(250,250,248,0.15);
+          border-bottom:1px solid rgba(43,37,71,0.15);
           padding-bottom:3px;
           transition:color 0.2s,border-color 0.2s;
           text-decoration:none;
-        " onmouseenter="this.style.color='#F0635A';this.style.borderColor='rgba(240,99,90,0.5)'" onmouseleave="this.style.color='rgba(250,250,248,0.55)';this.style.borderColor='rgba(250,250,248,0.15)'">mediocremanager@outlook.com →</a>
+        " onmouseenter="this.style.color='#F0635A';this.style.borderColor='rgba(240,99,90,0.5)'" onmouseleave="this.style.color='rgba(43,37,71,0.5)';this.style.borderColor='rgba(43,37,71,0.15)'">mediocremanager@outlook.com →</a>
       </div>
       <div style="display:flex;flex-direction:column;gap:6px;text-align:right;">
-        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(250,250,248,0.2);">Based in</span>
-        <span style="font-family:'DM Serif Display',serif;font-size:18px;font-weight:400;font-style:italic;color:rgba(250,250,248,0.4);">St. Johns, FL</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(43,37,71,0.3);">Based in</span>
+        <span style="font-family:'DM Serif Display',serif;font-size:18px;font-weight:400;font-style:italic;color:rgba(43,37,71,0.5);">St. Johns, FL</span>
       </div>
     </div>
     <!-- Bottom bar -->
     <div style="
-      border-top:1px solid rgba(250,250,248,0.06);
+      border-top:1px solid rgba(43,37,71,0.08);
       padding:20px 80px;
       max-width:none;
       display:flex;
@@ -2634,9 +2632,9 @@
       flex-wrap:wrap;
       gap:12px;
     " class="footer-bottom-bar">
-      <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(250,250,248,0.2);">© 2026 Mediocre Markup</span>
-      <span style="font-family:'DM Serif Display',serif;font-size:13px;font-weight:400;font-style:italic;color:rgba(250,250,248,0.2);">Websites that outperform average</span>
-      <a href="mailto:mediocremanager@outlook.com" style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:rgba(250,250,248,0.2);text-decoration:none;transition:color 0.2s;" onmouseenter="this.style.color='#F0635A'" onmouseleave="this.style.color='rgba(250,250,248,0.2)'">mediocremanager@outlook.com</a>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(43,37,71,0.3);">© 2026 Mediocre Markup</span>
+      <span style="font-family:'DM Serif Display',serif;font-size:13px;font-weight:400;font-style:italic;color:rgba(43,37,71,0.3);">Websites that outperform average</span>
+      <a href="mailto:mediocremanager@outlook.com" style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:rgba(43,37,71,0.3);text-decoration:none;transition:color 0.2s;" onmouseenter="this.style.color='#F0635A'" onmouseleave="this.style.color='rgba(43,37,71,0.3)'">mediocremanager@outlook.com</a>
     </div>
   </footer>
 
