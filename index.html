@@ -1374,7 +1374,7 @@
     @media (max-width: 900px) { .pricing-grid { grid-template-columns: 1fr; } }
     .price-card { background: #f0ebe0; border: 1px solid rgba(136,136,128,0.15); border-radius: 20px; padding: 40px; display: flex; flex-direction: column; transition: transform 0.3s, box-shadow 0.3s; }
     .price-card:hover { transform: translateY(-5px); box-shadow: 0 20px 60px rgba(42,31,45,0.08); }
-    .price-card.featured { background: #F0635A; border-color: #F0635A; }
+    .price-card.featured { background: #F4A261; border-color: #F4A261; }
     .price-card.featured .price-tag { background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.85); }
     .price-card.featured .price-name { color: #fff; }
     .price-card.featured .price-desc { color: rgba(255,255,255,0.75); }
@@ -1479,7 +1479,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background-image: radial-gradient(circle, rgba(240,99,90,0.07) 1px, transparent 1px);
+      background-image: radial-gradient(circle, rgba(244,162,97,0.07) 1px, transparent 1px);
       background-size: 28px 28px;
       pointer-events: none;
       z-index: 0;
@@ -1498,7 +1498,7 @@
       position: absolute;
       top: -20%; left: 55%;
       width: 70vw; height: 70vw;
-      background: radial-gradient(circle, rgba(240,99,90,0.12) 0%, transparent 60%);
+      background: radial-gradient(circle, rgba(244,162,97,0.12) 0%, transparent 60%);
       border-radius: 50%;
       animation: pgDrift1 16s ease-in-out infinite alternate;
     }
@@ -1696,13 +1696,13 @@
 
     /* Featured card — noticeably warmer */
     .price-card.featured {
-      background: rgba(240,99,90,0.08) !important;
-      border-color: rgba(240,99,90,0.22) !important;
+      background: rgba(244,162,97,0.08) !important;
+      border-color: rgba(244,162,97,0.22) !important;
     }
-    .price-card.featured::after { height: 100%; background: linear-gradient(to bottom, #F0635A, #F4A261); width: 3px; }
+    .price-card.featured::after { height: 100%; background: linear-gradient(to bottom, #F4A261, #F4A27A); width: 3px; }
     .price-card.featured.card-visible:hover {
-      background: rgba(240,99,90,0.13) !important;
-      border-color: rgba(240,99,90,0.4) !important;
+      background: rgba(244,162,97,0.13) !important;
+      border-color: rgba(244,162,97,0.4) !important;
       transform: translateY(-9px) !important;
     }
 
@@ -1713,8 +1713,8 @@
       letter-spacing: 3px !important;
       text-transform: uppercase;
       background: transparent !important;
-      color: rgba(240,99,90,0.8) !important;
-      border: 1px solid rgba(240,99,90,0.25) !important;
+      color: rgba(244,162,97,0.8) !important;
+      border: 1px solid rgba(244,162,97,0.25) !important;
       padding: 4px 11px;
       border-radius: 999px !important;
       margin-bottom: 32px !important;
@@ -1722,8 +1722,8 @@
       width: fit-content;
     }
     .price-card.featured .price-tag {
-      color: #F0635A !important;
-      border-color: rgba(240,99,90,0.5) !important;
+      color: #F4A261 !important;
+      border-color: rgba(244,162,97,0.5) !important;
     }
 
     /* Name */
@@ -1760,7 +1760,7 @@
       transition: color 0.4s ease;
     }
     .price-card.card-visible:hover .price-amount { color: #fff !important; }
-    .price-card.featured .price-amount { color: #F0635A !important; }
+    .price-card.featured .price-amount { color: #F4A261 !important; }
     .price-amount sup {
       font-size: 22px !important;
       font-weight: 400 !important;
@@ -1779,7 +1779,7 @@
       color: rgba(250,250,248,0.3) !important;
       margin-bottom: 36px !important;
     }
-    .price-card.featured .price-period { color: rgba(240,99,90,0.6) !important; }
+    .price-card.featured .price-period { color: rgba(244,162,97,0.6) !important; }
 
     /* Features — clearly readable */
     .price-features { list-style: none; flex: 1; margin-bottom: 40px !important; }
@@ -1798,7 +1798,7 @@
     .price-card.featured .price-features li { color: rgba(250,250,248,0.78) !important; }
     .price-features li::before {
       content: '→';
-      color: rgba(240,99,90,0.5) !important;
+      color: rgba(244,162,97,0.5) !important;
       flex-shrink: 0;
       font-size: 11px;
       margin-top: 3px;
@@ -1806,10 +1806,10 @@
       transition: color 0.25s ease, transform 0.25s ease;
     }
     .price-card.card-visible:hover .price-features li::before {
-      color: #F0635A !important;
+      color: #F4A261 !important;
       transform: translateX(3px);
     }
-    .price-card.featured .price-features li::before { color: #F0635A !important; }
+    .price-card.featured .price-features li::before { color: #F4A261 !important; }
 
     /* ── Buttons — responsive, clean, readable ── */
     .price-card .btn {
@@ -1852,7 +1852,7 @@
 
     /* Featured — solid, unmissable */
     .price-card.featured .btn {
-      background: #F0635A !important;
+      background: #F4A261 !important;
       color: #fff !important;
       border: none !important;
     }
@@ -1860,7 +1860,7 @@
       background: rgba(255,255,255,0.1);
     }
     .price-card.featured .btn:hover {
-      background: #F0635A !important;
+      background: #F4A261 !important;
     }
 
     /* Note */
