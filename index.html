@@ -100,6 +100,16 @@
       grid-template-rows: 1fr auto;
       background: #0e0a0d;
     }
+    /* Bottom vignette — bleeds into the next section naturally */
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 35vh;
+      background: linear-gradient(to bottom, transparent 0%, rgba(14,10,13,0.7) 60%, #0e0a0d 100%);
+      pointer-events: none;
+      z-index: 5;
+    }
     #particle-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0.5; }
     .deco-layer { position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
 
@@ -2237,122 +2247,102 @@
      MEDIOCRE MARKUP — FULL ANIMATION SYSTEM
      ════════════════════════════════════════════════════════ */
 
-  /* ── 1. IMMERSIVE CURSOR ── */
+  /* ── 1. CURSOR ── */
   if (window.innerWidth > 900) {
-    /* --- DOM elements --- */
-    const dot   = document.createElement('div');   // tiny exact dot
-    const ring  = document.createElement('div');   // lagging magnetic ring
-    const label = document.createElement('div');   // contextual text label
-    const trail = document.createElement('canvas'); // ink tail canvas
+    const C = {
+      dot:   Object.assign(document.createElement('div'),   { id: 'c-dot'   }),
+      glow:  Object.assign(document.createElement('div'),   { id: 'c-glow'  }),
+      text:  Object.assign(document.createElement('div'),   { id: 'c-text'  }),
+    };
+    C.dot.style.cssText  = 'position:fixed;z-index:10002;pointer-events:none;width:8px;height:8px;border-radius:50%;background:#d45d79;transform:translate(-50%,-50%);transition:width .2s,height .2s,opacity .2s;will-change:left,top;';
+    C.glow.style.cssText = 'position:fixed;z-index:10001;pointer-events:none;width:44px;height:44px;border-radius:50%;border:1px solid rgba(212,93,121,.35);transform:translate(-50%,-50%);will-change:left,top,transform;';
+    C.text.style.cssText = 'position:fixed;z-index:10003;pointer-events:none;font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:#d45d79;opacity:0;transition:opacity .2s;white-space:nowrap;transform:translate(0,-50%);';
+    Object.values(C).forEach(el => document.body.appendChild(el));
 
-    dot.id   = 'cur-dot';
-    ring.id  = 'cur-ring';
-    label.id = 'cur-label';
-    trail.id = 'cur-trail';
+    let mx=innerWidth/2, my=innerHeight/2;
+    let gx=mx, gy=my, gvx=0, gvy=0;
+    let dx=mx, dy=my;
+    let hovered=false, mode='default';
 
-    dot.style.cssText   = 'position:fixed;width:5px;height:5px;background:#d45d79;border-radius:50%;pointer-events:none;z-index:10001;transform:translate(-50%,-50%);transition:transform 0.15s ease,background 0.3s ease;mix-blend-mode:normal;';
-    ring.style.cssText  = 'position:fixed;width:38px;height:38px;border:1px solid rgba(212,93,121,0.45);border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%);will-change:left,top,transform;';
-    label.style.cssText = 'position:fixed;pointer-events:none;z-index:10002;font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#d45d79;opacity:0;transform:translate(18px,-50%);white-space:nowrap;transition:opacity 0.25s ease;top:0;left:0;';
-    trail.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9998;width:100%;height:100%;';
-    trail.width  = window.innerWidth;
-    trail.height = window.innerHeight;
-    window.addEventListener('resize', () => { trail.width = window.innerWidth; trail.height = window.innerHeight; });
-
-    document.body.append(trail, ring, dot, label);
-    const tctx = trail.getContext('2d');
-
-    /* --- state --- */
-    let mx = window.innerWidth/2, my = window.innerHeight/2;
-    let rx = mx, ry = my, rvx = 0, rvy = 0;
-    let ix = mx, iy = my;
-    let hovering = false, clicking = false;
-    let trailPoints = [];  // [{x,y,age}]
-    const TRAIL_LEN = 28;
-
-    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-    document.addEventListener('mousedown', () => { clicking = true;  dot.style.transform = 'translate(-50%,-50%) scale(2.5)'; });
-    document.addEventListener('mouseup',   () => { clicking = false; dot.style.transform = hovering ? 'translate(-50%,-50%) scale(0)' : 'translate(-50%,-50%) scale(1)'; });
-
-    /* --- interactive targets --- */
-    const interactiveLabel = el => {
-      if (el.matches('a[href^="mailto"]')) return 'write us';
-      if (el.matches('.price-card,.price-card *')) return 'select';
-      if (el.matches('.what-item,.what-item *')) return 'details';
-      if (el.matches('.showcase-label,.showcase-label *')) return 'preview';
-      if (el.matches('a,button,.btn')) return 'open';
-      return '';
+    /* Hover intent */
+    const HOVER_MAP = [
+      ['.price-card,.price-card *', 'select'],
+      ['a[href^="mailto"]',          'email'],
+      ['.showcase-label',            'view'],
+      ['.what-item,.what-item *',    'read'],
+      ['a,.btn,button',              'go'],
+    ];
+    const getMode = el => {
+      for (const [sel, lbl] of HOVER_MAP) if (el.closest && el.closest(sel.split(',')[0])) return lbl;
+      return 'default';
     };
 
-    document.querySelectorAll('a,button,.btn,.service-chip,.price-card,.what-item,.showcase-label').forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        hovering = true;
-        const lbl = interactiveLabel(el);
-        label.textContent = lbl;
-        label.style.opacity = lbl ? '1' : '0';
-        dot.style.transform = 'translate(-50%,-50%) scale(0)';
-        ring.style.borderColor = '#d45d79';
-        ring.style.width = ring.style.height = '54px';
-        ring.style.background = 'rgba(212,93,121,0.06)';
-        ring.style.backdropFilter = 'blur(2px)';
+    document.querySelectorAll('a,.btn,button,.price-card,.what-item,.showcase-label,.service-chip').forEach(el => {
+      el.addEventListener('mouseenter', e => {
+        hovered = true;
+        mode = getMode(e.target);
+        /* dot shrinks to nothing; glow expands + fills */
+        C.dot.style.width = C.dot.style.height = '0px';
+        C.dot.style.opacity = '0';
+        C.glow.style.width = C.glow.style.height = '64px';
+        C.glow.style.borderColor = '#d45d79';
+        C.glow.style.background = 'rgba(212,93,121,.07)';
+        C.glow.style.transition = 'width .3s cubic-bezier(.16,1,.3,1),height .3s cubic-bezier(.16,1,.3,1),border-color .2s,background .2s';
+        if (mode !== 'default') {
+          C.text.textContent = mode;
+          C.text.style.opacity = '1';
+        }
       });
       el.addEventListener('mouseleave', () => {
-        hovering = false;
-        label.style.opacity = '0';
-        dot.style.transform = 'translate(-50%,-50%) scale(1)';
-        ring.style.borderColor = 'rgba(212,93,121,0.45)';
-        ring.style.width = ring.style.height = '38px';
-        ring.style.background = 'transparent';
-        ring.style.backdropFilter = 'none';
+        hovered = false;
+        mode = 'default';
+        C.dot.style.width = C.dot.style.height = '8px';
+        C.dot.style.opacity = '1';
+        C.glow.style.width = C.glow.style.height = '44px';
+        C.glow.style.borderColor = 'rgba(212,93,121,.35)';
+        C.glow.style.background = 'transparent';
+        C.glow.style.transition = 'width .35s cubic-bezier(.16,1,.3,1),height .35s cubic-bezier(.16,1,.3,1),border-color .25s,background .25s';
+        C.text.style.opacity = '0';
       });
     });
 
-    /* --- animation loop --- */
-    (function loop() {
-      /* dot snaps instantly */
-      ix += (mx - ix) * 0.55;
-      iy += (my - iy) * 0.55;
-      dot.style.left = ix + 'px';
-      dot.style.top  = iy + 'px';
+    document.addEventListener('mousedown', () => {
+      C.glow.style.width = C.glow.style.height = hovered ? '52px' : '28px';
+      C.glow.style.borderColor = '#ea9085';
+      C.glow.style.transition = 'width .12s ease,height .12s ease,border-color .12s';
+    });
+    document.addEventListener('mouseup', () => {
+      C.glow.style.width = C.glow.style.height = hovered ? '64px' : '44px';
+      C.glow.style.borderColor = hovered ? '#d45d79' : 'rgba(212,93,121,.35)';
+    });
 
-      /* ring springs with slight lag */
-      const ax = (mx - rx) * 0.12;
-      const ay = (my - ry) * 0.12;
-      rvx = (rvx + ax) * 0.72;
-      rvy = (rvy + ay) * 0.72;
-      rx += rvx; ry += rvy;
-      const speed = Math.sqrt(rvx*rvx + rvy*rvy);
-      const angle = Math.atan2(rvy, rvx) * 180 / Math.PI;
-      const sq = Math.min(speed * 0.07, 0.45);
-      ring.style.left = rx + 'px';
-      ring.style.top  = ry + 'px';
-      ring.style.transform = `translate(-50%,-50%) rotate(${angle}deg) scaleX(${1+sq}) scaleY(${1-sq*0.5})`;
-      ring.style.transition = hovering
-        ? 'width 0.35s cubic-bezier(0.16,1,0.3,1),height 0.35s cubic-bezier(0.16,1,0.3,1),border-color 0.3s,background 0.3s'
-        : 'width 0.35s cubic-bezier(0.16,1,0.3,1),height 0.35s cubic-bezier(0.16,1,0.3,1),border-color 0.3s';
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
 
-      /* label follows ring */
-      label.style.left = (rx + 22) + 'px';
-      label.style.top  = ry + 'px';
+    (function tick() {
+      /* dot: near-instant */
+      dx += (mx - dx) * .65;
+      dy += (my - dy) * .65;
+      C.dot.style.left = dx + 'px';
+      C.dot.style.top  = dy + 'px';
 
-      /* ink trail */
-      trailPoints.push({ x: ix, y: iy, age: 0 });
-      if (trailPoints.length > TRAIL_LEN) trailPoints.shift();
-      tctx.clearRect(0, 0, trail.width, trail.height);
-      if (trailPoints.length > 2) {
-        for (let i = 1; i < trailPoints.length; i++) {
-          const t = i / trailPoints.length;
-          const p = trailPoints[i], pp = trailPoints[i-1];
-          tctx.beginPath();
-          tctx.moveTo(pp.x, pp.y);
-          tctx.lineTo(p.x, p.y);
-          tctx.strokeStyle = `rgba(212,93,121,${t * t * 0.35})`;
-          tctx.lineWidth = t * 2.5;
-          tctx.lineCap = 'round';
-          tctx.stroke();
-        }
-      }
+      /* glow: gentle spring */
+      gvx = (gvx + (mx - gx) * .1) * .78;
+      gvy = (gvy + (my - gy) * .1) * .78;
+      gx += gvx; gy += gvy;
 
-      requestAnimationFrame(loop);
+      /* squish toward velocity direction */
+      const spd = Math.sqrt(gvx*gvx + gvy*gvy);
+      const ang = Math.atan2(gvy, gvx) * 180 / Math.PI;
+      const sq  = Math.min(spd * .055, .38);
+      C.glow.style.left = gx + 'px';
+      C.glow.style.top  = gy + 'px';
+      C.glow.style.transform = `translate(-50%,-50%) rotate(${ang}deg) scaleX(${1+sq}) scaleY(${1-sq*.5})`;
+
+      /* label trails the glow slightly offset */
+      C.text.style.left = (gx + 28) + 'px';
+      C.text.style.top  = gy + 'px';
+
+      requestAnimationFrame(tick);
     })();
   }
 
@@ -3103,6 +3093,27 @@
     gsap.to('#ab1', { scrollTrigger: { scrub: 4 }, y: -200, x: 80 });
     gsap.to('#ab2', { scrollTrigger: { scrub: 3 }, y:  150, x: -60 });
     gsap.to('#ab3', { scrollTrigger: { scrub: 2 }, y: -100 });
+
+    // Hero exit — content drifts up + fades as you scroll away
+    gsap.to('#hero-content', {
+      scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.2 },
+      y: -80,
+      opacity: 0,
+      ease: 'none',
+    });
+    // Hero tokens parallax slower — linger as content leaves
+    gsap.to('.hero-token', {
+      scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.8 },
+      y: -40,
+      opacity: 0,
+      ease: 'none',
+    });
+    // Video reveal entrance: slide up slightly from below
+    gsap.fromTo('#video-sticky', { y: 30 }, {
+      scrollTrigger: { trigger: '#video-reveal', start: 'top bottom', end: 'top top', scrub: 1 },
+      y: 0,
+      ease: 'none',
+    });
   }
 
 
