@@ -2971,38 +2971,71 @@
       return pw.getBoundingClientRect();
     }
 
+    // ── Scatter destinations: spread symbols across the full viewport ──
+    // Each symbol gets a random scatter target far from center
+    syms.forEach((s, i) => {
+      const sAngle = (i / N) * Math.PI * 2 + (Math.random() - 0.5) * 0.8;
+      const sR = VW * 0.35 + Math.random() * VW * 0.25;
+      s.scatterX = VW * 0.5 + Math.cos(sAngle) * sR;
+      s.scatterY = VH * 0.5 + Math.sin(sAngle) * sR * 0.7;
+      // velocity init
+      s.vx = 0; s.vy = 0;
+    });
+
     function animWhirlpool(ts) {
       if (wpDone) return;
       wpT = ts * 0.001;
-      vCtx.clearRect(0, 0, VW, VH);  // clean slate every frame — zero streaks
+      vCtx.clearRect(0, 0, VW, VH);
 
       const cx = VW / 2, cy = VH / 2;
 
+      // scrollProg: 0 = top of page, 1 = phone fully centered
+      const scrollY = window.scrollY;
+      const maxScroll = window.innerHeight * 1.2;
+      const scrollProg = Math.max(0, Math.min(1, scrollY / maxScroll));
+
+      // scatterProg: 0→1 as user scrolls away from hero
+      const scatterProg = Math.min(1, scrollProg / 0.5);
+
       const pr = getPhoneRect();
-      let fallProg = 0;
-      if (pr) {
-        const enterY = VH;
-        const readyY = VH * 0.55;
-        fallProg = Math.max(0, Math.min(1, (enterY - pr.top) / (enterY - readyY)));
-      }
+
+      // Smooth easing helper
+      const easeOut = t => 1 - (1 - t) * (1 - t);
 
       syms.forEach((s, i) => {
         if (s.state === 'done') return;
 
+        // Fade in on boot
+        s.alpha = Math.min(1, s.alpha + 0.04);
+
         if (s.state === 'orbit') {
           const angle = s.phase + wpT * s.speed;
-          s.x = cx + Math.cos(angle) * s.r;
-          s.y = cy + Math.sin(angle) * s.r;
+          const orbitX = cx + Math.cos(angle) * s.r;
+          const orbitY = cy + Math.sin(angle) * s.r;
 
-          // Fade in on boot
-          s.alpha = Math.min(1, s.alpha + 0.04);
+          if (scatterProg < 0.01) {
+            // Pure orbit — hero is on screen
+            s.x = orbitX;
+            s.y = orbitY;
+          } else {
+            // Scatter: lerp from orbit position toward scatter destination
+            const t = easeOut(scatterProg);
+            // Keep scatter target updated relative to current orbit so it flows outward
+            s.x = orbitX + (s.scatterX - cx) * t;
+            s.y = orbitY + (s.scatterY - cy) * t;
+          }
 
-          // Stagger into fall as phone scrolls into view
-          if (fallProg > (i / N) * 0.6) {
-            s.state = 'fall';
-            const kickSpeed = 2.5 + Math.random() * 3;
-            s.vx = Math.cos(s.phase) * kickSpeed * 0.5 + (Math.random() - 0.5) * 2;
-            s.vy = -2 - Math.random() * 3;
+          // Transition to homing once phone is close enough and scattering has peaked
+          // Use actual phone position on screen for fall trigger (viewport-height agnostic)
+          if (pr) {
+            const enterY = VH;
+            const readyY = VH * 0.62;
+            const phoneFallProg = Math.max(0, Math.min(1, (enterY - pr.top) / (enterY - readyY)));
+            const stagger = (i / N) * 0.55;
+            if (phoneFallProg > stagger) {
+              s.state = 'fall';
+              s.vx = 0; s.vy = 0;
+            }
           }
 
         } else if (s.state === 'fall') {
@@ -3015,14 +3048,27 @@
           const dx = targetX - s.x, dy = targetY - s.y;
           const dist = Math.hypot(dx, dy);
 
-          const proximity = 1 - Math.min(1, dist / 350);
-          const homing = 0.012 + proximity * proximity * 0.08;
+          // Strong magnetic pull — dramatic spiral in
+          const proximity = 1 - Math.min(1, dist / 500);
+          const homing = 0.018 + proximity * proximity * 0.12;
           s.vx += dx * homing;
-          s.vy += dy * homing + 0.35;
-          s.vx *= 0.91;
-          s.vy *= 0.91;
+          s.vy += dy * homing;
+          s.vx *= 0.88;
+          s.vy *= 0.88;
           s.x += s.vx;
           s.y += s.vy;
+
+          // Leave a trail: draw a faint echo at previous position
+          if (dist > 30) {
+            vCtx.save();
+            vCtx.globalAlpha = s.alpha * 0.18;
+            vCtx.font = `600 ${s.fsize * 0.85}px 'JetBrains Mono', monospace`;
+            vCtx.fillStyle = s.color;
+            vCtx.textAlign = 'center';
+            vCtx.textBaseline = 'middle';
+            vCtx.fillText(s.text, s.x - s.vx * 2.5, s.y - s.vy * 2.5);
+            vCtx.restore();
+          }
 
           if (dist < 16) {
             s.state = 'impact';
@@ -3035,13 +3081,12 @@
           }
 
         } else if (s.state === 'impact') {
-          s.alpha -= 0.025;
+          s.alpha -= 0.028;
           if (s.alpha <= 0) { s.alpha = 0; s.state = 'done'; return; }
         }
 
-        // Draw on canvas — cleared every frame so no trails possible
         vCtx.save();
-        vCtx.globalAlpha = s.alpha;
+        vCtx.globalAlpha = Math.max(0, s.alpha);
         vCtx.font = `600 ${s.fsize}px 'JetBrains Mono', monospace`;
         vCtx.fillStyle = s.color;
         vCtx.textAlign = 'center';
