@@ -3291,6 +3291,606 @@
     /* ═══════════════════════════════════════════════
        LUSION-STYLE TEXT SPLITS & CLIP REVEALS
        ═══════════════════════════════════════════════ */
+    /* ══════════════════════════════════════
+       PAGE 3 REBUILD — Studio Assembly
+       ══════════════════════════════════════ */
+    #video-reveal {
+      height: 400vh;
+      background:
+        radial-gradient(circle at 50% 14%, rgba(240,99,90,0.22), transparent 18%),
+        radial-gradient(circle at 82% 20%, rgba(92,208,255,0.14), transparent 24%),
+        radial-gradient(circle at 14% 26%, rgba(255,255,255,0.08), transparent 16%),
+        linear-gradient(180deg, #070b12 0%, #0b1120 36%, #0a1019 100%);
+      overflow: clip;
+    }
+    #video-reveal::before {
+      display: block;
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px),
+        linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 72px 72px;
+      mask: linear-gradient(180deg, rgba(0,0,0,0.7), rgba(0,0,0,0.16) 72%, transparent 100%);
+      -webkit-mask: linear-gradient(180deg, rgba(0,0,0,0.7), rgba(0,0,0,0.16) 72%, transparent 100%);
+      opacity: 0.2;
+    }
+    #video-sticky {
+      background:
+        radial-gradient(circle at 50% 48%, rgba(255,255,255,0.08), transparent 26%),
+        radial-gradient(circle at 50% 85%, rgba(240,99,90,0.12), transparent 32%),
+        linear-gradient(180deg, rgba(7,11,18,0.86) 0%, rgba(7,11,18,0.94) 100%);
+      perspective: 1200px;
+    }
+    #video-inner-3d,
+    #tunnel-canvas,
+    #speed-canvas,
+    #shockwave-canvas,
+    #dive-chroma,
+    #video-clip-mask,
+    #dive-letterbox-top,
+    #dive-letterbox-bottom,
+    #dive-edge-vignette,
+    #dive-portal-glow,
+    #dive-scanlines,
+    #video-progress-bar,
+    #dive-depth-hud,
+    .build-orbs,
+    .bf-hud,
+    .bf-sweep,
+    .bf-glitch,
+    .bf-ship-glow,
+    #ship-particles {
+      display: none !important;
+    }
+    #build-stage {
+      grid-template-columns: 250px minmax(0, 1fr) 250px;
+      align-items: center;
+      padding: 88px 56px 44px;
+      gap: 28px;
+      pointer-events: none;
+    }
+    #build-backdrop {
+      inset: -10%;
+      z-index: -1;
+    }
+    #build-backdrop::before {
+      background:
+        radial-gradient(circle at 50% 50%, rgba(240,99,90,0.22), transparent 22%),
+        radial-gradient(circle at 50% 50%, rgba(92,208,255,0.12), transparent 38%);
+      filter: blur(34px);
+      opacity: 1;
+      transform: none;
+      mix-blend-mode: screen;
+    }
+    #build-backdrop::after {
+      background:
+        linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 180px);
+      opacity: 0.24;
+      transform: perspective(1200px) rotateX(78deg) translateY(24%);
+      transform-origin: 50% 100%;
+      filter: none;
+    }
+    #build-spotlight {
+      opacity: 1;
+      width: 80vw;
+      height: 80vw;
+      max-width: 1100px;
+      max-height: 1100px;
+      background: radial-gradient(circle, rgba(240,99,90,0.22) 0%, rgba(92,208,255,0.12) 28%, transparent 70%);
+      animation: spotlightPulse 6s ease-in-out infinite;
+    }
+    #build-blueprint {
+      opacity: 0.36;
+      inset: -4%;
+      transform: none;
+      background-image:
+        linear-gradient(rgba(132,155,190,0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(132,155,190,0.12) 1px, transparent 1px);
+      background-size: 38px 38px;
+      mask: radial-gradient(circle at 50% 46%, black 18%, rgba(0,0,0,0.38) 50%, transparent 76%);
+      -webkit-mask: radial-gradient(circle at 50% 46%, black 18%, rgba(0,0,0,0.38) 50%, transparent 76%);
+      animation: blueprintDrift 24s linear infinite;
+    }
+    #build-phase-track,
+    #build-telemetry {
+      opacity: 1;
+      transform: none;
+      padding: 20px 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 28px;
+      background: linear-gradient(180deg, rgba(13,18,30,0.84), rgba(9,13,22,0.7));
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        0 20px 60px -34px rgba(0,0,0,0.88);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+    }
+    .bp-header,
+    .bt-header {
+      border-bottom-color: rgba(255,255,255,0.08);
+    }
+    .bp-h-num,
+    .bp-row.bp-active .bp-name,
+    .bp-row.bp-active .bp-num,
+    .bp-check,
+    .bt-h-dot,
+    .bt-v.bt-live,
+    .bf-rail-text {
+      color: #63d7ff;
+    }
+    .bp-h-label,
+    .bp-num,
+    .bp-meta,
+    .bt-k {
+      color: rgba(223,231,246,0.54);
+    }
+    .bp-row {
+      margin-top: 10px;
+      padding: 14px 14px 14px 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.04);
+      opacity: 0.42;
+    }
+    .bp-row.bp-active {
+      background: linear-gradient(135deg, rgba(99,215,255,0.16), rgba(240,99,90,0.08));
+      border-color: rgba(99,215,255,0.3);
+      box-shadow: 0 20px 40px -32px rgba(99,215,255,0.85);
+      opacity: 1;
+    }
+    .bp-row.bp-done {
+      opacity: 0.7;
+    }
+    .bp-marker {
+      width: 3px;
+      background: rgba(255,255,255,0.1);
+    }
+    .bp-row.bp-active .bp-marker {
+      background: linear-gradient(180deg, #63d7ff, #f0635a);
+      box-shadow: 0 0 18px rgba(99,215,255,0.5);
+    }
+    .bp-name,
+    .bt-h-label,
+    .bt-v {
+      color: #f7f8fc;
+    }
+    #build-frame-wrap {
+      padding-bottom: 0;
+      gap: 18px;
+      filter: drop-shadow(0 36px 80px rgba(0,0,0,0.48));
+    }
+    #build-frame-wrap::before,
+    #build-frame-wrap::after {
+      display: none;
+    }
+    #build-frame {
+      width: min(960px, 70vw);
+      max-height: 78vh;
+      padding: 12px;
+      border-radius: 28px;
+      background:
+        linear-gradient(180deg, rgba(232,239,251,0.92) 0%, rgba(153,163,181,0.96) 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.72),
+        0 0 0 1px rgba(255,255,255,0.12),
+        0 0 0 2px rgba(98,113,146,0.24),
+        0 42px 100px -46px rgba(0,0,0,0.9),
+        0 24px 70px -46px rgba(99,215,255,0.85);
+      opacity: 1;
+      transform: none;
+      perspective: 1600px;
+    }
+    #build-stage.bs-in #build-frame {
+      opacity: 1;
+      transform: none;
+    }
+    #build-stage[data-phase="1"] #build-frame {
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.72),
+        0 0 0 1px rgba(255,255,255,0.12),
+        0 0 0 2px rgba(99,215,255,0.26),
+        0 40px 100px -46px rgba(0,0,0,0.88),
+        0 24px 70px -40px rgba(99,215,255,0.75);
+    }
+    #build-stage[data-phase="2"] #build-frame {
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.72),
+        0 0 0 1px rgba(255,255,255,0.14),
+        0 0 0 2px rgba(240,99,90,0.3),
+        0 40px 100px -46px rgba(0,0,0,0.88),
+        0 24px 70px -38px rgba(240,99,90,0.8);
+    }
+    #build-stage[data-phase="3"] #build-frame,
+    #build-frame.bf-shipped {
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.76),
+        0 0 0 1px rgba(255,255,255,0.16),
+        0 0 0 2px rgba(99,215,255,0.42),
+        0 46px 110px -44px rgba(0,0,0,0.9),
+        0 30px 84px -40px rgba(99,215,255,0.78),
+        0 8px 34px -16px rgba(240,99,90,0.46);
+    }
+    .bf-statusbar {
+      height: 40px;
+      padding: 0 16px;
+      border-radius: 18px 18px 0 0;
+      background: linear-gradient(180deg, rgba(245,248,255,0.92), rgba(219,228,243,0.76));
+      color: rgba(22,28,42,0.82);
+    }
+    .bf-url {
+      letter-spacing: 1.5px;
+      color: rgba(22,28,42,0.78);
+    }
+    .bf-tabstate {
+      color: #0f8a5f;
+    }
+    .bf-screen {
+      position: relative;
+      overflow: hidden;
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(5,8,14,0.88), rgba(10,13,21,0.92));
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.08),
+        inset 0 18px 30px -24px rgba(255,255,255,0.08);
+    }
+    .bf-screen::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(115deg, transparent 0%, rgba(99,215,255,0.12) 50%, transparent 100%),
+        linear-gradient(180deg, rgba(255,255,255,0.04), transparent 22%);
+      z-index: 0;
+    }
+    .build-site {
+      inset: 18px;
+      border-radius: 22px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(240,99,90,0.12), transparent 22%),
+        radial-gradient(circle at 82% 14%, rgba(99,215,255,0.12), transparent 22%),
+        linear-gradient(180deg, #f8f2e9 0%, #eee5d8 100%);
+      box-shadow:
+        0 22px 48px -30px rgba(18,19,28,0.52),
+        inset 0 0 0 1px rgba(255,255,255,0.38);
+      transform-origin: 50% 50%;
+    }
+    .build-site::after {
+      opacity: 0.22;
+      background:
+        linear-gradient(rgba(31,41,60,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(31,41,60,0.06) 1px, transparent 1px);
+      background-size: 22px 22px;
+      mask: linear-gradient(180deg, rgba(0,0,0,0.45), transparent 95%);
+      -webkit-mask: linear-gradient(180deg, rgba(0,0,0,0.45), transparent 95%);
+      animation: none;
+    }
+    .bs-piece {
+      opacity: 0;
+      transform: translateY(44px) scale(0.965);
+      filter: blur(12px);
+      transition: none;
+    }
+    .bs-piece.bs-piece-in {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+    .bs-nav {
+      padding: 18px 24px 16px;
+      background: rgba(255,255,255,0.78);
+      border-bottom: 1px solid rgba(35,41,54,0.08);
+      box-shadow: 0 18px 34px -28px rgba(0,0,0,0.28);
+    }
+    .bs-logo {
+      letter-spacing: 1.4px;
+    }
+    .bs-nav-link {
+      color: rgba(19,22,28,0.72);
+    }
+    .bs-hero {
+      min-height: 460px;
+      background:
+        radial-gradient(circle at 20% 18%, rgba(240,99,90,0.32), transparent 22%),
+        radial-gradient(circle at 78% 20%, rgba(99,215,255,0.22), transparent 20%),
+        #0d1118;
+      box-shadow: inset 0 -1px 0 rgba(255,255,255,0.08);
+    }
+    .bs-hero-video {
+      transform: scale(1.015);
+      animation: none;
+      object-position: center 28%;
+      filter: saturate(1.08) contrast(1.08) brightness(0.8);
+    }
+    .bs-hero-overlay {
+      background:
+        linear-gradient(90deg, rgba(7,9,13,0.9) 0%, rgba(7,9,13,0.56) 42%, rgba(7,9,13,0.16) 74%, rgba(7,9,13,0.58) 100%),
+        radial-gradient(circle at 16% 18%, rgba(240,99,90,0.32), transparent 56%),
+        linear-gradient(180deg, rgba(7,9,13,0.14) 0%, rgba(7,9,13,0.28) 48%, rgba(7,9,13,0.86) 100%);
+    }
+    .bs-hero-grain {
+      opacity: 0.09;
+    }
+    .bs-hero::before {
+      left: 20px;
+      right: 20px;
+      top: 20px;
+      background: repeating-linear-gradient(90deg, rgba(100,213,255,0.55) 0 6px, transparent 6px 14px);
+    }
+    .bs-hero::after {
+      width: 118px;
+      height: 118px;
+      right: 24px;
+      top: 24px;
+      border-color: rgba(99,215,255,0.34);
+      box-shadow:
+        inset 0 0 0 16px rgba(99,215,255,0.05),
+        0 0 30px rgba(99,215,255,0.18);
+    }
+    .bs-hero-content {
+      left: 42px;
+      right: 40%;
+    }
+    .bs-eyebrow {
+      color: rgba(234,240,250,0.92);
+      border-bottom-color: rgba(99,215,255,0.4);
+    }
+    .bs-title {
+      letter-spacing: -1.6px;
+      text-shadow: 0 10px 34px rgba(0,0,0,0.35);
+    }
+    .bs-title em {
+      color: #63d7ff;
+    }
+    .bs-hero-copy {
+      color: rgba(234,240,250,0.78);
+    }
+    .bs-spec {
+      border-color: rgba(255,255,255,0.1);
+      background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03));
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 18px 34px -28px rgba(0,0,0,0.65);
+    }
+    .bs-spec-k {
+      color: rgba(224,235,249,0.58);
+    }
+    .bs-sub-block,
+    .bs-cards,
+    .bs-proof,
+    .bs-quote,
+    .bs-info-card,
+    .bs-foot {
+      background-color: rgba(255,252,247,0.92);
+    }
+    .bs-card {
+      box-shadow: 0 28px 44px -34px rgba(18,19,28,0.42);
+    }
+    .bs-section.dark,
+    .bs-mini-cta {
+      background:
+        radial-gradient(circle at 18% 16%, rgba(99,215,255,0.2), transparent 34%),
+        radial-gradient(circle at 78% 18%, rgba(240,99,90,0.14), transparent 28%),
+        #121721;
+    }
+    .bs-proof-strip,
+    .bs-info-grid,
+    .bs-piece[data-piece="stats"],
+    .bs-piece[data-piece="foot"] {
+      background: rgba(19,25,36,0.08);
+    }
+    .build-svg {
+      position: absolute;
+      inset: 18px;
+      width: auto;
+      height: auto;
+      z-index: 4;
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+    .bs-bp {
+      opacity: 0;
+    }
+    .bs-bp rect,
+    .bs-bp line,
+    .bs-bp circle {
+      stroke: rgba(99,215,255,0.98);
+      stroke-width: 1.8;
+      stroke-dasharray: 220;
+      stroke-dashoffset: 220;
+      filter: drop-shadow(0 0 8px rgba(99,215,255,0.22));
+      animation: none !important;
+    }
+    .build-code-overlay {
+      left: 8%;
+      right: auto;
+      top: 10%;
+      bottom: auto;
+      width: 46%;
+      height: 44%;
+      border-radius: 24px;
+      border-color: rgba(99,215,255,0.3);
+      background:
+        linear-gradient(180deg, rgba(10,14,22,0.97), rgba(7,10,16,0.96));
+      box-shadow:
+        0 34px 80px -38px rgba(0,0,0,0.92),
+        0 0 0 1px rgba(255,255,255,0.04),
+        0 0 0 10px rgba(99,215,255,0.04);
+    }
+    .ct-tabbar {
+      background: rgba(255,255,255,0.03);
+      border-bottom-color: rgba(99,215,255,0.18);
+    }
+    .ct-tab.ct-tab-active {
+      color: #63d7ff;
+      box-shadow: inset 0 -2px 0 #63d7ff;
+    }
+    .ct-tag {
+      color: #63d7ff;
+    }
+    .ct-attr,
+    .ct-sel {
+      color: #f4a261;
+    }
+    .ct-tab-status {
+      color: #6ef0a0;
+    }
+    .bf-rail {
+      min-width: min(540px, 68vw);
+      padding: 13px 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 999px;
+      background: rgba(10,14,22,0.74);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        0 20px 50px -34px rgba(0,0,0,0.82);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+    .bf-rail-dot {
+      background: linear-gradient(135deg, #63d7ff, #f0635a);
+      box-shadow: 0 0 14px rgba(99,215,255,0.58);
+    }
+    .bf-rail-text,
+    .bf-rail-time {
+      color: #eef4ff;
+    }
+    #build-caption {
+      display: block !important;
+      position: absolute;
+      left: 50%;
+      top: 38px;
+      bottom: auto;
+      width: min(700px, 82vw);
+      transform: translateX(-50%);
+      text-align: center;
+      opacity: 1;
+      z-index: 18;
+      pointer-events: none;
+    }
+    .bc-eyebrow,
+    .bc-title,
+    .bc-body {
+      opacity: 1;
+      transform: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .bc-eyebrow {
+      color: rgba(99,215,255,0.8);
+      letter-spacing: 4px;
+      margin-bottom: 12px;
+    }
+    .bc-title {
+      color: #f7f9ff;
+      font-size: clamp(34px, 4vw, 60px);
+      line-height: 0.98;
+      letter-spacing: -1.4px;
+      text-shadow: 0 16px 50px rgba(0,0,0,0.42);
+      margin-bottom: 12px;
+    }
+    .bc-body {
+      max-width: 620px;
+      margin: 0 auto;
+      color: rgba(223,231,246,0.7);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+    .bc-flip .bc-eyebrow,
+    .bc-flip .bc-title,
+    .bc-flip .bc-body {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    #build-stage[data-phase="3"] .build-site,
+    #build-stage[data-phase="3"] #build-frame,
+    #build-stage[data-phase="3"] .bf-screen {
+      pointer-events: auto;
+    }
+    #build-stage[data-phase="3"] .build-site {
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    .bs-live-toast {
+      border: 1px solid rgba(99,215,255,0.18);
+      background: linear-gradient(135deg, rgba(12,17,27,0.95), rgba(20,28,42,0.92));
+      box-shadow: 0 24px 46px -28px rgba(0,0,0,0.82);
+    }
+    .bs-live-toast a {
+      background: #63d7ff;
+      color: #091019;
+    }
+    @media (max-width: 1100px) {
+      #video-reveal {
+        height: 360vh;
+      }
+      #build-stage {
+        grid-template-columns: 1fr;
+        padding: 118px 20px 40px;
+      }
+      #build-phase-track,
+      #build-telemetry {
+        display: none !important;
+      }
+      #build-frame {
+        width: min(98vw, 760px);
+      }
+      #build-caption {
+        top: 74px;
+        width: min(90vw, 620px);
+      }
+      .build-code-overlay {
+        left: 6%;
+        width: 56%;
+      }
+    }
+    @media (max-width: 700px) {
+      #video-reveal {
+        height: 320vh;
+      }
+      #build-stage {
+        padding-top: 132px;
+      }
+      #build-caption {
+        top: 88px;
+      }
+      .bc-title {
+        font-size: clamp(28px, 10vw, 42px);
+      }
+      .bc-body {
+        font-size: 12px;
+      }
+      #build-frame {
+        width: min(96vw, 420px);
+        padding: 8px;
+        border-radius: 22px;
+      }
+      .bf-statusbar {
+        height: 34px;
+        font-size: 7px;
+        padding: 0 12px;
+      }
+      .build-site {
+        inset: 10px;
+        border-radius: 16px;
+      }
+      .bs-hero {
+        min-height: 320px;
+      }
+      .build-code-overlay {
+        display: none;
+      }
+      .bf-rail {
+        min-width: 0;
+        width: 100%;
+      }
+    }
+
     .gsap-reveal {
       opacity: 0;
       transform: translateY(60px);
@@ -6106,6 +6706,358 @@
     updateNav();
   }
 
+  window.__studioBuildReplaced = true;
+
+  /* ── 8. PAGE 3 REBUILD ── */
+  if (window.__studioBuildReplaced) {
+    const revealSection  = document.getElementById('video-reveal');
+    const buildStage     = document.getElementById('build-stage');
+    const buildFrameWrap = document.getElementById('build-frame-wrap');
+    const buildFrame     = document.getElementById('build-frame');
+    const buildSite      = document.getElementById('build-site');
+    const buildSvg       = document.getElementById('build-svg');
+    const buildPhaseTrack = document.getElementById('build-phase-track');
+    const buildTelemetry = document.getElementById('build-telemetry');
+    const blCode         = document.getElementById('build-code');
+    const codeStream     = document.getElementById('code-stream');
+    const codeLines      = codeStream ? Array.from(codeStream.querySelectorAll('.ct-line')) : [];
+    const sitePieces     = buildSite ? Array.from(buildSite.querySelectorAll('.bs-piece')) : [];
+    const blueprintGroups = buildSvg ? Array.from(buildSvg.querySelectorAll('.bs-bp')) : [];
+    const blueprintShapes = blueprintGroups.map(group => Array.from(group.querySelectorAll('rect, line, circle')));
+    const phaseRows      = Array.from(document.querySelectorAll('.bp-row'));
+    const bcEyebrow      = document.getElementById('bc-eyebrow');
+    const bcTitle        = document.getElementById('bc-title');
+    const bcBody         = document.getElementById('bc-body');
+    const buildCaption   = document.getElementById('build-caption');
+    const btPhase        = document.getElementById('bt-phase');
+    const btLines        = document.getElementById('bt-lines');
+    const btRender       = document.getElementById('bt-render');
+    const btDeploy       = document.getElementById('bt-deploy');
+    const btCpu          = document.getElementById('bt-cpu');
+    const btSize         = document.getElementById('bt-size');
+    const btSpark        = document.getElementById('bt-spark');
+    const bfRailText     = document.getElementById('bf-rail-text');
+    const bfRailTime     = document.getElementById('bf-rail-time');
+    const liveToast      = buildSite ? buildSite.querySelector('.bs-live-toast') : null;
+
+    if (!revealSection || !buildStage || !buildFrameWrap || !buildFrame || !buildSite) {
+      window._videoRevealUnlock = () => {};
+    } else {
+      const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+      const PHASE_COPY = [
+        {
+          eyebrow: 'SYSTEM 01 / 04 · STRATEGY',
+          title:   'We choreograph trust before we draw a single pixel.',
+          body:    'A premium site sells because the story, proof, and call to action are engineered before the visuals turn on.',
+          ph:      'STRATEGY',
+          rail:    'studio · strategy',
+        },
+        {
+          eyebrow: 'SYSTEM 02 / 04 · ASSEMBLY',
+          title:   'The page comes together like a product, not a template.',
+          body:    'Every section drops into place with purpose so the visitor feels momentum, clarity, and confidence.',
+          ph:      'ASSEMBLY',
+          rail:    'studio · assembly',
+        },
+        {
+          eyebrow: 'SYSTEM 03 / 04 · CRAFT',
+          title:   'Then the custom code gives the experience its edge.',
+          body:    'Speed, hierarchy, motion, responsiveness, and polish are tuned so the site feels expensive in motion and at rest.',
+          ph:      'CRAFT',
+          rail:    'studio · craft',
+        },
+        {
+          eyebrow: 'SYSTEM 04 / 04 · LIVE',
+          title:   'Finally the noise drops away and the website just sells.',
+          body:    'The finished screen is calm, readable, interactive, and ready to convert the second someone lands on it.',
+          ph:      'LIVE',
+          rail:    'studio · live',
+        },
+      ];
+
+      let currentPhase = -1;
+      let captionTimer = null;
+
+      function setPhase(idx) {
+        if (idx === currentPhase) return;
+        currentPhase = idx;
+        buildStage.setAttribute('data-phase', String(idx));
+        buildFrame.classList.toggle('bf-shipped', idx === 3);
+
+        phaseRows.forEach((row, rowIdx) => {
+          row.classList.toggle('bp-active', rowIdx === idx);
+          row.classList.toggle('bp-done', rowIdx < idx);
+        });
+
+        const copy = PHASE_COPY[idx] || PHASE_COPY[0];
+        if (captionTimer) clearTimeout(captionTimer);
+        if (buildCaption) buildCaption.classList.add('bc-flip');
+        captionTimer = setTimeout(() => {
+          if (bcEyebrow) bcEyebrow.textContent = copy.eyebrow;
+          if (bcTitle) bcTitle.textContent = copy.title;
+          if (bcBody) bcBody.textContent = copy.body;
+          if (btPhase) btPhase.textContent = copy.ph;
+          if (bfRailText) bfRailText.textContent = copy.rail;
+          if (buildCaption) buildCaption.classList.remove('bc-flip');
+        }, 120);
+
+        if (btDeploy) {
+          btDeploy.textContent = idx === 3 ? 'LIVE' : idx === 2 ? 'VERIFYING' : 'STANDBY';
+          btDeploy.classList.toggle('bt-live', idx === 3);
+        }
+      }
+
+      function setAssemblyProgress(progress) {
+        sitePieces.forEach((piece, idx) => {
+          const start = idx * 0.13;
+          const local = clamp((progress - start) / 0.34, 0, 1);
+          const y = (1 - local) * 46;
+          const scale = 0.965 + local * 0.035;
+          const blur = (1 - local) * 12;
+
+          piece.classList.toggle('bs-piece-in', local > 0.03);
+          piece.style.opacity = local.toFixed(3);
+          piece.style.transform = `translateY(${y.toFixed(1)}px) scale(${scale.toFixed(3)})`;
+          piece.style.filter = `blur(${blur.toFixed(2)}px)`;
+
+          const group = blueprintGroups[idx];
+          const shapes = blueprintShapes[idx] || [];
+          if (!group) return;
+
+          const blueprintLead = clamp((progress - start + 0.05) / 0.22, 0, 1);
+          const blueprintFade = clamp((local - 0.44) / 0.56, 0, 1);
+          group.style.opacity = (blueprintLead * (1 - blueprintFade)).toFixed(3);
+          shapes.forEach(shape => {
+            shape.style.strokeDashoffset = (220 - blueprintLead * 220).toFixed(1);
+          });
+        });
+
+        if (btRender) {
+          const pct = Math.round(progress * 100);
+          btRender.textContent = pct + ' %';
+          btRender.classList.toggle('bt-live', pct >= 100);
+        }
+      }
+
+      function positionCursor(lineIdx) {
+        const cursor = document.getElementById('code-cursor');
+        if (!cursor || lineIdx < 0 || lineIdx >= codeLines.length || !blCode) return;
+        const line = codeLines[lineIdx];
+        const content = line.querySelector('.ct-content') || line;
+        const contentRect = content.getBoundingClientRect();
+        const codeRect = blCode.getBoundingClientRect();
+        cursor.style.left = (contentRect.right - codeRect.left + 2) + 'px';
+        cursor.style.top  = (contentRect.top - codeRect.top + 2) + 'px';
+      }
+
+      function setCodeProgress(progress) {
+        const visibleLines = progress <= 0 ? -1 : Math.floor(progress * codeLines.length);
+        codeLines.forEach((line, idx) => {
+          line.classList.toggle('ct-typed', idx <= visibleLines);
+        });
+
+        if (btLines) {
+          const lineCount = progress <= 0 ? 0 : Math.min(codeLines.length, visibleLines + 1) * 4 + 18;
+          btLines.textContent = String(lineCount).padStart(3, '0');
+        }
+
+        if (progress > 0 && progress < 1) {
+          positionCursor(visibleLines);
+        }
+      }
+
+      function setLiveState(isLive) {
+        buildSite.style.pointerEvents = isLive ? 'auto' : 'none';
+        if (!isLive) buildSite.scrollTop = 0;
+        if (liveToast) liveToast.style.pointerEvents = isLive ? 'auto' : 'none';
+      }
+
+      function updateTelemetry(progress) {
+        const strategy = clamp(progress / 0.18, 0, 1);
+        const assembly = clamp((progress - 0.18) / 0.32, 0, 1);
+        const craft = clamp((progress - 0.5) / 0.26, 0, 1);
+        const live = clamp((progress - 0.76) / 0.24, 0, 1);
+
+        const cpu =
+          live > 0 ? 24 - live * 8 :
+          craft > 0 ? 64 + craft * 18 :
+          assembly > 0 ? 26 + assembly * 32 :
+          12 + strategy * 10;
+
+        const size = 4.6 + progress * 28.7;
+        const seconds = Math.round(progress * 48);
+
+        if (btCpu) btCpu.textContent = String(Math.round(cpu)).padStart(2, '0') + ' %';
+        if (btSize) btSize.textContent = size.toFixed(1) + ' kb';
+        if (bfRailTime) bfRailTime.textContent = '00:' + String(seconds).padStart(2, '0');
+
+        if (btSpark) {
+          const points = Array.from({ length: 24 }, (_, idx) => {
+            const x = (idx / 23) * 100;
+            const seed = progress * 5.2 + idx * 0.34;
+            const value = clamp(20 + Math.sin(seed) * 14 + Math.cos(seed * 1.6) * 9 + cpu * 0.65, 4, 96);
+            const y = 30 - (value / 100) * 26;
+            return `${x.toFixed(1)},${y.toFixed(1)}`;
+          }).join(' ');
+          btSpark.setAttribute('points', points);
+        }
+      }
+
+      buildStage.classList.add('bs-in');
+      buildStage.setAttribute('data-phase', '0');
+      setLiveState(false);
+      setPhase(0);
+      setAssemblyProgress(0);
+      setCodeProgress(0);
+      updateTelemetry(0);
+
+      sitePieces.forEach(piece => {
+        piece.style.opacity = '0';
+        piece.style.transform = 'translateY(46px) scale(0.965)';
+        piece.style.filter = 'blur(12px)';
+      });
+
+      blueprintGroups.forEach((group, idx) => {
+        group.style.opacity = '0';
+        (blueprintShapes[idx] || []).forEach(shape => {
+          shape.style.strokeDasharray = '220';
+          shape.style.strokeDashoffset = '220';
+        });
+      });
+
+      if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+        if (buildFrameWrap) buildFrameWrap.style.transform = '';
+        buildSite.style.transform = 'scale(1)';
+        buildSite.style.filter = 'none';
+        if (blCode) blCode.style.display = 'none';
+        if (liveToast) {
+          liveToast.style.opacity = '1';
+          liveToast.style.transform = 'translateY(0)';
+        }
+        setAssemblyProgress(1);
+        setCodeProgress(1);
+        setPhase(3);
+        setLiveState(true);
+      } else {
+        gsap.registerPlugin(ScrollTrigger);
+
+        const introTargets = [buildPhaseTrack, buildTelemetry, buildCaption].filter(Boolean);
+        const assemblyProxy = { value: 0 };
+        const codeProxy = { value: 0 };
+        const codeTarget = blCode || { opacity: 0 };
+        const toastTarget = liveToast || { opacity: 0 };
+
+        gsap.set(introTargets, { opacity: 0, y: 26 });
+        gsap.set(buildFrameWrap, {
+          y: 92,
+          scale: 0.88,
+          rotateX: 18,
+          rotateY: -10,
+          transformOrigin: '50% 50%',
+        });
+        gsap.set(buildSite, {
+          scale: 0.93,
+          filter: 'saturate(0.82) brightness(0.92)',
+          transformOrigin: '50% 50%',
+        });
+        if (blCode) gsap.set(blCode, { autoAlpha: 0, y: 32, scale: 0.95 });
+        if (liveToast) gsap.set(liveToast, { autoAlpha: 0, y: 18 });
+
+        gsap.timeline({
+          defaults: { ease: 'power2.out' },
+          scrollTrigger: {
+            trigger: revealSection,
+            start: 'top top',
+            end: '+=3200',
+            pin: '#video-sticky',
+            scrub: 0.75,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+            onUpdate(self) {
+              const progress = self.progress;
+              const phase = progress < 0.18 ? 0 : progress < 0.5 ? 1 : progress < 0.8 ? 2 : 3;
+              const live = progress > 0.82;
+
+              setPhase(phase);
+              updateTelemetry(progress);
+              setLiveState(live);
+
+              buildSite.style.transform = `scale(${(0.93 + progress * 0.07).toFixed(3)})`;
+              buildSite.style.filter = `saturate(${(0.82 + progress * 0.18).toFixed(3)}) brightness(${(0.92 + progress * 0.08).toFixed(3)})`;
+            },
+            onLeaveBack() {
+              setPhase(0);
+              setAssemblyProgress(0);
+              setCodeProgress(0);
+              setLiveState(false);
+              updateTelemetry(0);
+            }
+          }
+        })
+          .to(introTargets, {
+            opacity: 1,
+            y: 0,
+            duration: 0.65,
+            stagger: 0.08
+          }, 0)
+          .to(buildFrameWrap, {
+            y: 0,
+            scale: 1,
+            rotateX: 0,
+            rotateY: 0,
+            duration: 1.15,
+            ease: 'power3.out'
+          }, 0.04)
+          .to(buildSite, {
+            scale: 0.97,
+            duration: 1.1
+          }, 0.24)
+          .to(assemblyProxy, {
+            value: 1,
+            duration: 1.75,
+            ease: 'none',
+            onUpdate() {
+              setAssemblyProgress(assemblyProxy.value);
+            }
+          }, 0.5)
+          .to(codeTarget, {
+            autoAlpha: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.42
+          }, 1.62)
+          .to(codeProxy, {
+            value: 1,
+            duration: 0.9,
+            ease: 'none',
+            onUpdate() {
+              setCodeProgress(codeProxy.value);
+            }
+          }, 1.68)
+          .to(codeTarget, {
+            autoAlpha: 0,
+            y: -18,
+            duration: 0.42,
+            ease: 'power2.in'
+          }, 2.56)
+          .to(toastTarget, {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.45
+          }, 2.66);
+
+        ScrollTrigger.refresh();
+      }
+
+      window._videoRevealUnlock = () => {
+        const end = revealSection.offsetTop + revealSection.offsetHeight - window.innerHeight;
+        window.scrollTo({ top: end + 2, behavior: 'instant' });
+      };
+    }
+  }
+
+  if (!window.__studioBuildReplaced) {
+
   /* ── 8. SCROLL-PINNED DIVE REVEAL ── */
   {
     const revealSection = document.getElementById('video-reveal');
@@ -7010,6 +7962,7 @@
       if (buildFrameWrap) buildFrameWrap.style.transform = '';
     };
   }
+  }
 
   function jumpToSection(targetId) {
     const target = document.getElementById(targetId);
@@ -7360,7 +8313,7 @@
 
     if (buildVideo && revealSection) {
       const syncBuildVideo = () => {
-        const stageLive = buildStageEl && Number(buildStageEl.dataset.phase || -1) >= 2;
+        const stageLive = buildStageEl && Number(buildStageEl.dataset.phase || -1) >= 3;
         const rect = revealSection.getBoundingClientRect();
         const visible = rect.top < window.innerHeight && rect.bottom > 0 && !document.hidden;
         if (stageLive && visible) {
