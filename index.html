@@ -6787,24 +6787,31 @@
       fc.style.opacity = fcA.toFixed(3);
 
       // ── PHASE GATING ──
-      // 0.04→0.18 BLUEPRINT (frame settles, atmospheric warmup)
-      // 0.18→0.62 ASSEMBLE (the meat — pieces fly in)
-      // 0.62→0.82 CODE (overlay appears, types out, dissolves)
-      // 0.82→1.00 SHIPPED (final glow, deploy stamp)
+      // 0.04→0.10 BLUEPRINT  (frame drops in)
+      // 0.10→0.40 ASSEMBLE   (pieces fly in — site builds fast)
+      // 0.40→0.55 CODE       (code overlay flashes, then fades — site visible behind)
+      // 0.55→1.00 SHIPPED    (assembled site live, cursor tours it)
       let p;
-      if      (displayRatio < 0.18) p = 0;
-      else if (displayRatio < 0.62) p = 1;
-      else if (displayRatio < 0.82) p = 2;
+      if      (displayRatio < 0.10) p = 0;
+      else if (displayRatio < 0.40) p = 1;
+      else if (displayRatio < 0.55) p = 2;
       else                          p = 3;
       if (bsIn) setPhase(p);
 
-      // ── ASSEMBLY: 0.16 → 0.60 maps to assemblyT 0..1 ──
-      const assemT = Math.max(0, Math.min(1, (displayRatio - 0.16) / 0.44));
+      // ── ASSEMBLY: 0.08 → 0.38 — fast, punchy ──
+      const assemT = Math.max(0, Math.min(1, (displayRatio - 0.08) / 0.30));
       setAssemblyProgress(assemT);
 
-      // ── CODE OVERLAY: 0.62 → 0.80 maps to typing 0..1 ──
+      // Force all pieces visible once we're in the code or shipped phase
+      if (p >= 2 && assemT < 1) {
+        sitePieces.forEach((piece, i) => {
+          if (!pieceState[i].landed) landPiece(i);
+        });
+      }
+
+      // ── CODE OVERLAY: 0.40 → 0.55 maps to typing 0..1 ──
       if (p === 2) {
-        const codeT = (displayRatio - 0.62) / 0.18;
+        const codeT = (displayRatio - 0.40) / 0.15;
         const totalLines = codeLines.length;
         const visibleLines = Math.floor(codeT * totalLines);
         codeLines.forEach((line, i) => {
