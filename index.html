@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -14,7 +14,7 @@
   <meta name="description" content="Custom websites for local businesses. Beautiful, professional, polished, memorable, effective.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
@@ -22,8 +22,8 @@
       --bg: #FEF9F4; --surface: #FFFFFF;
       --ink: #2B2547; --muted: #5A547A; --accent: #F0635A; --accent2: #F4A27A;
       --line: rgba(43,37,71,0.08);
-      --font-body: 'Inter', sans-serif;
-      --font-serif: 'DM Serif Display', serif;
+      --font-body: 'Sora', 'Inter', sans-serif;
+      --font-serif: 'Source Serif 4', 'DM Serif Display', serif;
       --font-mono: 'JetBrains Mono', monospace;
       transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
@@ -111,10 +111,10 @@
       content: '';
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      height: 55vh;
-      background: linear-gradient(to bottom, transparent 0%, rgba(254,249,244,0.5) 30%, rgba(254,249,244,0.92) 70%, #FEF9F4 100%);
+      height: 14vh;
+      background: linear-gradient(to bottom, transparent 0%, rgba(254,249,244,0.42) 70%, rgba(254,249,244,0.78) 100%);
       pointer-events: none;
-      z-index: 6;
+      z-index: 2;
     }
     #particle-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0.5; }
     .deco-layer { position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
@@ -290,7 +290,7 @@
     .hero-right-card {
       background: rgba(43,37,71,0.04);
       border: 1px solid rgba(43,37,71,0.09);
-      border-radius: 16px;
+      border-radius: 8px;
       padding: 28px 32px;
       width: 100%;
       max-width: 380px;
@@ -2095,9 +2095,9 @@
     /* The base "site" — fills the screen, parts assemble in */
     .build-site {
       position: absolute; inset: 0;
-      background: #f7f1e6;
-      font-family: "Aptos", "Segoe UI", Arial, sans-serif;
-      color: #211b16;
+      background: #f5f3ee;
+      font-family: "Sora", "Aptos", "Segoe UI", Arial, sans-serif;
+      color: #16171a;
       overflow: hidden;
       scroll-behavior: smooth;
       pointer-events: none;
@@ -2175,7 +2175,7 @@
       display: flex; align-items: center; justify-content: space-between;
       padding: 15px 20px 14px;
       border-bottom: 1px solid rgba(33,27,22,0.10);
-      background: rgba(247,241,230,0.94);
+      background: rgba(245,243,238,0.96);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       position: sticky;
@@ -2183,12 +2183,12 @@
       z-index: 5;
     }
     .bs-logo {
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 18px; color: #211b16;
+      font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+      font-size: 18px; color: #16171a;
       letter-spacing: 0.7px;
       text-transform: uppercase;
     }
-    .bs-logo span { color: #8c2f25; }
+    .bs-logo span { color: #8f5f2f; }
     .bs-nav-right { display: flex; align-items: center; gap: 9px; }
     .bs-nav-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(33,27,22,0.45); }
     .bs-nav-link {
@@ -2199,14 +2199,14 @@
       font-weight: 700;
       transition: opacity 0.2s ease, color 0.2s ease;
     }
-    .bs-nav-link:hover { opacity: 1; color: #8c2f25; }
+    .bs-nav-link:hover { opacity: 1; color: #8f5f2f; }
 
     /* ── Hero ── */
     .bs-hero {
       position: relative;
       height: 292px;
       overflow: hidden;
-      background: #18120e;
+      background: #16171a;
     }
     .bs-hero-video {
       position: absolute; inset: 0;
@@ -2231,9 +2231,9 @@
     .bs-hero-overlay {
       position: absolute; inset: 0;
       background:
-        linear-gradient(90deg, rgba(18,12,9,0.92) 0%, rgba(18,12,9,0.74) 34%, rgba(18,12,9,0.20) 58%, rgba(18,12,9,0.04) 100%),
-        radial-gradient(ellipse 80% 48% at 16% 18%, rgba(177,135,77,0.20) 0%, transparent 62%),
-        linear-gradient(180deg, rgba(18,12,9,0.05) 24%, rgba(18,12,9,0.56) 100%);
+        linear-gradient(90deg, rgba(12,14,17,0.92) 0%, rgba(12,14,17,0.70) 38%, rgba(12,14,17,0.18) 64%, rgba(12,14,17,0.04) 100%),
+        radial-gradient(ellipse 80% 48% at 16% 18%, rgba(190,143,80,0.20) 0%, transparent 62%),
+        linear-gradient(180deg, rgba(12,14,17,0.04) 24%, rgba(12,14,17,0.58) 100%);
     }
     .bs-hero::before,
     .bs-hero::after {
@@ -2274,7 +2274,7 @@
     .bs-eyebrow {
       font-family: "Aptos", "Segoe UI", Arial, sans-serif;
       font-size: 8px; letter-spacing: 1.8px; text-transform: uppercase;
-      color: rgba(235,214,176,0.88);
+      color: rgba(230,218,199,0.88);
       align-self: flex-start;
       padding: 0 0 8px;
       border-bottom: 1px solid rgba(235,214,176,0.45);
@@ -2282,14 +2282,14 @@
       font-weight: 700;
     }
     .bs-title {
-      font-family: Georgia, "Times New Roman", serif;
+      font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
       font-weight: 400;
       font-size: 35px; line-height: 0.92; letter-spacing: -0.8px;
-      color: #fff7eb;
+      color: #fffaf2;
       margin: 0;
       text-shadow: 0 8px 26px rgba(0,0,0,0.32);
     }
-    .bs-title em { color: #d9b06f; font-style: normal; }
+    .bs-title em { color: #d0a15e; font-style: normal; }
     .bs-hero-meta {
       position: absolute;
       bottom: 14px; right: 18px;
@@ -2312,18 +2312,18 @@
       padding: 24px 22px 20px;
       background:
         linear-gradient(135deg, rgba(255,251,241,0.8), transparent 64%),
-        #f7f1e6;
+        #f5f3ee;
     }
     .bs-lead {
-      font-family: Georgia, "Times New Roman", serif;
+      font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
       font-size: 18px; line-height: 1.25;
-      color: #211b16;
+      color: #16171a;
       letter-spacing: -0.3px;
       margin: 0 0 14px;
     }
     .bs-cta {
       display: inline-flex; align-items: center; gap: 6px;
-      background: #211b16; color: #fff7eb;
+      background: #16171a; color: #fffaf2;
       font-family: "Aptos", "Segoe UI", Arial, sans-serif;
       font-size: 10px; font-weight: 800; letter-spacing: 0.8px;
       text-transform: uppercase;
@@ -2349,10 +2349,10 @@
     .bs-cards {
       display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
       padding: 4px 18px 22px;
-      background: #f7f1e6;
+      background: #f5f3ee;
     }
     .bs-card {
-      background: #fffaf1;
+      background: #fffdf8;
       border-radius: 2px;
       overflow: hidden;
       box-shadow: 0 10px 24px -18px rgba(33,27,22,0.32);
@@ -2385,14 +2385,14 @@
     .bs-card-tag {
       font-family: "Aptos", "Segoe UI", Arial, sans-serif;
       font-size: 7px; letter-spacing: 1.2px;
-      color: #8c2f25;
+      color: #8f5f2f;
       text-transform: uppercase;
       font-weight: 800;
       margin-bottom: 4px;
     }
     .bs-card-name {
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 15px; color: #211b16;
+      font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+      font-size: 15px; color: #16171a;
       line-height: 1.1;
     }
     .bs-card p {
@@ -2408,7 +2408,7 @@
       padding: 18px 22px;
       border-top: 1px solid rgba(33,27,22,0.08);
       border-bottom: 1px solid rgba(33,27,22,0.08);
-      background: #eee3d0;
+      background: #e7dfd2;
     }
     .bs-stat {
       display: flex; flex-direction: column; align-items: center; gap: 4px;
@@ -2416,9 +2416,9 @@
     }
     .bs-stat:last-child { border-right: none; }
     .bs-stat b {
-      font-family: Georgia, "Times New Roman", serif;
+      font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
       font-weight: 400;
-      font-size: 22px; color: #8c2f25;
+      font-size: 22px; color: #8f5f2f;
       line-height: 1;
     }
     .bs-stat span {
@@ -2440,7 +2440,7 @@
     .bs-section {
       padding: 20px 22px;
       border-top: 1px solid rgba(33,27,22,0.08);
-      background: #f7f1e6;
+      background: #f5f3ee;
     }
     .bs-section.dark {
       background:
@@ -2453,13 +2453,13 @@
       font-size: 8px;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: #8c2f25;
+      color: #8f5f2f;
       font-weight: 800;
       margin-bottom: 8px;
     }
-    .bs-section.dark .bs-section-label { color: #d9b06f; }
+    .bs-section.dark .bs-section-label { color: #d0a15e; }
     .bs-section-title {
-      font-family: Georgia, "Times New Roman", serif;
+      font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
       font-size: 25px;
       line-height: 1;
       font-weight: 400;
@@ -2486,9 +2486,9 @@
       border-top: 1px solid rgba(33,27,22,0.08);
     }
     .bs-process-row b {
-      font-family: Georgia, "Times New Roman", serif;
+      font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
       font-size: 22px;
-      color: #8c2f25;
+      color: #8f5f2f;
       font-weight: 400;
       line-height: 1;
     }
@@ -2534,7 +2534,7 @@
       justify-self: start;
       border: 0;
       border-radius: 999px;
-      background: #d9b06f;
+      background: #d0a15e;
       color: #1d1712;
       font: 800 10px "Aptos", "Segoe UI", Arial, sans-serif;
       letter-spacing: 0.8px;
@@ -2549,6 +2549,76 @@
       letter-spacing: 1px;
       text-transform: uppercase;
       color: rgba(255,250,242,0.64);
+    }
+    .bs-proof-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: rgba(22,23,26,0.10);
+      border-top: 1px solid rgba(22,23,26,0.08);
+    }
+    .bs-proof {
+      background: #fffdf8;
+      padding: 15px 16px;
+    }
+    .bs-proof strong {
+      display: block;
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: 20px;
+      line-height: 1;
+      color: #16171a;
+      margin-bottom: 5px;
+    }
+    .bs-proof span {
+      display: block;
+      font-size: 8px;
+      line-height: 1.35;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: rgba(22,23,26,0.58);
+      font-weight: 800;
+    }
+    .bs-live-toast {
+      position: sticky;
+      bottom: 12px;
+      margin: 0 14px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      background: rgba(22,23,26,0.92);
+      color: #fffaf2;
+      box-shadow: 0 18px 42px -24px rgba(0,0,0,0.7);
+      opacity: 0;
+      transform: translateY(18px) scale(0.98);
+      transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.16,1,0.3,1);
+      z-index: 10;
+      pointer-events: none;
+    }
+    #build-stage[data-phase="3"] .bs-live-toast {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+    .bs-live-toast span {
+      font-size: 8px;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: rgba(255,250,242,0.78);
+    }
+    .bs-live-toast a {
+      border-radius: 999px;
+      background: #d0a15e;
+      color: #16171a;
+      padding: 7px 10px;
+      font-size: 8px;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+      font-weight: 800;
+      white-space: nowrap;
     }
 
     /* ══ Blueprint SVG layer (construction lines drawing in) ══ */
@@ -3642,16 +3712,16 @@
 
       <!-- LEFT — headline + CTA -->
       <div class="hero-left" id="hero-left">
-        <div class="hero-eyebrow" id="hero-eyebrow">Web Design Studio — St. Johns, FL</div>
+        <div class="hero-eyebrow" id="hero-eyebrow">Independent Web Studio - St. Johns, FL</div>
 
         <h1 class="hero-headline" id="hero-headline">
-          <span class="line hl-dim" id="hl1">Your site is</span>
-          <span class="line" id="hl2">the first</span>
-          <span class="line hl-accent" id="hl3">impression.</span>
+          <span class="line hl-dim" id="hl1">Bring better</span>
+          <span class="line" id="hl2">clients through</span>
+          <span class="line hl-accent" id="hl3">the front door.</span>
         </h1>
 
 
-        <p class="hero-sub" id="hero-sub">Custom websites for local businesses that want to look like they mean it. Hand-coded, launched in days, maintained without the headaches.</p>
+        <p class="hero-sub" id="hero-sub">Custom websites for service businesses that need trust fast: sharp positioning, persuasive copy, fast performance, and forms people actually finish.</p>
 
         <div class="hero-actions" id="hero-actions">
           <a href="#contact" onclick="jumpToContact(event)" class="btn btn-primary magnetic-btn" style="font-size:15px;padding:15px 32px;box-shadow:0 4px 20px rgba(240,99,90,0.35);">Start a project →</a>
@@ -3659,9 +3729,9 @@
         </div>
 
         <div class="hero-stats" id="hero-stats">
-          <div class="stat"><span class="stat-num">$500</span><span class="stat-label">to get started</span></div>
-          <div class="stat"><span class="stat-num">7 days</span><span class="stat-label">to launch</span></div>
-          <div class="stat"><span class="stat-num">$150/mo</span><span class="stat-label">to keep it running</span></div>
+          <div class="stat"><span class="stat-num">$500</span><span class="stat-label">starter launch</span></div>
+          <div class="stat"><span class="stat-num">7 days</span><span class="stat-label">typical first pass</span></div>
+          <div class="stat"><span class="stat-num">$50/mo</span><span class="stat-label">hosting and care</span></div>
         </div>
       </div>
 
@@ -3675,20 +3745,20 @@
 
         <!-- Feature card -->
         <div class="hero-right-card">
-          <div class="hero-right-card-label">What you actually get</div>
+          <div class="hero-right-card-label">Built to sell the service</div>
           <ul class="hero-right-card-list">
             <li>Hand-coded in real HTML, CSS &amp; JS — no page builders, no bloat</li>
             <li>Mobile-first. Fast loads. Sharp on every screen and browser</li>
             <li>Single page in ~7 days. Full site in ~14. No dragging feet</li>
             <li>SEO setup, contact form, and Google Analytics — all included</li>
-            <li>$150/mo care plan covers hosting, backups, and small updates</li>
+            <li>$50/mo care plan covers hosting, backups, and small updates</li>
           </ul>
         </div>
 
         <!-- Quoted testimonial-style callout -->
         <div style="max-width:380px;width:100%;padding:20px 24px;border-left:2px solid rgba(240,99,90,0.3);background:rgba(240,99,90,0.04);border-radius:0 8px 8px 0;">
-          <p style="font-family:'DM Serif Display',serif;font-size:16px;font-style:italic;font-weight:400;color:rgba(43,37,71,0.65);line-height:1.55;margin-bottom:10px;">"The kind of site that actually convinces a stranger to become a customer."</p>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(240,99,90,0.5);">— The whole point</span>
+          <p style="font-family:'Source Serif 4','DM Serif Display',serif;font-size:16px;font-weight:500;color:rgba(43,37,71,0.68);line-height:1.55;margin-bottom:10px;">A polished site should feel like a capable front desk, a strong pitch, and a proof packet in one place.</p>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(240,99,90,0.5);">conversion-first websites</span>
         </div>
       </div>
     </div>
@@ -4138,7 +4208,7 @@
                 <!-- NAV — assembles from off-screen left -->
                 <div class="bs-piece" data-piece="nav" data-from="left">
                   <div class="bs-nav">
-                    <a class="bs-logo" href="#bs-home" data-phone-target="bs-home">Vale<span>&amp;</span>Thread</a>
+                    <a class="bs-logo" href="#bs-home" data-phone-target="bs-home">North<span>&amp;</span>Needle</a>
                     <div class="bs-nav-right">
                       <a class="bs-nav-link" href="#bs-services" data-phone-target="bs-services">Services</a>
                       <a class="bs-nav-link" href="#bs-process" data-phone-target="bs-process">Fit</a>
@@ -4156,8 +4226,8 @@
                     <div class="bs-hero-grain"></div>
                     <div class="bs-hero-overlay"></div>
                     <div class="bs-hero-content">
-                      <span class="bs-eyebrow">Private tailoring house</span>
-                      <h1 class="bs-title">Cut with<br><em>intention.</em></h1>
+                      <span class="bs-eyebrow">Alterations and custom suiting</span>
+                      <h1 class="bs-title">Clothes that fit<br><em>the room.</em></h1>
                     </div>
                     <div class="bs-hero-meta">
                       <span class="bs-meta-k">SCROLL</span>
@@ -4169,8 +4239,8 @@
                 <!-- Sub block: tagline + CTA -->
                 <div class="bs-piece" data-piece="sub" data-from="left">
                   <div class="bs-sub-block">
-                    <p class="bs-lead">Quiet tailoring for garments that need to move beautifully.</p>
-                    <a class="bs-cta" href="#bs-booking" data-phone-target="bs-booking">Book a fitting<span class="bs-cta-arrow">→</span></a>
+                    <p class="bs-lead">Precise alterations, event suiting, and repairs handled by appointment in Jacksonville.</p>
+                    <a class="bs-cta" href="#bs-booking" data-phone-target="bs-booking">Reserve a fitting<span class="bs-cta-arrow">→</span></a>
                   </div>
                 </div>
 
@@ -4180,18 +4250,18 @@
                     <div class="bs-card">
                       <div class="bs-card-img bs-card-img-1"></div>
                       <div class="bs-card-body">
-                        <div class="bs-card-tag">Bespoke suiting</div>
-                        <div class="bs-card-name">Measured garments</div>
+                        <div class="bs-card-tag">Occasion tailoring</div>
+                        <div class="bs-card-name">Wedding and event fits</div>
                       </div>
-                      <p>Suits, trousers, and event pieces built from your measurements.</p>
+                      <p>Suiting, dresses, and formalwear adjusted on a clear timeline.</p>
                     </div>
                     <div class="bs-card">
                       <div class="bs-card-img bs-card-img-2"></div>
                       <div class="bs-card-body">
-                        <div class="bs-card-tag">Alteration studio</div>
-                        <div class="bs-card-name">Considered repair</div>
+                        <div class="bs-card-tag">Everyday repair</div>
+                        <div class="bs-card-name">Clean, durable fixes</div>
                       </div>
-                      <p>Hems, tapers, buttons, linings, and careful mending.</p>
+                      <p>Hems, tapers, buttons, linings, and careful garment recovery.</p>
                     </div>
                   </div>
                 </div>
@@ -4199,19 +4269,23 @@
                 <!-- Process and proof -->
                 <div class="bs-piece" data-piece="stats" data-from="right">
                   <div class="bs-stats">
-                    <div class="bs-stat"><b>8y</b><span>crafting</span></div>
-                    <div class="bs-stat"><b>400+</b><span>fitted</span></div>
-                    <div class="bs-stat"><b>0</b><span>templates</span></div>
+                    <div class="bs-stat"><b>8y</b><span>in practice</span></div>
+                    <div class="bs-stat"><b>400+</b><span>garments fit</span></div>
+                    <div class="bs-stat"><b>48h</b><span>rush options</span></div>
                   </div>
                   <div class="bs-section" id="bs-process">
-                    <div class="bs-section-label">The fitting</div>
-                    <div class="bs-section-title">A simple rhythm.</div>
-                    <p class="bs-section-copy">Bring the piece, wear the shoes, and leave with a clear pickup date.</p>
+                    <div class="bs-section-label">The appointment</div>
+                    <div class="bs-section-title">Measured, marked, scheduled.</div>
+                    <p class="bs-section-copy">The page makes the next step feel low-friction before the client ever calls.</p>
                     <div class="bs-process-list">
                       <div class="bs-process-row"><b>01</b><div><strong>Pin and measure</strong><span>Adjustments are marked while the garment is on you.</span></div></div>
                       <div class="bs-process-row"><b>02</b><div><strong>Stitch and press</strong><span>Finished with matched thread and clean seams.</span></div></div>
                       <div class="bs-process-row"><b>03</b><div><strong>Final check</strong><span>Try it on before pickup so the fit lands right.</span></div></div>
                     </div>
+                  </div>
+                  <div class="bs-proof-strip">
+                    <div class="bs-proof"><strong>12 min</strong><span>average booking time saved</span></div>
+                    <div class="bs-proof"><strong>4.9</strong><span>client review signal</span></div>
                   </div>
                 </div>
 
@@ -4219,25 +4293,29 @@
                 <div class="bs-piece" data-piece="foot" data-from="bottom">
                   <div class="bs-section dark" id="bs-booking">
                     <div class="bs-section-label">Appointments</div>
-                    <div class="bs-section-title">Book your fitting.</div>
-                    <p class="bs-section-copy">Send fitting notes and receive a quiet confirmation from the studio.</p>
+                    <div class="bs-section-title">Reserve a fitting.</div>
+                    <p class="bs-section-copy">Send the garment details and get a same-day confirmation from the studio.</p>
                     <form class="bs-book-form">
                       <input name="name" autocomplete="name" placeholder="Name" required>
                       <input name="email" type="email" autocomplete="email" placeholder="Email" required>
                       <select name="service" required>
                         <option value="">Service</option>
                         <option>Alterations</option>
-                        <option>Made to measure</option>
+                        <option>Event tailoring</option>
                         <option>Repair</option>
                       </select>
-                      <textarea name="notes" placeholder="What are you bringing in?"></textarea>
-                      <button type="submit">Request appointment</button>
+                      <textarea name="notes" placeholder="What needs to fit better?"></textarea>
+                      <button type="submit">Request fitting</button>
                       <div class="bs-form-note" aria-live="polite"></div>
                     </form>
                   </div>
                   <div class="bs-foot">
-                    <span>© 2026 Atelier Studio</span>
-                    <span>atelier-stitch.com</span>
+                    <span>© 2026 North &amp; Needle</span>
+                    <span>northandneedle.com</span>
+                  </div>
+                  <div class="bs-live-toast">
+                    <span>Site shipped. Booking flow is live.</span>
+                    <a href="#bs-booking" data-phone-target="bs-booking">Book now</a>
                   </div>
                 </div>
 
@@ -4296,9 +4374,9 @@
                 </div>
                 <pre id="code-stream"><span class="ct-line"><span class="ct-num">01</span><span class="ct-content"><span class="ct-tag">&lt;section</span> <span class="ct-attr">class</span>=<span class="ct-str">"hero"</span><span class="ct-tag">&gt;</span></span></span>
 <span class="ct-line"><span class="ct-num">02</span><span class="ct-content">  <span class="ct-tag">&lt;video</span> <span class="ct-attr">autoplay</span> <span class="ct-attr">muted</span> <span class="ct-attr">loop</span><span class="ct-tag">&gt;</span></span></span>
-<span class="ct-line"><span class="ct-num">03</span><span class="ct-content">    <span class="ct-tag">&lt;source</span> <span class="ct-attr">src</span>=<span class="ct-str">"sewing.mp4"</span><span class="ct-tag">/&gt;</span></span></span>
+<span class="ct-line"><span class="ct-num">03</span><span class="ct-content">    <span class="ct-tag">&lt;source</span> <span class="ct-attr">src</span>=<span class="ct-str">"studio-loop.mp4"</span><span class="ct-tag">/&gt;</span></span></span>
 <span class="ct-line"><span class="ct-num">04</span><span class="ct-content">  <span class="ct-tag">&lt;/video&gt;</span></span></span>
-<span class="ct-line"><span class="ct-num">05</span><span class="ct-content">  <span class="ct-tag">&lt;h1&gt;</span><span class="ct-text">Crafted to fit you.</span><span class="ct-tag">&lt;/h1&gt;</span></span></span>
+<span class="ct-line"><span class="ct-num">05</span><span class="ct-content">  <span class="ct-tag">&lt;h1&gt;</span><span class="ct-text">Clothes that fit the room.</span><span class="ct-tag">&lt;/h1&gt;</span></span></span>
 <span class="ct-line"><span class="ct-num">06</span><span class="ct-content"><span class="ct-tag">&lt;/section&gt;</span></span></span>
 <span class="ct-line"><span class="ct-num">07</span><span class="ct-content"></span></span>
 <span class="ct-line"><span class="ct-num">08</span><span class="ct-content"><span class="ct-sel">.hero video</span> {</span></span>
@@ -4307,7 +4385,7 @@
 <span class="ct-line"><span class="ct-num">11</span><span class="ct-content">  <span class="ct-prop">object-fit</span>: <span class="ct-val">cover</span>;</span></span>
 <span class="ct-line"><span class="ct-num">12</span><span class="ct-content">}</span></span>
 <span class="ct-line"><span class="ct-num">13</span><span class="ct-content"></span></span>
-<span class="ct-line"><span class="ct-num">14</span><span class="ct-content"><span class="ct-sel">.book-btn</span> {</span></span>
+<span class="ct-line"><span class="ct-num">14</span><span class="ct-content"><span class="ct-sel">.booking-flow</span> {</span></span>
 <span class="ct-line"><span class="ct-num">15</span><span class="ct-content">  <span class="ct-prop">background</span>: <span class="ct-val">#F0635A</span>;</span></span>
 <span class="ct-line"><span class="ct-num">16</span><span class="ct-content">  <span class="ct-prop">border-radius</span>: <span class="ct-val">999px</span>;</span></span></pre>
                 <div id="code-cursor"></div>
@@ -5430,29 +5508,29 @@
     const PHASE_COPY = [
       {
         eyebrow: 'PHASE 01 / 04 · BLUEPRINT',
-        title:   'Every site starts as a sketch.',
-        body:    'Layout. Hierarchy. The bones before the fabric — drawn over what\'s about to land.',
+        title:   'The offer gets mapped first.',
+        body:    'Before the polish, we decide what a visitor should understand, trust, and do.',
         ph:      'BLUEPRINT',
         rail:    'build · blueprint',
       },
       {
         eyebrow: 'PHASE 02 / 04 · ASSEMBLE',
-        title:   'Pieces fly in, one by one.',
-        body:    'Nav. Hero. Services. Each section arrives, snaps into place, and locks like a finished seam.',
+        title:   'The business turns into a working page.',
+        body:    'Navigation, proof, service cards, and booking all assemble around the customer journey.',
         ph:      'ASSEMBLE',
         rail:    'build · assemble',
       },
       {
         eyebrow: 'PHASE 03 / 04 · CODE',
-        title:   'Hand-written. Not generated.',
-        body:    'Real HTML, CSS, JS — stitched by a person who knows what each line does.',
+        title:   'Custom code gives it a pulse.',
+        body:    'Real HTML, CSS, and JS keep the experience fast, responsive, and easy to maintain.',
         ph:      'CODE',
         rail:    'build · code',
       },
       {
         eyebrow: 'PHASE 04 / 04 · SHIPPED',
-        title:   'And then it goes live.',
-        body:    'Days, not months. A bespoke site on your domain — built to fit your business perfectly.',
+        title:   'The handoff should feel earned.',
+        body:    'A live domain, working actions, clean copy, and a page that looks ready to win business.',
         ph:      'SHIPPED',
         rail:    'build · shipped',
       },
@@ -5484,7 +5562,7 @@
     function fireShipParticles() {
       if (!shipParticles) return;
       shipParticles.innerHTML = '';
-      const N = 24;
+      const N = 44;
       for (let i = 0; i < N; i++) {
         const f = document.createElement('div');
         f.className = 'sp-flake';
@@ -6114,8 +6192,9 @@
 
       // Shockwave + particles
       setTimeout(fireShockwave, 0);
-      setTimeout(() => spawnStreaks(22), 0);
-      setTimeout(() => spawnStreaks(14), 160);
+      setTimeout(() => spawnStreaks(34), 0);
+      setTimeout(() => spawnStreaks(22), 160);
+      setTimeout(() => spawnStreaks(14), 320);
       setTimeout(fireShipParticles, 80);
     }
 
@@ -6498,7 +6577,7 @@
       resize();
       window.addEventListener('resize', resize);
 
-      const SYMS = ['$500','$1,200','$150/mo','</>','{}','→','fn()','px','rem','//','&&','::','*','#'];
+      const SYMS = ['$500','$1,200','$50/mo','</>','{}','→','fn()','px','rem','//','&&','::','*','#'];
       const particles = Array.from({length: 32}, () => ({
         x: Math.random(), y: Math.random(),
         vx: (Math.random() - 0.5) * 0.00010,
@@ -6752,7 +6831,7 @@
           const data = new FormData(phoneForm);
           const note = phoneForm.querySelector('.bs-form-note');
           if (note) note.textContent = 'Opening email draft...';
-          const subject = 'Fitting request from ' + (data.get('name') || 'Atelier visitor');
+          const subject = 'North & Needle fitting request from ' + (data.get('name') || 'website visitor');
           const body = [
             'Name: ' + (data.get('name') || ''),
             'Email: ' + (data.get('email') || ''),
@@ -6761,7 +6840,7 @@
             'Notes:',
             data.get('notes') || ''
           ].join('\n');
-          window.location.href = 'mailto:hello@atelier-stitch.com?subject=' +
+          window.location.href = 'mailto:hello@northandneedle.com?subject=' +
             encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
         });
       }
