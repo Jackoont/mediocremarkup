@@ -841,21 +841,23 @@
        WHIRLPOOL INTRO — Code symbols spiral into page
        ═══════════════════════════════════════════════ */
     #whirlpool-container {
-      position: fixed;
+      position: absolute;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      z-index: 9998;
+      z-index: 2;
       pointer-events: none;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: visible;
+      overflow: hidden;
+      contain: layout paint size;
     }
     /* The vortex canvas sits behind the symbols */
     #vortex-canvas {
       position: absolute;
       inset: 0;
       width: 100%; height: 100%;
+      opacity: 0.72;
     }
     /* Each orbiting code symbol */
     .wp-sym {
@@ -2093,9 +2095,9 @@
     /* The base "site" — fills the screen, parts assemble in */
     .build-site {
       position: absolute; inset: 0;
-      background: #FEF9F4;
-      font-family: 'Inter', sans-serif;
-      color: #2B2547;
+      background: #f7f1e6;
+      font-family: "Aptos", "Segoe UI", Arial, sans-serif;
+      color: #211b16;
       overflow: hidden;
       scroll-behavior: smooth;
       pointer-events: none;
@@ -2108,7 +2110,7 @@
       z-index: 8;
       opacity: 0.28;
       background:
-        linear-gradient(115deg, transparent 0%, transparent 40%, rgba(255,255,255,0.42) 50%, transparent 60%, transparent 100%);
+        linear-gradient(115deg, transparent 0%, transparent 40%, rgba(255,251,241,0.34) 50%, transparent 60%, transparent 100%);
       transform: translateX(-120%);
     }
     #build-stage[data-phase="3"] .build-site::before {
@@ -2156,65 +2158,69 @@
     .bs-piece.bs-piece-land::after {
       content: '';
       position: absolute; inset: -2px;
-      border: 1.5px solid #F0635A;
+      border: 1.5px solid #b1874d;
       border-radius: 3px;
       opacity: 1;
       pointer-events: none;
       animation: pieceBloom 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
     }
     @keyframes pieceBloom {
-      0%   { opacity: 1;   transform: scale(1);    box-shadow: 0 0 0 0 rgba(240,99,90,0.5); }
-      60%  { opacity: 0.6; transform: scale(1.04); box-shadow: 0 0 30px 4px rgba(240,99,90,0.15); }
-      100% { opacity: 0;   transform: scale(1.07); box-shadow: 0 0 50px 8px rgba(240,99,90,0); }
+      0%   { opacity: 1;   transform: scale(1);    box-shadow: 0 0 0 0 rgba(177,135,77,0.48); }
+      60%  { opacity: 0.55; transform: scale(1.04); box-shadow: 0 0 30px 4px rgba(177,135,77,0.16); }
+      100% { opacity: 0;   transform: scale(1.07); box-shadow: 0 0 50px 8px rgba(177,135,77,0); }
     }
 
     /* ── Site nav ── */
     .bs-nav {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 18px 22px;
-      border-bottom: 1px solid rgba(43,37,71,0.08);
-      background: rgba(254,249,244,0.92);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      padding: 15px 20px 14px;
+      border-bottom: 1px solid rgba(33,27,22,0.10);
+      background: rgba(247,241,230,0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       position: sticky;
       top: 0;
       z-index: 5;
     }
     .bs-logo {
-      font-family: 'DM Serif Display', serif;
-      font-style: italic; font-size: 22px; color: #2B2547;
-      letter-spacing: -0.5px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 18px; color: #211b16;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
     }
-    .bs-logo span { color: #F0635A; }
-    .bs-nav-right { display: flex; align-items: center; gap: 8px; }
-    .bs-nav-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(43,37,71,0.45); }
+    .bs-logo span { color: #8c2f25; }
+    .bs-nav-right { display: flex; align-items: center; gap: 9px; }
+    .bs-nav-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(33,27,22,0.45); }
     .bs-nav-link {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 8px; letter-spacing: 1.4px; text-transform: uppercase;
-      color: #2B2547;
-      opacity: 0.72;
+      font-family: "Aptos", "Segoe UI", Arial, sans-serif;
+      font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+      color: #211b16;
+      opacity: 0.62;
+      font-weight: 700;
       transition: opacity 0.2s ease, color 0.2s ease;
     }
-    .bs-nav-link:hover { opacity: 1; color: #F0635A; }
+    .bs-nav-link:hover { opacity: 1; color: #8c2f25; }
 
     /* ── Hero ── */
     .bs-hero {
       position: relative;
-      height: 240px;
+      height: 292px;
       overflow: hidden;
+      background: #18120e;
     }
     .bs-hero-video {
       position: absolute; inset: 0;
       width: 100%; height: 100%;
       object-fit: cover;
+      object-position: 72% center;
       opacity: 1 !important;
       transform: scale(1.08);
-      filter: saturate(1.08) contrast(1.02);
+      filter: saturate(0.92) contrast(1.08) brightness(0.88);
       animation: phoneHeroDrift 13s ease-in-out infinite alternate;
     }
     @keyframes phoneHeroDrift {
-      from { transform: scale(1.08) translate3d(-1.2%, -0.8%, 0); }
-      to   { transform: scale(1.16) translate3d(1.2%, 0.8%, 0); }
+      from { transform: scale(1.09) translate3d(-1.8%, -0.5%, 0); }
+      to   { transform: scale(1.16) translate3d(1.1%, 0.7%, 0); }
     }
     .bs-hero-grain {
       position: absolute; inset: 0;
@@ -2225,8 +2231,9 @@
     .bs-hero-overlay {
       position: absolute; inset: 0;
       background:
-        radial-gradient(ellipse 80% 48% at 18% 12%, rgba(244,162,122,0.18) 0%, transparent 62%),
-        linear-gradient(180deg, rgba(20,16,26,0.02) 28%, rgba(20,16,26,0.64) 100%);
+        linear-gradient(90deg, rgba(18,12,9,0.92) 0%, rgba(18,12,9,0.74) 34%, rgba(18,12,9,0.20) 58%, rgba(18,12,9,0.04) 100%),
+        radial-gradient(ellipse 80% 48% at 16% 18%, rgba(177,135,77,0.20) 0%, transparent 62%),
+        linear-gradient(180deg, rgba(18,12,9,0.05) 24%, rgba(18,12,9,0.56) 100%);
     }
     .bs-hero::before,
     .bs-hero::after {
@@ -2239,15 +2246,15 @@
     .bs-hero::before {
       left: 18px; right: 18px; top: 18px;
       height: 1px;
-      background: repeating-linear-gradient(90deg, rgba(255,255,255,0.72) 0 6px, transparent 6px 12px);
+      background: repeating-linear-gradient(90deg, rgba(235,214,176,0.70) 0 6px, transparent 6px 12px);
       animation: stitchSlide 7s linear infinite;
     }
     .bs-hero::after {
       width: 82px; height: 82px;
       right: -28px; top: 28px;
-      border: 1px solid rgba(244,162,122,0.45);
+      border: 1px solid rgba(177,135,77,0.48);
       border-radius: 50%;
-      box-shadow: inset 0 0 0 14px rgba(244,162,122,0.04);
+      box-shadow: inset 0 0 0 14px rgba(177,135,77,0.05);
       animation: needleHoop 8s ease-in-out infinite;
     }
     @keyframes stitchSlide {
@@ -2259,88 +2266,97 @@
     }
     .bs-hero-content {
       position: absolute;
-      left: 22px; right: 22px; bottom: 22px;
+      left: 22px; right: 46%; top: 50%;
+      transform: translateY(-50%);
       display: flex; flex-direction: column; gap: 10px;
+      z-index: 3;
     }
     .bs-eyebrow {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 8px; letter-spacing: 2.5px; text-transform: uppercase;
-      color: rgba(255,255,255,0.85);
+      font-family: "Aptos", "Segoe UI", Arial, sans-serif;
+      font-size: 8px; letter-spacing: 1.8px; text-transform: uppercase;
+      color: rgba(235,214,176,0.88);
       align-self: flex-start;
-      padding: 4px 8px;
-      border: 1px solid rgba(255,255,255,0.4);
-      border-radius: 999px;
-      backdrop-filter: blur(4px);
+      padding: 0 0 8px;
+      border-bottom: 1px solid rgba(235,214,176,0.45);
+      border-radius: 0;
+      font-weight: 700;
     }
     .bs-title {
-      font-family: 'DM Serif Display', serif;
-      font-style: italic; font-weight: 400;
-      font-size: 36px; line-height: 0.95; letter-spacing: -1.2px;
-      color: #fff;
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 400;
+      font-size: 35px; line-height: 0.92; letter-spacing: -0.8px;
+      color: #fff7eb;
       margin: 0;
-      text-shadow: 0 8px 26px rgba(0,0,0,0.28);
+      text-shadow: 0 8px 26px rgba(0,0,0,0.32);
     }
-    .bs-title em { color: #F4A27A; font-style: italic; }
+    .bs-title em { color: #d9b06f; font-style: normal; }
     .bs-hero-meta {
       position: absolute;
       bottom: 14px; right: 18px;
       display: flex; align-items: center; gap: 6px;
     }
     .bs-meta-k {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 7px; letter-spacing: 2px;
-      color: rgba(255,255,255,0.7);
+      font-family: "Aptos", "Segoe UI", Arial, sans-serif;
+      font-size: 7px; letter-spacing: 1.4px;
+      color: rgba(255,247,235,0.7);
+      text-transform: uppercase;
+      font-weight: 700;
     }
     .bs-meta-line {
       width: 18px; height: 1px;
-      background: rgba(255,255,255,0.7);
+      background: rgba(217,176,111,0.7);
     }
 
     /* ── Sub block: lead + CTA ── */
     .bs-sub-block {
-      padding: 22px 22px 18px;
+      padding: 24px 22px 20px;
+      background:
+        linear-gradient(135deg, rgba(255,251,241,0.8), transparent 64%),
+        #f7f1e6;
     }
     .bs-lead {
-      font-family: 'DM Serif Display', serif;
-      font-style: italic; font-size: 17px; line-height: 1.3;
-      color: #2B2547;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 18px; line-height: 1.25;
+      color: #211b16;
       letter-spacing: -0.3px;
       margin: 0 0 14px;
     }
     .bs-cta {
       display: inline-flex; align-items: center; gap: 6px;
-      background: #F0635A; color: #fff;
-      font-family: 'Inter', sans-serif;
-      font-size: 11px; font-weight: 600; letter-spacing: 0.3px;
+      background: #211b16; color: #fff7eb;
+      font-family: "Aptos", "Segoe UI", Arial, sans-serif;
+      font-size: 10px; font-weight: 800; letter-spacing: 0.8px;
+      text-transform: uppercase;
       padding: 11px 18px;
       border-radius: 999px;
-      box-shadow: 0 6px 18px -4px rgba(240,99,90,0.55);
+      box-shadow: 0 8px 20px -8px rgba(33,27,22,0.55);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       cursor: pointer;
       pointer-events: auto;
     }
     .bs-cta:hover {
       transform: translateY(-2px);
-      box-shadow: 0 10px 26px -4px rgba(240,99,90,0.65);
+      box-shadow: 0 12px 28px -10px rgba(33,27,22,0.66);
     }
     .bs-cta-arrow { transition: transform 0.25s ease; }
     .build-site.bs-cta-hovered .bs-cta {
       transform: translateY(-2px);
-      box-shadow: 0 10px 26px -4px rgba(240,99,90,0.65);
+      box-shadow: 0 12px 28px -10px rgba(33,27,22,0.66);
     }
     .build-site.bs-cta-hovered .bs-cta-arrow { transform: translateX(4px); }
 
     /* ── Project cards ── */
     .bs-cards {
       display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-      padding: 0 22px 18px;
+      padding: 4px 18px 22px;
+      background: #f7f1e6;
     }
     .bs-card {
-      background: #fff;
-      border-radius: 10px;
+      background: #fffaf1;
+      border-radius: 2px;
       overflow: hidden;
-      box-shadow: 0 4px 18px -8px rgba(43,37,71,0.20);
-      border: 1px solid rgba(43,37,71,0.06);
+      box-shadow: 0 10px 24px -18px rgba(33,27,22,0.32);
+      border: 1px solid rgba(33,27,22,0.08);
     }
     .bs-card-img {
       width: 100%; aspect-ratio: 1.2 / 1;
@@ -2365,78 +2381,85 @@
       position: absolute; inset: 0;
       background: linear-gradient(180deg, transparent 50%, rgba(43,37,71,0.35) 100%);
     }
-    .bs-card-body { padding: 10px 12px 12px; }
+    .bs-card-body { padding: 12px 12px 8px; }
     .bs-card-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 7px; letter-spacing: 1.5px;
-      color: #F0635A;
+      font-family: "Aptos", "Segoe UI", Arial, sans-serif;
+      font-size: 7px; letter-spacing: 1.2px;
+      color: #8c2f25;
+      text-transform: uppercase;
+      font-weight: 800;
       margin-bottom: 4px;
     }
     .bs-card-name {
-      font-family: 'DM Serif Display', serif;
-      font-style: italic; font-size: 14px; color: #2B2547;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 15px; color: #211b16;
       line-height: 1.1;
     }
     .bs-card p {
       padding: 0 12px 12px;
       font-size: 10px;
       line-height: 1.45;
-      color: rgba(43,37,71,0.62);
+      color: rgba(33,27,22,0.62);
     }
 
     /* ── Stats strip ── */
     .bs-stats {
       display: grid; grid-template-columns: repeat(3, 1fr);
       padding: 18px 22px;
-      border-top: 1px solid rgba(43,37,71,0.06);
-      border-bottom: 1px solid rgba(43,37,71,0.06);
-      background: rgba(43,37,71,0.02);
+      border-top: 1px solid rgba(33,27,22,0.08);
+      border-bottom: 1px solid rgba(33,27,22,0.08);
+      background: #eee3d0;
     }
     .bs-stat {
       display: flex; flex-direction: column; align-items: center; gap: 4px;
-      border-right: 1px solid rgba(43,37,71,0.06);
+      border-right: 1px solid rgba(33,27,22,0.10);
     }
     .bs-stat:last-child { border-right: none; }
     .bs-stat b {
-      font-family: 'DM Serif Display', serif;
-      font-style: italic; font-weight: 400;
-      font-size: 22px; color: #F0635A;
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 400;
+      font-size: 22px; color: #8c2f25;
       line-height: 1;
     }
     .bs-stat span {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 7px; letter-spacing: 1.5px; text-transform: uppercase;
-      color: rgba(43,37,71,0.6);
+      font-family: "Aptos", "Segoe UI", Arial, sans-serif;
+      font-size: 7px; letter-spacing: 1.2px; text-transform: uppercase;
+      font-weight: 800;
+      color: rgba(33,27,22,0.6);
     }
 
     /* ── Footer ── */
     .bs-foot {
       display: flex; justify-content: space-between;
       padding: 14px 22px 22px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 8px; letter-spacing: 1.5px;
-      color: rgba(43,37,71,0.55);
+      font-family: "Aptos", "Segoe UI", Arial, sans-serif;
+      font-size: 8px; letter-spacing: 1px;
+      color: rgba(33,27,22,0.58);
+      text-transform: uppercase;
     }
     .bs-section {
       padding: 20px 22px;
-      border-top: 1px solid rgba(43,37,71,0.07);
+      border-top: 1px solid rgba(33,27,22,0.08);
+      background: #f7f1e6;
     }
     .bs-section.dark {
-      background: #241d18;
+      background:
+        linear-gradient(160deg, rgba(177,135,77,0.12), transparent 45%),
+        #1d1712;
       color: #fffaf2;
     }
     .bs-section-label {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: "Aptos", "Segoe UI", Arial, sans-serif;
       font-size: 8px;
-      letter-spacing: 2px;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: #F0635A;
+      color: #8c2f25;
+      font-weight: 800;
       margin-bottom: 8px;
     }
-    .bs-section.dark .bs-section-label { color: #F4A27A; }
+    .bs-section.dark .bs-section-label { color: #d9b06f; }
     .bs-section-title {
-      font-family: 'DM Serif Display', serif;
-      font-style: italic;
+      font-family: Georgia, "Times New Roman", serif;
       font-size: 25px;
       line-height: 1;
       font-weight: 400;
@@ -2446,7 +2469,7 @@
     .bs-section-copy {
       font-size: 11px;
       line-height: 1.55;
-      color: rgba(43,37,71,0.66);
+      color: rgba(33,27,22,0.66);
     }
     .bs-section.dark .bs-section-copy { color: rgba(255,250,242,0.7); }
     .bs-process-list {
@@ -2460,13 +2483,12 @@
       gap: 10px;
       align-items: start;
       padding: 9px 0;
-      border-top: 1px solid rgba(43,37,71,0.08);
+      border-top: 1px solid rgba(33,27,22,0.08);
     }
     .bs-process-row b {
-      font-family: 'DM Serif Display', serif;
-      font-style: italic;
+      font-family: Georgia, "Times New Roman", serif;
       font-size: 22px;
-      color: #F0635A;
+      color: #8c2f25;
       font-weight: 400;
       line-height: 1;
     }
@@ -2479,7 +2501,7 @@
       display: block;
       font-size: 10px;
       line-height: 1.45;
-      color: rgba(43,37,71,0.62);
+      color: rgba(33,27,22,0.62);
     }
     .bs-book-form {
       display: grid;
@@ -2490,12 +2512,12 @@
     .bs-book-form select,
     .bs-book-form textarea {
       width: 100%;
-      border: 1px solid rgba(255,250,242,0.16);
-      background: rgba(255,250,242,0.08);
+      border: 1px solid rgba(255,250,242,0.18);
+      background: rgba(255,250,242,0.07);
       color: #fffaf2;
-      border-radius: 6px;
+      border-radius: 2px;
       padding: 10px 11px;
-      font: 500 11px 'Inter', sans-serif;
+      font: 500 11px "Aptos", "Segoe UI", Arial, sans-serif;
       outline: none;
     }
     .bs-book-form textarea {
@@ -2512,17 +2534,20 @@
       justify-self: start;
       border: 0;
       border-radius: 999px;
-      background: #F4A27A;
-      color: #241d18;
-      font: 800 11px 'Inter', sans-serif;
+      background: #d9b06f;
+      color: #1d1712;
+      font: 800 10px "Aptos", "Segoe UI", Arial, sans-serif;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
       padding: 10px 16px;
       cursor: pointer;
     }
     .bs-form-note {
       min-height: 16px;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: "Aptos", "Segoe UI", Arial, sans-serif;
       font-size: 8px;
       letter-spacing: 1px;
+      text-transform: uppercase;
       color: rgba(255,250,242,0.64);
     }
 
@@ -3422,6 +3447,61 @@
     .footer-email { color: #5A547A !important; }
     .footer-email:hover { color: #F0635A !important; }
 
+    /* Sharpness pass */
+    body {
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+    }
+    .hero-headline .hl-dim {
+      color: rgba(43,37,71,0.58) !important;
+    }
+    .hero-headline .hl-outlined {
+      -webkit-text-stroke-color: rgba(43,37,71,0.62) !important;
+    }
+    .hero-sub,
+    .hero-status-text,
+    .hero-status-scroll,
+    .hero-right-card-list li,
+    .feature-list li,
+    .what-item p,
+    .price-desc,
+    .price-period,
+    .price-features li,
+    .pricing-note,
+    .process-step p,
+    .footer-copy,
+    .footer-tagline,
+    .footer-email {
+      color: #4F486E !important;
+    }
+    .section-label,
+    .stat-label,
+    .process-step-time,
+    .price-tag {
+      color: #5A547A !important;
+    }
+    .section-title em,
+    .process-step h3 em {
+      color: #7A5270 !important;
+    }
+    .price-card.featured .price-desc,
+    .price-card.featured .price-period,
+    .price-card.featured .price-features li,
+    .price-card.featured .price-tag {
+      color: #2B2547 !important;
+    }
+    .bp-row,
+    .bp-row.bp-done {
+      opacity: 0.82;
+    }
+    .bp-row.bp-active {
+      opacity: 1;
+    }
+    .bp-num,
+    .bp-meta,
+    .bp-h-label {
+      color: #5A547A !important;
+    }
 
     /* Feature band */
 
@@ -3436,7 +3516,7 @@
       position: fixed; inset: -50%; width: 200%; height: 200%;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
       background-size: 256px 256px;
-      opacity: 0.025;
+      opacity: 0.012;
       pointer-events: none;
       z-index: 9990;
       animation: grainShift 0.15s steps(1) infinite;
@@ -4058,7 +4138,7 @@
                 <!-- NAV — assembles from off-screen left -->
                 <div class="bs-piece" data-piece="nav" data-from="left">
                   <div class="bs-nav">
-                    <a class="bs-logo" href="#bs-home" data-phone-target="bs-home">ATELIER<span>.</span></a>
+                    <a class="bs-logo" href="#bs-home" data-phone-target="bs-home">Vale<span>&amp;</span>Thread</a>
                     <div class="bs-nav-right">
                       <a class="bs-nav-link" href="#bs-services" data-phone-target="bs-services">Services</a>
                       <a class="bs-nav-link" href="#bs-process" data-phone-target="bs-process">Fit</a>
@@ -4076,8 +4156,8 @@
                     <div class="bs-hero-grain"></div>
                     <div class="bs-hero-overlay"></div>
                     <div class="bs-hero-content">
-                      <span class="bs-eyebrow">EST 2018 · BESPOKE TAILORING</span>
-                      <h1 class="bs-title">Crafted<br><em>to&nbsp;fit&nbsp;you.</em></h1>
+                      <span class="bs-eyebrow">Private tailoring house</span>
+                      <h1 class="bs-title">Cut with<br><em>intention.</em></h1>
                     </div>
                     <div class="bs-hero-meta">
                       <span class="bs-meta-k">SCROLL</span>
@@ -4089,7 +4169,7 @@
                 <!-- Sub block: tagline + CTA -->
                 <div class="bs-piece" data-piece="sub" data-from="left">
                   <div class="bs-sub-block">
-                    <p class="bs-lead">Every seam placed by hand.<br>Every fit measured twice.</p>
+                    <p class="bs-lead">Quiet tailoring for garments that need to move beautifully.</p>
                     <a class="bs-cta" href="#bs-booking" data-phone-target="bs-booking">Book a fitting<span class="bs-cta-arrow">→</span></a>
                   </div>
                 </div>
@@ -4100,16 +4180,16 @@
                     <div class="bs-card">
                       <div class="bs-card-img bs-card-img-1"></div>
                       <div class="bs-card-body">
-                        <div class="bs-card-tag">BESPOKE · SUITS</div>
-                        <div class="bs-card-name">Made to Measure</div>
+                        <div class="bs-card-tag">Bespoke suiting</div>
+                        <div class="bs-card-name">Measured garments</div>
                       </div>
                       <p>Suits, trousers, and event pieces built from your measurements.</p>
                     </div>
                     <div class="bs-card">
                       <div class="bs-card-img bs-card-img-2"></div>
                       <div class="bs-card-body">
-                        <div class="bs-card-tag">ALTERATIONS · REPAIR</div>
-                        <div class="bs-card-name">Precision Work</div>
+                        <div class="bs-card-tag">Alteration studio</div>
+                        <div class="bs-card-name">Considered repair</div>
                       </div>
                       <p>Hems, tapers, buttons, linings, and careful mending.</p>
                     </div>
@@ -4140,7 +4220,7 @@
                   <div class="bs-section dark" id="bs-booking">
                     <div class="bs-section-label">Appointments</div>
                     <div class="bs-section-title">Book your fitting.</div>
-                    <p class="bs-section-copy">This demo form works inside the phone and opens an email with your fitting details.</p>
+                    <p class="bs-section-copy">Send fitting notes and receive a quiet confirmation from the studio.</p>
                     <form class="bs-book-form">
                       <input name="name" autocomplete="name" placeholder="Name" required>
                       <input name="email" type="email" autocomplete="email" placeholder="Email" required>
@@ -5876,10 +5956,12 @@
       tCtx.clearRect(0, 0, tc.width, tc.height);
       requestAnimationFrame(drawTunnel);
     }
-    drawTunnel();
+    tCtx.clearRect(0, 0, tc.width, tc.height);
 
     // ── SPEED STREAKS — horizontal blurs shoot across on impact ──
     let streaks = [];
+    let streakRaf = null;
+    let streaksRunning = false;
 
     function spawnStreaks(count) {
       const W = sc.width, H = sc.height;
@@ -5898,6 +5980,7 @@
           decay: 0.022 + Math.random() * 0.028,
         });
       }
+      startStreaks();
     }
 
     function drawStreaks() {
@@ -5924,9 +6007,18 @@
         sCtx.stroke();
       });
 
-      requestAnimationFrame(drawStreaks);
+      if (streaks.length) {
+        streakRaf = requestAnimationFrame(drawStreaks);
+      } else {
+        streaksRunning = false;
+        streakRaf = null;
+      }
     }
-    drawStreaks();
+    function startStreaks() {
+      if (streaksRunning) return;
+      streaksRunning = true;
+      streakRaf = requestAnimationFrame(drawStreaks);
+    }
 
     // ── SHOCKWAVE RINGS — concentric ink circles on impact ──
     let rings = [];
@@ -6040,14 +6132,27 @@
     let animDone = false;      // permanent — once animation finishes, never intercept again
     let virtualScrolled = 0;
     let touchStartY = 0;
+    let scrollWritePending = false;
+    let pendingScrollTop = 0;
     let doneLockUntil = null; // timestamp — hold at ratio=1 for a beat before releasing
+
+    function scheduleScrollTo(top) {
+      pendingScrollTop = top;
+      if (scrollWritePending) return;
+      scrollWritePending = true;
+      requestAnimationFrame(() => {
+        scrollWritePending = false;
+        window.scrollTo({ top: pendingScrollTop, behavior: 'instant' });
+      });
+    }
 
     function applyReveal() {
       rafPending = false;
       const ratio = currentRatio;
 
       // Responsive but smooth lerp so the build follows scroll without stutter
-      displayRatio += (ratio - displayRatio) * 0.20;
+      displayRatio += (ratio - displayRatio) * 0.32;
+      if (Math.abs(displayRatio - ratio) < 0.002) displayRatio = ratio;
       diveRatio = displayRatio;
 
       // Start ambient rain + shockwave system on entry
@@ -6212,7 +6317,7 @@
           // Scroll past the section end so native scroll continues naturally
           if (revealSection) {
             const sectionEnd = revealSection.offsetTop + revealSection.offsetHeight - window.innerHeight;
-            window.scrollTo({ top: sectionEnd + 1, behavior: 'instant' });
+            scheduleScrollTo(sectionEnd + 1);
           }
         }
         return;
@@ -6225,7 +6330,7 @@
       const normalized = e.deltaMode === 1 ? rawDelta * 30
                        : e.deltaMode === 2 ? rawDelta * 300
                        : rawDelta;
-      const capped = Math.max(-80, Math.min(80, normalized));
+      const capped = Math.max(-160, Math.min(160, normalized));
       virtualScrolled = Math.max(0, Math.min(total, virtualScrolled + capped));
       const newRatio = virtualScrolled / total;
 
@@ -6233,10 +6338,10 @@
 
       // Hit the end — arm the hold timer
       if (newRatio >= 1 && doneLockUntil === null) {
-        doneLockUntil = performance.now() + 700;
+        doneLockUntil = performance.now() + 350;
       }
 
-      window.scrollTo({ top: revealSection.offsetTop + virtualScrolled, behavior: 'instant' });
+      scheduleScrollTo(revealSection.offsetTop + virtualScrolled);
     }
 
     // ── Touch support ──
@@ -6259,7 +6364,7 @@
 
       if (revealSection) {
         const sectionTop = revealSection.offsetTop;
-        window.scrollTo({ top: sectionTop + virtualScrolled, behavior: 'instant' });
+        scheduleScrollTo(sectionTop + virtualScrolled);
       }
     }
 
@@ -6273,10 +6378,10 @@
       // Fast-scroll overshoot guard: if animation isn't done and user has scrolled
       // past the section bottom, snap them back to the section end instantly
       if (!animDone && rect.bottom < window.innerHeight) {
-        window.scrollTo({ top: revealSection.offsetTop + total, behavior: 'instant' });
+        scheduleScrollTo(revealSection.offsetTop + total);
         setRatio(1);
         virtualScrolled = total;
-        if (doneLockUntil === null) doneLockUntil = performance.now() + 700;
+        if (doneLockUntil === null) doneLockUntil = performance.now() + 350;
         return;
       }
 
@@ -6668,4 +6773,5 @@
   </script>
 </body>
 </html>
+
 
