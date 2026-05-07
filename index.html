@@ -1231,7 +1231,7 @@
     }
 
     /* ══════════════════════════════════════
-       BUILD STAGE — dramatic scroll cinema
+       BUILD STAGE — Iron Man assembly cinema
        ══════════════════════════════════════ */
     #build-stage {
       position: absolute;
@@ -2069,6 +2069,473 @@
       #build-caption { bottom: 3vh; }
       .bc-body { font-size: 12px; }
     }
+
+    /* ══════════════════════════════════════
+       NEW ASSEMBLY SYSTEM — Iron Man build
+       ══════════════════════════════════════ */
+
+    /* Build layers — default hidden, fade in via .bl-show */
+    .build-layer { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity 0.55s ease; }
+    .build-layer.bl-show { opacity: 1; }
+
+    /* The base "site" — fills the screen, parts assemble in */
+    .build-site {
+      position: absolute; inset: 0;
+      background: #FEF9F4;
+      font-family: 'Inter', sans-serif;
+      color: #2B2547;
+      overflow: hidden;
+    }
+
+    /* Each piece of the site lives off-screen until JS fires .bs-piece-in */
+    .bs-piece {
+      position: relative;
+      opacity: 0;
+      will-change: transform, opacity, filter;
+      filter: blur(8px);
+      transition:
+        transform 0.95s cubic-bezier(0.22,1.32,0.36,1),
+        opacity   0.55s ease-out,
+        filter    0.55s ease-out;
+    }
+    .bs-piece[data-from="left"]   { transform: translate3d(-110%, 0, 0) rotateY(-12deg); }
+    .bs-piece[data-from="right"]  { transform: translate3d(110%, 0, 0)  rotateY(12deg); }
+    .bs-piece[data-from="top"]    { transform: translate3d(0, -120%, 0) rotateX(20deg) scale(1.1); }
+    .bs-piece[data-from="bottom"] { transform: translate3d(0, 120%, 0)  rotateX(-20deg); }
+    .bs-piece.bs-piece-in {
+      transform: translate3d(0,0,0) rotate(0) scale(1);
+      opacity: 1;
+      filter: blur(0);
+    }
+
+    /* When a piece "lands" — micro overshoot bloom */
+    .bs-piece.bs-piece-land::after {
+      content: '';
+      position: absolute; inset: -2px;
+      border: 1.5px solid #F0635A;
+      border-radius: 3px;
+      opacity: 1;
+      pointer-events: none;
+      animation: pieceBloom 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    @keyframes pieceBloom {
+      0%   { opacity: 1;   transform: scale(1);    box-shadow: 0 0 0 0 rgba(240,99,90,0.5); }
+      60%  { opacity: 0.6; transform: scale(1.04); box-shadow: 0 0 30px 4px rgba(240,99,90,0.15); }
+      100% { opacity: 0;   transform: scale(1.07); box-shadow: 0 0 50px 8px rgba(240,99,90,0); }
+    }
+
+    /* ── Site nav ── */
+    .bs-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 22px;
+      border-bottom: 1px solid rgba(43,37,71,0.08);
+    }
+    .bs-logo {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic; font-size: 22px; color: #2B2547;
+      letter-spacing: -0.5px;
+    }
+    .bs-logo span { color: #F0635A; }
+    .bs-nav-right { display: flex; align-items: center; gap: 10px; }
+    .bs-nav-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(43,37,71,0.45); }
+    .bs-nav-link {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+      color: #2B2547; margin-left: 6px;
+    }
+
+    /* ── Hero ── */
+    .bs-hero {
+      position: relative;
+      height: 240px;
+      overflow: hidden;
+    }
+    .bs-hero-img {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 80% at 80% 30%, rgba(240,99,90,0.28) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 70% at 20% 80%, rgba(244,162,97,0.25) 0%, transparent 65%),
+        linear-gradient(150deg,
+          #2B2547 0%,
+          #4A3F66 35%,
+          #8C5A60 65%,
+          #C8806C 90%,
+          #F0635A 100%);
+      transform: scale(1.05);
+    }
+    .bs-hero-grain {
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+      opacity: 0.18;
+    }
+    .bs-hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(20,16,26,0.0) 35%, rgba(20,16,26,0.55) 100%);
+    }
+    .bs-hero-content {
+      position: absolute;
+      left: 22px; right: 22px; bottom: 22px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .bs-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px; letter-spacing: 2.5px; text-transform: uppercase;
+      color: rgba(255,255,255,0.85);
+      align-self: flex-start;
+      padding: 4px 8px;
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 999px;
+      backdrop-filter: blur(4px);
+    }
+    .bs-title {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic; font-weight: 400;
+      font-size: 36px; line-height: 0.95; letter-spacing: -1.2px;
+      color: #fff;
+      margin: 0;
+    }
+    .bs-title em { color: #F4A27A; font-style: italic; }
+    .bs-hero-meta {
+      position: absolute;
+      bottom: 14px; right: 18px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .bs-meta-k {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7px; letter-spacing: 2px;
+      color: rgba(255,255,255,0.7);
+    }
+    .bs-meta-line {
+      width: 18px; height: 1px;
+      background: rgba(255,255,255,0.7);
+    }
+
+    /* ── Sub block: lead + CTA ── */
+    .bs-sub-block {
+      padding: 22px 22px 18px;
+    }
+    .bs-lead {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic; font-size: 17px; line-height: 1.3;
+      color: #2B2547;
+      letter-spacing: -0.3px;
+      margin: 0 0 14px;
+    }
+    .bs-cta {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #F0635A; color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.3px;
+      padding: 11px 18px;
+      border-radius: 999px;
+      box-shadow: 0 6px 18px -4px rgba(240,99,90,0.55);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      cursor: pointer;
+    }
+    .bs-cta-arrow { transition: transform 0.25s ease; }
+    .build-site.bs-cta-hovered .bs-cta {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 26px -4px rgba(240,99,90,0.65);
+    }
+    .build-site.bs-cta-hovered .bs-cta-arrow { transform: translateX(4px); }
+
+    /* ── Project cards ── */
+    .bs-cards {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+      padding: 0 22px 18px;
+    }
+    .bs-card {
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 18px -8px rgba(43,37,71,0.20);
+      border: 1px solid rgba(43,37,71,0.06);
+    }
+    .bs-card-img {
+      width: 100%; aspect-ratio: 1.2 / 1;
+      background-size: cover;
+      background-position: center;
+    }
+    .bs-card-img-1 {
+      background:
+        linear-gradient(135deg, #2B2547 0%, #5A547A 50%, #8C7C9A 100%),
+        radial-gradient(circle at 30% 70%, rgba(240,99,90,0.3) 0%, transparent 50%);
+      background-blend-mode: overlay;
+      position: relative;
+    }
+    .bs-card-img-1::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(45deg, transparent 38%, rgba(254,249,244,0.08) 38%, rgba(254,249,244,0.08) 42%, transparent 42%, transparent 58%, rgba(254,249,244,0.08) 58%, rgba(254,249,244,0.08) 62%, transparent 62%);
+    }
+    .bs-card-img-2 {
+      background:
+        linear-gradient(160deg, #F4A27A 0%, #F0635A 60%, #C8505A 100%),
+        radial-gradient(circle at 70% 30%, rgba(254,249,244,0.4) 0%, transparent 40%);
+      background-blend-mode: overlay;
+      position: relative;
+    }
+    .bs-card-img-2::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(180deg, transparent 60%, rgba(43,37,71,0.4) 100%);
+    }
+    .bs-card-body { padding: 10px 12px 12px; }
+    .bs-card-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7px; letter-spacing: 1.5px;
+      color: #F0635A;
+      margin-bottom: 4px;
+    }
+    .bs-card-name {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic; font-size: 14px; color: #2B2547;
+      line-height: 1.1;
+    }
+
+    /* ── Stats strip ── */
+    .bs-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      padding: 18px 22px;
+      border-top: 1px solid rgba(43,37,71,0.06);
+      border-bottom: 1px solid rgba(43,37,71,0.06);
+      background: rgba(43,37,71,0.02);
+    }
+    .bs-stat {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      border-right: 1px solid rgba(43,37,71,0.06);
+    }
+    .bs-stat:last-child { border-right: none; }
+    .bs-stat b {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic; font-weight: 400;
+      font-size: 22px; color: #F0635A;
+      line-height: 1;
+    }
+    .bs-stat span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7px; letter-spacing: 1.5px; text-transform: uppercase;
+      color: rgba(43,37,71,0.6);
+    }
+
+    /* ── Footer ── */
+    .bs-foot {
+      display: flex; justify-content: space-between;
+      padding: 14px 22px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px; letter-spacing: 1.5px;
+      color: rgba(43,37,71,0.55);
+    }
+
+    /* ══ Blueprint SVG layer (construction lines drawing in) ══ */
+    .build-svg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 6;
+    }
+    .bs-bp {
+      transition: opacity 0.5s ease;
+    }
+    .bs-bp.bp-draw {
+      opacity: 1;
+      animation: bpDraw 0.75s cubic-bezier(0.45,0,0.2,1) forwards;
+    }
+    .bs-bp.bp-fade {
+      animation: bpFade 0.45s ease 0.15s forwards;
+    }
+    @keyframes bpDraw {
+      0%   { opacity: 0;    stroke-dashoffset: 200; }
+      30%  { opacity: 0.75; }
+      100% { opacity: 0.55; stroke-dashoffset: 0; }
+    }
+    @keyframes bpFade {
+      from { opacity: 0.55; }
+      to   { opacity: 0; }
+    }
+    .bs-bp rect, .bs-bp line, .bs-bp circle {
+      stroke-dasharray: 4 3;
+      stroke-dashoffset: 200;
+      animation: bpDashIn 0.7s cubic-bezier(0.45,0,0.2,1) forwards;
+    }
+    @keyframes bpDashIn {
+      to { stroke-dashoffset: 0; }
+    }
+
+    /* ══ Assembly orbs — glowing dots that fly to deliver each piece ══ */
+    .build-orbs {
+      position: absolute; inset: 0;
+      pointer-events: none;
+      z-index: 7;
+      overflow: visible;
+    }
+    .bo-orb {
+      position: absolute;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff 0%, #F0635A 40%, transparent 75%);
+      box-shadow: 0 0 12px 2px rgba(240,99,90,0.7);
+      will-change: transform, opacity;
+      pointer-events: none;
+    }
+    .bo-orb::before {
+      content: '';
+      position: absolute;
+      inset: -10px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(240,99,90,0.30) 0%, transparent 70%);
+    }
+
+    /* ══ Code overlay — appears mid-build, smaller window in upper region ══ */
+    .build-code-overlay {
+      position: absolute;
+      left: 8%; right: 8%;
+      top: 12%; bottom: 18%;
+      background: rgba(20, 16, 26, 0.96);
+      border: 1px solid rgba(240, 99, 90, 0.4);
+      border-radius: 8px;
+      box-shadow:
+        0 20px 60px -20px rgba(20,16,26,0.6),
+        0 0 0 8px rgba(240,99,90,0.05);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      opacity: 0;
+      transform: scale(0.92) translateY(8px);
+      transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16,1,0.3,1);
+      z-index: 14;
+      pointer-events: none;
+    }
+    .build-code-overlay.bl-show {
+      opacity: 1; transform: scale(1) translateY(0);
+    }
+    /* Tabbar */
+    .ct-tabbar {
+      display: flex; align-items: center;
+      background: rgba(0,0,0,0.4);
+      border-bottom: 1px solid rgba(240,99,90,0.25);
+      padding: 0 8px;
+      flex-shrink: 0;
+    }
+    .ct-tab {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px; letter-spacing: 0.5px;
+      color: rgba(250,250,248,0.5);
+      padding: 8px 10px;
+      border-right: 1px solid rgba(255,255,255,0.06);
+    }
+    .ct-tab.ct-tab-active {
+      color: #F0635A;
+      font-weight: 700;
+      box-shadow: inset 0 -2px 0 #F0635A;
+    }
+    .ct-tab-status {
+      margin-left: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px; letter-spacing: 0.5px;
+      color: #4ade80;
+      padding: 8px 10px;
+      animation: ctaStatusBlink 1.4s ease-in-out infinite;
+    }
+    @keyframes ctaStatusBlink {
+      0%,100% { opacity: 1; }
+      50%     { opacity: 0.4; }
+    }
+    /* Code body */
+    #code-stream {
+      margin: 0; padding: 12px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      line-height: 1.55;
+      color: #FAFAF8;
+      flex: 1;
+      overflow: hidden;
+      white-space: pre; word-break: normal;
+    }
+    .ct-line {
+      display: flex;
+      align-items: baseline;
+      opacity: 0;
+      transform: translateX(-8px);
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+    .ct-line.ct-typed { opacity: 1; transform: translateX(0); }
+    .ct-num {
+      flex: 0 0 28px;
+      text-align: right;
+      padding-right: 10px;
+      color: rgba(250,250,248,0.30);
+      font-size: 8.5px;
+      user-select: none;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      margin-right: 8px;
+    }
+    .ct-line.ct-typed .ct-num { color: rgba(250,250,248,0.55); }
+    .ct-content { display: inline-block; white-space: pre; }
+    .ct-tag  { color: #F0635A; font-weight: 600; }
+    .ct-attr { color: #F4A261; }
+    .ct-str  { color: #C9C5DC; }
+    .ct-text { color: #FAFAF8; }
+    .ct-sel  { color: #F4A261; font-weight: 700; }
+    .ct-prop { color: #C9C5DC; }
+    .ct-val  { color: #FAFAF8; font-weight: 500; }
+    #code-cursor {
+      display: none;
+      position: absolute;
+      width: 7px; height: 12px;
+      background: #F0635A;
+      box-shadow: 0 0 8px rgba(240,99,90,0.6);
+      animation: codeCursorBlink 0.55s steps(2) infinite;
+      z-index: 5;
+    }
+    .build-code-overlay.bl-show #code-cursor { display: block; }
+    @keyframes codeCursorBlink { 0%,100% { opacity: 1; } 50% { opacity: 0.15; } }
+
+    /* ══ HUD ring — Iron Man feel, wraps the screen edge ══ */
+    .bf-hud {
+      position: absolute;
+      inset: -14px;
+      width: calc(100% + 28px); height: calc(100% + 28px);
+      pointer-events: none;
+      z-index: 16;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    #build-stage.bs-in .bf-hud { opacity: 1; }
+    .bf-hud-ring-1 {
+      animation: hudRotate 28s linear infinite;
+      transform-origin: 50px 50px;
+    }
+    .bf-hud-ring-2 {
+      animation: hudRotateRev 22s linear infinite;
+      transform-origin: 50px 50px;
+    }
+    @keyframes hudRotate    { to { transform: rotate(360deg); } }
+    @keyframes hudRotateRev { to { transform: rotate(-360deg); } }
+
+    /* ══ Ship glow overlay — replaces old ship layer ══ */
+    .bf-ship-glow {
+      position: absolute; inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 12;
+      background:
+        radial-gradient(ellipse 60% 40% at 50% 50%, rgba(240,99,90,0.0) 30%, rgba(240,99,90,0.10) 60%, rgba(240,99,90,0.20) 100%),
+        radial-gradient(ellipse 30% 20% at 50% 50%, rgba(255,255,255,0.0) 0%, rgba(240,99,90,0.05) 100%);
+      mix-blend-mode: screen;
+      transition: opacity 0.8s ease;
+    }
+    #build-stage[data-phase="3"] .bf-ship-glow { opacity: 1; }
+
+    /* SHIPPED stamp — appears outside the device, on the side, on ship */
+    .bf-rail.bf-rail-shipped {
+      background: rgba(240,99,90,0.12);
+      color: #F0635A;
+      box-shadow: 0 0 20px rgba(240,99,90,0.25);
+    }
+    .bf-rail.bf-rail-shipped .bf-rail-text { color: #F0635A; }
 
     /* ═══════════════════════════════════════════════
        LUSION-STYLE TEXT SPLITS & CLIP REVEALS
@@ -3378,44 +3845,148 @@
               </span>
             </div>
 
-            <!-- Layered build viewport -->
+            <!-- Layered build viewport — site builds piece-by-piece in place -->
             <div class="bf-screen">
-              <!-- Phase 1 — wireframe -->
-              <div class="build-layer" id="build-wireframe">
-                <svg viewBox="0 0 240 420" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-                  <rect class="wf-line" x="20" y="30" width="60" height="6" rx="1"/>
-                  <rect class="wf-line" x="180" y="30" width="40" height="3" rx="1"/>
-                  <rect class="wf-box" x="20" y="60" width="200" height="100" rx="2"/>
-                  <rect class="wf-line" x="32" y="170" width="120" height="5" rx="1"/>
-                  <rect class="wf-line" x="32" y="180" width="170" height="5" rx="1"/>
-                  <rect class="wf-line" x="32" y="190" width="90" height="5" rx="1"/>
-                  <rect class="wf-cta" x="20" y="210" width="80" height="20" rx="3"/>
-                  <rect class="wf-box" x="20" y="250" width="95" height="70" rx="2"/>
-                  <rect class="wf-box" x="125" y="250" width="95" height="70" rx="2"/>
-                  <rect class="wf-line" x="20" y="350" width="200" height="3" rx="1"/>
-                  <rect class="wf-line" x="20" y="360" width="140" height="3" rx="1"/>
-                  <rect class="wf-line" x="20" y="370" width="180" height="3" rx="1"/>
-                </svg>
+              <!-- BASE: the "real" rendered site, parts hidden until they assemble -->
+              <div class="build-site" id="build-site">
+                <!-- NAV — assembles from off-screen left -->
+                <div class="bs-piece" data-piece="nav" data-from="left">
+                  <div class="bs-nav">
+                    <div class="bs-logo">CASA<span>.</span></div>
+                    <div class="bs-nav-right">
+                      <span class="bs-nav-dot"></span><span class="bs-nav-dot"></span><span class="bs-nav-dot"></span>
+                      <span class="bs-nav-link">Menu</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- HERO image with overlay — drops from above -->
+                <div class="bs-piece bs-piece-hero" data-piece="hero-img" data-from="top">
+                  <div class="bs-hero">
+                    <div class="bs-hero-img"></div>
+                    <div class="bs-hero-grain"></div>
+                    <div class="bs-hero-overlay"></div>
+                    <div class="bs-hero-content">
+                      <span class="bs-eyebrow">EST 2026 · ST. JOHNS, FL</span>
+                      <h1 class="bs-title">Spaces<br><em>worth&nbsp;keeping.</em></h1>
+                    </div>
+                    <div class="bs-hero-meta">
+                      <span class="bs-meta-k">SCROLL</span>
+                      <span class="bs-meta-line"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Sub block: tagline + CTA -->
+                <div class="bs-piece" data-piece="sub" data-from="left">
+                  <div class="bs-sub-block">
+                    <p class="bs-lead">A small studio with one rule:<br>nothing generic, nothing borrowed.</p>
+                    <a class="bs-cta">Start a project<span class="bs-cta-arrow">→</span></a>
+                  </div>
+                </div>
+
+                <!-- Project cards row -->
+                <div class="bs-piece" data-piece="cards" data-from="bottom">
+                  <div class="bs-cards">
+                    <div class="bs-card">
+                      <div class="bs-card-img bs-card-img-1"></div>
+                      <div class="bs-card-body">
+                        <div class="bs-card-tag">RESIDENCE · 2025</div>
+                        <div class="bs-card-name">Pine House</div>
+                      </div>
+                    </div>
+                    <div class="bs-card">
+                      <div class="bs-card-img bs-card-img-2"></div>
+                      <div class="bs-card-body">
+                        <div class="bs-card-tag">STUDIO · 2024</div>
+                        <div class="bs-card-name">Bay Atelier</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Stats strip -->
+                <div class="bs-piece" data-piece="stats" data-from="right">
+                  <div class="bs-stats">
+                    <div class="bs-stat"><b>24</b><span>built</span></div>
+                    <div class="bs-stat"><b>11y</b><span>local</span></div>
+                    <div class="bs-stat"><b>0</b><span>templates</span></div>
+                  </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="bs-piece" data-piece="foot" data-from="bottom">
+                  <div class="bs-foot">
+                    <span>© 2026 Casa Studio</span>
+                    <span>casa-studio.com</span>
+                  </div>
+                </div>
+
+                <!-- Demo cursor for render phase -->
+                <div class="bld-fakecursor"></div>
+                <div class="bld-tapring"></div>
               </div>
 
-              <!-- Phase 2 — code typing -->
-              <div class="build-layer" id="build-code">
+              <!-- BLUEPRINT: SVG construction layer that draws over each piece as it lands -->
+              <svg class="build-svg" id="build-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 620" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="bs-line-grad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="#F0635A" stop-opacity="0"/>
+                    <stop offset="0.5" stop-color="#F0635A" stop-opacity="1"/>
+                    <stop offset="1" stop-color="#F0635A" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <!-- Construction lines drawn in for each piece — 6 pieces -->
+                <g class="bs-bp" data-for="nav"      stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
+                  <rect x="14" y="14" width="332" height="40" rx="2" stroke-dasharray="4 3"/>
+                  <line x1="0" y1="14" x2="360" y2="14"/>
+                  <line x1="0" y1="54" x2="360" y2="54"/>
+                </g>
+                <g class="bs-bp" data-for="hero-img" stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
+                  <rect x="14" y="64" width="332" height="180" rx="2" stroke-dasharray="4 3"/>
+                  <line x1="14" y1="64" x2="346" y2="244"/>
+                  <line x1="346" y1="64" x2="14" y2="244"/>
+                  <circle cx="180" cy="154" r="6"/>
+                </g>
+                <g class="bs-bp" data-for="sub"      stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
+                  <rect x="14" y="252" width="332" height="76" rx="2" stroke-dasharray="4 3"/>
+                </g>
+                <g class="bs-bp" data-for="cards"    stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
+                  <rect x="14" y="338" width="160" height="130" rx="2" stroke-dasharray="4 3"/>
+                  <rect x="186" y="338" width="160" height="130" rx="2" stroke-dasharray="4 3"/>
+                </g>
+                <g class="bs-bp" data-for="stats"    stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
+                  <rect x="14" y="478" width="332" height="60" rx="2" stroke-dasharray="4 3"/>
+                  <line x1="120" y1="478" x2="120" y2="538"/>
+                  <line x1="240" y1="478" x2="240" y2="538"/>
+                </g>
+                <g class="bs-bp" data-for="foot"     stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
+                  <rect x="14" y="546" width="332" height="42" rx="2" stroke-dasharray="4 3"/>
+                </g>
+              </svg>
+
+              <!-- ASSEMBLY ORBS: glowing dots that fly in to "deliver" each piece -->
+              <div class="build-orbs" id="build-orbs"></div>
+
+              <!-- Code overlay — appears mid-assembly, types out, then dissolves into the site -->
+              <div class="build-code-overlay" id="build-code">
                 <div class="ct-tabbar">
                   <span class="ct-tab ct-tab-active">index.html</span>
                   <span class="ct-tab">style.css</span>
+                  <span class="ct-tab-status">● compile</span>
                 </div>
-                <pre id="code-stream"><span class="ct-line"><span class="ct-num">01</span><span class="ct-content"><span class="ct-tag">&lt;header</span> <span class="ct-attr">class</span>=<span class="ct-str">"hero"</span><span class="ct-tag">&gt;</span></span></span>
-<span class="ct-line"><span class="ct-num">02</span><span class="ct-content">  <span class="ct-tag">&lt;h1&gt;</span><span class="ct-text">Local. Built right.</span><span class="ct-tag">&lt;/h1&gt;</span></span></span>
-<span class="ct-line"><span class="ct-num">03</span><span class="ct-content">  <span class="ct-tag">&lt;a</span> <span class="ct-attr">href</span>=<span class="ct-str">"#start"</span><span class="ct-tag">&gt;</span><span class="ct-text">Start →</span><span class="ct-tag">&lt;/a&gt;</span></span></span>
-<span class="ct-line"><span class="ct-num">04</span><span class="ct-content"><span class="ct-tag">&lt;/header&gt;</span></span></span>
+                <pre id="code-stream"><span class="ct-line"><span class="ct-num">01</span><span class="ct-content"><span class="ct-tag">&lt;section</span> <span class="ct-attr">class</span>=<span class="ct-str">"hero"</span><span class="ct-tag">&gt;</span></span></span>
+<span class="ct-line"><span class="ct-num">02</span><span class="ct-content">  <span class="ct-tag">&lt;img</span> <span class="ct-attr">src</span>=<span class="ct-str">"casa.jpg"</span><span class="ct-tag">/&gt;</span></span></span>
+<span class="ct-line"><span class="ct-num">03</span><span class="ct-content">  <span class="ct-tag">&lt;h1&gt;</span><span class="ct-text">Spaces worth keeping.</span><span class="ct-tag">&lt;/h1&gt;</span></span></span>
+<span class="ct-line"><span class="ct-num">04</span><span class="ct-content"><span class="ct-tag">&lt;/section&gt;</span></span></span>
 <span class="ct-line"><span class="ct-num">05</span><span class="ct-content"></span></span>
 <span class="ct-line"><span class="ct-num">06</span><span class="ct-content"><span class="ct-sel">.hero</span> {</span></span>
-<span class="ct-line"><span class="ct-num">07</span><span class="ct-content">  <span class="ct-prop">background</span>: <span class="ct-val">#FEF9F4</span>;</span></span>
-<span class="ct-line"><span class="ct-num">08</span><span class="ct-content">  <span class="ct-prop">padding</span>: <span class="ct-val">120px 80px</span>;</span></span>
-<span class="ct-line"><span class="ct-num">09</span><span class="ct-content">  <span class="ct-prop">font</span>: <span class="ct-val">italic 64px serif</span>;</span></span>
+<span class="ct-line"><span class="ct-num">07</span><span class="ct-content">  <span class="ct-prop">display</span>: <span class="ct-val">grid</span>;</span></span>
+<span class="ct-line"><span class="ct-num">08</span><span class="ct-content">  <span class="ct-prop">aspect-ratio</span>: <span class="ct-val">4 / 5</span>;</span></span>
+<span class="ct-line"><span class="ct-num">09</span><span class="ct-content">  <span class="ct-prop">background</span>: <span class="ct-val">#FEF9F4</span>;</span></span>
 <span class="ct-line"><span class="ct-num">10</span><span class="ct-content">}</span></span>
 <span class="ct-line"><span class="ct-num">11</span><span class="ct-content"></span></span>
-<span class="ct-line"><span class="ct-num">12</span><span class="ct-content"><span class="ct-sel">.btn</span> {</span></span>
+<span class="ct-line"><span class="ct-num">12</span><span class="ct-content"><span class="ct-sel">.cta</span> {</span></span>
 <span class="ct-line"><span class="ct-num">13</span><span class="ct-content">  <span class="ct-prop">background</span>: <span class="ct-val">#F0635A</span>;</span></span>
 <span class="ct-line"><span class="ct-num">14</span><span class="ct-content">  <span class="ct-prop">border-radius</span>: <span class="ct-val">999px</span>;</span></span>
 <span class="ct-line"><span class="ct-num">15</span><span class="ct-content">  <span class="ct-prop">transition</span>: <span class="ct-val">all .25s ease</span>;</span></span>
@@ -3423,55 +3994,24 @@
                 <div id="code-cursor"></div>
               </div>
 
-              <!-- Phase 3 — rendered preview with live activity -->
-              <div class="build-layer" id="build-render">
-                <div class="bld-nav">
-                  <div class="bld-logo">CASA</div>
-                  <div class="bld-nav-dots"><span></span><span></span><span></span></div>
-                </div>
-                <div class="bld-hero">
-                  <div class="bld-eyebrow">EST. 2026 · ST. JOHNS</div>
-                  <div class="bld-title">Local.<br><em>Built right.</em></div>
-                  <div class="bld-sub">Casa is a small architecture studio with one rule: nothing template, nothing generic.</div>
-                  <div class="bld-cta">Start a project →</div>
-                </div>
-                <div class="bld-cards">
-                  <div class="bld-card">
-                    <div class="bld-card-t">DESIGN</div>
-                    <div class="bld-card-b">14 days</div>
-                  </div>
-                  <div class="bld-card">
-                    <div class="bld-card-t">BUILD</div>
-                    <div class="bld-card-b">8 weeks</div>
-                  </div>
-                </div>
-                <div class="bld-foot">© 2026 — Casa Studio</div>
-                <!-- Animated cursor that demos interaction -->
-                <div class="bld-fakecursor"></div>
-                <!-- Tap ring fired when fakecursor "clicks" -->
-                <div class="bld-tapring"></div>
-              </div>
+              <!-- HUD ring overlay (Iron Man feel) -->
+              <svg class="bf-hud" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="48" fill="none" stroke="#F0635A" stroke-width="0.25" stroke-dasharray="2 4" opacity="0.45" class="bf-hud-ring bf-hud-ring-1"/>
+                <circle cx="50" cy="50" r="44" fill="none" stroke="#F0635A" stroke-width="0.20" stroke-dasharray="1 6" opacity="0.30" class="bf-hud-ring bf-hud-ring-2"/>
+                <g class="bf-hud-ticks" stroke="#F0635A" stroke-width="0.3" opacity="0.5">
+                  <line x1="50" y1="2"  x2="50" y2="6"/>
+                  <line x1="50" y1="94" x2="50" y2="98"/>
+                  <line x1="2"  y1="50" x2="6"  y2="50"/>
+                  <line x1="94" y1="50" x2="98" y2="50"/>
+                </g>
+              </svg>
 
-              <!-- Phase 4 — ship overlay -->
-              <div class="build-layer" id="build-ship">
-                <div class="ship-content">
-                  <div class="ship-tag">SHIPPED</div>
-                  <div class="ship-url">casa-studio.com</div>
-                  <div class="ship-meta">deployed · live · 7 days</div>
-                  <div class="ship-log">
-                    <div class="ship-log-line"><span class="sll-arrow">→</span> compiling assets</div>
-                    <div class="ship-log-line"><span class="sll-arrow">→</span> optimizing images</div>
-                    <div class="ship-log-line"><span class="sll-arrow">→</span> uploading to edge</div>
-                    <div class="ship-log-line"><span class="sll-arrow">→</span> dns propagation</div>
-                    <div class="ship-log-line ship-log-success"><span class="sll-arrow">✓</span> live in production</div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Sweep transition layer — coral scan-line on phase change -->
+              <!-- Sweep transition layer -->
               <div class="bf-sweep"></div>
-              <!-- Glitch overlay for code→render hand-off -->
               <div class="bf-glitch"></div>
+
+              <!-- Ship glow overlay — replaces the old ship layer -->
+              <div class="bf-ship-glow"></div>
             </div>
 
             <!-- Frame chrome corners -->
@@ -3520,9 +4060,9 @@
         </div>
       </div>
 
-      <!-- Final headline — hidden until ship phase fires -->
-      <div id="video-text-overlay" style="opacity:0; pointer-events:none; transition: opacity 0.4s ease;">
-        <div class="video-eyebrow" id="video-eyebrow">Built by hand. Every time.</div>
+      <!-- Hidden — kept for legacy JS refs; the build IS the punchline now -->
+      <div id="video-text-overlay" style="display:none;">
+        <div class="video-eyebrow" id="video-eyebrow"></div>
         <h2 class="video-headline" id="video-headline"></h2>
       </div>
 
@@ -4536,13 +5076,15 @@
     // ── BUILD STAGE references ──
     const buildStage    = document.getElementById('build-stage');
     const buildFrame    = document.getElementById('build-frame');
-    const blWireframe   = document.getElementById('build-wireframe');
+    const buildSite     = document.getElementById('build-site');
+    const buildSvg      = document.getElementById('build-svg');
+    const buildOrbs     = document.getElementById('build-orbs');
     const blCode        = document.getElementById('build-code');
-    const blRender      = document.getElementById('build-render');
-    const blShip        = document.getElementById('build-ship');
     const codeStream    = document.getElementById('code-stream');
     const codeLines     = codeStream ? codeStream.querySelectorAll('.ct-line') : [];
-    const wfShapes      = document.querySelectorAll('#build-wireframe .wf-line, #build-wireframe .wf-box, #build-wireframe .wf-cta');
+    // Pieces in build order — must match assembly sequence
+    const sitePieces    = buildSite ? Array.from(buildSite.querySelectorAll('.bs-piece')) : [];
+    const blueprintGroups = buildSvg ? Array.from(buildSvg.querySelectorAll('.bs-bp')) : [];
     const phaseRows     = document.querySelectorAll('.bp-row');
     const bcEyebrow     = document.getElementById('bc-eyebrow');
     const bcTitle       = document.getElementById('bc-title');
@@ -4558,41 +5100,42 @@
     const overlayText   = document.getElementById('video-text-overlay');
     const bfSweep       = document.querySelector('.bf-sweep');
     const bfGlitch      = document.querySelector('.bf-glitch');
+    const bfRail        = document.querySelector('.bf-rail');
     const bfRailText    = document.getElementById('bf-rail-text');
     const bfRailTime    = document.getElementById('bf-rail-time');
     const fakeCursor    = document.querySelector('.bld-fakecursor');
     const tapRing       = document.querySelector('.bld-tapring');
     const shipParticles = document.getElementById('ship-particles');
 
-    // Caption copy per phase
+    // Phase copy — captions update at each major beat
     const PHASE_COPY = [
       {
-        eyebrow: 'PHASE 01 / 04',
+        eyebrow: 'PHASE 01 / 04 · BLUEPRINT',
         title:   'Every site starts as a sketch.',
-        body:    'Layout. Hierarchy. The bones before the skin.',
-        ph:      'SKETCH',
-        rail:    'build · sketch',
+        body:    'Layout. Hierarchy. The bones before the skin — drawn over what\'s about to land.',
+        ph:      'BLUEPRINT',
+        rail:    'build · blueprint',
       },
       {
-        eyebrow: 'PHASE 02 / 04',
-        title:   'Then comes the code. Hand-typed.',
-        body:    'No drag-and-drop. No "no-code." Real HTML, CSS, JS — the way a craftsman would.',
+        eyebrow: 'PHASE 02 / 04 · ASSEMBLE',
+        title:   'Pieces fly in, one by one.',
+        body:    'Nav. Hero. Cards. Each component arrives, snaps into its slot, and locks.',
+        ph:      'ASSEMBLE',
+        rail:    'build · assemble',
+      },
+      {
+        eyebrow: 'PHASE 03 / 04 · CODE',
+        title:   'Hand-written. Not generated.',
+        body:    'Real HTML, CSS, JS — typed by a person who knows what each line does.',
         ph:      'CODE',
         rail:    'build · code',
       },
       {
-        eyebrow: 'PHASE 03 / 04',
-        title:   'The structure becomes a site.',
-        body:    'Custom typography, real interaction, performance baked in. Yours alone.',
-        ph:      'RENDER',
-        rail:    'build · render',
-      },
-      {
-        eyebrow: 'PHASE 04 / 04',
-        title:   'And then it ships.',
-        body:    'In days, not months. Live, tested, on its own domain — ready to earn its keep.',
-        ph:      'SHIP',
-        rail:    'build · ship',
+        eyebrow: 'PHASE 04 / 04 · SHIPPED',
+        title:   'And then it goes live.',
+        body:    'Days, not months. On its own domain. Faster than any template you\'ve clicked through.',
+        ph:      'SHIPPED',
+        rail:    'build · shipped',
       },
     ];
 
@@ -4655,38 +5198,37 @@
       cursorTimers = [];
     }
     function startCursorDemo() {
-      if (!fakeCursor || !blRender) return;
+      if (!fakeCursor || !buildSite) return;
       clearCursorTimers();
       const moveTo = (selector, after, withTap) => {
         cursorTimers.push(setTimeout(() => {
-          const target = blRender.querySelector(selector);
+          const target = buildSite.querySelector(selector);
           if (!target) return;
           const tRect = target.getBoundingClientRect();
-          const rRect = blRender.getBoundingClientRect();
-          const x = tRect.left - rRect.left + tRect.width  * 0.5;
-          const y = tRect.top  - rRect.top  + tRect.height * 0.7;
-          fakeCursor.style.transition = 'transform 0.85s cubic-bezier(0.4,0,0.2,1)';
+          const sRect = buildSite.getBoundingClientRect();
+          const x = tRect.left - sRect.left + tRect.width  * 0.5;
+          const y = tRect.top  - sRect.top  + tRect.height * 0.65;
+          fakeCursor.style.transition = 'transform 0.95s cubic-bezier(0.34,1.32,0.36,1), opacity 0.3s ease';
           fakeCursor.style.transform = `translate(${x}px, ${y}px)`;
           if (withTap) {
             cursorTimers.push(setTimeout(() => {
-              if (selector === '.bld-cta') blRender.classList.add('bld-cta-hovered');
+              if (selector === '.bs-cta') buildSite.classList.add('bs-cta-hovered');
               fireTap(x, y);
-              cursorTimers.push(setTimeout(() => blRender.classList.remove('bld-cta-hovered'), 700));
-            }, 900));
+              cursorTimers.push(setTimeout(() => buildSite.classList.remove('bs-cta-hovered'), 700));
+            }, 1000));
           }
         }, after));
       };
-      // Sequence
-      moveTo('.bld-cta',           300,  true);
-      moveTo('.bld-card:nth-child(1)', 2200, true);
-      moveTo('.bld-card:nth-child(2)', 3800, true);
-      moveTo('.bld-cta',           5400, true);
+      moveTo('.bs-cta',                    400,  true);
+      moveTo('.bs-card:nth-child(1)',      2400, true);
+      moveTo('.bs-card:nth-child(2)',      4100, true);
+      moveTo('.bs-cta',                    5700, true);
     }
     function stopCursorDemo() {
       clearCursorTimers();
       if (fakeCursor) {
         fakeCursor.style.transition = 'opacity 0.3s ease';
-        fakeCursor.style.transform = 'translate(40px, 40px)';
+        fakeCursor.style.opacity = '0';
       }
     }
     function fireTap(x, y) {
@@ -4698,21 +5240,163 @@
       tapRing.classList.add('tap-go');
     }
 
+    // ── ASSEMBLY: pieces fly in like Iron Man parts ──
+    // Each piece has a "landed" state. Blueprint draws → orb flies in → piece lands.
+    const pieceState = sitePieces.map(() => ({ landed: false, blueprintShown: false }));
+    let activeOrbs = [];
+
+    // Get position of a piece in screen coords
+    function pieceCenter(idx) {
+      if (!sitePieces[idx] || !buildFrame) return null;
+      const pr = sitePieces[idx].getBoundingClientRect();
+      const fr = buildFrame.getBoundingClientRect();
+      return {
+        x: pr.left - fr.left + pr.width / 2,
+        y: pr.top  - fr.top  + pr.height / 2,
+      };
+    }
+
+    // Spawn an orb that flies in from a side, then lands on a piece
+    function spawnDeliveryOrb(targetIdx, fromSide) {
+      if (!buildOrbs || !sitePieces[targetIdx]) return;
+      const target = pieceCenter(targetIdx);
+      if (!target) return;
+      const orb = document.createElement('div');
+      orb.className = 'bo-orb';
+      buildOrbs.appendChild(orb);
+      activeOrbs.push(orb);
+
+      const fr = buildFrame.getBoundingClientRect();
+      const startX = fromSide === 'left'  ? -60
+                   : fromSide === 'right' ? fr.width + 60
+                   : fr.width / 2 + (Math.random() - 0.5) * 80;
+      const startY = fromSide === 'top'    ? -40
+                   : fromSide === 'bottom' ? fr.height + 40
+                   : Math.random() * fr.height;
+
+      orb.style.left = startX + 'px';
+      orb.style.top  = startY + 'px';
+      orb.style.opacity = '0';
+
+      // Curved flight via two keyframes with control bezier
+      const ctrlX = (startX + target.x) / 2 + (Math.random() - 0.5) * 80;
+      const ctrlY = (startY + target.y) / 2 - 60;
+
+      orb.animate([
+        { left: startX + 'px', top: startY + 'px', opacity: 0,   transform: 'scale(0.4)' },
+        { left: ctrlX  + 'px', top: ctrlY  + 'px', opacity: 1,   transform: 'scale(1.1)', offset: 0.55 },
+        { left: target.x + 'px', top: target.y + 'px', opacity: 1, transform: 'scale(0.7)' },
+      ], { duration: 720, easing: 'cubic-bezier(0.5, -0.2, 0.4, 1.2)', fill: 'forwards' });
+
+      // Cleanup + trigger piece land slightly before arrival
+      setTimeout(() => {
+        // Quick flash on arrival
+        orb.animate([
+          { opacity: 1,   transform: 'scale(0.7)', boxShadow: '0 0 12px 2px rgba(240,99,90,0.7)' },
+          { opacity: 1,   transform: 'scale(2.2)', boxShadow: '0 0 30px 8px rgba(240,99,90,0.4)' },
+          { opacity: 0,   transform: 'scale(0.5)', boxShadow: '0 0 0 0 rgba(240,99,90,0)' },
+        ], { duration: 380, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' });
+        landPiece(targetIdx);
+      }, 640);
+
+      setTimeout(() => {
+        if (orb.parentNode) orb.parentNode.removeChild(orb);
+        activeOrbs = activeOrbs.filter(o => o !== orb);
+      }, 1200);
+    }
+
+    // Make a piece "land" — physics overshoot snap
+    function landPiece(idx) {
+      const piece = sitePieces[idx];
+      if (!piece || pieceState[idx].landed) return;
+      pieceState[idx].landed = true;
+      piece.classList.add('bs-piece-in');
+      // Bloom ring on landing
+      piece.classList.remove('bs-piece-land');
+      void piece.offsetWidth;
+      piece.classList.add('bs-piece-land');
+      // Hide the blueprint group for this piece a moment after landing
+      setTimeout(() => {
+        const bp = blueprintGroups.find(g => g.dataset.for === piece.dataset.piece);
+        if (bp) {
+          bp.classList.remove('bp-draw');
+          bp.classList.add('bp-fade');
+        }
+      }, 250);
+    }
+
+    // Show blueprint for a piece (precedes its delivery)
+    function showBlueprint(idx) {
+      const piece = sitePieces[idx];
+      if (!piece || pieceState[idx].blueprintShown) return;
+      pieceState[idx].blueprintShown = true;
+      const bp = blueprintGroups.find(g => g.dataset.for === piece.dataset.piece);
+      if (bp) {
+        bp.classList.remove('bp-fade');
+        bp.classList.add('bp-draw');
+      }
+    }
+
+    // Reset all pieces (when scrolling out of section)
+    function resetAssembly() {
+      pieceState.forEach((s, i) => {
+        s.landed = false;
+        s.blueprintShown = false;
+        if (sitePieces[i]) {
+          sitePieces[i].classList.remove('bs-piece-in', 'bs-piece-land');
+        }
+      });
+      blueprintGroups.forEach(g => g.classList.remove('bp-draw', 'bp-fade'));
+      activeOrbs.forEach(o => { if (o.parentNode) o.parentNode.removeChild(o); });
+      activeOrbs = [];
+      if (buildSite) buildSite.classList.remove('bs-cta-hovered');
+    }
+
+    // Drive assembly progress (0..1) — chains blueprint → orb → land per piece
+    let assemblyProgress = -1;
+    function setAssemblyProgress(t) {
+      if (sitePieces.length === 0) return;
+      const N = sitePieces.length;
+      // Reverse if scrolling back significantly
+      if (t < assemblyProgress - 0.05) {
+        // Unwind landed pieces beyond current threshold
+        sitePieces.forEach((p, i) => {
+          const myT = (i + 0.6) / N;
+          if (t < myT - 0.08 && pieceState[i].landed) {
+            pieceState[i].landed = false;
+            pieceState[i].blueprintShown = false;
+            p.classList.remove('bs-piece-in', 'bs-piece-land');
+            const bp = blueprintGroups.find(g => g.dataset.for === p.dataset.piece);
+            if (bp) bp.classList.remove('bp-draw', 'bp-fade');
+          }
+        });
+      }
+      assemblyProgress = t;
+      // For each piece, fire blueprint at threshold-0.10, deliver at threshold
+      sitePieces.forEach((p, i) => {
+        const arriveT  = (i + 0.85) / N;
+        const blueT    = arriveT - 0.10;
+        if (t >= blueT && !pieceState[i].blueprintShown) {
+          showBlueprint(i);
+        }
+        if (t >= arriveT && !pieceState[i].landed) {
+          const fromMap = { left:'left', right:'right', top:'top', bottom:'bottom' };
+          spawnDeliveryOrb(i, fromMap[p.dataset.from] || 'top');
+        }
+      });
+    }
+
     let currentPhase = -1;
     function setPhase(p) {
       if (p === currentPhase) return;
       const prevPhase = currentPhase;
       currentPhase = p;
 
-      // Sync data attribute for CSS-driven phase styling
       buildStage.setAttribute('data-phase', String(p));
-
-      // Layer visibility — render layer stays visible during ship (overlaid by ship)
-      blWireframe.classList.toggle('bl-show', p === 0);
-      blCode.classList.toggle('bl-show', p === 1);
-      blRender.classList.toggle('bl-show', p === 2 || p === 3);
-      blShip.classList.toggle('bl-show', p === 3);
       buildFrame.classList.toggle('bf-shipped', p === 3);
+
+      // Code overlay only visible in phase 2
+      blCode.classList.toggle('bl-show', p === 2);
 
       // Phase track
       phaseRows.forEach((row, i) => {
@@ -4720,7 +5404,7 @@
         row.classList.toggle('bp-done', i < p);
       });
 
-      // Caption flip animation — fade out, swap text, fade in
+      // Caption flip animation
       buildCaption.classList.add('bc-flip');
       setTimeout(() => {
         const copy = PHASE_COPY[p] || PHASE_COPY[0];
@@ -4733,31 +5417,39 @@
         buildCaption.classList.remove('bc-flip');
       }, 220);
 
+      // Cursor demo runs in phase 3 (render phase = ship buildup actually no, phase 2 in old, 3 here is ship)
+      // We'll start the cursor when assembly is mostly complete (phase 2 = code, but pieces are already there)
+      // Actually cursor should run during phase 2 (code) OR during the assembly phase 1 once everything has landed
+      if (p === 2) {
+        // start a cursor demo on the now-built site (slight delay to let glitch finish)
+        setTimeout(startCursorDemo, 600);
+      } else {
+        stopCursorDemo();
+      }
+
       // Phase transition effects
       if (prevPhase >= 0 && p > prevPhase) {
-        // Sketch → Code: sweep
         if (prevPhase === 0 && p === 1) fireSweep();
-        // Code → Render: glitch + sweep
         else if (prevPhase === 1 && p === 2) {
           fireGlitch();
           setTimeout(fireSweep, 100);
         }
-        // Render → Ship: handled by ship logic (slamText fires shockwave + particles)
+        else if (prevPhase === 2 && p === 3) {
+          fireSweep();
+          setTimeout(fireShipParticles, 80);
+        }
       }
 
-      // Render phase: start the fake cursor demo
-      if (p === 2) startCursorDemo();
-      else stopCursorDemo();
-
-      // Deploy badge goes live at ship
+      // Deploy badge
       if (p === 3) {
         btDeploy.textContent = 'LIVE';
         btDeploy.classList.add('bt-live');
         flickerVal(btDeploy);
-        setTimeout(fireShipParticles, 80);
+        if (bfRail) bfRail.classList.add('bf-rail-shipped');
       } else {
         btDeploy.textContent = 'PENDING';
         btDeploy.classList.remove('bt-live');
+        if (bfRail) bfRail.classList.remove('bf-rail-shipped');
       }
     }
 
@@ -5061,7 +5753,7 @@
       requestAnimationFrame(tick);
     }
 
-    // ── SHIP IMPACT — fires once when the build "ships" at end of phase 4
+    // ── SHIP IMPACT — fires once when build hits phase 3 (SHIPPED)
     let textRevealed = false;
     function slamText() {
       if (textRevealed) return;
@@ -5069,52 +5761,27 @@
 
       const stickyEl = document.getElementById('video-sticky');
 
-      // Coral flash to celebrate the ship
+      // Coral celebration flash on the screen
       const flashEl = mask;
-      flashEl.style.background = 'rgba(240,99,90,0.18)';
-      flashEl.style.mixBlendMode = 'multiply';
-      flashEl.style.transition = 'none';
-      flashEl.style.opacity = '1';
-      setTimeout(() => {
-        flashEl.style.transition = 'opacity 0.7s cubic-bezier(0.16,1,0.3,1)';
-        flashEl.style.opacity = '0';
-      }, 30);
+      if (flashEl) {
+        flashEl.style.background = 'rgba(240,99,90,0.18)';
+        flashEl.style.mixBlendMode = 'multiply';
+        flashEl.style.transition = 'none';
+        flashEl.style.opacity = '1';
+        setTimeout(() => {
+          flashEl.style.transition = 'opacity 0.8s cubic-bezier(0.16,1,0.3,1)';
+          flashEl.style.opacity = '0';
+        }, 35);
+      }
 
       // Soft screen jolt
-      screenShake(stickyEl, 6, 400);
+      if (stickyEl) screenShake(stickyEl, 5, 380);
 
-      // Shockwave + streaks
+      // Shockwave + particles
       setTimeout(fireShockwave, 0);
-      setTimeout(() => spawnStreaks(28), 0);
-      setTimeout(() => spawnStreaks(16), 140);
-
-      // Reveal the final overlay text
-      overlayText.style.opacity = '1';
-      overlayText.style.pointerEvents = 'auto';
-
-      setTimeout(() => {
-        eyebrow.style.opacity = '1';
-        eyebrow.style.transition = 'none';
-        eyebrow.style.transform = 'translateX(-12px) skewX(-10deg)';
-        setTimeout(() => {
-          eyebrow.style.transition = 'transform 0.45s cubic-bezier(0.16,1,0.3,1)';
-          eyebrow.style.transform  = 'translateX(0) skewX(0)';
-        }, 50);
-      }, 80);
-
-      const allInners = headline.querySelectorAll('.vhl-inner');
-      allInners.forEach((inner, i) => {
-        setTimeout(() => {
-          inner.style.transition = 'none';
-          inner.style.transform  = 'translateY(120%) rotate(6deg)';
-          inner.style.opacity    = '1';
-          requestAnimationFrame(() => {
-            inner.style.transition = 'transform 0.55s cubic-bezier(0.22,1.45,0.36,1), opacity 0.25s ease';
-            inner.style.transform  = 'translateY(0) rotate(0deg)';
-          });
-        }, 130 + i * 40);
-      });
-      headline.style.opacity = '1';
+      setTimeout(() => spawnStreaks(22), 0);
+      setTimeout(() => spawnStreaks(14), 160);
+      setTimeout(fireShipParticles, 80);
     }
 
     // ── SCROLL STATE ──
@@ -5153,76 +5820,65 @@
         currentPhase = -1;
         buildStartTime = 0;
         sparkData = [];
+        assemblyProgress = -1;
         stopCursorDemo();
-        // Reset wireframe + code state
-        wfShapes.forEach(s => s.style.opacity = '');
+        resetAssembly();
         codeLines.forEach(l => l.classList.remove('ct-typed'));
       }
 
-      // Build stage enters at 0.04, holds through 0.92
       const bsIn = displayRatio > 0.04;
       buildStage.classList.toggle('bs-in', bsIn);
 
-      // Subtle letterbox — just enough to feel cinematic, not overbearing
+      // Tiny letterbox just for cinematic framing
       const lbT = Math.max(0, Math.min(1, (displayRatio - 0.04) / 0.18));
-      const lbH = Math.round(lbT * lbT * 36);
+      const lbH = Math.round(lbT * lbT * 28);
       lbTop.style.height    = lbH + 'px';
       lbBottom.style.height = lbH + 'px';
 
-      // Soft edge vignette throughout
-      const evA = Math.max(0, Math.min(0.55, (displayRatio - 0.04) / 0.30));
+      // Edge vignette — soft cream fade at edges
+      const evA = Math.max(0, Math.min(0.45, (displayRatio - 0.04) / 0.30));
       edgeVignette.style.opacity = evA.toFixed(3);
 
-      // Horizon/portal glow — gentle warm wash behind the frame
+      // Horizon glow behind frame
       const pgA = Math.max(0, Math.min(1, (displayRatio - 0.04) / 0.40));
       portalGlow.style.opacity = (pgA * 0.55).toFixed(3);
 
       // Scanlines — very faint
       const slA = Math.max(0, Math.min(1, (displayRatio - 0.10) / 0.50));
-      scanlines.style.opacity = (slA * 0.20).toFixed(3);
+      scanlines.style.opacity = (slA * 0.15).toFixed(3);
 
-      // Background ambient rain — very dim, doesn't compete with frame
-      const fcA = Math.max(0, Math.min(0.5, (displayRatio - 0.06) / 0.20));
-      fc.style.opacity = (fcA).toFixed(3);
+      // Background ambient rain — minimal
+      const fcA = Math.max(0, Math.min(0.4, (displayRatio - 0.06) / 0.20));
+      fc.style.opacity = fcA.toFixed(3);
 
       // ── PHASE GATING ──
-      // 0.04→0.28  Phase 0 (Sketch)
-      // 0.28→0.52  Phase 1 (Code)
-      // 0.52→0.78  Phase 2 (Render)
-      // 0.78→1.00  Phase 3 (Ship)
+      // 0.04→0.18 BLUEPRINT (frame settles, atmospheric warmup)
+      // 0.18→0.62 ASSEMBLE (the meat — pieces fly in)
+      // 0.62→0.82 CODE (overlay appears, types out, dissolves)
+      // 0.82→1.00 SHIPPED (final glow, deploy stamp)
       let p;
-      if      (displayRatio < 0.28) p = 0;
-      else if (displayRatio < 0.52) p = 1;
-      else if (displayRatio < 0.78) p = 2;
+      if      (displayRatio < 0.18) p = 0;
+      else if (displayRatio < 0.62) p = 1;
+      else if (displayRatio < 0.82) p = 2;
       else                          p = 3;
       if (bsIn) setPhase(p);
 
-      // ── PHASE 0: Sketch — wireframe shapes draw in ──
-      if (p === 0) {
-        const localT = (displayRatio - 0.04) / 0.24;
-        // Reveal shapes progressively along the wireframe
-        wfShapes.forEach((shape, i) => {
-          const threshold = i / wfShapes.length;
-          shape.style.opacity = localT > threshold ? '1' : '0';
-        });
-      } else if (p > 0) {
-        wfShapes.forEach(s => s.style.opacity = '1');
-      }
+      // ── ASSEMBLY: 0.16 → 0.60 maps to assemblyT 0..1 ──
+      const assemT = Math.max(0, Math.min(1, (displayRatio - 0.16) / 0.44));
+      setAssemblyProgress(assemT);
 
-      // ── PHASE 1: Code — lines type in based on scroll ──
-      if (p === 1) {
-        const localT = (displayRatio - 0.28) / 0.24;
+      // ── CODE OVERLAY: 0.62 → 0.80 maps to typing 0..1 ──
+      if (p === 2) {
+        const codeT = (displayRatio - 0.62) / 0.18;
         const totalLines = codeLines.length;
-        const visibleLines = Math.floor(localT * totalLines);
+        const visibleLines = Math.floor(codeT * totalLines);
         codeLines.forEach((line, i) => {
           line.classList.toggle('ct-typed', i <= visibleLines);
         });
-        // Telemetry: line count
         const lineCount = Math.min(totalLines, visibleLines + 1) * 3 + 12;
         btLines.textContent = String(lineCount).padStart(3, '0');
-        // Position cursor at end of last typed line
         positionCursor(visibleLines);
-      } else if (p < 1) {
+      } else if (p < 2) {
         codeLines.forEach(line => line.classList.remove('ct-typed'));
         btLines.textContent = '000';
       } else {
@@ -5230,44 +5886,21 @@
         btLines.textContent = String(codeLines.length * 3 + 12).padStart(3, '0');
       }
 
-      // ── PHASE 2: Render — preview reveals ──
-      if (p === 2) {
-        const localT = (displayRatio - 0.52) / 0.26;
-        // Render telemetry counts up
-        const renderPct = Math.min(100, Math.round(localT * 100));
-        btRender.textContent = renderPct + ' %';
-        if (renderPct === 100) btRender.classList.add('bt-live');
-        else btRender.classList.remove('bt-live');
-      } else if (p > 2) {
-        btRender.textContent = '100 %';
-        btRender.classList.add('bt-live');
-      } else {
-        btRender.textContent = '— %';
-        btRender.classList.remove('bt-live');
-      }
+      // Render telemetry % — driven by assembly progress
+      const renderPct = Math.min(100, Math.round(assemT * 100));
+      btRender.textContent = renderPct + ' %';
+      btRender.classList.toggle('bt-live', renderPct === 100);
 
-      // ── PHASE 3: Ship — fire impact once ──
+      // ── PHASE 3: SHIP impact (one-shot) ──
       if (p === 3 && !impactDone) {
         impactDone = true;
         slamText();
       }
-      // Reset impact when scrolling back
       if (p < 3 && impactDone) {
-        impactDone   = false;
-        textRevealed = false;
-        rings        = [];
-        overlayText.style.opacity = '0';
-        overlayText.style.pointerEvents = 'none';
-        eyebrow.style.opacity = '0';
-        headline.style.opacity = '0';
-        headline.querySelectorAll('.vhl-inner').forEach(el => {
-          el.style.transition = 'none';
-          el.style.transform  = 'translateY(110%) rotate(4deg)';
-          el.style.opacity    = '0';
-        });
+        impactDone = false;
       }
 
-      // Depth HUD shows build percentage
+      // Build percentage HUD
       if (displayRatio > 0.04) {
         depthHud.style.opacity = Math.min(1, (displayRatio - 0.04) / 0.10).toFixed(3);
         depthVal.textContent = String(Math.round(displayRatio * 100)).padStart(3, '0');
@@ -5275,17 +5908,8 @@
         depthHud.style.opacity = '0';
       }
 
-      // After ship: fade build stage, let final overlay shine alone
-      if (displayRatio > 0.85) {
-        const openT = Math.min(1, (displayRatio - 0.85) / 0.15);
-        // Slowly fade out the build frame so headline owns the view
-        buildFrame.style.opacity = (1 - openT * 0.35).toFixed(3);
-        const openH = Math.round(lbH * (1 - openT));
-        lbTop.style.height    = openH + 'px';
-        lbBottom.style.height = openH + 'px';
-      } else {
-        buildFrame.style.opacity = '';
-      }
+      // No mid-section fade-out anymore — the device IS the punchline
+      buildFrame.style.opacity = '';
 
       const pct = Math.round(ratio * 100);
       progressFill.style.width = pct + '%';
