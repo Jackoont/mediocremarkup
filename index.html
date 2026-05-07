@@ -156,7 +156,7 @@
       pointer-events: none;
       z-index: 2;
     }
-    #particle-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0.32; }
+    #particle-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; opacity: 0.5; }
     .deco-layer { position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
 
     /* Giant background number — decorative */
@@ -4849,16 +4849,21 @@
     const SYM_POOL = ['</', '/>', '{}', '()', '=>', '[]', '//', '+=', 'fn', 'px', 'vh', '&&', 'rem', '/*'];
     const initP = () => {
       particles=[];
-      for(let i=0;i<26;i++) particles.push({
-        x:Math.random()*W, y:Math.random()*H,
-        baseX:Math.random()*W, baseY:Math.random()*H,
-        vx:(Math.random()-0.5)*0.04, vy:(Math.random()-0.5)*0.04,
+      for(let i=0;i<32;i++) {
+        const baseX = Math.random() * W;
+        const baseY = Math.random() * H;
+        particles.push({
+        x:baseX, y:baseY,
+        baseX, baseY,
+        vx:(Math.random()-0.5)*0.03, vy:(Math.random()-0.5)*0.03,
         sym: SYM_POOL[Math.floor(Math.random()*SYM_POOL.length)],
-        fs: 5.5 + Math.random() * 1.8,
+        fs: 6 + Math.random() * 2.2,
         color:['#F0635A','#8b3a54','#F4A261'][Math.floor(Math.random()*3)],
-        alpha:0.035 + Math.random() * 0.04,
-        drift:0.2 + Math.random() * 0.3
+        alpha:0.06 + Math.random() * 0.05,
+        drift:0.2 + Math.random() * 0.3,
+        twinkle: Math.random() * Math.PI * 2
       });
+      }
     };
     initP();
     hero.addEventListener('mousemove', e => {
@@ -4872,6 +4877,7 @@
     });
     (function drawP(){
       ctx.clearRect(0,0,W,H);
+      const now = performance.now() * 0.001;
       particles.forEach((p, i)=>{
         const mdx = p.x - mouseX;
         const mdy = p.y - mouseY;
@@ -4883,36 +4889,37 @@
         }
         p.vx += (p.baseX - p.x) * 0.00018;
         p.vy += (p.baseY - p.y) * 0.00018;
-        p.vx += Math.sin((performance.now() * 0.001) + i) * 0.0009 * p.drift;
-        p.vy += Math.cos((performance.now() * 0.0012) + i) * 0.0009 * p.drift;
+        p.vx += Math.sin(now + i) * 0.0009 * p.drift;
+        p.vy += Math.cos(now * 1.2 + i) * 0.0009 * p.drift;
         p.vx *= 0.985;
         p.vy *= 0.985;
         p.x += p.vx;
         p.y += p.vy;
-        ctx.globalAlpha=p.alpha;
+        const twinkle = 0.82 + Math.sin(now * 1.5 + p.twinkle) * 0.18;
+        ctx.globalAlpha=p.alpha * twinkle;
         ctx.font=`600 ${p.fs}px 'JetBrains Mono',monospace`;
         ctx.fillStyle=p.color;
         ctx.textAlign='center'; ctx.textBaseline='middle';
         ctx.fillText(p.sym,p.x,p.y);
         for(let j=i+1;j<particles.length;j++){
           const p2=particles[j],dx=p.x-p2.x,dy=p.y-p2.y,d=Math.sqrt(dx*dx+dy*dy);
-          if(d<68){
+          if(d<78){
             ctx.beginPath();
             ctx.moveTo(p.x,p.y);
             ctx.lineTo(p2.x,p2.y);
-            ctx.strokeStyle='rgba(240,99,90,0.055)';
-            ctx.globalAlpha=(1-d/68)*0.24;
-            ctx.lineWidth=0.4;
+            ctx.strokeStyle='rgba(240,99,90,0.07)';
+            ctx.globalAlpha=(1-d/78)*0.34;
+            ctx.lineWidth=0.42;
             ctx.stroke();
           }
         }
-        if (md < 95) {
+        if (md < 105) {
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(mouseX, mouseY);
-          ctx.strokeStyle = 'rgba(240,99,90,0.04)';
-          ctx.globalAlpha = (1 - md / 95) * 0.18;
-          ctx.lineWidth = 0.35;
+          ctx.strokeStyle = 'rgba(240,99,90,0.055)';
+          ctx.globalAlpha = (1 - md / 105) * 0.22;
+          ctx.lineWidth = 0.36;
           ctx.stroke();
         }
         ctx.globalAlpha=1;
@@ -4984,21 +4991,22 @@
     };
     resizeV(); window.addEventListener('resize', resizeV);
 
-    const SYMS = ['</', '/>', '{}', '()', '//', '=>', '[]', '&&', '/*', '*/', '<>', '::', '+=', 'fn', 'px', 'vh'];
-    const N = window.innerWidth < 700 ? 10 : 14;
+    const SYMS = ['</', '/>', '{}', '()', '//', '=>', '[]', '&&', '/*', '*/', '<>', '::', '+=', 'fn'];
+    const N = window.innerWidth < 700 ? 10 : 12;
+    const SIDES = ['left', 'right', 'top', 'bottom'];
 
     const syms = Array.from({ length: N }, (_, i) => ({
       text: SYMS[i % SYMS.length],
-      side: i % 2 === 0 ? -1 : 1,
-      laneY: 0.18 + Math.random() * 0.54,
-      startOffset: 30 + Math.random() * 90,
-      orbitR: 48 + Math.random() * 120,
+      side: SIDES[i % SIDES.length],
+      lane: 0.18 + Math.random() * 0.64,
+      startOffset: 50 + Math.random() * 120,
+      orbitR: 54 + Math.random() * 108,
       phase: (i / N) * Math.PI * 2,
-      speed: 0.45 + Math.random() * 0.4,
-      fsize: 11 + Math.random() * 5,
+      speed: 0.48 + Math.random() * 0.35,
+      fsize: 11 + Math.random() * 4,
       color: Math.random() < 0.7 ? '#F0635A' : '#F4A261',
       spin: Math.random() * Math.PI * 2,
-      spinV: (Math.random() - 0.5) * 0.03,
+      spinV: (Math.random() - 0.5) * 0.025,
     }));
 
     let wpDone = false;
@@ -5028,7 +5036,6 @@
 
     const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
     const mix = (a, b, t) => a + (b - a) * t;
-    const easeOut = t => 1 - Math.pow(1 - t, 3);
     const easeInOut = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
     function animWhirlpool(ts) {
@@ -5040,21 +5047,21 @@
       }
 
       const showcaseRect = showcaseEl.getBoundingClientRect();
-      const introProg = clamp((VH - showcaseRect.top) / (VH * 0.72), 0, 1);
+      const introProg = clamp((VH - showcaseRect.top) / (VH * 0.78), 0, 1);
       if (introProg <= 0.001) {
         container.style.opacity = '0';
         requestAnimationFrame(animWhirlpool);
         return;
       }
 
-      const swirlProg = clamp((introProg - 0.14) / 0.38, 0, 1);
+      const gatherProg = clamp((introProg - 0.08) / 0.34, 0, 1);
       const phoneRect = getPhoneRect();
-      const phoneProg = phoneRect ? clamp((VH * 0.84 - phoneRect.top) / (VH * 0.42), 0, 1) : 0;
+      const phoneProg = phoneRect ? clamp((VH * 0.88 - phoneRect.top) / (VH * 0.46), 0, 1) : 0;
       const fallProg = easeInOut(phoneProg);
-      const overlayAlpha = clamp(Math.min(introProg * 1.4, 1) * (1 - fallProg * 0.96), 0, 0.82);
+      const overlayAlpha = clamp(Math.min(introProg * 1.35, 1) * (1 - fallProg * 0.96), 0, 0.9);
       const cx = VW / 2;
-      const cy = mix(VH * 0.68, VH * 0.48, swirlProg);
-      const aura = 0.12 + Math.sin(wpT * 1.15) * 0.03;
+      const cy = mix(VH * 0.7, VH * 0.5, gatherProg);
+      const aura = 0.14 + Math.sin(wpT * 1.15) * 0.03;
 
       container.style.opacity = overlayAlpha.toFixed(3);
       cta.style.opacity = '0';
@@ -5062,7 +5069,7 @@
       vCtx.save();
       vCtx.globalAlpha = overlayAlpha;
       for (let ring = 0; ring < 2; ring++) {
-        const rr = 70 + ring * 56 + Math.sin(wpT * (0.9 + ring * 0.16)) * 8;
+        const rr = 68 + ring * 52 + Math.sin(wpT * (0.9 + ring * 0.16)) * 8;
         vCtx.beginPath();
         vCtx.arc(cx, cy, rr, 0, Math.PI * 2);
         vCtx.strokeStyle = ring === 1 ? `rgba(244,162,97,${aura * 0.18})` : `rgba(240,99,90,${aura * 0.24})`;
@@ -5074,13 +5081,17 @@
       vCtx.restore();
 
       syms.forEach((s, i) => {
-        const gather = easeInOut(swirlProg);
+        const gather = easeInOut(gatherProg);
         const angle = s.phase + wpT * s.speed;
-        const orbitR = s.orbitR * mix(1.8, 1, gather);
-        const startX = s.side < 0 ? -s.startOffset : VW + s.startOffset;
-        const startY = VH * s.laneY;
+        const orbitR = s.orbitR * mix(2.25, 0.92, gather);
+        const startX = s.side === 'left'   ? -s.startOffset
+                     : s.side === 'right'  ? VW + s.startOffset
+                     : VW * s.lane;
+        const startY = s.side === 'top'    ? -s.startOffset
+                     : s.side === 'bottom' ? VH + s.startOffset
+                     : VH * s.lane;
         const orbitX = cx + Math.cos(angle) * orbitR;
-        const orbitY = cy + Math.sin(angle) * orbitR * 0.76;
+        const orbitY = cy + Math.sin(angle) * orbitR * 0.74;
         const preFallX = mix(startX, orbitX, gather);
         const preFallY = mix(startY, orbitY, gather);
         const anchor = PHONE_ANCHORS_NORM[i % PHONE_ANCHORS_NORM.length];
@@ -5089,12 +5100,21 @@
         const x = mix(preFallX, targetX, fallProg);
         const y = mix(preFallY, targetY, fallProg);
         s.spin += s.spinV;
+        const fromDx = cx - preFallX;
+        const fromDy = cy - preFallY;
+        const trailLen = 22 + gather * 18;
         vCtx.save();
-        vCtx.globalAlpha = overlayAlpha * (0.28 + gather * 0.56) * (1 - Math.max(0, fallProg - 0.82) * 4.5);
+        vCtx.globalAlpha = overlayAlpha * (0.32 + gather * 0.58) * (1 - Math.max(0, fallProg - 0.82) * 4.5);
+        vCtx.beginPath();
+        vCtx.moveTo(x - (fromDx || 0) * 0.03, y - (fromDy || 0) * 0.03);
+        vCtx.lineTo(x - (fromDx || 0) * 0.03 - Math.cos(angle) * trailLen, y - (fromDy || 0) * 0.03 - Math.sin(angle) * trailLen * 0.8);
+        vCtx.strokeStyle = 'rgba(240,99,90,0.08)';
+        vCtx.lineWidth = 0.7;
+        vCtx.stroke();
         vCtx.translate(x, y);
         vCtx.rotate(s.spin);
         vCtx.shadowColor = s.color;
-        vCtx.shadowBlur = fallProg > 0.1 ? 8 : 4;
+        vCtx.shadowBlur = fallProg > 0.1 ? 10 : 5;
         vCtx.font = `600 ${s.fsize}px 'JetBrains Mono', monospace`;
         vCtx.fillStyle = s.color;
         vCtx.textAlign = 'center';
@@ -5103,7 +5123,7 @@
         vCtx.restore();
       });
 
-      if (!wpDone && introProg > 0.72 && fallProg > 0.985) {
+      if (!wpDone && introProg > 0.76 && fallProg > 0.985) {
         wpDone = true;
         container.style.transition = 'opacity 0.3s';
         container.style.opacity = '0';
