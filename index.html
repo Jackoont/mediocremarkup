@@ -20,7 +20,7 @@
     :root {
       /* Default Theme: Beautiful */
       --bg: #FEF9F4; --surface: #FFFFFF;
-      --ink: #2B2547; --muted: #7C7A9A; --accent: #F0635A; --accent2: #F4A27A;
+      --ink: #2B2547; --muted: #5A547A; --accent: #F0635A; --accent2: #F4A27A;
       --line: rgba(43,37,71,0.08);
       --font-body: 'Inter', sans-serif;
       --font-serif: 'DM Serif Display', serif;
@@ -283,7 +283,7 @@
       font-size: 9px;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: rgba(43,37,71,0.55);
+      color: rgba(43,37,71,0.75);
     }
 
     /* Right column content */
@@ -384,7 +384,7 @@
       font-size: 10px;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: rgba(43,37,71,0.5);
+      color: rgba(43,37,71,0.7);
     }
     .hero-status-scroll {
       display: flex;
@@ -394,7 +394,7 @@
       font-size: 10px;
       letter-spacing: 3px;
       text-transform: uppercase;
-      color: rgba(43,37,71,0.45);
+      color: rgba(43,37,71,0.65);
     }
     .hero-status-line {
       width: 40px;
@@ -1108,10 +1108,15 @@
       opacity: 0;
     }
     #video-text-overlay {
-      position: relative;
-      z-index: 11;
+      position: absolute;
+      inset: 0;
+      z-index: 14;
       text-align: center;
       padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
     .video-eyebrow {
       font-family: var(--font-mono);
@@ -1175,7 +1180,7 @@
       font-family: var(--font-mono);
       font-size: 10px;
       letter-spacing: 2px;
-      color: rgba(43,37,71,0.4);
+      color: rgba(43,37,71,0.6);
     }
     /* Dive depth indicator — replaces old progress bar label feel */
     #dive-depth-hud {
@@ -1223,6 +1228,363 @@
       #video-reveal { height: 280vh; }
       .video-headline { font-size: clamp(28px, 8vw, 52px); }
       #dive-depth-hud { display: none; }
+    }
+
+    /* ══════════════════════════════════════
+       BUILD STAGE — interactive scroll cinema
+       ══════════════════════════════════════ */
+    #build-stage {
+      position: absolute;
+      inset: 0;
+      z-index: 13;
+      display: grid;
+      grid-template-columns: 240px 1fr 240px;
+      grid-template-rows: 1fr;
+      align-items: center;
+      padding: 0 60px;
+      pointer-events: none;
+      gap: 40px;
+    }
+    @media (max-width: 1100px) {
+      #build-stage { grid-template-columns: 1fr; padding: 0 24px; gap: 16px; }
+      #build-phase-track, #build-telemetry { display: none !important; }
+    }
+
+    /* ── Left rail: phase track ── */
+    #build-phase-track {
+      display: flex; flex-direction: column; gap: 18px;
+      align-self: center;
+      opacity: 0; transform: translateX(-20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    #build-stage.bs-in #build-phase-track { opacity: 1; transform: translateX(0); }
+    .bp-row {
+      display: flex; align-items: baseline; gap: 12px;
+      padding: 8px 14px;
+      border-left: 2px solid rgba(43,37,71,0.10);
+      transition: border-color 0.5s ease, opacity 0.5s ease, transform 0.5s ease;
+      opacity: 0.4;
+    }
+    .bp-row.bp-active {
+      border-left-color: #F0635A;
+      opacity: 1;
+      transform: translateX(4px);
+    }
+    .bp-row.bp-done {
+      opacity: 0.55;
+      border-left-color: rgba(240,99,90,0.35);
+    }
+    .bp-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; letter-spacing: 2px;
+      color: rgba(43,37,71,0.5);
+      transition: color 0.4s ease;
+    }
+    .bp-row.bp-active .bp-num,
+    .bp-row.bp-done .bp-num { color: #F0635A; }
+    .bp-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px; font-weight: 400; font-style: italic;
+      color: #2B2547; line-height: 1;
+    }
+    .bp-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
+      color: rgba(43,37,71,0.55);
+      margin-left: 4px;
+    }
+
+    /* ── Center: phone-like build frame ── */
+    #build-frame {
+      position: relative;
+      width: 320px;
+      height: 560px;
+      max-width: 92vw;
+      max-height: 78vh;
+      margin: 0 auto;
+      background: #FFFFFF;
+      border-radius: 22px;
+      box-shadow:
+        0 0 0 1px rgba(43,37,71,0.10),
+        0 30px 80px -20px rgba(43,37,71,0.25),
+        0 8px 30px -10px rgba(240,99,90,0.18),
+        inset 0 1px 0 rgba(255,255,255,0.9);
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(40px) scale(0.92);
+      transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.9s cubic-bezier(0.16,1,0.3,1),
+                  box-shadow 0.6s ease;
+    }
+    #build-stage.bs-in #build-frame {
+      opacity: 1; transform: translateY(0) scale(1);
+    }
+    #build-frame.bf-shipped {
+      box-shadow:
+        0 0 0 1px rgba(240,99,90,0.6),
+        0 0 80px 0 rgba(240,99,90,0.25),
+        0 30px 80px -20px rgba(43,37,71,0.30);
+    }
+    @media (max-width: 700px) {
+      #build-frame { width: 280px; height: 480px; }
+    }
+
+    /* Frame chrome corners */
+    .bf-chrome {
+      position: absolute;
+      width: 14px; height: 14px;
+      border: 1.5px solid rgba(240,99,90,0.6);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    #build-stage.bs-in .bf-chrome { opacity: 1; }
+    .bf-tl { top: -3px; left: -3px; border-right: none; border-bottom: none; }
+    .bf-tr { top: -3px; right: -3px; border-left: none; border-bottom: none; }
+    .bf-bl { bottom: -3px; left: -3px; border-right: none; border-top: none; }
+    .bf-br { bottom: -3px; right: -3px; border-left: none; border-top: none; }
+
+    /* Build layers — one per phase, fade in/out */
+    .build-layer {
+      position: absolute; inset: 0;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+    .build-layer.bl-show { opacity: 1; }
+
+    /* ── Phase 1: Wireframe ── */
+    #build-wireframe svg {
+      width: 100%; height: 100%;
+      display: block;
+    }
+    .wf-line, .wf-box, .wf-cta {
+      stroke: #2B2547;
+      fill: none;
+      stroke-width: 1;
+      stroke-dasharray: 4 4;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .wf-line { fill: rgba(43,37,71,0.18); stroke: none; }
+    .wf-cta { fill: rgba(240,99,90,0.20); stroke: #F0635A; stroke-dasharray: none; }
+    #build-wireframe.bl-show .wf-line,
+    #build-wireframe.bl-show .wf-box,
+    #build-wireframe.bl-show .wf-cta { opacity: 1; }
+
+    /* ── Phase 2: Code typing ── */
+    #build-code {
+      padding: 22px 18px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      line-height: 1.55;
+      color: #2B2547;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(254,249,244,0) 88%, rgba(254,249,244,0.95) 100%);
+    }
+    #code-stream {
+      margin: 0; padding: 0;
+      font: inherit;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .ct-line {
+      display: block;
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .ct-line.ct-typed { opacity: 1; transform: translateX(0); }
+    .ct-tag  { color: #F0635A; }
+    .ct-attr { color: #C8860A; }
+    .ct-str  { color: #5A547A; }
+    .ct-text { color: #2B2547; }
+    .ct-sel  { color: #F4A261; font-weight: 600; }
+    .ct-prop { color: #5A547A; }
+    .ct-val  { color: #2B2547; }
+    #code-cursor {
+      display: none;
+      position: absolute;
+      width: 6px; height: 11px;
+      background: #F0635A;
+      animation: codeCursorBlink 0.6s steps(2) infinite;
+    }
+    #build-code.bl-show #code-cursor { display: block; }
+    @keyframes codeCursorBlink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* ── Phase 3: Rendered preview ── */
+    #build-render {
+      background: #FEF9F4;
+      display: flex; flex-direction: column;
+      font-family: 'Inter', sans-serif;
+    }
+    .bld-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 18px 14px;
+      border-bottom: 1px solid rgba(43,37,71,0.08);
+    }
+    .bld-logo {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic; font-size: 16px; font-weight: 400;
+      color: #2B2547; letter-spacing: -0.5px;
+    }
+    .bld-nav-dots { display: flex; gap: 5px; }
+    .bld-nav-dots span {
+      width: 4px; height: 4px; border-radius: 50%;
+      background: rgba(43,37,71,0.4);
+    }
+    .bld-hero { padding: 28px 22px 20px; }
+    .bld-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7px; letter-spacing: 2.5px; color: #F0635A;
+      margin-bottom: 14px;
+    }
+    .bld-title {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic; font-size: 28px; font-weight: 400;
+      color: #2B2547; line-height: 1; letter-spacing: -1px;
+      margin-bottom: 12px;
+    }
+    .bld-title em { color: #F0635A; font-style: italic; }
+    .bld-sub {
+      font-size: 9.5px; color: rgba(43,37,71,0.7);
+      line-height: 1.55; margin-bottom: 16px;
+    }
+    .bld-cta {
+      display: inline-block;
+      background: #F0635A; color: #fff;
+      font-size: 9px; font-weight: 600;
+      padding: 8px 14px; border-radius: 999px;
+      letter-spacing: 0.3px;
+    }
+    .bld-cards {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      padding: 0 22px 18px;
+    }
+    .bld-card {
+      background: #fff; border: 1px solid rgba(43,37,71,0.08);
+      border-radius: 8px; padding: 12px 10px;
+    }
+    .bld-card-t {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7px; letter-spacing: 2px; color: rgba(43,37,71,0.55);
+      margin-bottom: 6px;
+    }
+    .bld-card-b {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic; font-size: 18px; color: #2B2547; line-height: 1;
+    }
+    .bld-foot {
+      margin-top: auto;
+      padding: 12px 22px;
+      border-top: 1px solid rgba(43,37,71,0.06);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7px; letter-spacing: 1.5px;
+      color: rgba(43,37,71,0.4); text-align: center;
+    }
+
+    /* ── Phase 4: Ship overlay ── */
+    #build-ship {
+      background: rgba(254,249,244,0.55);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ship-stamp {
+      text-align: center;
+      transform: scale(0.85) rotate(-3deg);
+      transition: transform 0.6s cubic-bezier(0.22,1.45,0.36,1);
+    }
+    #build-ship.bl-show .ship-stamp { transform: scale(1) rotate(-3deg); }
+    .ship-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 6px;
+      color: #F0635A;
+      padding: 8px 18px;
+      border: 2px solid #F0635A;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+    .ship-url {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic; font-size: 22px;
+      color: #2B2547; margin-bottom: 6px;
+    }
+    .ship-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px; letter-spacing: 2px;
+      color: rgba(43,37,71,0.6);
+      text-transform: uppercase;
+    }
+
+    /* ── Right rail: telemetry ── */
+    #build-telemetry {
+      display: flex; flex-direction: column; gap: 14px;
+      align-self: center;
+      padding: 18px 14px;
+      border: 1px solid rgba(43,37,71,0.10);
+      border-radius: 6px;
+      background: rgba(255,255,255,0.4);
+      backdrop-filter: blur(4px);
+      opacity: 0; transform: translateX(20px);
+      transition: opacity 0.7s 0.1s ease, transform 0.7s 0.1s ease;
+    }
+    #build-stage.bs-in #build-telemetry { opacity: 1; transform: translateX(0); }
+    .bt-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      gap: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed rgba(43,37,71,0.10);
+    }
+    .bt-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .bt-k {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px; letter-spacing: 2px; color: rgba(43,37,71,0.55);
+      text-transform: uppercase;
+    }
+    .bt-v {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 600; color: #2B2547;
+      letter-spacing: 0.5px;
+      transition: color 0.3s ease;
+    }
+    .bt-v.bt-live { color: #F0635A; }
+
+    /* ── Caption below frame ── */
+    #build-caption {
+      position: absolute;
+      bottom: 8vh;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      text-align: center;
+      max-width: 480px;
+      width: 90%;
+      opacity: 0;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    #build-stage.bs-in #build-caption {
+      opacity: 1; transform: translateX(-50%) translateY(0);
+    }
+    .bc-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px; letter-spacing: 4px; text-transform: uppercase;
+      color: #F0635A;
+      margin-bottom: 10px;
+    }
+    .bc-title {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic; font-size: clamp(20px, 3vw, 32px);
+      color: #2B2547; line-height: 1.15; letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .bc-body {
+      font-size: 13px; color: rgba(43,37,71,0.7); line-height: 1.5;
+    }
+    @media (max-width: 700px) {
+      #build-caption { bottom: 4vh; }
+      .bc-body { font-size: 12px; }
     }
 
     /* ═══════════════════════════════════════════════
@@ -1407,7 +1769,7 @@
     .process-step { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 16px; }
     .process-circle { width: 48px; height: 48px; border-radius: 50%; background: #F0635A; color: white; display: flex; align-items: center; justify-content: center; font-family: var(--font-body); font-weight: 700; font-size: 16px; flex-shrink: 0; margin-bottom: 16px; position: relative; z-index: 1; box-shadow: 0 4px 16px rgba(240,99,90,0.3); }
     .process-connector { flex-shrink: 0; align-self: flex-start; margin-top: 24px; flex: 0 0 32px; border-top: 1.5px dashed rgba(136,136,128,0.3); }
-    .process-step-time { font-family: var(--font-mono); font-size: 11px; color: #888880; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+    .process-step-time { font-family: var(--font-mono); font-size: 11px; color: #5A547A; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
     .process-step h3 { font-family: var(--font-body); font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 8px; letter-spacing: -0.3px; }
     .process-step h3 em { font-style: italic; color: var(--muted); font-weight: 300; }
     .process-step p { font-size: 13px; color: var(--muted); line-height: 1.6; max-width: 200px; }
@@ -1423,9 +1785,9 @@
 
     /* ── FOOTER ── */
     footer { padding: 24px 60px; border-top: 1px solid rgba(136,136,128,0.15); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
-    .footer-copy { font-family: var(--font-mono); font-size: 10px; color: #888880; letter-spacing: 1px; text-transform: uppercase; }
-    .footer-tagline { font-family: var(--font-body); font-size: 12px; color: #888880; font-weight: 400; }
-    .footer-email { font-family: var(--font-mono); font-size: 10px; color: #888880; letter-spacing: 1px; transition: color 0.2s; }
+    .footer-copy { font-family: var(--font-mono); font-size: 10px; color: #5A547A; letter-spacing: 1px; text-transform: uppercase; }
+    .footer-tagline { font-family: var(--font-body); font-size: 12px; color: #5A547A; font-weight: 400; }
+    .footer-email { font-family: var(--font-mono); font-size: 10px; color: #5A547A; letter-spacing: 1px; transition: color 0.2s; }
     .footer-email:hover { color: #F0635A; }
     @media (max-width: 900px) { footer { padding: 24px; flex-direction: column; gap: 8px; align-items: flex-start; } }
 
@@ -1452,7 +1814,7 @@
 
     /* Section dividers + labels */
     .divider { background: rgba(136,136,128,0.15) !important; }
-    section:not(#hero) .section-label { color: #888880 !important; }
+    section:not(#hero) .section-label { color: #5A547A !important; }
     section:not(#hero) .section-title em { color: #F0635A !important; }
 
     /* What You Get */
@@ -1460,7 +1822,7 @@
     .what-item:first-child { border-top-color: rgba(136,136,128,0.12) !important; }
     .what-tag { background: #F0635A !important; color: #fff !important; }
     .what-item:hover .what-item-num { color: rgba(240,99,90,0.15) !important; }
-    section:not(#hero) .what-item p { color: #888880 !important; }
+    section:not(#hero) .what-item p { color: #5A547A !important; }
 
     /* ══════════════════════════════════
        PRICING — warm ink, unique, readable
@@ -1739,7 +2101,7 @@
     /* Desc */
     .price-desc {
       font-size: 13.5px !important;
-      color: rgba(43,37,71,0.55) !important;
+      color: rgba(43,37,71,0.75) !important;
       margin-bottom: 36px !important;
       line-height: 1.7;
       flex: none;
@@ -1775,7 +2137,7 @@
       font-size: 10px !important;
       letter-spacing: 3px !important;
       text-transform: uppercase;
-      color: rgba(43,37,71,0.35) !important;
+      color: rgba(43,37,71,0.6) !important;
       margin-bottom: 36px !important;
     }
     .price-card.featured .price-period { color: rgba(244,162,97,0.8) !important; }
@@ -1868,7 +2230,7 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       letter-spacing: 1px;
-      color: rgba(43,37,71,0.35);
+      color: rgba(43,37,71,0.6);
       text-align: center;
       opacity: 0;
       transition: opacity 0.9s 0.7s ease;
@@ -1890,9 +2252,9 @@
     /* Process */
     .process-circle { background: #F0635A !important; box-shadow: 0 4px 16px rgba(240,99,90,0.3) !important; }
     .process-connector { border-top-color: rgba(136,136,128,0.25) !important; }
-    .process-step-time { color: #888880 !important; }
+    .process-step-time { color: #5A547A !important; }
     .process-step h3 em { color: #F0635A !important; }
-    section:not(#hero) .process-step p { color: #888880 !important; }
+    section:not(#hero) .process-step p { color: #5A547A !important; }
 
     /* CTA section */
     .cta h2 em { color: #F0635A !important; }
@@ -1900,8 +2262,8 @@
     .cta-email:hover { color: #F0635A !important; border-bottom-color: #F0635A !important; }
 
     /* Footer */
-    .footer-copy, .footer-tagline { color: #888880 !important; }
-    .footer-email { color: #888880 !important; }
+    .footer-copy, .footer-tagline { color: #5A547A !important; }
+    .footer-email { color: #5A547A !important; }
     .footer-email:hover { color: #F0635A !important; }
 
 
@@ -2070,7 +2432,7 @@
       <!-- RIGHT — feature card + availability chip -->
       <div class="hero-right" id="hero-right">
         <!-- Availability chip -->
-        <div style="display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(43,37,71,0.45);border:1px solid rgba(43,37,71,0.12);border-radius:999px;padding:7px 16px;background:rgba(255,255,255,0.5);backdrop-filter:blur(8px);">
+        <div style="display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(43,37,71,0.7);border:1px solid rgba(43,37,71,0.2);border-radius:999px;padding:7px 16px;background:rgba(255,255,255,0.6);backdrop-filter:blur(8px);">
           <span style="width:6px;height:6px;border-radius:50%;background:#4ade80;display:inline-block;animation:statusPulse 2s ease-in-out infinite;box-shadow:0 0 6px rgba(74,222,128,0.5);"></span>
           Accepting new clients
         </div>
@@ -2453,41 +2815,161 @@
   <!-- ══ SCROLL-PINNED DIVE REVEAL ══ -->
   <div id="video-reveal">
     <div id="video-sticky">
-      <!-- 3D inner that gets Z-pushed -->
+      <!-- Background grid + ambient layer -->
       <div id="video-inner-3d">
-        <!-- Code rain background -->
         <canvas id="video-canvas-fallback"></canvas>
       </div>
-      <!-- Tunnel rings (perspective convergence) -->
       <canvas id="tunnel-canvas"></canvas>
-      <!-- Speed streaks flying past -->
       <canvas id="speed-canvas"></canvas>
-      <!-- Radial portal glow -->
       <div id="dive-portal-glow"></div>
-      <!-- Edge vignette (motion blur sides) -->
       <div id="dive-edge-vignette"></div>
-      <!-- Scan lines -->
       <div id="dive-scanlines"></div>
-      <!-- Shockwave ring canvas -->
       <canvas id="shockwave-canvas"></canvas>
-      <!-- Chromatic aberration layer -->
       <div id="dive-chroma"></div>
-      <!-- White flash layer -->
       <div id="video-clip-mask"></div>
-      <!-- Cinematic letterbox -->
       <div id="dive-letterbox-top"></div>
       <div id="dive-letterbox-bottom"></div>
-      <!-- Text that slams in -->
-      <div id="video-text-overlay">
+
+      <!-- ── BUILD STAGE — the centerpiece ── -->
+      <div id="build-stage">
+        <!-- Phase eyebrow: changes based on scroll -->
+        <div id="build-phase-track">
+          <div class="bp-row" data-phase="0">
+            <span class="bp-num">01</span>
+            <span class="bp-name">Sketch</span>
+            <span class="bp-meta">structure first</span>
+          </div>
+          <div class="bp-row" data-phase="1">
+            <span class="bp-num">02</span>
+            <span class="bp-name">Code</span>
+            <span class="bp-meta">hand-written, line by line</span>
+          </div>
+          <div class="bp-row" data-phase="2">
+            <span class="bp-num">03</span>
+            <span class="bp-name">Render</span>
+            <span class="bp-meta">structure becomes site</span>
+          </div>
+          <div class="bp-row" data-phase="3">
+            <span class="bp-num">04</span>
+            <span class="bp-name">Ship</span>
+            <span class="bp-meta">live in days, not months</span>
+          </div>
+        </div>
+
+        <!-- Center stage: phone-shaped frame that morphs through phases -->
+        <div id="build-frame">
+          <!-- Phase 1 — wireframe -->
+          <div class="build-layer" id="build-wireframe">
+            <svg viewBox="0 0 240 420" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+              <!-- Header -->
+              <rect class="wf-line" x="20" y="30" width="60" height="6" rx="1"/>
+              <rect class="wf-line" x="180" y="30" width="40" height="3" rx="1"/>
+              <!-- Hero -->
+              <rect class="wf-box" x="20" y="60" width="200" height="100" rx="2"/>
+              <rect class="wf-line" x="32" y="170" width="120" height="5" rx="1"/>
+              <rect class="wf-line" x="32" y="180" width="170" height="5" rx="1"/>
+              <rect class="wf-line" x="32" y="190" width="90" height="5" rx="1"/>
+              <!-- CTA -->
+              <rect class="wf-cta" x="20" y="210" width="80" height="20" rx="3"/>
+              <!-- Cards -->
+              <rect class="wf-box" x="20" y="250" width="95" height="70" rx="2"/>
+              <rect class="wf-box" x="125" y="250" width="95" height="70" rx="2"/>
+              <!-- Footer -->
+              <rect class="wf-line" x="20" y="350" width="200" height="3" rx="1"/>
+              <rect class="wf-line" x="20" y="360" width="140" height="3" rx="1"/>
+              <rect class="wf-line" x="20" y="370" width="180" height="3" rx="1"/>
+            </svg>
+          </div>
+
+          <!-- Phase 2 — code typing -->
+          <div class="build-layer" id="build-code">
+            <pre id="code-stream"><span class="ct-line"><span class="ct-tag">&lt;header</span> <span class="ct-attr">class</span>=<span class="ct-str">"hero"</span><span class="ct-tag">&gt;</span></span>
+<span class="ct-line">  <span class="ct-tag">&lt;h1&gt;</span><span class="ct-text">Local. Built right.</span><span class="ct-tag">&lt;/h1&gt;</span></span>
+<span class="ct-line">  <span class="ct-tag">&lt;a</span> <span class="ct-attr">href</span>=<span class="ct-str">"#start"</span><span class="ct-tag">&gt;</span><span class="ct-text">Start →</span><span class="ct-tag">&lt;/a&gt;</span></span>
+<span class="ct-line"><span class="ct-tag">&lt;/header&gt;</span></span>
+<span class="ct-line"></span>
+<span class="ct-line"><span class="ct-sel">.hero</span> {</span>
+<span class="ct-line">  <span class="ct-prop">background</span>: <span class="ct-val">#FEF9F4</span>;</span>
+<span class="ct-line">  <span class="ct-prop">padding</span>: <span class="ct-val">120px 80px</span>;</span>
+<span class="ct-line">  <span class="ct-prop">font</span>: <span class="ct-val">italic 64px serif</span>;</span>
+<span class="ct-line">}</span>
+<span class="ct-line"></span>
+<span class="ct-line"><span class="ct-sel">.btn</span> {</span>
+<span class="ct-line">  <span class="ct-prop">background</span>: <span class="ct-val">#F0635A</span>;</span>
+<span class="ct-line">  <span class="ct-prop">border-radius</span>: <span class="ct-val">999px</span>;</span>
+<span class="ct-line">  <span class="ct-prop">transition</span>: <span class="ct-val">all .25s ease</span>;</span>
+<span class="ct-line">}</span></pre>
+            <div id="code-cursor"></div>
+          </div>
+
+          <!-- Phase 3 — rendered preview -->
+          <div class="build-layer" id="build-render">
+            <div class="bld-nav">
+              <div class="bld-logo">CASA</div>
+              <div class="bld-nav-dots"><span></span><span></span><span></span></div>
+            </div>
+            <div class="bld-hero">
+              <div class="bld-eyebrow">EST. 2026 · ST. JOHNS</div>
+              <div class="bld-title">Local.<br><em>Built right.</em></div>
+              <div class="bld-sub">Casa is a small architecture studio with one rule: nothing template, nothing generic.</div>
+              <div class="bld-cta">Start a project →</div>
+            </div>
+            <div class="bld-cards">
+              <div class="bld-card">
+                <div class="bld-card-t">DESIGN</div>
+                <div class="bld-card-b">14 days</div>
+              </div>
+              <div class="bld-card">
+                <div class="bld-card-t">BUILD</div>
+                <div class="bld-card-b">8 weeks</div>
+              </div>
+            </div>
+            <div class="bld-foot">© 2026 — Casa Studio</div>
+          </div>
+
+          <!-- Phase 4 — ship overlay -->
+          <div class="build-layer" id="build-ship">
+            <div class="ship-stamp">
+              <div class="ship-tag">SHIPPED</div>
+              <div class="ship-url">casa-studio.com</div>
+              <div class="ship-meta">deployed · live · 7 days</div>
+            </div>
+          </div>
+
+          <!-- Crosshair / build chrome -->
+          <div class="bf-chrome bf-tl"></div>
+          <div class="bf-chrome bf-tr"></div>
+          <div class="bf-chrome bf-bl"></div>
+          <div class="bf-chrome bf-br"></div>
+        </div>
+
+        <!-- Side rails: live build telemetry -->
+        <div id="build-telemetry">
+          <div class="bt-row"><span class="bt-k">PHASE</span><span class="bt-v" id="bt-phase">SKETCH</span></div>
+          <div class="bt-row"><span class="bt-k">LINES</span><span class="bt-v" id="bt-lines">000</span></div>
+          <div class="bt-row"><span class="bt-k">RENDER</span><span class="bt-v" id="bt-render">— %</span></div>
+          <div class="bt-row"><span class="bt-k">DEPLOY</span><span class="bt-v" id="bt-deploy">PENDING</span></div>
+        </div>
+
+        <!-- Caption that updates per-phase -->
+        <div id="build-caption">
+          <div class="bc-eyebrow" id="bc-eyebrow">PHASE 01 / 04</div>
+          <div class="bc-title" id="bc-title">Every site starts as a sketch.</div>
+          <div class="bc-body" id="bc-body">Layout. Hierarchy. The bones before the skin.</div>
+        </div>
+      </div>
+
+      <!-- Final headline — hidden until ship phase fires -->
+      <div id="video-text-overlay" style="opacity:0; pointer-events:none; transition: opacity 0.4s ease;">
         <div class="video-eyebrow" id="video-eyebrow">Built by hand. Every time.</div>
         <h2 class="video-headline" id="video-headline"></h2>
       </div>
-      <!-- Depth HUD -->
+
+      <!-- Depth HUD repurposed as scrub indicator -->
       <div id="dive-depth-hud">
-        <div class="hud-label">depth</div>
+        <div class="hud-label">build</div>
         <div class="hud-value" id="dive-depth-val">000</div>
       </div>
-      <!-- Progress bar -->
       <div id="video-progress-bar">
         <div id="video-progress-track"><div id="video-progress-fill"></div></div>
         <span id="video-progress-label">000%</span>
@@ -2609,17 +3091,17 @@
         <a href="mailto:mediocremanager@outlook.com" style="
           font-family:'JetBrains Mono',monospace;
           font-size:15px;
-          color:rgba(43,37,71,0.5);
+          color:rgba(43,37,71,0.75);
           letter-spacing:0.5px;
-          border-bottom:1px solid rgba(43,37,71,0.15);
+          border-bottom:1px solid rgba(43,37,71,0.25);
           padding-bottom:3px;
           transition:color 0.2s,border-color 0.2s;
           text-decoration:none;
-        " onmouseenter="this.style.color='#F0635A';this.style.borderColor='rgba(240,99,90,0.5)'" onmouseleave="this.style.color='rgba(43,37,71,0.5)';this.style.borderColor='rgba(43,37,71,0.15)'">mediocremanager@outlook.com →</a>
+        " onmouseenter="this.style.color='#F0635A';this.style.borderColor='rgba(240,99,90,0.5)'" onmouseleave="this.style.color='rgba(43,37,71,0.75)';this.style.borderColor='rgba(43,37,71,0.25)'">mediocremanager@outlook.com →</a>
       </div>
       <div style="display:flex;flex-direction:column;gap:6px;text-align:right;">
-        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(43,37,71,0.3);">Based in</span>
-        <span style="font-family:'DM Serif Display',serif;font-size:18px;font-weight:400;font-style:italic;color:rgba(43,37,71,0.5);">St. Johns, FL</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(43,37,71,0.6);">Based in</span>
+        <span style="font-family:'DM Serif Display',serif;font-size:18px;font-weight:400;font-style:italic;color:rgba(43,37,71,0.7);">St. Johns, FL</span>
       </div>
     </div>
     <!-- Bottom bar -->
@@ -2633,9 +3115,9 @@
       flex-wrap:wrap;
       gap:12px;
     " class="footer-bottom-bar">
-      <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(43,37,71,0.3);">© 2026 Mediocre Markup</span>
-      <span style="font-family:'DM Serif Display',serif;font-size:13px;font-weight:400;font-style:italic;color:rgba(43,37,71,0.3);">Websites that outperform average</span>
-      <a href="mailto:mediocremanager@outlook.com" style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:rgba(43,37,71,0.3);text-decoration:none;transition:color 0.2s;" onmouseenter="this.style.color='#F0635A'" onmouseleave="this.style.color='rgba(43,37,71,0.3)'">mediocremanager@outlook.com</a>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(43,37,71,0.6);">© 2026 Mediocre Markup</span>
+      <span style="font-family:'DM Serif Display',serif;font-size:13px;font-weight:400;font-style:italic;color:rgba(43,37,71,0.6);">Websites that outperform average</span>
+      <a href="mailto:mediocremanager@outlook.com" style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:rgba(43,37,71,0.6);text-decoration:none;transition:color 0.2s;" onmouseenter="this.style.color='#F0635A'" onmouseleave="this.style.color='rgba(43,37,71,0.6)'">mediocremanager@outlook.com</a>
     </div>
   </footer>
 
@@ -2919,7 +3401,7 @@
       phase:  (i / N) * Math.PI * 2,
       speed:  0.4 + Math.random() * 0.7,
       fsize:  16 + Math.random() * 12,
-      color:  Math.random() < 0.6 ? '#F0635A' : (Math.random() < 0.5 ? '#F4A261' : '#888880'),
+      color:  Math.random() < 0.6 ? '#F0635A' : (Math.random() < 0.5 ? '#F4A261' : '#5A547A'),
       // animation state
       state:  'orbit',   // orbit | fall | impact | done
       x: 0, y: 0,
@@ -3490,6 +3972,88 @@
     const lbTop         = document.getElementById('dive-letterbox-top');
     const lbBottom      = document.getElementById('dive-letterbox-bottom');
 
+    // ── BUILD STAGE references ──
+    const buildStage    = document.getElementById('build-stage');
+    const buildFrame    = document.getElementById('build-frame');
+    const blWireframe   = document.getElementById('build-wireframe');
+    const blCode        = document.getElementById('build-code');
+    const blRender      = document.getElementById('build-render');
+    const blShip        = document.getElementById('build-ship');
+    const codeStream    = document.getElementById('code-stream');
+    const codeLines     = codeStream ? codeStream.querySelectorAll('.ct-line') : [];
+    const wfShapes      = document.querySelectorAll('#build-wireframe .wf-line, #build-wireframe .wf-box, #build-wireframe .wf-cta');
+    const phaseRows     = document.querySelectorAll('.bp-row');
+    const bcEyebrow     = document.getElementById('bc-eyebrow');
+    const bcTitle       = document.getElementById('bc-title');
+    const bcBody        = document.getElementById('bc-body');
+    const btPhase       = document.getElementById('bt-phase');
+    const btLines       = document.getElementById('bt-lines');
+    const btRender      = document.getElementById('bt-render');
+    const btDeploy      = document.getElementById('bt-deploy');
+    const overlayText   = document.getElementById('video-text-overlay');
+
+    // Caption copy per phase
+    const PHASE_COPY = [
+      {
+        eyebrow: 'PHASE 01 / 04',
+        title:   'Every site starts as a sketch.',
+        body:    'Layout. Hierarchy. The bones before the skin.',
+        ph:      'SKETCH',
+      },
+      {
+        eyebrow: 'PHASE 02 / 04',
+        title:   'Then comes the code. Hand-typed.',
+        body:    'No drag-and-drop. No "no-code." Real HTML, CSS, JS — the way a craftsman would.',
+        ph:      'CODE',
+      },
+      {
+        eyebrow: 'PHASE 03 / 04',
+        title:   'The structure becomes a site.',
+        body:    'Custom typography, real interaction, performance baked in. Yours alone.',
+        ph:      'RENDER',
+      },
+      {
+        eyebrow: 'PHASE 04 / 04',
+        title:   'And then it ships.',
+        body:    'In days, not months. Live, tested, on its own domain — ready to earn its keep.',
+        ph:      'SHIP',
+      },
+    ];
+
+    let currentPhase = -1;
+    function setPhase(p) {
+      if (p === currentPhase) return;
+      currentPhase = p;
+      // Apply layer visibility — wireframe lingers under code briefly, etc.
+      blWireframe.classList.toggle('bl-show', p === 0);
+      blCode.classList.toggle('bl-show', p === 1);
+      blRender.classList.toggle('bl-show', p === 2 || p === 3);
+      blShip.classList.toggle('bl-show', p === 3);
+      buildFrame.classList.toggle('bf-shipped', p === 3);
+
+      // Update side rails
+      phaseRows.forEach((row, i) => {
+        row.classList.toggle('bp-active', i === p);
+        row.classList.toggle('bp-done', i < p);
+      });
+
+      // Caption
+      const copy = PHASE_COPY[p] || PHASE_COPY[0];
+      bcEyebrow.textContent = copy.eyebrow;
+      bcTitle.textContent   = copy.title;
+      bcBody.textContent    = copy.body;
+      btPhase.textContent   = copy.ph;
+
+      // Deploy badge goes live at ship
+      if (p === 3) {
+        btDeploy.textContent = 'LIVE';
+        btDeploy.classList.add('bt-live');
+      } else {
+        btDeploy.textContent = 'PENDING';
+        btDeploy.classList.remove('bt-live');
+      }
+    }
+
     // Populate headline with word-wrapped spans for staggered reveal
     const HEADLINE_TEXT = [
       'Organic code.',
@@ -3538,8 +4102,9 @@
     const GLYPHS = ['</', '/>', '{}', '()', '=>', '&&', '//', '[]', '+=', 'fn',
                     'px', 'vh', 'rem', '/*', '*/', '00', '01', '10', '11', ';;'];
 
-    // Code column particles — fall from top, spaced in vertical lanes
-    const COL_COUNT = 22;
+    // Code column particles — gentle ambient drift, kept far from screen centre so
+    // they don't compete with the build frame
+    const COL_COUNT = 14;
     let cols = [];
 
     function initCols() {
@@ -3551,20 +4116,23 @@
     }
 
     function mkCol(W, H, preplace) {
-      const laneX = (Math.random() * 0.92 + 0.04) * W; // avoid very edges
+      // Bias columns toward edges of the screen, leaving the centre clear for the frame
+      const side = Math.random() < 0.5 ? 'left' : 'right';
+      const laneX = side === 'left'
+        ? Math.random() * W * 0.22
+        : W - Math.random() * W * 0.22;
       return {
         x:     laneX,
         y:     preplace ? Math.random() * H : -20,
-        speed: 0.6 + Math.random() * 1.4,
-        glyphs: Array.from({ length: 8 + Math.floor(Math.random() * 10) }, () =>
+        speed: 0.4 + Math.random() * 0.9,
+        glyphs: Array.from({ length: 6 + Math.floor(Math.random() * 8) }, () =>
           GLYPHS[Math.floor(Math.random() * GLYPHS.length)]
         ),
-        spacing: 18 + Math.random() * 8,
-        alpha:  0.18 + Math.random() * 0.38,
-        size:   10 + Math.random() * 5,
-        accent: Math.random() < 0.18, // bright coral accent column
-        // trail: how many glyphs are bright vs fading
-        headBright: 2 + Math.floor(Math.random() * 2),
+        spacing: 16 + Math.random() * 6,
+        alpha:  0.10 + Math.random() * 0.22,
+        size:   9 + Math.random() * 4,
+        accent: Math.random() < 0.15,
+        headBright: 1 + Math.floor(Math.random() * 2),
       };
     }
 
@@ -3578,104 +4146,11 @@
     function drawFC() {
       const W = fc.width, H = fc.height;
 
-      // Full clear each frame — grid is drawn cleanly, no motion blur smear
       fCtx.clearRect(0, 0, W, H);
 
-      // Speed multiplier: how fast columns fall
-      const speed = 1 + Math.pow(diveRatio, 1.3) * 7;
-      // Overall opacity envelope
-      const vis = Math.min(1, diveRatio / 0.15);
-
-      // ── PERSPECTIVE GRID ──
-      // Two planes: floor (bottom half) and ceiling (top half), both converge to horizon
-      const vpx = W / 2;
-      const vpy = H * 0.5; // horizon sits dead centre
-      const gridIntensity = Math.min(1, diveRatio * 2.2);
-
-      // How far the grid has "scrolled" (drives the cross-bar animation)
-      const scrollOff = (performance.now() * 0.00018 * (1 + diveRatio * 4)) % 1;
-
-      // Vertical rail lines — converge to VP
-      const RAILS = 14;
-      for (let i = 0; i <= RAILS; i++) {
-        const t = i / RAILS; // 0..1 across screen width
-        const screenX = t * W;
-        // At the horizon the line is at vpx; at screen edges it fans out
-        const floorAlpha = 0.10 * gridIntensity * (1 - Math.abs(t - 0.5) * 1.2);
-        if (floorAlpha < 0.003) continue;
-
-        fCtx.beginPath();
-        fCtx.moveTo(vpx + (screenX - vpx) * 0.001, vpy); // near-vanishing
-        fCtx.lineTo(screenX, H);
-        const gf = fCtx.createLinearGradient(vpx, vpy, screenX, H);
-        gf.addColorStop(0, `rgba(240,99,90,0)`);
-        gf.addColorStop(0.35, `rgba(240,99,90,${(floorAlpha * 0.6).toFixed(3)})`);
-        gf.addColorStop(1,   `rgba(240,99,90,${floorAlpha.toFixed(3)})`);
-        fCtx.strokeStyle = gf;
-        fCtx.lineWidth = 0.75;
-        fCtx.stroke();
-
-        // Ceiling mirror
-        fCtx.beginPath();
-        fCtx.moveTo(vpx + (screenX - vpx) * 0.001, vpy);
-        fCtx.lineTo(screenX, 0);
-        const gc = fCtx.createLinearGradient(vpx, vpy, screenX, 0);
-        gc.addColorStop(0, `rgba(240,99,90,0)`);
-        gc.addColorStop(0.35, `rgba(240,99,90,${(floorAlpha * 0.4).toFixed(3)})`);
-        gc.addColorStop(1,   `rgba(240,99,90,${(floorAlpha * 0.7).toFixed(3)})`);
-        fCtx.strokeStyle = gc;
-        fCtx.lineWidth = 0.75;
-        fCtx.stroke();
-      }
-
-      // Horizontal cross-bars — zoom toward viewer as they scroll
-      const BARS = 10;
-      for (let i = 0; i < BARS; i++) {
-        // Each bar has a depth value 0 (far/horizon) to 1 (close/edge)
-        const rawDepth = ((i / BARS) + scrollOff) % 1;
-        // Ease depth so bars accelerate as they approach
-        const depth = Math.pow(rawDepth, 1.6);
-
-        // Floor bar: y interpolates from vpy (far) to H (close)
-        const fy = vpy + (H - vpy) * depth;
-        // At this depth, how wide is it? Interpolate from 0 width to full W
-        const halfW = (W / 2) * depth;
-        const barAlpha = 0.08 * gridIntensity * depth * (depth > 0.9 ? (1 - depth) / 0.1 : 1);
-        if (barAlpha < 0.003) continue;
-
-        fCtx.beginPath();
-        fCtx.moveTo(vpx - halfW, fy);
-        fCtx.lineTo(vpx + halfW, fy);
-        fCtx.strokeStyle = `rgba(240,99,90,${barAlpha.toFixed(3)})`;
-        fCtx.lineWidth = 0.75;
-        fCtx.stroke();
-
-        // Ceiling bar
-        const cy2 = vpy - (vpy) * depth;
-        fCtx.beginPath();
-        fCtx.moveTo(vpx - halfW, cy2);
-        fCtx.lineTo(vpx + halfW, cy2);
-        fCtx.strokeStyle = `rgba(240,99,90,${(barAlpha * 0.7).toFixed(3)})`;
-        fCtx.lineWidth = 0.75;
-        fCtx.stroke();
-      }
-
-      // Horizon accent line — a single sharp coral rule at the vanishing point
-      if (gridIntensity > 0.1) {
-        const horizA = Math.min(0.55, gridIntensity * 0.55);
-        const horizGrad = fCtx.createLinearGradient(0, vpy, W, vpy);
-        horizGrad.addColorStop(0,   'rgba(240,99,90,0)');
-        horizGrad.addColorStop(0.2, `rgba(240,99,90,${horizA.toFixed(3)})`);
-        horizGrad.addColorStop(0.5, `rgba(240,99,90,${horizA.toFixed(3)})`);
-        horizGrad.addColorStop(0.8, `rgba(240,99,90,${horizA.toFixed(3)})`);
-        horizGrad.addColorStop(1,   'rgba(240,99,90,0)');
-        fCtx.beginPath();
-        fCtx.moveTo(0, vpy);
-        fCtx.lineTo(W, vpy);
-        fCtx.strokeStyle = horizGrad;
-        fCtx.lineWidth = 1;
-        fCtx.stroke();
-      }
+      // Gentle drift only — the build frame is the centerpiece, this is ambient
+      const speed = 0.7 + diveRatio * 0.8;
+      const vis = Math.min(1, diveRatio / 0.10);
 
       // ── FALLING CODE COLUMNS ──
       cols.forEach((col, ci) => {
@@ -3847,7 +4322,7 @@
       requestAnimationFrame(tick);
     }
 
-    // ── TEXT WORD REVEAL ──
+    // ── SHIP IMPACT — fires once when the build "ships" at end of phase 4
     let textRevealed = false;
     function slamText() {
       if (textRevealed) return;
@@ -3855,76 +4330,50 @@
 
       const stickyEl = document.getElementById('video-sticky');
 
-      // 1. Sharp coral flash — hits hard then bleeds out
+      // Coral flash to celebrate the ship
       const flashEl = mask;
-      flashEl.style.background = 'rgba(240,99,90,0.22)';
+      flashEl.style.background = 'rgba(240,99,90,0.18)';
       flashEl.style.mixBlendMode = 'multiply';
       flashEl.style.transition = 'none';
       flashEl.style.opacity = '1';
       setTimeout(() => {
-        flashEl.style.transition = 'opacity 0.65s cubic-bezier(0.16,1,0.3,1)';
+        flashEl.style.transition = 'opacity 0.7s cubic-bezier(0.16,1,0.3,1)';
         flashEl.style.opacity = '0';
-      }, 35);
+      }, 30);
 
-      // 2. Chromatic aberration — split on light bg shows as colour fringing
-      const chroma = document.getElementById('dive-chroma');
-      if (chroma) {
-        chroma.style.mixBlendMode = 'multiply';
-        chroma.style.transition = 'none';
-        chroma.style.opacity = '1';
-        chroma.style.background = 'linear-gradient(90deg, rgba(240,60,60,0.14) 0%, transparent 35%, rgba(60,60,220,0.10) 100%)';
-        setTimeout(() => {
-          chroma.style.transition = 'opacity 0.5s ease';
-          chroma.style.opacity = '0';
-        }, 90);
-      }
+      // Soft screen jolt
+      screenShake(stickyEl, 6, 400);
 
-      // 3. Hard screen shake
-      screenShake(stickyEl, 9, 500);
+      // Shockwave + streaks
+      setTimeout(fireShockwave, 0);
+      setTimeout(() => spawnStreaks(28), 0);
+      setTimeout(() => spawnStreaks(16), 140);
 
-      // 4. Fire ink shockwave + two bursts of streaks
-      setTimeout(fireShockwave, 20);
-      setTimeout(() => spawnStreaks(36), 0);
-      setTimeout(() => spawnStreaks(24), 120);
-      setTimeout(() => spawnStreaks(14), 280);
+      // Reveal the final overlay text
+      overlayText.style.opacity = '1';
+      overlayText.style.pointerEvents = 'auto';
 
-      // 5. Letterbox slams shut momentarily then opens — cinematic punch
-      lbTop.style.height    = '120px';
-      lbBottom.style.height = '120px';
-      setTimeout(() => {
-        lbTop.style.transition    = 'height 0.55s cubic-bezier(0.16,1,0.3,1)';
-        lbBottom.style.transition = 'height 0.55s cubic-bezier(0.16,1,0.3,1)';
-        lbTop.style.height    = '0px';
-        lbBottom.style.height = '0px';
-        setTimeout(() => {
-          lbTop.style.transition    = '';
-          lbBottom.style.transition = '';
-        }, 600);
-      }, 180);
-
-      // 6. Eyebrow glitch — skews in from the left like a tape dropout
       setTimeout(() => {
         eyebrow.style.opacity = '1';
         eyebrow.style.transition = 'none';
-        eyebrow.style.transform = 'translateX(-18px) skewX(-14deg) scaleX(1.04)';
+        eyebrow.style.transform = 'translateX(-12px) skewX(-10deg)';
         setTimeout(() => {
           eyebrow.style.transition = 'transform 0.45s cubic-bezier(0.16,1,0.3,1)';
-          eyebrow.style.transform  = 'translateX(0) skewX(0) scaleX(1)';
-        }, 55);
+          eyebrow.style.transform  = 'translateX(0) skewX(0)';
+        }, 50);
       }, 80);
 
-      // 7. Words slam in staggered with slight overshoot spring
       const allInners = headline.querySelectorAll('.vhl-inner');
       allInners.forEach((inner, i) => {
         setTimeout(() => {
           inner.style.transition = 'none';
-          inner.style.transform  = 'translateY(130%) rotate(8deg)';
+          inner.style.transform  = 'translateY(120%) rotate(6deg)';
           inner.style.opacity    = '1';
           requestAnimationFrame(() => {
             inner.style.transition = 'transform 0.55s cubic-bezier(0.22,1.45,0.36,1), opacity 0.25s ease';
             inner.style.transform  = 'translateY(0) rotate(0deg)';
           });
-        }, 150 + i * 40);
+        }, 130 + i * 40);
       });
       headline.style.opacity = '1';
     }
@@ -3948,11 +4397,11 @@
       rafPending = false;
       const ratio = currentRatio;
 
-      // Lerp display ratio for smooth visual updates
-      displayRatio += (ratio - displayRatio) * 0.10;
+      // Snappier lerp so phase transitions feel responsive
+      displayRatio += (ratio - displayRatio) * 0.13;
       diveRatio = displayRatio;
 
-      // Start code rain as soon as we enter
+      // Start ambient rain + shockwave system on entry
       if (ratio > 0 && !fcRunning) { fcRunning = true; drawFC(); drawSW(); swRunning = true; }
       if (ratio <= 0 && fcRunning) {
         fcRunning = false; swRunning = false;
@@ -3960,64 +4409,112 @@
         swCtx.clearRect(0, 0, sw.width, sw.height);
         diveRatio = 0; displayRatio = 0;
         fc.style.opacity = '0';
+        buildStage.classList.remove('bs-in');
+        currentPhase = -1;
+        // Reset wireframe + code state
+        wfShapes.forEach(s => s.style.opacity = '');
+        codeLines.forEach(l => l.classList.remove('ct-typed'));
       }
 
-      // ── Phase 0.08→0.40: letterbox cinches in ──
-      const lbT = Math.max(0, Math.min(1, (displayRatio - 0.08) / 0.32));
-      const lbH = Math.round(lbT * lbT * 90); // max 90px each side
+      // Build stage enters at 0.04, holds through 0.92
+      const bsIn = displayRatio > 0.04;
+      buildStage.classList.toggle('bs-in', bsIn);
+
+      // Subtle letterbox — just enough to feel cinematic, not overbearing
+      const lbT = Math.max(0, Math.min(1, (displayRatio - 0.04) / 0.18));
+      const lbH = Math.round(lbT * lbT * 36);
       lbTop.style.height    = lbH + 'px';
       lbBottom.style.height = lbH + 'px';
 
-      // ── Phase 0.06→0.55: edge vignette deepens ──
-      const evA = Math.max(0, Math.min(0.82, (displayRatio - 0.06) / 0.49));
-      edgeVignette.style.opacity = (evA * evA).toFixed(3);
+      // Soft edge vignette throughout
+      const evA = Math.max(0, Math.min(0.55, (displayRatio - 0.04) / 0.30));
+      edgeVignette.style.opacity = evA.toFixed(3);
 
-      // ── Phase 0.05→0.60: portal glow blooms ──
-      const pgA = Math.max(0, Math.min(1, (displayRatio - 0.05) / 0.55));
-      portalGlow.style.opacity = (pgA * pgA * 0.9).toFixed(3);
+      // Horizon/portal glow — gentle warm wash behind the frame
+      const pgA = Math.max(0, Math.min(1, (displayRatio - 0.04) / 0.40));
+      portalGlow.style.opacity = (pgA * 0.55).toFixed(3);
 
-      // ── Phase 0.15→0.62: speed streaks fades in ──
-      const spA = Math.max(0, Math.min(1, (displayRatio - 0.15) / 0.47));
-      sc.style.opacity = (spA * 0.85).toFixed(3);
+      // Scanlines — very faint
+      const slA = Math.max(0, Math.min(1, (displayRatio - 0.10) / 0.50));
+      scanlines.style.opacity = (slA * 0.20).toFixed(3);
 
-      // Continuously spawn streaks as warp builds
-      if (displayRatio > 0.22 && displayRatio < 0.88 && Math.random() < displayRatio * 0.09) {
-        spawnStreaks(Math.ceil(displayRatio * 2.5));
+      // Background ambient rain — very dim, doesn't compete with frame
+      const fcA = Math.max(0, Math.min(0.5, (displayRatio - 0.06) / 0.20));
+      fc.style.opacity = (fcA).toFixed(3);
+
+      // ── PHASE GATING ──
+      // 0.04→0.28  Phase 0 (Sketch)
+      // 0.28→0.52  Phase 1 (Code)
+      // 0.52→0.78  Phase 2 (Render)
+      // 0.78→1.00  Phase 3 (Ship)
+      let p;
+      if      (displayRatio < 0.28) p = 0;
+      else if (displayRatio < 0.52) p = 1;
+      else if (displayRatio < 0.78) p = 2;
+      else                          p = 3;
+      if (bsIn) setPhase(p);
+
+      // ── PHASE 0: Sketch — wireframe shapes draw in ──
+      if (p === 0) {
+        const localT = (displayRatio - 0.04) / 0.24;
+        // Reveal shapes progressively along the wireframe
+        wfShapes.forEach((shape, i) => {
+          const threshold = i / wfShapes.length;
+          shape.style.opacity = localT > threshold ? '1' : '0';
+        });
+      } else if (p > 0) {
+        wfShapes.forEach(s => s.style.opacity = '1');
       }
 
-      // ── Phase 0.12→0.70: tunnel grid appears ──
-      const tunA = Math.max(0, Math.min(1, (displayRatio - 0.12) / 0.58));
-      tc.style.opacity = (tunA * tunA * 0.9).toFixed(3);
-
-      // ── Phase 0.10→0.70: scanlines phase in ──
-      const slA = Math.max(0, Math.min(1, (displayRatio - 0.10) / 0.60));
-      scanlines.style.opacity = (slA * 0.55).toFixed(3);
-
-      // ── Phase 0.10→0.60: depth HUD fades in ──
-      if (displayRatio > 0.10) {
-        depthHud.style.opacity = Math.min(1, (displayRatio - 0.10) / 0.25).toFixed(3);
-        const depthNum = Math.round(displayRatio * 999);
-        depthVal.textContent = String(depthNum).padStart(3, '0');
+      // ── PHASE 1: Code — lines type in based on scroll ──
+      if (p === 1) {
+        const localT = (displayRatio - 0.28) / 0.24;
+        const totalLines = codeLines.length;
+        const visibleLines = Math.floor(localT * totalLines);
+        codeLines.forEach((line, i) => {
+          line.classList.toggle('ct-typed', i <= visibleLines);
+        });
+        // Telemetry: line count
+        const lineCount = Math.min(totalLines, visibleLines + 1) * 3 + 12;
+        btLines.textContent = String(lineCount).padStart(3, '0');
+        // Position cursor at end of last typed line
+        positionCursor(visibleLines);
+      } else if (p < 1) {
+        codeLines.forEach(line => line.classList.remove('ct-typed'));
+        btLines.textContent = '000';
       } else {
-        depthHud.style.opacity = '0';
+        codeLines.forEach(line => line.classList.add('ct-typed'));
+        btLines.textContent = String(codeLines.length * 3 + 12).padStart(3, '0');
       }
 
-      // ── Phase 0→0.72: 3D Z-push — warp field zooms toward viewer ──
-      const zPush = Math.max(0, Math.min(1, displayRatio / 0.72));
-      const zVal  = -320 * (1 - zPush * zPush);
-      const scaleVal = 1 + zPush * 0.10;
-      inner3d.style.transform = `translateZ(${zVal}px) scale(${scaleVal.toFixed(4)})`;
+      // ── PHASE 2: Render — preview reveals ──
+      if (p === 2) {
+        const localT = (displayRatio - 0.52) / 0.26;
+        // Render telemetry counts up
+        const renderPct = Math.min(100, Math.round(localT * 100));
+        btRender.textContent = renderPct + ' %';
+        if (renderPct === 100) btRender.classList.add('bt-live');
+        else btRender.classList.remove('bt-live');
+      } else if (p > 2) {
+        btRender.textContent = '100 %';
+        btRender.classList.add('bt-live');
+      } else {
+        btRender.textContent = '— %';
+        btRender.classList.remove('bt-live');
+      }
 
-      // ── Phase 0.72: IMPACT ──
-      if (displayRatio >= 0.72 && !impactDone) {
+      // ── PHASE 3: Ship — fire impact once ──
+      if (p === 3 && !impactDone) {
         impactDone = true;
         slamText();
       }
-      // Reset on scroll back
-      if (displayRatio < 0.46 && impactDone) {
+      // Reset impact when scrolling back
+      if (p < 3 && impactDone) {
         impactDone   = false;
         textRevealed = false;
         rings        = [];
+        overlayText.style.opacity = '0';
+        overlayText.style.pointerEvents = 'none';
         eyebrow.style.opacity = '0';
         headline.style.opacity = '0';
         headline.querySelectorAll('.vhl-inner').forEach(el => {
@@ -4027,30 +4524,47 @@
         });
       }
 
-      // ── Phase 0.78→1: letterbox eases back open after slam ──
-      if (displayRatio > 0.78) {
-        const openT = Math.min(1, (displayRatio - 0.78) / 0.22);
-        const openH = Math.round(lbH * (1 - openT * openT));
-        if (!textRevealed || displayRatio > 0.82) {
-          lbTop.style.height    = openH + 'px';
-          lbBottom.style.height = openH + 'px';
-        }
-        scanlines.style.opacity = (slA * (1 - openT * 0.85)).toFixed(3);
+      // Depth HUD shows build percentage
+      if (displayRatio > 0.04) {
+        depthHud.style.opacity = Math.min(1, (displayRatio - 0.04) / 0.10).toFixed(3);
+        depthVal.textContent = String(Math.round(displayRatio * 100)).padStart(3, '0');
+      } else {
+        depthHud.style.opacity = '0';
       }
 
-      // Fade warp canvas in from scroll start — so it doesn't pop on entry
-      const fcFadeIn = Math.min(1, displayRatio / 0.12);
-      fc.style.opacity = fcFadeIn.toFixed(3);
+      // After ship: fade build stage, let final overlay shine alone
+      if (displayRatio > 0.85) {
+        const openT = Math.min(1, (displayRatio - 0.85) / 0.15);
+        // Slowly fade out the build frame so headline owns the view
+        buildFrame.style.opacity = (1 - openT * 0.35).toFixed(3);
+        const openH = Math.round(lbH * (1 - openT));
+        lbTop.style.height    = openH + 'px';
+        lbBottom.style.height = openH + 'px';
+      } else {
+        buildFrame.style.opacity = '';
+      }
 
       const pct = Math.round(ratio * 100);
       progressFill.style.width = pct + '%';
       progressLabel.textContent = String(pct).padStart(3, '0') + '%';
 
-      // Keep ticking while visible so lerp catches up
+      // Keep ticking while lerp catches up
       if (fcRunning && Math.abs(displayRatio - ratio) > 0.001) {
         rafPending = true;
         requestAnimationFrame(applyReveal);
       }
+    }
+
+    // Position the blinking cursor at the end of the last typed line
+    function positionCursor(lineIdx) {
+      const cursor = document.getElementById('code-cursor');
+      if (!cursor || lineIdx < 0 || lineIdx >= codeLines.length) return;
+      const line = codeLines[lineIdx];
+      if (!line) return;
+      const lineRect = line.getBoundingClientRect();
+      const codeRect = blCode.getBoundingClientRect();
+      cursor.style.left = (lineRect.right - codeRect.left + 2) + 'px';
+      cursor.style.top  = (lineRect.top   - codeRect.top  + 2) + 'px';
     }
 
     // ── Compute ratio from real scroll position (used for nav jumps / fallback) ──
