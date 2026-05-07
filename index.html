@@ -1053,7 +1053,7 @@
        ═══════════════════════════════════════════════ */
     #video-reveal {
       position: relative;
-      height: 500vh;
+      height: 320vh;
       background: #FEF9F4;
       margin-bottom: -2px;
     }
@@ -1235,23 +1235,11 @@
       transition: width 0.1s;
     }
     #video-progress-label {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 2px;
-      color: rgba(43,37,71,0.6);
+      display: none;
     }
     /* Dive depth indicator — replaces old progress bar label feel */
     #dive-depth-hud {
-      position: absolute;
-      bottom: 44px;
-      right: 48px;
-      z-index: 11;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 6px;
-      opacity: 0;
-      transition: opacity 0.4s;
+      display: none;
     }
     #dive-depth-hud .hud-label {
       font-family: var(--font-mono);
@@ -1620,6 +1608,27 @@
       border-radius: 10px;
       overflow: hidden;
       border: 1px solid rgba(43,37,71,0.06);
+    }
+    .bf-screen::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 18;
+      pointer-events: none;
+      opacity: 0;
+      background:
+        linear-gradient(90deg, transparent 0%, rgba(240,99,90,0.18) 48%, rgba(255,255,255,0.32) 50%, rgba(240,99,90,0.18) 52%, transparent 100%);
+      transform: translateX(-120%);
+    }
+    #build-stage[data-phase="1"] .bf-screen::before,
+    #build-stage[data-phase="2"] .bf-screen::before {
+      opacity: 1;
+      animation: buildScanner 1.8s cubic-bezier(0.16,1,0.3,1) infinite;
+    }
+    @keyframes buildScanner {
+      0% { transform: translateX(-120%); opacity: 0; }
+      18% { opacity: 1; }
+      70%, 100% { transform: translateX(120%); opacity: 0; }
     }
     @media (max-width: 700px) {
       .bf-screen { border-radius: 8px; }
@@ -2114,19 +2123,10 @@
 
     /* ── Caption below frame ── */
     #build-caption {
-      position: absolute;
-      left: 50%;
-      bottom: 6vh;
-      width: min(560px, 46vw);
-      text-align: center;
-      opacity: 0;
-      transform: translateX(-50%) translateY(18px);
-      transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1),
-                  transform 0.75s cubic-bezier(0.16,1,0.3,1);
-      pointer-events: none;
+      display: none;
     }
     #build-stage.bs-in #build-caption {
-      opacity: 1; transform: translateX(-50%) translateY(0);
+      display: none;
     }
     .bc-eyebrow {
       font-family: 'JetBrains Mono', monospace;
@@ -2169,11 +2169,11 @@
     .build-site {
       position: absolute; inset: 0;
       display: grid;
-      grid-template-columns: minmax(0, 1.35fr) minmax(240px, 0.95fr);
+      grid-template-columns: minmax(0, 1.05fr) minmax(260px, 0.95fr);
       grid-template-areas:
         "nav nav"
-        "hero sub"
-        "hero cards"
+        "hero hero"
+        "sub cards"
         "stats stats"
         "foot foot";
       align-content: start;
@@ -2246,9 +2246,9 @@
       filter: blur(8px);
       z-index: 2;
       transition:
-        transform 1.18s cubic-bezier(0.16,1,0.3,1),
-        opacity   0.72s ease-out,
-        filter    0.72s ease-out;
+        transform 0.78s cubic-bezier(0.16,1,0.3,1),
+        opacity   0.45s ease-out,
+        filter    0.45s ease-out;
     }
     .bs-piece[data-piece="nav"] { grid-area: nav; z-index: 6; }
     .bs-piece[data-piece="hero-img"] { grid-area: hero; }
@@ -2317,20 +2317,21 @@
     /* ── Hero ── */
     .bs-hero {
       position: relative;
-      min-height: 460px;
+      min-height: 520px;
       height: 100%;
       overflow: hidden;
       background: #16171a;
-      border-right: 1px solid rgba(33,27,22,0.08);
+      border-right: 0;
+      box-shadow: inset 0 -1px 0 rgba(255,250,242,0.10);
     }
     .bs-hero-video {
       position: absolute; inset: 0;
       width: 100%; height: 100%;
       object-fit: cover;
-      object-position: 72% center;
+      object-position: center center;
       opacity: 1 !important;
       transform: scale(1.08);
-      filter: saturate(0.92) contrast(1.08) brightness(0.88);
+      filter: saturate(1.05) contrast(1.12) brightness(0.82);
       animation: phoneHeroDrift 13s ease-in-out infinite alternate;
     }
     @keyframes phoneHeroDrift {
@@ -2346,9 +2347,9 @@
     .bs-hero-overlay {
       position: absolute; inset: 0;
       background:
-        linear-gradient(90deg, rgba(12,14,17,0.92) 0%, rgba(12,14,17,0.72) 35%, rgba(12,14,17,0.18) 62%, rgba(12,14,17,0.04) 100%),
-        radial-gradient(ellipse 80% 48% at 16% 18%, rgba(190,143,80,0.20) 0%, transparent 62%),
-        linear-gradient(180deg, rgba(12,14,17,0.04) 24%, rgba(12,14,17,0.58) 100%);
+        linear-gradient(90deg, rgba(8,9,11,0.88) 0%, rgba(8,9,11,0.58) 42%, rgba(8,9,11,0.18) 74%, rgba(8,9,11,0.40) 100%),
+        radial-gradient(ellipse 60% 44% at 18% 18%, rgba(240,99,90,0.28) 0%, transparent 66%),
+        linear-gradient(180deg, rgba(8,9,11,0.10) 0%, rgba(8,9,11,0.32) 48%, rgba(8,9,11,0.86) 100%);
     }
     .bs-hero::before,
     .bs-hero::after {
@@ -2381,9 +2382,9 @@
     }
     .bs-hero-content {
       position: absolute;
-      left: 34px; right: 34%; top: 52%;
+      left: 48px; right: 44%; top: 52%;
       transform: translateY(-50%);
-      display: flex; flex-direction: column; gap: 10px;
+      display: flex; flex-direction: column; gap: 14px;
       z-index: 3;
     }
     .bs-eyebrow {
@@ -2399,7 +2400,7 @@
     .bs-title {
       font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
       font-weight: 400;
-      font-size: clamp(42px, 4.3vw, 66px); line-height: 0.9; letter-spacing: -1.8px;
+      font-size: 58px; line-height: 0.92; letter-spacing: 0;
       color: #fffaf2;
       margin: 0;
       text-shadow: 0 8px 26px rgba(0,0,0,0.32);
@@ -2425,21 +2426,21 @@
     /* ── Sub block: lead + CTA ── */
     .bs-sub-block {
       height: 100%;
-      min-height: 220px;
-      padding: 26px 26px 24px;
+      min-height: 210px;
+      padding: 30px 34px 28px;
       background:
-        linear-gradient(135deg, rgba(255,251,241,0.88), transparent 64%),
-        linear-gradient(180deg, rgba(240,99,90,0.06), rgba(255,255,255,0) 44%),
-        #f5f3ee;
-      border-left: 1px solid rgba(33,27,22,0.08);
+        linear-gradient(135deg, rgba(255,251,241,0.82), transparent 64%),
+        linear-gradient(180deg, rgba(240,99,90,0.05), rgba(255,255,255,0) 44%),
+        #fffdf8;
+      border-right: 1px solid rgba(33,27,22,0.08);
       border-bottom: 1px solid rgba(33,27,22,0.08);
     }
     .bs-lead {
       font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
-      font-size: 22px; line-height: 1.18;
+      font-size: 28px; line-height: 1.14;
       color: #16171a;
-      letter-spacing: -0.5px;
-      margin: 0 0 18px;
+      letter-spacing: 0;
+      margin: 0 0 20px;
     }
     .bs-cta {
       display: inline-flex; align-items: center; gap: 6px;
@@ -2467,29 +2468,26 @@
 
     /* ── Project cards ── */
     .bs-cards {
-      display: grid; grid-template-columns: 1fr; gap: 12px;
-      padding: 18px 18px 22px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+      padding: 22px 22px 24px;
       background:
         linear-gradient(180deg, rgba(255,255,255,0.25), rgba(255,255,255,0)),
         #f5f3ee;
-      border-left: 1px solid rgba(33,27,22,0.08);
+      border-bottom: 1px solid rgba(33,27,22,0.08);
     }
     .bs-card {
       background: #fffdf8;
-      display: grid;
-      grid-template-columns: 132px 1fr;
-      grid-template-areas:
-        "image body"
-        "image copy";
+      display: flex;
+      flex-direction: column;
       border-radius: 2px;
       overflow: hidden;
       box-shadow: 0 10px 24px -18px rgba(33,27,22,0.32);
       border: 1px solid rgba(33,27,22,0.08);
     }
     .bs-card-img {
-      grid-area: image;
-      width: 100%; height: 100%;
-      min-height: 120px;
+      width: 100%;
+      min-height: 128px;
+      aspect-ratio: 1.55 / 1;
       background-size: cover;
       background-position: center;
     }
@@ -2512,7 +2510,6 @@
       background: linear-gradient(180deg, transparent 50%, rgba(43,37,71,0.35) 100%);
     }
     .bs-card-body {
-      grid-area: body;
       padding: 14px 14px 6px;
       align-self: end;
     }
@@ -2530,7 +2527,6 @@
       line-height: 1.1;
     }
     .bs-card p {
-      grid-area: copy;
       padding: 0 14px 14px;
       font-size: 11px;
       line-height: 1.5;
@@ -2999,10 +2995,10 @@
     }
     .bo-orb {
       position: absolute;
-      width: 7px; height: 7px;
+      width: 10px; height: 10px;
       border-radius: 50%;
       background: radial-gradient(circle, #fff 0%, #F0635A 40%, transparent 75%);
-      box-shadow: 0 0 12px 2px rgba(240,99,90,0.7);
+      box-shadow: 0 0 18px 4px rgba(240,99,90,0.8);
       will-change: transform, opacity;
       pointer-events: none;
     }
@@ -3017,7 +3013,7 @@
       content: '';
       position: absolute;
       right: 50%; top: 50%;
-      width: 42px; height: 1px;
+      width: 72px; height: 1px;
       transform: translateY(-50%);
       background: linear-gradient(to left, rgba(240,99,90,0.5), transparent);
       opacity: 0.65;
@@ -4701,30 +4697,30 @@
                   <line x1="190" y1="18" x2="190" y2="84" opacity="0.45"/>
                 </g>
                 <g class="bs-bp" data-for="hero-img" stroke="#F0635A" stroke-width="2.2"  fill="none" opacity="0">
-                  <rect x="20" y="104" width="780" height="380" rx="4" stroke-dasharray="12 8"/>
-                  <line x1="20" y1="104" x2="800" y2="484"/>
-                  <line x1="800" y1="104" x2="20" y2="484"/>
-                  <circle cx="410" cy="294" r="16"/>
-                  <line x1="410" y1="104" x2="410" y2="484" opacity="0.45"/>
+                  <rect x="20" y="104" width="1240" height="440" rx="4" stroke-dasharray="12 8"/>
+                  <line x1="20" y1="104" x2="1260" y2="544"/>
+                  <line x1="1260" y1="104" x2="20" y2="544"/>
+                  <circle cx="640" cy="324" r="18"/>
+                  <line x1="640" y1="104" x2="640" y2="544" opacity="0.35"/>
                 </g>
                 <g class="bs-bp" data-for="sub"      stroke="#F0635A" stroke-width="2.2"  fill="none" opacity="0">
-                  <rect x="820" y="104" width="440" height="176" rx="4" stroke-dasharray="12 8"/>
-                  <line x1="820" y1="192" x2="1260" y2="192" opacity="0.45"/>
+                  <rect x="20" y="564" width="600" height="156" rx="4" stroke-dasharray="12 8"/>
+                  <line x1="20" y1="642" x2="620" y2="642" opacity="0.45"/>
                 </g>
                 <g class="bs-bp" data-for="cards"    stroke="#F0635A" stroke-width="2.2"  fill="none" opacity="0">
-                  <rect x="820" y="300" width="440" height="112" rx="4" stroke-dasharray="12 8"/>
-                  <rect x="820" y="430" width="440" height="112" rx="4" stroke-dasharray="12 8"/>
-                  <line x1="952" y1="300" x2="952" y2="542" opacity="0.45"/>
+                  <rect x="642" y="564" width="292" height="156" rx="4" stroke-dasharray="12 8"/>
+                  <rect x="956" y="564" width="304" height="156" rx="4" stroke-dasharray="12 8"/>
+                  <line x1="642" y1="642" x2="1260" y2="642" opacity="0.45"/>
                 </g>
                 <g class="bs-bp" data-for="stats"    stroke="#F0635A" stroke-width="2.2"  fill="none" opacity="0">
-                  <rect x="20" y="564" width="1240" height="202" rx="4" stroke-dasharray="12 8"/>
-                  <line x1="304" y1="564" x2="304" y2="766"/>
-                  <line x1="836" y1="564" x2="836" y2="766"/>
-                  <line x1="1046" y1="564" x2="1046" y2="766" opacity="0.45"/>
+                  <rect x="20" y="740" width="1240" height="90" rx="4" stroke-dasharray="12 8"/>
+                  <line x1="304" y1="740" x2="304" y2="830"/>
+                  <line x1="836" y1="740" x2="836" y2="830"/>
+                  <line x1="1046" y1="740" x2="1046" y2="830" opacity="0.45"/>
                 </g>
                 <g class="bs-bp" data-for="foot"     stroke="#F0635A" stroke-width="2.2"  fill="none" opacity="0">
-                  <rect x="20" y="786" width="1240" height="94" rx="4" stroke-dasharray="12 8"/>
-                  <line x1="744" y1="786" x2="744" y2="880"/>
+                  <rect x="20" y="846" width="1240" height="34" rx="4" stroke-dasharray="12 8"/>
+                  <line x1="744" y1="846" x2="744" y2="880"/>
                 </g>
               </svg>
 
@@ -6001,7 +5997,7 @@
         { left: startX + 'px', top: startY + 'px', opacity: 0,   transform: 'scale(0.35) rotate(0deg)', filter: 'blur(2px)' },
         { left: ctrlX  + 'px', top: ctrlY  + 'px', opacity: 1,   transform: 'scale(1.15) rotate(180deg)', filter: 'blur(0)', offset: 0.52 },
         { left: target.x + 'px', top: target.y + 'px', opacity: 1, transform: 'scale(0.72) rotate(320deg)', filter: 'blur(0)' },
-      ], { duration: 920, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' });
+      ], { duration: 620, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' });
 
       // Cleanup + trigger piece land slightly before arrival
       setTimeout(() => {
@@ -6012,12 +6008,12 @@
           { opacity: 0,   transform: 'scale(0.5)', boxShadow: '0 0 0 0 rgba(240,99,90,0)' },
         ], { duration: 380, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' });
         landPiece(targetIdx);
-      }, 790);
+      }, 500);
 
       setTimeout(() => {
         if (orb.parentNode) orb.parentNode.removeChild(orb);
         activeOrbs = activeOrbs.filter(o => o !== orb);
-      }, 1450);
+      }, 980);
     }
 
     // Make a piece "land" — physics overshoot snap
@@ -6529,7 +6525,7 @@
       const ratio = currentRatio;
 
       // Responsive but smooth lerp so the build follows scroll without stutter
-      displayRatio += (ratio - displayRatio) * 0.32;
+      displayRatio += (ratio - displayRatio) * 0.56;
       if (Math.abs(displayRatio - ratio) < 0.002) displayRatio = ratio;
       diveRatio = displayRatio;
 
@@ -6604,19 +6600,19 @@
       // 0.62→0.82 CODE (overlay appears, types out, dissolves)
       // 0.82→1.00 SHIPPED (final glow, deploy stamp)
       let p;
-      if      (displayRatio < 0.16) p = 0;
-      else if (displayRatio < 0.58) p = 1;
-      else if (displayRatio < 0.80) p = 2;
+      if      (displayRatio < 0.12) p = 0;
+      else if (displayRatio < 0.48) p = 1;
+      else if (displayRatio < 0.68) p = 2;
       else                          p = 3;
       if (bsIn) setPhase(p);
 
-      // ── ASSEMBLY: 0.16 → 0.60 maps to assemblyT 0..1 ──
-      const assemT = Math.max(0, Math.min(1, (displayRatio - 0.13) / 0.49));
+      // ── ASSEMBLY: 0.10 → 0.50 maps to assemblyT 0..1 ──
+      const assemT = Math.max(0, Math.min(1, (displayRatio - 0.10) / 0.40));
       setAssemblyProgress(assemT);
 
       // ── CODE OVERLAY: 0.62 → 0.80 maps to typing 0..1 ──
       if (p === 2) {
-        const codeT = (displayRatio - 0.58) / 0.20;
+        const codeT = (displayRatio - 0.48) / 0.20;
         const totalLines = codeLines.length;
         const visibleLines = Math.floor(codeT * totalLines);
         codeLines.forEach((line, i) => {
@@ -6735,11 +6731,11 @@
 
       const total = revealSection.offsetHeight - window.innerHeight;
       const rawDelta = e.deltaMode === 1 ? e.deltaY * 28 : e.deltaMode === 2 ? e.deltaY * 180 : e.deltaY;
-      const delta = Math.max(-90, Math.min(90, rawDelta)) * 0.68;
+      const delta = Math.max(-180, Math.min(180, rawDelta)) * 1.35;
 
       if (currentRatio >= 0.995 && delta > 0) {
-        exitIntent = Math.min(420, exitIntent + delta);
-        if (exitIntent > 240) {
+        exitIntent = Math.min(260, exitIntent + delta);
+        if (exitIntent > 110) {
           setRatio(1);
           virtualScrolled = total;
           unlockRevealAndAdvance();
@@ -6766,12 +6762,12 @@
       intercepting = true;
 
       const total = revealSection.offsetHeight - window.innerHeight;
-      const dy = (touchStartY - e.touches[0].clientY) * 0.75;
+      const dy = (touchStartY - e.touches[0].clientY) * 1.25;
       touchStartY = e.touches[0].clientY;
 
       if (currentRatio >= 0.995 && dy > 0) {
-        exitIntent = Math.min(420, exitIntent + dy);
-        if (exitIntent > 220) {
+        exitIntent = Math.min(260, exitIntent + dy);
+        if (exitIntent > 110) {
           setRatio(1);
           virtualScrolled = total;
           unlockRevealAndAdvance();
