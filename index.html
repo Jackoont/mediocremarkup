@@ -2114,7 +2114,16 @@
 
     /* ── Caption below frame ── */
     #build-caption {
-      display: none;
+      position: absolute;
+      left: 50%;
+      bottom: 6vh;
+      width: min(560px, 46vw);
+      text-align: center;
+      opacity: 0;
+      transform: translateX(-50%) translateY(18px);
+      transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.75s cubic-bezier(0.16,1,0.3,1);
+      pointer-events: none;
     }
     #build-stage.bs-in #build-caption {
       opacity: 1; transform: translateX(-50%) translateY(0);
@@ -2159,12 +2168,24 @@
     /* The base "site" — fills the screen, parts assemble in */
     .build-site {
       position: absolute; inset: 0;
-      background: #f5f3ee;
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(240px, 0.95fr);
+      grid-template-areas:
+        "nav nav"
+        "hero sub"
+        "hero cards"
+        "stats stats"
+        "foot foot";
+      align-content: start;
+      background:
+        radial-gradient(circle at 18% 14%, rgba(240,99,90,0.08), transparent 26%),
+        linear-gradient(180deg, #f8f5ef 0%, #f2ede5 100%);
       font-family: "Sora", "Aptos", "Segoe UI", Arial, sans-serif;
       color: #16171a;
       overflow: hidden;
       scroll-behavior: smooth;
       pointer-events: none;
+      isolation: isolate;
     }
     .build-site::before {
       content: '';
@@ -2177,12 +2198,32 @@
         linear-gradient(115deg, transparent 0%, transparent 40%, rgba(255,251,241,0.34) 50%, transparent 60%, transparent 100%);
       transform: translateX(-120%);
     }
+    .build-site::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.4;
+      background:
+        linear-gradient(rgba(43,37,71,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(43,37,71,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 46%, rgba(240,99,90,0.06) 50%, rgba(255,255,255,0.28) 54%, transparent 100%);
+      background-size: 28px 28px, 28px 28px, 100% 100%;
+      mask: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.15));
+      -webkit-mask: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.15));
+      animation: buildGridDrift 16s linear infinite;
+    }
     #build-stage[data-phase="3"] .build-site::before {
       animation: phoneGlassSheen 5.6s ease-in-out infinite;
     }
     @keyframes phoneGlassSheen {
       0%, 34% { transform: translateX(-120%); }
       54%, 100% { transform: translateX(120%); }
+    }
+    @keyframes buildGridDrift {
+      from { background-position: 0 0, 0 0, 0 0; }
+      to   { background-position: 56px 28px, 28px 56px, 0 0; }
     }
     #build-stage[data-phase="3"] { pointer-events: auto; }
     #build-stage[data-phase="3"] #build-frame,
@@ -2203,11 +2244,18 @@
       opacity: 0;
       will-change: transform, opacity, filter;
       filter: blur(8px);
+      z-index: 2;
       transition:
         transform 1.18s cubic-bezier(0.16,1,0.3,1),
         opacity   0.72s ease-out,
         filter    0.72s ease-out;
     }
+    .bs-piece[data-piece="nav"] { grid-area: nav; z-index: 6; }
+    .bs-piece[data-piece="hero-img"] { grid-area: hero; }
+    .bs-piece[data-piece="sub"] { grid-area: sub; }
+    .bs-piece[data-piece="cards"] { grid-area: cards; }
+    .bs-piece[data-piece="stats"] { grid-area: stats; }
+    .bs-piece[data-piece="foot"] { grid-area: foot; }
     .bs-piece[data-from="left"]   { transform: translate3d(-118%, 10px, 0) rotateY(-16deg) scale(0.96); }
     .bs-piece[data-from="right"]  { transform: translate3d(118%, 10px, 0)  rotateY(16deg) scale(0.96); }
     .bs-piece[data-from="top"]    { transform: translate3d(0, -128%, 0) rotateX(24deg) scale(1.08); }
@@ -2237,9 +2285,10 @@
     /* ── Site nav ── */
     .bs-nav {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 15px 20px 14px;
+      padding: 16px 24px 15px;
       border-bottom: 1px solid rgba(33,27,22,0.10);
-      background: rgba(245,243,238,0.96);
+      background:
+        linear-gradient(180deg, rgba(255,253,249,0.95), rgba(245,243,238,0.9));
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       position: sticky;
@@ -2268,9 +2317,11 @@
     /* ── Hero ── */
     .bs-hero {
       position: relative;
-      height: 292px;
+      min-height: 460px;
+      height: 100%;
       overflow: hidden;
       background: #16171a;
+      border-right: 1px solid rgba(33,27,22,0.08);
     }
     .bs-hero-video {
       position: absolute; inset: 0;
@@ -2295,7 +2346,7 @@
     .bs-hero-overlay {
       position: absolute; inset: 0;
       background:
-        linear-gradient(90deg, rgba(12,14,17,0.92) 0%, rgba(12,14,17,0.70) 38%, rgba(12,14,17,0.18) 64%, rgba(12,14,17,0.04) 100%),
+        linear-gradient(90deg, rgba(12,14,17,0.92) 0%, rgba(12,14,17,0.72) 35%, rgba(12,14,17,0.18) 62%, rgba(12,14,17,0.04) 100%),
         radial-gradient(ellipse 80% 48% at 16% 18%, rgba(190,143,80,0.20) 0%, transparent 62%),
         linear-gradient(180deg, rgba(12,14,17,0.04) 24%, rgba(12,14,17,0.58) 100%);
     }
@@ -2330,7 +2381,7 @@
     }
     .bs-hero-content {
       position: absolute;
-      left: 22px; right: 46%; top: 50%;
+      left: 34px; right: 34%; top: 52%;
       transform: translateY(-50%);
       display: flex; flex-direction: column; gap: 10px;
       z-index: 3;
@@ -2348,7 +2399,7 @@
     .bs-title {
       font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
       font-weight: 400;
-      font-size: 35px; line-height: 0.92; letter-spacing: -0.8px;
+      font-size: clamp(42px, 4.3vw, 66px); line-height: 0.9; letter-spacing: -1.8px;
       color: #fffaf2;
       margin: 0;
       text-shadow: 0 8px 26px rgba(0,0,0,0.32);
@@ -2373,17 +2424,22 @@
 
     /* ── Sub block: lead + CTA ── */
     .bs-sub-block {
-      padding: 24px 22px 20px;
+      height: 100%;
+      min-height: 220px;
+      padding: 26px 26px 24px;
       background:
-        linear-gradient(135deg, rgba(255,251,241,0.8), transparent 64%),
+        linear-gradient(135deg, rgba(255,251,241,0.88), transparent 64%),
+        linear-gradient(180deg, rgba(240,99,90,0.06), rgba(255,255,255,0) 44%),
         #f5f3ee;
+      border-left: 1px solid rgba(33,27,22,0.08);
+      border-bottom: 1px solid rgba(33,27,22,0.08);
     }
     .bs-lead {
       font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
-      font-size: 18px; line-height: 1.25;
+      font-size: 22px; line-height: 1.18;
       color: #16171a;
-      letter-spacing: -0.3px;
-      margin: 0 0 14px;
+      letter-spacing: -0.5px;
+      margin: 0 0 18px;
     }
     .bs-cta {
       display: inline-flex; align-items: center; gap: 6px;
@@ -2411,19 +2467,29 @@
 
     /* ── Project cards ── */
     .bs-cards {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-      padding: 4px 18px 22px;
-      background: #f5f3ee;
+      display: grid; grid-template-columns: 1fr; gap: 12px;
+      padding: 18px 18px 22px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.25), rgba(255,255,255,0)),
+        #f5f3ee;
+      border-left: 1px solid rgba(33,27,22,0.08);
     }
     .bs-card {
       background: #fffdf8;
+      display: grid;
+      grid-template-columns: 132px 1fr;
+      grid-template-areas:
+        "image body"
+        "image copy";
       border-radius: 2px;
       overflow: hidden;
       box-shadow: 0 10px 24px -18px rgba(33,27,22,0.32);
       border: 1px solid rgba(33,27,22,0.08);
     }
     .bs-card-img {
-      width: 100%; aspect-ratio: 1.2 / 1;
+      grid-area: image;
+      width: 100%; height: 100%;
+      min-height: 120px;
       background-size: cover;
       background-position: center;
     }
@@ -2445,7 +2511,11 @@
       position: absolute; inset: 0;
       background: linear-gradient(180deg, transparent 50%, rgba(43,37,71,0.35) 100%);
     }
-    .bs-card-body { padding: 12px 12px 8px; }
+    .bs-card-body {
+      grid-area: body;
+      padding: 14px 14px 6px;
+      align-self: end;
+    }
     .bs-card-tag {
       font-family: "Aptos", "Segoe UI", Arial, sans-serif;
       font-size: 7px; letter-spacing: 1.2px;
@@ -2460,25 +2530,35 @@
       line-height: 1.1;
     }
     .bs-card p {
-      padding: 0 12px 12px;
-      font-size: 10px;
-      line-height: 1.45;
+      grid-area: copy;
+      padding: 0 14px 14px;
+      font-size: 11px;
+      line-height: 1.5;
       color: rgba(33,27,22,0.62);
     }
 
     /* ── Stats strip ── */
+    .bs-piece[data-piece="stats"] {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 1px;
+      background: rgba(22,23,26,0.10);
+      border-top: 1px solid rgba(22,23,26,0.08);
+      border-bottom: 1px solid rgba(22,23,26,0.08);
+    }
     .bs-stats {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      padding: 18px 22px;
-      border-top: 1px solid rgba(33,27,22,0.08);
-      border-bottom: 1px solid rgba(33,27,22,0.08);
+      grid-column: 1 / 4;
+      display: grid; grid-template-columns: 1fr;
+      padding: 22px 18px;
       background: #e7dfd2;
     }
     .bs-stat {
-      display: flex; flex-direction: column; align-items: center; gap: 4px;
-      border-right: 1px solid rgba(33,27,22,0.10);
+      display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+      padding: 14px 0;
+      border-right: none;
+      border-bottom: 1px solid rgba(33,27,22,0.10);
     }
-    .bs-stat:last-child { border-right: none; }
+    .bs-stat:last-child { border-bottom: none; }
     .bs-stat b {
       font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
       font-weight: 400;
@@ -2492,17 +2572,18 @@
       color: rgba(33,27,22,0.6);
     }
 
-    /* ── Footer ── */
+    /* ── Footer / content panels ── */
     .bs-foot {
-      display: flex; justify-content: space-between;
-      padding: 14px 22px 22px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      padding: 22px 24px;
+      background: #fffdf8;
       font-family: "Aptos", "Segoe UI", Arial, sans-serif;
       font-size: 8px; letter-spacing: 1px;
       color: rgba(33,27,22,0.58);
       text-transform: uppercase;
     }
     .bs-section {
-      padding: 20px 22px;
+      padding: 22px 24px;
       border-top: 1px solid rgba(33,27,22,0.08);
       background: #f5f3ee;
     }
@@ -2511,6 +2592,14 @@
         linear-gradient(160deg, rgba(177,135,77,0.12), transparent 45%),
         #1d1712;
       color: #fffaf2;
+    }
+    #bs-process {
+      grid-column: 4 / 9;
+      grid-row: 1 / span 2;
+      border-top: none;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.5), rgba(255,255,255,0)),
+        #f5f3ee;
     }
     .bs-section-label {
       font-family: "Aptos", "Segoe UI", Arial, sans-serif;
@@ -2615,11 +2704,13 @@
       color: rgba(255,250,242,0.64);
     }
     .bs-proof-strip {
+      grid-column: 9 / 13;
+      grid-row: 1;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1px;
       background: rgba(22,23,26,0.10);
-      border-top: 1px solid rgba(22,23,26,0.08);
+      border-top: none;
     }
     .bs-proof {
       background: #fffdf8;
@@ -2685,9 +2776,11 @@
       white-space: nowrap;
     }
     .bs-quote {
+      grid-column: 1 / 4;
+      grid-row: 2;
       padding: 18px 20px;
       background: #fffdf8;
-      border-top: 1px solid rgba(22,23,26,0.08);
+      border-top: none;
     }
     .bs-quote p {
       font-family: "Source Serif 4", Georgia, serif;
@@ -2704,11 +2797,13 @@
       font-weight: 800;
     }
     .bs-info-grid {
+      grid-column: 9 / 13;
+      grid-row: 2;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1px;
       background: rgba(22,23,26,0.10);
-      border-top: 1px solid rgba(22,23,26,0.08);
+      border-top: none;
     }
     .bs-info-card {
       background: #f5f3ee;
@@ -2729,10 +2824,12 @@
       color: rgba(22,23,26,0.68);
     }
     .bs-mini-cta {
+      grid-column: 1 / 4;
+      grid-row: 3;
       padding: 18px 20px 20px;
       background: #16171a;
       color: #fffaf2;
-      border-top: 1px solid rgba(255,250,242,0.08);
+      border-top: none;
     }
     .bs-mini-cta strong {
       display: block;
@@ -2759,6 +2856,103 @@
       letter-spacing: 0.8px;
       text-transform: uppercase;
       font-weight: 900;
+    }
+    .bs-piece[data-piece="foot"] {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(220px, 0.92fr);
+      gap: 1px;
+      background: rgba(22,23,26,0.10);
+      position: relative;
+    }
+    .bs-piece[data-piece="foot"] .bs-section.dark {
+      border-top: none;
+      min-height: 100%;
+    }
+
+    @media (max-width: 700px) {
+      .build-site {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "nav"
+          "hero"
+          "sub"
+          "cards"
+          "stats"
+          "foot";
+      }
+      .bs-hero {
+        min-height: 292px;
+        border-right: none;
+      }
+      .bs-hero-content {
+        left: 22px; right: 46%; top: 50%;
+      }
+      .bs-title {
+        font-size: 35px;
+        letter-spacing: -0.8px;
+      }
+      .bs-sub-block,
+      .bs-cards {
+        border-left: none;
+      }
+      .bs-cards {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        padding: 4px 18px 22px;
+      }
+      .bs-card {
+        display: block;
+      }
+      .bs-card-img {
+        min-height: 0;
+        aspect-ratio: 1.2 / 1;
+      }
+      .bs-card-body {
+        padding: 12px 12px 8px;
+      }
+      .bs-card p {
+        padding: 0 12px 12px;
+        font-size: 10px;
+      }
+      .bs-piece[data-piece="stats"] {
+        display: block;
+        background: transparent;
+        border-top: none;
+        border-bottom: none;
+      }
+      .bs-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        padding: 18px 22px;
+        border-top: 1px solid rgba(33,27,22,0.08);
+        border-bottom: 1px solid rgba(33,27,22,0.08);
+      }
+      .bs-stat {
+        align-items: center;
+        padding: 0;
+        border-bottom: none;
+        border-right: 1px solid rgba(33,27,22,0.10);
+      }
+      .bs-stat:last-child {
+        border-right: none;
+      }
+      #bs-process,
+      .bs-proof-strip,
+      .bs-quote,
+      .bs-info-grid,
+      .bs-mini-cta {
+        grid-column: auto;
+        grid-row: auto;
+        border-top: 1px solid rgba(22,23,26,0.08);
+      }
+      .bs-piece[data-piece="foot"] {
+        display: block;
+        background: transparent;
+      }
+      .bs-foot {
+        flex-direction: row;
+        padding: 14px 22px 22px;
+      }
     }
 
     /* ══ Blueprint SVG layer (construction lines drawing in) ══ */
@@ -4326,7 +4520,7 @@
           </div>
         </div>
 
-        <!-- Center stage: phone-shaped frame that morphs through phases -->
+        <!-- Center stage: desktop build frame that morphs through phases -->
         <div id="build-frame-wrap">
           <div id="build-frame">
             <!-- Browser bar / laptop chrome -->
@@ -4491,7 +4685,7 @@
               </div>
 
               <!-- BLUEPRINT: SVG construction layer that draws over each piece as it lands -->
-              <svg class="build-svg" id="build-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 620" preserveAspectRatio="none">
+              <svg class="build-svg" id="build-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 900" preserveAspectRatio="none">
                 <defs>
                   <linearGradient id="bs-line-grad" x1="0" y1="0" x2="1" y2="0">
                     <stop offset="0" stop-color="#F0635A" stop-opacity="0"/>
@@ -4500,31 +4694,37 @@
                   </linearGradient>
                 </defs>
                 <!-- Construction lines drawn in for each piece — 6 pieces -->
-                <g class="bs-bp" data-for="nav"      stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
-                  <rect x="14" y="14" width="332" height="40" rx="2" stroke-dasharray="4 3"/>
-                  <line x1="0" y1="14" x2="360" y2="14"/>
-                  <line x1="0" y1="54" x2="360" y2="54"/>
+                <g class="bs-bp" data-for="nav"      stroke="#F0635A" stroke-width="2.2"  fill="none" opacity="0">
+                  <rect x="20" y="18" width="1240" height="66" rx="4" stroke-dasharray="12 8"/>
+                  <line x1="0" y1="18" x2="1280" y2="18"/>
+                  <line x1="0" y1="84" x2="1280" y2="84"/>
+                  <line x1="190" y1="18" x2="190" y2="84" opacity="0.45"/>
                 </g>
-                <g class="bs-bp" data-for="hero-img" stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
-                  <rect x="14" y="64" width="332" height="180" rx="2" stroke-dasharray="4 3"/>
-                  <line x1="14" y1="64" x2="346" y2="244"/>
-                  <line x1="346" y1="64" x2="14" y2="244"/>
-                  <circle cx="180" cy="154" r="6"/>
+                <g class="bs-bp" data-for="hero-img" stroke="#F0635A" stroke-width="2.2"  fill="none" opacity="0">
+                  <rect x="20" y="104" width="780" height="380" rx="4" stroke-dasharray="12 8"/>
+                  <line x1="20" y1="104" x2="800" y2="484"/>
+                  <line x1="800" y1="104" x2="20" y2="484"/>
+                  <circle cx="410" cy="294" r="16"/>
+                  <line x1="410" y1="104" x2="410" y2="484" opacity="0.45"/>
                 </g>
-                <g class="bs-bp" data-for="sub"      stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
-                  <rect x="14" y="252" width="332" height="76" rx="2" stroke-dasharray="4 3"/>
+                <g class="bs-bp" data-for="sub"      stroke="#F0635A" stroke-width="2.2"  fill="none" opacity="0">
+                  <rect x="820" y="104" width="440" height="176" rx="4" stroke-dasharray="12 8"/>
+                  <line x1="820" y1="192" x2="1260" y2="192" opacity="0.45"/>
                 </g>
-                <g class="bs-bp" data-for="cards"    stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
-                  <rect x="14" y="338" width="160" height="130" rx="2" stroke-dasharray="4 3"/>
-                  <rect x="186" y="338" width="160" height="130" rx="2" stroke-dasharray="4 3"/>
+                <g class="bs-bp" data-for="cards"    stroke="#F0635A" stroke-width="2.2"  fill="none" opacity="0">
+                  <rect x="820" y="300" width="440" height="112" rx="4" stroke-dasharray="12 8"/>
+                  <rect x="820" y="430" width="440" height="112" rx="4" stroke-dasharray="12 8"/>
+                  <line x1="952" y1="300" x2="952" y2="542" opacity="0.45"/>
                 </g>
-                <g class="bs-bp" data-for="stats"    stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
-                  <rect x="14" y="478" width="332" height="60" rx="2" stroke-dasharray="4 3"/>
-                  <line x1="120" y1="478" x2="120" y2="538"/>
-                  <line x1="240" y1="478" x2="240" y2="538"/>
+                <g class="bs-bp" data-for="stats"    stroke="#F0635A" stroke-width="2.2"  fill="none" opacity="0">
+                  <rect x="20" y="564" width="1240" height="202" rx="4" stroke-dasharray="12 8"/>
+                  <line x1="304" y1="564" x2="304" y2="766"/>
+                  <line x1="836" y1="564" x2="836" y2="766"/>
+                  <line x1="1046" y1="564" x2="1046" y2="766" opacity="0.45"/>
                 </g>
-                <g class="bs-bp" data-for="foot"     stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
-                  <rect x="14" y="546" width="332" height="42" rx="2" stroke-dasharray="4 3"/>
+                <g class="bs-bp" data-for="foot"     stroke="#F0635A" stroke-width="2.2"  fill="none" opacity="0">
+                  <rect x="20" y="786" width="1240" height="94" rx="4" stroke-dasharray="12 8"/>
+                  <line x1="744" y1="786" x2="744" y2="880"/>
                 </g>
               </svg>
 
