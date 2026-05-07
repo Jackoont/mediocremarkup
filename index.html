@@ -5131,16 +5131,23 @@
       glow.style.transform = `translate3d(-50%,-50%,0) scale(${isOverInteractive ? 1.55 : 1})`;
     });
 
-    (function draw() {
-      x += (tx - x) * 0.18;
-      y += (ty - y) * 0.18;
-      glow.style.left = x + 'px';
-      glow.style.top = y + 'px';
-      requestAnimationFrame(draw);
-    })();
+    // Only run rAF while mouse is moving — stop when settled
+    let glowRaf = null, glowSettled = false;
+    function drawGlow() {
+      glowRaf = null;
+      const dx = tx - x, dy = ty - y;
+      x += dx * 0.18; y += dy * 0.18;
+      glow.style.left = x + 'px'; glow.style.top = y + 'px';
+      if (Math.abs(dx) > 0.4 || Math.abs(dy) > 0.4) {
+        glowRaf = requestAnimationFrame(drawGlow);
+      }
+    }
+    document.addEventListener('mousemove', () => {
+      if (!glowRaf) glowRaf = requestAnimationFrame(drawGlow);
+    }, { passive: true });
   }
 
-  /* ── 2. HERO CONSTELLATION — tiny reactive texture ── */
+  /* ── 2. HERO CONSTELLATION — tiny reactive texture, hero-visible only ── */
   {
     const canvas = document.getElementById('particle-canvas');
     const ctx = canvas.getContext('2d');
@@ -5149,24 +5156,26 @@
     const resize = () => { W=canvas.width=canvas.offsetWidth; H=canvas.height=canvas.offsetHeight; };
     resize(); window.addEventListener('resize', resize);
     let particles=[], mouseX=-9999, mouseY=-9999;
-    const SYM_POOL = ['</', '/>', '{}', '()', '=>', '[]', '//', '+=', 'fn', 'px', 'vh', '&&', 'rem', '/*'];
+    const SYM_POOL = ['</', '/>', '{}', '=>', '[]', '//', 'fn', 'px', '&&'];
+    const N_PARTICLES = 32;
     const initP = () => {
       particles=[];
-      for(let i=0;i<58;i++) {
+      for(let i=0;i<N_PARTICLES;i++) {
         const baseX = Math.random() * W;
         const baseY = Math.random() * H;
         particles.push({
-        x:baseX, y:baseY,
-        baseX, baseY,
-        vx:(Math.random()-0.5)*0.03, vy:(Math.random()-0.5)*0.03,
-        sym: SYM_POOL[Math.floor(Math.random()*SYM_POOL.length)],
-        fs: 6 + Math.random() * 2.8,
-        color:['#F0635A','#8b3a54','#F4A261'][Math.floor(Math.random()*3)],
-        alpha:0.14 + Math.random() * 0.10,
-        drift:0.2 + Math.random() * 0.3,
-        twinkle: Math.random() * Math.PI * 2,
-        dot: 1.2 + Math.random() * 1.8
-      });
+          x:baseX, y:baseY, baseX, baseY,
+          vx:(Math.random()-0.5)*0.03, vy:(Math.random()-0.5)*0.03,
+          sym: SYM_POOL[Math.floor(Math.random()*SYM_POOL.length)],
+          fs: 6 + Math.random() * 2.5,
+          color:['#F0635A','#F4A261'][Math.floor(Math.random()*2)],
+          alpha:0.12 + Math.random() * 0.10,
+          drift:0.2 + Math.random() * 0.3,
+          twinkle: Math.random() * Math.PI * 2,
+          dot: 1.1 + Math.random() * 1.4,
+          // Pre-assign a fixed neighbor for O(n) connections instead of O(n²)
+          neighborIdx: Math.floor(Math.random() * N_PARTICLES),
+        });
       }
     };
     initP();
@@ -5175,66 +5184,54 @@
       mouseX = e.clientX - r.left;
       mouseY = e.clientY - r.top;
     });
-    hero.addEventListener('mouseleave', () => {
-      mouseX = -9999;
-      mouseY = -9999;
-    });
-    (function drawP(){
+    hero.addEventListener('mouseleave', () => { mouseX = -9999; mouseY = -9999; });
+
+    let heroRaf = null, heroVisible = false;
+    function drawP(){
+      if (!heroVisible) { heroRaf = null; return; }
+      heroRaf = requestAnimationFrame(drawP);
       ctx.clearRect(0,0,W,H);
       const now = performance.now() * 0.001;
       particles.forEach((p, i)=>{
-        const mdx = p.x - mouseX;
-        const mdy = p.y - mouseY;
-        const md  = Math.sqrt(mdx * mdx + mdy * mdy) || 1;
-        if (md < 120) {
-          const force = (120 - md) / 120 * 0.08;
-          p.vx += (mdx / md) * force;
-          p.vy += (mdy / md) * force;
-        }
-        p.vx += (p.baseX - p.x) * 0.00018;
-        p.vy += (p.baseY - p.y) * 0.00018;
-        p.vx += Math.sin(now + i) * 0.0009 * p.drift;
-        p.vy += Math.cos(now * 1.2 + i) * 0.0009 * p.drift;
-        p.vx *= 0.985;
-        p.vy *= 0.985;
-        p.x += p.vx;
-        p.y += p.vy;
-        const twinkle = 0.82 + Math.sin(now * 1.5 + p.twinkle) * 0.18;
+        const mdx = p.x - mouseX, mdy = p.y - mouseY;
+        const md  = Math.sqrt(mdx*mdx + mdy*mdy) || 1;
+        if (md < 120) { const f=(120-md)/120*0.08; p.vx+=(mdx/md)*f; p.vy+=(mdy/md)*f; }
+        p.vx += (p.baseX-p.x)*0.00018 + Math.sin(now+i)*0.0008*p.drift;
+        p.vy += (p.baseY-p.y)*0.00018 + Math.cos(now*1.2+i)*0.0008*p.drift;
+        p.vx *= 0.985; p.vy *= 0.985;
+        p.x += p.vx; p.y += p.vy;
+        const twinkle = 0.82 + Math.sin(now*1.5+p.twinkle)*0.18;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.dot, 0, Math.PI * 2);
-        ctx.globalAlpha = Math.min(0.42, p.alpha * 1.25 * twinkle);
+        ctx.arc(p.x,p.y,p.dot,0,Math.PI*2);
+        ctx.globalAlpha = p.alpha*1.2*twinkle;
         ctx.fillStyle = p.color;
         ctx.fill();
-        ctx.globalAlpha=p.alpha * 0.72 * twinkle;
-        ctx.font=`600 ${p.fs}px 'JetBrains Mono',monospace`;
-        ctx.fillStyle=p.color;
-        ctx.textAlign='center'; ctx.textBaseline='middle';
-        if (i % 3 === 0) ctx.fillText(p.sym,p.x + 10,p.y - 8);
-        for(let j=i+1;j<particles.length;j++){
-          const p2=particles[j],dx=p.x-p2.x,dy=p.y-p2.y,d=Math.sqrt(dx*dx+dy*dy);
-          if(d<118){
-            ctx.beginPath();
-            ctx.moveTo(p.x,p.y);
-            ctx.lineTo(p2.x,p2.y);
-            ctx.strokeStyle='rgba(240,99,90,0.16)';
-            ctx.globalAlpha=(1-d/118)*0.56;
-            ctx.lineWidth=0.56;
-            ctx.stroke();
-          }
+        if (i%3===0) {
+          ctx.globalAlpha=p.alpha*0.7*twinkle;
+          ctx.font=`600 ${p.fs}px 'JetBrains Mono',monospace`;
+          ctx.fillStyle=p.color;
+          ctx.textAlign='center'; ctx.textBaseline='middle';
+          ctx.fillText(p.sym,p.x+10,p.y-8);
         }
-        if (md < 105) {
-          ctx.beginPath();
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(mouseX, mouseY);
-          ctx.strokeStyle = 'rgba(240,99,90,0.055)';
-          ctx.globalAlpha = (1 - md / 105) * 0.22;
-          ctx.lineWidth = 0.36;
-          ctx.stroke();
+        // O(n) connections — each particle connects to its one pre-assigned neighbor
+        const nb = particles[p.neighborIdx];
+        if (nb) {
+          const dx=p.x-nb.x, dy=p.y-nb.y, d=Math.sqrt(dx*dx+dy*dy);
+          if (d<160) {
+            ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(nb.x,nb.y);
+            ctx.strokeStyle='rgba(240,99,90,0.14)';
+            ctx.globalAlpha=(1-d/160)*0.5; ctx.lineWidth=0.5; ctx.stroke();
+          }
         }
         ctx.globalAlpha=1;
       });
-      requestAnimationFrame(drawP);
-    })();
+    }
+    new IntersectionObserver(([e]) => {
+      heroVisible = e.isIntersecting;
+      if (heroVisible && !heroRaf) heroRaf = requestAnimationFrame(drawP);
+    }, { threshold: 0 }).observe(hero);
+    // Start immediately if hero is in view on load
+    heroRaf = requestAnimationFrame(drawP); heroVisible = true;
   }
 
   /* ── 3. BOKEH SPAWNER — disabled, symbols are the only floating elements ── */
@@ -5270,14 +5267,18 @@
     const ab1p = document.getElementById('ab1-path');
     const ab2p = document.getElementById('ab2-path');
     const ab3p = document.getElementById('ab3-path');
-    function animBlobs() {
+    // Throttle blobs to ~20fps — they're slow organic shapes, 60fps is wasted
+    let blobRaf = null, blobLastT = 0;
+    function animBlobs(ts) {
+      blobRaf = requestAnimationFrame(animBlobs);
+      if (ts - blobLastT < 50) return; // ~20fps cap
+      blobLastT = ts;
       blobT += 0.004;
       if (ab1p) ab1p.setAttribute('d', blobPath(300, 300, 230, 7, blobT));
       if (ab2p) ab2p.setAttribute('d', blobPath(250, 250, 195, 6, blobT * 0.7 + 1));
       if (ab3p) ab3p.setAttribute('d', blobPath(190, 190, 150, 8, blobT * 1.3 + 3));
-      requestAnimationFrame(animBlobs);
     }
-    animBlobs();
+    blobRaf = requestAnimationFrame(animBlobs);
   }
 
   /* ── 5. TRANSITION SYMBOLS — left/right edge spawn → converge → dive into phone ── */
@@ -5302,170 +5303,151 @@
     resizeV();
     window.addEventListener('resize', resizeV);
 
-    const SYMS = ['</', '/>', '{}', '()', '//', '=>', '[]', '&&', '/*', '*/', '::', '+='];
-    const N = window.innerWidth < 700 ? 8 : 12;
-
-    // Split evenly: half from left, half from right
-    const syms = Array.from({ length: N }, (_, i) => {
-      const fromLeft = i < N / 2;
-      const laneIndex = fromLeft ? i : i - N / 2;
-      const laneCount = N / 2;
-      return {
-        text:  SYMS[i % SYMS.length],
-        fromLeft,
-        // vertical lane — spread evenly with some jitter
-        laneY: 0.22 + (laneIndex / (laneCount - 1)) * 0.56 + (Math.random() - 0.5) * 0.06,
-        fsize: 11 + Math.random() * 5,
-        color: Math.random() < 0.7 ? '#F0635A' : '#F4A261',
-        spin:  Math.random() * Math.PI * 2,
-        spinV: (Math.random() - 0.5) * 0.02,
-        phaseOff: Math.random() * 0.18, // slight stagger on appear
-      };
-    });
-
-    // Phone dive targets — where each symbol converges before diving in
-    const PHONE_ANCHORS_NORM = [
-      { x: 0.5,  y: 0.18 }, { x: 0.3,  y: 0.22 }, { x: 0.7,  y: 0.22 },
-      { x: 0.22, y: 0.38 }, { x: 0.78, y: 0.38 }, { x: 0.15, y: 0.52 },
-      { x: 0.85, y: 0.52 }, { x: 0.24, y: 0.72 }, { x: 0.76, y: 0.72 },
-      { x: 0.5,  y: 0.82 }, { x: 0.35, y: 0.88 }, { x: 0.65, y: 0.88 },
+    // Symbols — pairs, one from each side, staggered vertically
+    const SYM_PAIRS = [
+      ['</', '/>'], ['{}', '()'], ['//', '=>'], ['[]', '&&'], ['/*', '*/'], ['+=', '::'],
     ];
+    const N_PAIRS = window.innerWidth < 700 ? 4 : 6;
+    const syms = [];
+    for (let i = 0; i < N_PAIRS; i++) {
+      const pair = SYM_PAIRS[i % SYM_PAIRS.length];
+      const laneY = 0.18 + (i / (N_PAIRS - 1)) * 0.64;
+      const stagger = i * 0.055;
+      syms.push(
+        { text: pair[0], fromLeft: true,  laneY, fsize: 11 + Math.random()*5, color: i%2===0?'#F0635A':'#F4A261', spin: Math.random()*Math.PI*2, spinV:(Math.random()-0.5)*0.018, stagger },
+        { text: pair[1], fromLeft: false, laneY, fsize: 11 + Math.random()*5, color: i%2===0?'#F4A261':'#F0635A', spin: Math.random()*Math.PI*2, spinV:(Math.random()-0.5)*0.018, stagger: stagger + 0.025 }
+      );
+    }
+    const N = syms.length;
 
     function getPhoneRect() {
       const pw = document.getElementById('phone-wrapper');
       return pw ? pw.getBoundingClientRect() : null;
     }
 
-    const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
-    const mix   = (a, b, t) => a + (b - a) * t;
-    const ease3 = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
-    const easeOut = t => 1 - Math.pow(1 - t, 3);
+    const clamp  = (n, a, b) => Math.max(a, Math.min(b, n));
+    const mix    = (a, b, t) => a + (b - a) * t;
+    const eio    = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; // ease-in-out cubic
+    const eout   = t => 1 - Math.pow(1-t, 3);                           // ease-out cubic
+    const eout2  = t => 1 - (1-t)*(1-t);                                // ease-out quad
 
-    let wpDone = false;
-    let wpRaf  = null;
-    let wpT    = 0;
-
-    // Scroll-computed progress values (set by onWpScroll, read by draw)
-    let wpScrollProg  = 0; // 0→1: hero bottom leaving viewport
-    let wpPhoneProg   = 0; // 0→1: phone center approaching viewport center
+    let wpDone = false, wpRaf = null, wpT = 0;
+    let wpScrollProg = 0; // 0→1: how far past hero we are
+    let wpPhoneProg  = 0; // 0→1: how close the phone is to viewport centre
 
     function drawWp(ts) {
       wpT = ts * 0.001;
       wpRaf = null;
       vCtx.clearRect(0, 0, VW, VH);
-
       if (wpDone) return;
-      if (wpScrollProg <= 0) { container.style.opacity = '0'; return; }
+      if (wpScrollProg <= 0.01) { container.style.opacity = '0'; return; }
 
-      const phoneRect  = getPhoneRect();
+      const phoneRect = getPhoneRect();
+      const cx = VW * 0.5, cy = VH * 0.5;
 
-      // Phase 1 (0→0.5): symbols slide in from edges, spread across screen
-      // Phase 2 (0.5→1): symbols converge to center
-      // Phase 3 (wpPhoneProg 0→1): symbols dive into phone
-      const slideProg    = clamp(wpScrollProg / 0.50, 0, 1);
-      const convergeProg = clamp((wpScrollProg - 0.50) / 0.50, 0, 1);
-      const fallProg     = ease3(wpPhoneProg);
+      // ── Three story beats driven purely by scroll ──
+      // Beat 1 (scroll 0→0.42): symbols stream in from edges, fan across screen
+      // Beat 2 (scroll 0.42→1): they converge and orbit the centre
+      // Beat 3 (phone 0→1):     they dive into the phone as it rises
+      const streamProg   = clamp(wpScrollProg / 0.42, 0, 1);
+      const convergeProg = clamp((wpScrollProg - 0.42) / 0.58, 0, 1);
+      const diveProg     = eio(wpPhoneProg);
 
-      const overallAlpha = clamp(slideProg * 1.4, 0, 1) * (1 - fallProg * 0.95);
-      if (overallAlpha < 0.005) { container.style.opacity = '0'; return; }
+      const masterAlpha = eout2(streamProg) * (1 - diveProg * 0.96);
+      if (masterAlpha < 0.005) { container.style.opacity = '0'; return; }
+      container.style.opacity = masterAlpha.toFixed(3);
 
-      container.style.opacity = overallAlpha.toFixed(3);
-
-      const cx = VW * 0.5;
-      const cy = VH * 0.5;
-
-      // Faint dashed orbit ring — only visible when converging
-      if (convergeProg > 0.1) {
-        const ringR  = mix(VW * 0.28, 88, ease3(convergeProg));
-        const ringA  = convergeProg * 0.12 * (1 - fallProg);
+      // Converging orbit ring — subtle, appears as symbols circle
+      if (convergeProg > 0.12) {
+        const ringR = mix(VW * 0.32, 90, eio(convergeProg));
+        const ringA = eout2(convergeProg) * 0.09 * (1 - diveProg);
         vCtx.save();
         vCtx.globalAlpha = ringA;
-        vCtx.strokeStyle = 'rgba(240,99,90,0.7)';
-        vCtx.lineWidth = 0.7;
-        vCtx.setLineDash([4, 16]);
-        vCtx.lineDashOffset = -wpT * 12;
-        vCtx.beginPath();
-        vCtx.arc(cx, cy, ringR, 0, Math.PI * 2);
-        vCtx.stroke();
+        vCtx.strokeStyle = '#F0635A';
+        vCtx.lineWidth = 0.6;
+        vCtx.setLineDash([3, 20]);
+        vCtx.lineDashOffset = -wpT * 16;
+        vCtx.beginPath(); vCtx.arc(cx, cy, ringR, 0, Math.PI * 2); vCtx.stroke();
+        vCtx.setLineDash([]);
         vCtx.restore();
       }
 
       syms.forEach((s, i) => {
-        // Personal stagger: each symbol starts its slide a fraction later
-        const stagger  = s.phaseOff;
-        const localSlide = clamp((slideProg - stagger) / (1 - stagger), 0, 1);
+        // Each symbol's stream animates with its own stagger
+        const localStream = clamp((streamProg - s.stagger) / (1 - s.stagger * 0.6), 0, 1);
 
-        // Start X — far off the screen edge
-        const edgeX = s.fromLeft ? -60 - (i % 3) * 30 : VW + 60 + (i % 3) * 30;
-        // Resting X when fully slid in — scattered across screen width
-        const restX = s.fromLeft
-          ? VW * (0.04 + (i % (N/2)) / (N/2) * 0.22)
-          : VW * (0.74 + (i % (N/2)) / (N/2) * 0.22);
-        const restY = VH * s.laneY;
+        // ── Beat 1: stream in from the edge to a resting position ──
+        // Starting far off-screen, resting near the edge margin
+        const edgeX   = s.fromLeft ? -(80 + (i % 3) * 28) : VW + 80 + (i % 3) * 28;
+        const restX   = s.fromLeft ? VW * (0.03 + (i % (N/2)) / (N/2) * 0.19) : VW * (0.78 + (i % (N/2)) / (N/2) * 0.19);
+        const restY   = VH * s.laneY;
 
-        // Orbit position when converging
-        const orbitAngle = (i / N) * Math.PI * 2 + wpT * 0.4;
-        const orbitR     = mix(VW * 0.28, 76, ease3(convergeProg));
+        const streamedX = mix(edgeX, restX, eout(localStream));
+        const streamedY = mix(restY + (s.fromLeft ? 24 : -24), restY, eout(localStream));
+
+        // ── Beat 2: converge from resting pos to an orbit around centre ──
+        const orbitAngle = (i / N) * Math.PI * 2 + wpT * 0.55;
+        const orbitR     = mix(VW * 0.32, 80, eio(convergeProg));
         const orbitX     = cx + Math.cos(orbitAngle) * orbitR;
-        const orbitY     = cy + Math.sin(orbitAngle) * orbitR * 0.6;
+        const orbitY     = cy + Math.sin(orbitAngle) * orbitR * 0.58;
 
-        // Slide in from edge → rest position
-        const slideX = mix(edgeX, restX, easeOut(localSlide));
-        const slideY = mix(restY + (s.fromLeft ? 20 : -20), restY, easeOut(localSlide));
+        const gatheredX = mix(streamedX, orbitX, eio(convergeProg));
+        const gatheredY = mix(streamedY, orbitY, eio(convergeProg));
 
-        // Converge from rest → orbit
-        const preX = mix(slideX, orbitX, ease3(convergeProg));
-        const preY = mix(slideY, orbitY, ease3(convergeProg));
-
-        // Dive: orbit → phone anchor
-        const anchor  = PHONE_ANCHORS_NORM[i % PHONE_ANCHORS_NORM.length];
+        // ── Beat 3: dive from orbit to phone anchor ──
+        const anchor  = { x: s.fromLeft ? 0.25 + (i/N)*0.1 : 0.75 - (i/N)*0.1, y: s.laneY };
         const targetX = phoneRect ? phoneRect.left + anchor.x * phoneRect.width  : cx;
         const targetY = phoneRect ? phoneRect.top  + anchor.y * phoneRect.height : cy;
 
-        const x = mix(preX, targetX, fallProg);
-        const y = mix(preY, targetY, fallProg);
+        const x = mix(gatheredX, targetX, diveProg);
+        const y = mix(gatheredY, targetY, diveProg);
 
-        s.spin += s.spinV * (1 + convergeProg * 2);
+        s.spin += s.spinV * (1 + convergeProg * 1.8 + diveProg * 3);
 
-        // Trail line toward center during convergence
-        if (convergeProg > 0.05 && fallProg < 0.6) {
-          const trailLen = convergeProg * 18;
-          const dx = cx - x, dy = cy - y;
-          const d  = Math.sqrt(dx*dx + dy*dy) || 1;
+        // Velocity trail — points toward centre during convergence, toward phone during dive
+        const trailTarget = diveProg > 0.1 ? { x: targetX, y: targetY } : { x: cx, y: cy };
+        const tdx = trailTarget.x - x, tdy = trailTarget.y - y;
+        const td  = Math.sqrt(tdx*tdx + tdy*tdy) || 1;
+        const trailPull = Math.max(convergeProg, diveProg * 1.5);
+        if (trailPull > 0.05) {
+          const trailLen = trailPull * 26;
           vCtx.save();
-          vCtx.globalAlpha = convergeProg * 0.12 * (1 - fallProg);
-          vCtx.strokeStyle = 'rgba(240,99,90,0.5)';
-          vCtx.lineWidth   = 0.6;
+          vCtx.globalAlpha = trailPull * 0.13 * (1 - Math.max(0, diveProg - 0.8) * 5);
+          const tg = vCtx.createLinearGradient(x, y, x + (tdx/td)*trailLen, y + (tdy/td)*trailLen);
+          tg.addColorStop(0, s.color.replace(')', ',0.7)').replace('rgb', 'rgba'));
+          tg.addColorStop(1, 'rgba(240,99,90,0)');
+          vCtx.strokeStyle = tg;
+          vCtx.lineWidth = 0.8;
           vCtx.beginPath();
           vCtx.moveTo(x, y);
-          vCtx.lineTo(x + (dx/d) * trailLen, y + (dy/d) * trailLen);
+          vCtx.lineTo(x + (tdx/td)*trailLen, y + (tdy/td)*trailLen);
           vCtx.stroke();
           vCtx.restore();
         }
 
-        const symAlpha = localSlide * (1 - Math.max(0, fallProg - 0.75) * 5);
+        const symAlpha = localStream * (1 - Math.max(0, diveProg - 0.78) * 4.5);
         if (symAlpha < 0.005) return;
 
         vCtx.save();
         vCtx.translate(x, y);
         vCtx.rotate(s.spin);
-        vCtx.globalAlpha = overallAlpha * symAlpha;
-        vCtx.shadowColor  = s.color;
-        vCtx.shadowBlur   = 4 + convergeProg * 8 + fallProg * 14;
-        vCtx.font         = `600 ${s.fsize}px 'JetBrains Mono', monospace`;
-        vCtx.fillStyle    = s.color;
-        vCtx.textAlign    = 'center';
-        vCtx.textBaseline = 'middle';
+        vCtx.globalAlpha = masterAlpha * symAlpha;
+        // Glow intensifies as they converge and dive
+        vCtx.shadowColor = s.color;
+        vCtx.shadowBlur  = 3 + convergeProg * 10 + diveProg * 18;
+        vCtx.font        = `600 ${s.fsize}px 'JetBrains Mono', monospace`;
+        vCtx.fillStyle   = s.color;
+        vCtx.textAlign   = 'center';
+        vCtx.textBaseline= 'middle';
         vCtx.fillText(s.text, 0, 0);
         vCtx.restore();
       });
 
-      // Done: all symbols have dived into phone
-      if (!wpDone && wpPhoneProg > 0.98) {
+      if (!wpDone && wpPhoneProg > 0.97) {
         wpDone = true;
-        container.style.transition = 'opacity 0.28s';
+        container.style.transition = 'opacity 0.25s';
         container.style.opacity = '0';
-        setTimeout(() => { container.style.display = 'none'; }, 300);
+        setTimeout(() => { container.style.display = 'none'; }, 280);
         window._wpSymbolsDone = true;
         document.dispatchEvent(new CustomEvent('wp-symbols-done'));
       }
@@ -5476,27 +5458,21 @@
       wpRaf = requestAnimationFrame(drawWp);
     }
 
-    // Compute scroll progress from actual scroll position — no rAF loop
     function onWpScroll() {
       if (wpDone) return;
-
       if (!heroEl || !showcaseEl) return;
 
-      // wpScrollProg: 0 when hero bottom is at viewport bottom, 1 when hero is fully off-screen
       const heroRect = heroEl.getBoundingClientRect();
-      // Starts as hero bottom crosses viewport center, ends as hero top leaves viewport top
       wpScrollProg = clamp(-heroRect.top / heroEl.offsetHeight, 0, 1);
 
-      // wpPhoneProg: 0 when showcase not yet visible, 1 when phone is centered in viewport
       const phoneRect = getPhoneRect();
       if (phoneRect) {
         const phoneCY = phoneRect.top + phoneRect.height * 0.5;
-        wpPhoneProg = clamp(1 - (phoneCY - VH * 0.5) / (VH * 0.55), 0, 1);
+        wpPhoneProg = clamp(1 - (phoneCY - VH * 0.52) / (VH * 0.5), 0, 1);
       } else {
         wpPhoneProg = 0;
       }
 
-      // Skip to done if user scrolled way past
       if (showcaseEl.getBoundingClientRect().bottom < 0) {
         wpDone = true;
         container.style.opacity = '0';
@@ -5510,7 +5486,6 @@
     }
 
     window.addEventListener('scroll', onWpScroll, { passive: true });
-    // Also check on load in case page was pre-scrolled
     onWpScroll();
   }
 
@@ -5651,7 +5626,8 @@
       });
     }
 
-    function physLoop() { drawFrags(); requestAnimationFrame(physLoop); }
+    let physRaf = null;
+    function physLoop() { drawFrags(); physRaf = scVisible ? requestAnimationFrame(physLoop) : null; }
 
     window.addEventListener('resize', () => {
       if (!physCanvas) return;
@@ -5793,22 +5769,27 @@
       phoneScreen.addEventListener('wheel', e => e.stopPropagation(), { passive: true });
     }
 
-    /* ── Mouse tilt ── */
-    document.addEventListener('mousemove', e => {
-      if (!tiltOn || !scVisible) return;
-      const r = showcase.getBoundingClientRect();
-      gx = (e.clientX - r.left) / r.width - 0.5;
-      gy = (e.clientY - r.top)  / r.height - 0.5;
-    });
-    (function tiltLoop() {
+    /* ── Mouse tilt — only runs while mouse moves over showcase ── */
+    let tiltRaf = null;
+    function tiltLoop() {
+      tiltRaf = null;
       tx += (gx - tx) * 0.08; ty += (gy - ty) * 0.08;
       if (phoneWrap && tiltOn) {
         const ry = tx * -16, rx = ty * 10;
         phoneWrap.style.transform = `rotateY(${ry}deg) rotateX(${rx}deg) scale(1.01) translateZ(16px)`;
         phoneWrap.style.filter = `drop-shadow(${tx * -24}px ${24 + ty * 12}px ${44 + Math.abs(tx) * 12}px rgba(0,0,0,${0.22 + Math.abs(tx) * 0.07}))`;
+        if (Math.abs(gx - tx) > 0.002 || Math.abs(gy - ty) > 0.002) {
+          tiltRaf = requestAnimationFrame(tiltLoop);
+        }
       }
-      requestAnimationFrame(tiltLoop);
-    })();
+    }
+    document.addEventListener('mousemove', e => {
+      if (!tiltOn || !scVisible) return;
+      const r = showcase.getBoundingClientRect();
+      gx = (e.clientX - r.left) / r.width - 0.5;
+      gy = (e.clientY - r.top)  / r.height - 0.5;
+      if (!tiltRaf) tiltRaf = requestAnimationFrame(tiltLoop);
+    });
 
     /* ── Phone flicker-to-life ── */
     let flickerDone = false;
@@ -5898,18 +5879,21 @@
 
     new IntersectionObserver(([e]) => {
       scVisible = e.isIntersecting;
-      if (e.isIntersecting && !landed) {
-        showcaseQueued = true;
-        if (window._wpSymbolsDone) {
-          doShowcaseReveal();
-        } else {
-          // Fast-scroll fallback: if showcase is visible but symbols never finished, unblock after 600ms
-          setTimeout(() => {
-            if (!window._wpSymbolsDone) {
-              window._wpSymbolsDone = true;
-              document.dispatchEvent(new CustomEvent('wp-symbols-done'));
-            }
-          }, 600);
+      if (e.isIntersecting) {
+        // Restart physics loop if it stopped
+        if (!physRaf && landed) { physRaf = requestAnimationFrame(physLoop); }
+        if (!landed) {
+          showcaseQueued = true;
+          if (window._wpSymbolsDone) {
+            doShowcaseReveal();
+          } else {
+            setTimeout(() => {
+              if (!window._wpSymbolsDone) {
+                window._wpSymbolsDone = true;
+                document.dispatchEvent(new CustomEvent('wp-symbols-done'));
+              }
+            }, 600);
+          }
         }
       }
     }, { threshold: 0.01 }).observe(showcase);
@@ -6512,11 +6496,7 @@
       fcRaf = requestAnimationFrame(drawFC);
     }
 
-    // ── TUNNEL CANVAS — unused in new design, kept for shockwave z-ordering ──
-    function drawTunnel() {
-      tCtx.clearRect(0, 0, tc.width, tc.height);
-      requestAnimationFrame(drawTunnel);
-    }
+    // ── TUNNEL CANVAS — unused, z-ordering placeholder only ──
     tCtx.clearRect(0, 0, tc.width, tc.height);
 
     // ── SPEED STREAKS — horizontal blurs shoot across on impact ──
