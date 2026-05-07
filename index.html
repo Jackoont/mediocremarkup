@@ -946,6 +946,7 @@
       justify-content: center;
       overflow: hidden;
       contain: layout paint size;
+      opacity: 0;
     }
     /* The vortex canvas sits behind the symbols */
     #vortex-canvas {
@@ -5279,13 +5280,14 @@
     animBlobs();
   }
 
-  /* ── 5. TRANSITION SYMBOLS — side spawn → center swirl → phone ignition ── */
+  /* ── 5. TRANSITION SYMBOLS — left/right edge spawn → converge → dive into phone ── */
   {
     const container = document.getElementById('whirlpool-container');
     const vCanvas   = document.getElementById('vortex-canvas');
     const vCtx      = vCanvas.getContext('2d');
-    const cta       = document.getElementById('whirlpool-cta');
+    const heroEl    = document.getElementById('hero');
     const showcaseEl = document.getElementById('showcase');
+
     let VW, VH, DPR;
     const resizeV = () => {
       DPR = window.devicePixelRatio || 1;
@@ -5297,166 +5299,219 @@
       vCanvas.style.height = VH + 'px';
       vCtx.setTransform(DPR, 0, 0, DPR, 0, 0);
     };
-    resizeV(); window.addEventListener('resize', resizeV);
+    resizeV();
+    window.addEventListener('resize', resizeV);
 
-    const SYMS = ['</', '/>', '{}', '()', '//', '=>', '[]', '&&', '/*', '*/', '<>', '::', '+=', 'fn'];
-    const N = window.innerWidth < 700 ? 10 : 12;
-    const SIDES = ['left', 'right', 'top', 'bottom'];
+    const SYMS = ['</', '/>', '{}', '()', '//', '=>', '[]', '&&', '/*', '*/', '::', '+='];
+    const N = window.innerWidth < 700 ? 8 : 12;
 
-    const syms = Array.from({ length: N }, (_, i) => ({
-      text: SYMS[i % SYMS.length],
-      side: SIDES[i % SIDES.length],
-      lane: 0.18 + Math.random() * 0.64,
-      startOffset: 50 + Math.random() * 120,
-      orbitR: 54 + Math.random() * 108,
-      phase: (i / N) * Math.PI * 2,
-      speed: 0.48 + Math.random() * 0.35,
-      fsize: 11 + Math.random() * 4,
-      color: Math.random() < 0.7 ? '#F0635A' : '#F4A261',
-      spin: Math.random() * Math.PI * 2,
-      spinV: (Math.random() - 0.5) * 0.025,
-    }));
+    // Split evenly: half from left, half from right
+    const syms = Array.from({ length: N }, (_, i) => {
+      const fromLeft = i < N / 2;
+      const laneIndex = fromLeft ? i : i - N / 2;
+      const laneCount = N / 2;
+      return {
+        text:  SYMS[i % SYMS.length],
+        fromLeft,
+        // vertical lane — spread evenly with some jitter
+        laneY: 0.22 + (laneIndex / (laneCount - 1)) * 0.56 + (Math.random() - 0.5) * 0.06,
+        fsize: 11 + Math.random() * 5,
+        color: Math.random() < 0.7 ? '#F0635A' : '#F4A261',
+        spin:  Math.random() * Math.PI * 2,
+        spinV: (Math.random() - 0.5) * 0.02,
+        phaseOff: Math.random() * 0.18, // slight stagger on appear
+      };
+    });
 
-    let wpDone = false;
-    let wpT = 0;
+    // Phone dive targets — where each symbol converges before diving in
     const PHONE_ANCHORS_NORM = [
-      { x: 0.5,  y: 0.16 },
-      { x: 0.3,  y: 0.2  },
-      { x: 0.7,  y: 0.2  },
-      { x: 0.2,  y: 0.3  },
-      { x: 0.8,  y: 0.3  },
-      { x: 0.14, y: 0.5  },
-      { x: 0.86, y: 0.5  },
-      { x: 0.22, y: 0.74 },
-      { x: 0.78, y: 0.74 },
-      { x: 0.5,  y: 0.84 },
-      { x: 0.34, y: 0.88 },
-      { x: 0.66, y: 0.88 },
-      { x: 0.5,  y: 0.54 },
-      { x: 0.5,  y: 0.94 },
+      { x: 0.5,  y: 0.18 }, { x: 0.3,  y: 0.22 }, { x: 0.7,  y: 0.22 },
+      { x: 0.22, y: 0.38 }, { x: 0.78, y: 0.38 }, { x: 0.15, y: 0.52 },
+      { x: 0.85, y: 0.52 }, { x: 0.24, y: 0.72 }, { x: 0.76, y: 0.72 },
+      { x: 0.5,  y: 0.82 }, { x: 0.35, y: 0.88 }, { x: 0.65, y: 0.88 },
     ];
 
     function getPhoneRect() {
       const pw = document.getElementById('phone-wrapper');
-      if (!pw) return null;
-      return pw.getBoundingClientRect();
+      return pw ? pw.getBoundingClientRect() : null;
     }
 
-    const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
-    const mix = (a, b, t) => a + (b - a) * t;
-    const easeInOut = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+    const mix   = (a, b, t) => a + (b - a) * t;
+    const ease3 = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+    const easeOut = t => 1 - Math.pow(1 - t, 3);
 
-    function animWhirlpool(ts) {
+    let wpDone = false;
+    let wpRaf  = null;
+    let wpT    = 0;
+
+    // Scroll-computed progress values (set by onWpScroll, read by draw)
+    let wpScrollProg  = 0; // 0→1: hero bottom leaving viewport
+    let wpPhoneProg   = 0; // 0→1: phone center approaching viewport center
+
+    function drawWp(ts) {
       wpT = ts * 0.001;
+      wpRaf = null;
       vCtx.clearRect(0, 0, VW, VH);
-      if (wpDone || !showcaseEl) {
-        requestAnimationFrame(animWhirlpool);
-        return;
-      }
 
-      const showcaseRect = showcaseEl.getBoundingClientRect();
-      const introProg = clamp((VH - showcaseRect.top) / (VH * 0.78), 0, 1);
-      if (introProg <= 0.001) {
-        container.style.opacity = '0';
-        requestAnimationFrame(animWhirlpool);
-        return;
-      }
+      if (wpDone) return;
+      if (wpScrollProg <= 0) { container.style.opacity = '0'; return; }
 
-      const gatherProg = clamp((introProg - 0.08) / 0.34, 0, 1);
-      const phoneRect = getPhoneRect();
-      const phoneProg = phoneRect ? clamp((VH * 0.88 - phoneRect.top) / (VH * 0.46), 0, 1) : 0;
-      const fallProg = easeInOut(phoneProg);
-      const overlayAlpha = clamp(Math.min(introProg * 1.35, 1) * (1 - fallProg * 0.96), 0, 0.9);
-      const cx = VW / 2;
-      const cy = mix(VH * 0.7, VH * 0.5, gatherProg);
-      const aura = 0.14 + Math.sin(wpT * 1.15) * 0.03;
+      const phoneRect  = getPhoneRect();
 
-      container.style.opacity = overlayAlpha.toFixed(3);
-      cta.style.opacity = '0';
+      // Phase 1 (0→0.5): symbols slide in from edges, spread across screen
+      // Phase 2 (0.5→1): symbols converge to center
+      // Phase 3 (wpPhoneProg 0→1): symbols dive into phone
+      const slideProg    = clamp(wpScrollProg / 0.50, 0, 1);
+      const convergeProg = clamp((wpScrollProg - 0.50) / 0.50, 0, 1);
+      const fallProg     = ease3(wpPhoneProg);
 
-      vCtx.save();
-      vCtx.globalAlpha = overlayAlpha;
-      for (let ring = 0; ring < 2; ring++) {
-        const rr = 68 + ring * 52 + Math.sin(wpT * (0.9 + ring * 0.16)) * 8;
+      const overallAlpha = clamp(slideProg * 1.4, 0, 1) * (1 - fallProg * 0.95);
+      if (overallAlpha < 0.005) { container.style.opacity = '0'; return; }
+
+      container.style.opacity = overallAlpha.toFixed(3);
+
+      const cx = VW * 0.5;
+      const cy = VH * 0.5;
+
+      // Faint dashed orbit ring — only visible when converging
+      if (convergeProg > 0.1) {
+        const ringR  = mix(VW * 0.28, 88, ease3(convergeProg));
+        const ringA  = convergeProg * 0.12 * (1 - fallProg);
+        vCtx.save();
+        vCtx.globalAlpha = ringA;
+        vCtx.strokeStyle = 'rgba(240,99,90,0.7)';
+        vCtx.lineWidth = 0.7;
+        vCtx.setLineDash([4, 16]);
+        vCtx.lineDashOffset = -wpT * 12;
         vCtx.beginPath();
-        vCtx.arc(cx, cy, rr, 0, Math.PI * 2);
-        vCtx.strokeStyle = ring === 1 ? `rgba(244,162,97,${aura * 0.18})` : `rgba(240,99,90,${aura * 0.24})`;
-        vCtx.lineWidth = 0.8;
-        vCtx.setLineDash([3 + ring * 2, 18 - ring * 3]);
-        vCtx.lineDashOffset = -wpT * (10 + ring * 6);
+        vCtx.arc(cx, cy, ringR, 0, Math.PI * 2);
         vCtx.stroke();
+        vCtx.restore();
       }
-      vCtx.restore();
 
       syms.forEach((s, i) => {
-        const gather = easeInOut(gatherProg);
-        const angle = s.phase + wpT * s.speed;
-        const orbitR = s.orbitR * mix(2.25, 0.92, gather);
-        const startX = s.side === 'left'   ? -s.startOffset
-                     : s.side === 'right'  ? VW + s.startOffset
-                     : VW * s.lane;
-        const startY = s.side === 'top'    ? -s.startOffset
-                     : s.side === 'bottom' ? VH + s.startOffset
-                     : VH * s.lane;
-        const orbitX = cx + Math.cos(angle) * orbitR;
-        const orbitY = cy + Math.sin(angle) * orbitR * 0.74;
-        const preFallX = mix(startX, orbitX, gather);
-        const preFallY = mix(startY, orbitY, gather);
-        const anchor = PHONE_ANCHORS_NORM[i % PHONE_ANCHORS_NORM.length];
-        const targetX = phoneRect ? phoneRect.left + anchor.x * phoneRect.width : preFallX;
-        const targetY = phoneRect ? phoneRect.top + anchor.y * phoneRect.height : preFallY;
-        const x = mix(preFallX, targetX, fallProg);
-        const y = mix(preFallY, targetY, fallProg);
-        s.spin += s.spinV;
-        const fromDx = cx - preFallX;
-        const fromDy = cy - preFallY;
-        const trailLen = 22 + gather * 18;
+        // Personal stagger: each symbol starts its slide a fraction later
+        const stagger  = s.phaseOff;
+        const localSlide = clamp((slideProg - stagger) / (1 - stagger), 0, 1);
+
+        // Start X — far off the screen edge
+        const edgeX = s.fromLeft ? -60 - (i % 3) * 30 : VW + 60 + (i % 3) * 30;
+        // Resting X when fully slid in — scattered across screen width
+        const restX = s.fromLeft
+          ? VW * (0.04 + (i % (N/2)) / (N/2) * 0.22)
+          : VW * (0.74 + (i % (N/2)) / (N/2) * 0.22);
+        const restY = VH * s.laneY;
+
+        // Orbit position when converging
+        const orbitAngle = (i / N) * Math.PI * 2 + wpT * 0.4;
+        const orbitR     = mix(VW * 0.28, 76, ease3(convergeProg));
+        const orbitX     = cx + Math.cos(orbitAngle) * orbitR;
+        const orbitY     = cy + Math.sin(orbitAngle) * orbitR * 0.6;
+
+        // Slide in from edge → rest position
+        const slideX = mix(edgeX, restX, easeOut(localSlide));
+        const slideY = mix(restY + (s.fromLeft ? 20 : -20), restY, easeOut(localSlide));
+
+        // Converge from rest → orbit
+        const preX = mix(slideX, orbitX, ease3(convergeProg));
+        const preY = mix(slideY, orbitY, ease3(convergeProg));
+
+        // Dive: orbit → phone anchor
+        const anchor  = PHONE_ANCHORS_NORM[i % PHONE_ANCHORS_NORM.length];
+        const targetX = phoneRect ? phoneRect.left + anchor.x * phoneRect.width  : cx;
+        const targetY = phoneRect ? phoneRect.top  + anchor.y * phoneRect.height : cy;
+
+        const x = mix(preX, targetX, fallProg);
+        const y = mix(preY, targetY, fallProg);
+
+        s.spin += s.spinV * (1 + convergeProg * 2);
+
+        // Trail line toward center during convergence
+        if (convergeProg > 0.05 && fallProg < 0.6) {
+          const trailLen = convergeProg * 18;
+          const dx = cx - x, dy = cy - y;
+          const d  = Math.sqrt(dx*dx + dy*dy) || 1;
+          vCtx.save();
+          vCtx.globalAlpha = convergeProg * 0.12 * (1 - fallProg);
+          vCtx.strokeStyle = 'rgba(240,99,90,0.5)';
+          vCtx.lineWidth   = 0.6;
+          vCtx.beginPath();
+          vCtx.moveTo(x, y);
+          vCtx.lineTo(x + (dx/d) * trailLen, y + (dy/d) * trailLen);
+          vCtx.stroke();
+          vCtx.restore();
+        }
+
+        const symAlpha = localSlide * (1 - Math.max(0, fallProg - 0.75) * 5);
+        if (symAlpha < 0.005) return;
+
         vCtx.save();
-        vCtx.globalAlpha = overlayAlpha * (0.32 + gather * 0.58) * (1 - Math.max(0, fallProg - 0.82) * 4.5);
-        vCtx.beginPath();
-        vCtx.moveTo(x - (fromDx || 0) * 0.03, y - (fromDy || 0) * 0.03);
-        vCtx.lineTo(x - (fromDx || 0) * 0.03 - Math.cos(angle) * trailLen, y - (fromDy || 0) * 0.03 - Math.sin(angle) * trailLen * 0.8);
-        vCtx.strokeStyle = 'rgba(240,99,90,0.08)';
-        vCtx.lineWidth = 0.7;
-        vCtx.stroke();
         vCtx.translate(x, y);
         vCtx.rotate(s.spin);
-        vCtx.shadowColor = s.color;
-        vCtx.shadowBlur = fallProg > 0.1 ? 10 : 5;
-        vCtx.font = `600 ${s.fsize}px 'JetBrains Mono', monospace`;
-        vCtx.fillStyle = s.color;
-        vCtx.textAlign = 'center';
+        vCtx.globalAlpha = overallAlpha * symAlpha;
+        vCtx.shadowColor  = s.color;
+        vCtx.shadowBlur   = 4 + convergeProg * 8 + fallProg * 14;
+        vCtx.font         = `600 ${s.fsize}px 'JetBrains Mono', monospace`;
+        vCtx.fillStyle    = s.color;
+        vCtx.textAlign    = 'center';
         vCtx.textBaseline = 'middle';
         vCtx.fillText(s.text, 0, 0);
         vCtx.restore();
       });
 
-      if (!wpDone && introProg > 0.76 && fallProg > 0.985) {
+      // Done: all symbols have dived into phone
+      if (!wpDone && wpPhoneProg > 0.98) {
         wpDone = true;
-        container.style.transition = 'opacity 0.3s';
+        container.style.transition = 'opacity 0.28s';
         container.style.opacity = '0';
-        setTimeout(() => { container.style.display = 'none'; }, 320);
+        setTimeout(() => { container.style.display = 'none'; }, 300);
         window._wpSymbolsDone = true;
         document.dispatchEvent(new CustomEvent('wp-symbols-done'));
       }
-
-      requestAnimationFrame(animWhirlpool);
     }
 
-    requestAnimationFrame(animWhirlpool);
+    function scheduleWpDraw() {
+      if (wpDone || wpRaf) return;
+      wpRaf = requestAnimationFrame(drawWp);
+    }
 
-    window.addEventListener('scroll', () => {
-      if (!wpDone && showcaseEl) {
-        const scr = showcaseEl.getBoundingClientRect();
-        if (scr.bottom < 0) {
-          wpDone = true;
-          container.style.opacity = '0';
-          container.style.display = 'none';
-          window._wpSymbolsDone = true;
-          document.dispatchEvent(new CustomEvent('wp-symbols-done'));
-        }
+    // Compute scroll progress from actual scroll position — no rAF loop
+    function onWpScroll() {
+      if (wpDone) return;
+
+      if (!heroEl || !showcaseEl) return;
+
+      // wpScrollProg: 0 when hero bottom is at viewport bottom, 1 when hero is fully off-screen
+      const heroRect = heroEl.getBoundingClientRect();
+      // Starts as hero bottom crosses viewport center, ends as hero top leaves viewport top
+      wpScrollProg = clamp(-heroRect.top / heroEl.offsetHeight, 0, 1);
+
+      // wpPhoneProg: 0 when showcase not yet visible, 1 when phone is centered in viewport
+      const phoneRect = getPhoneRect();
+      if (phoneRect) {
+        const phoneCY = phoneRect.top + phoneRect.height * 0.5;
+        wpPhoneProg = clamp(1 - (phoneCY - VH * 0.5) / (VH * 0.55), 0, 1);
+      } else {
+        wpPhoneProg = 0;
       }
-    }, { passive: true });
+
+      // Skip to done if user scrolled way past
+      if (showcaseEl.getBoundingClientRect().bottom < 0) {
+        wpDone = true;
+        container.style.opacity = '0';
+        container.style.display = 'none';
+        window._wpSymbolsDone = true;
+        document.dispatchEvent(new CustomEvent('wp-symbols-done'));
+        return;
+      }
+
+      scheduleWpDraw();
+    }
+
+    window.addEventListener('scroll', onWpScroll, { passive: true });
+    // Also check on load in case page was pre-scrolled
+    onWpScroll();
   }
 
   /* ── 6 & 7. SHOWCASE — immersive physics phone stage ── */
@@ -5847,6 +5902,14 @@
         showcaseQueued = true;
         if (window._wpSymbolsDone) {
           doShowcaseReveal();
+        } else {
+          // Fast-scroll fallback: if showcase is visible but symbols never finished, unblock after 600ms
+          setTimeout(() => {
+            if (!window._wpSymbolsDone) {
+              window._wpSymbolsDone = true;
+              document.dispatchEvent(new CustomEvent('wp-symbols-done'));
+            }
+          }, 600);
         }
       }
     }, { threshold: 0.01 }).observe(showcase);
@@ -6627,16 +6690,14 @@
     let rafPending   = false;
     let impactDone   = false;
 
-    // Smooth display ratio (lerped) for visual effects — avoids jitter
     let displayRatio = 0;
 
     function applyReveal() {
       rafPending = false;
       const ratio = currentRatio;
 
-      // Responsive but smooth lerp so the build follows scroll without stutter
-      displayRatio += (ratio - displayRatio) * 0.68;
-      if (Math.abs(displayRatio - ratio) < 0.002) displayRatio = ratio;
+      // Direct mapping — no lerp lag, build stage follows scroll precisely
+      displayRatio = ratio;
       diveRatio = displayRatio;
 
       // Start ambient code field on entry
@@ -6779,11 +6840,7 @@
       progressFill.style.width = pct + '%';
       progressLabel.textContent = String(pct).padStart(3, '0') + '%';
 
-      // Keep ticking while lerp catches up
-      if ((fcRunning || Math.abs(displayRatio - ratio) > 0.001) && Math.abs(displayRatio - ratio) > 0.001) {
-        rafPending = true;
-        requestAnimationFrame(applyReveal);
-      }
+      // No perpetual self-scheduling — applyReveal is driven only by scroll events
     }
 
     // Position the blinking cursor at the end of the last typed line's content
@@ -7058,36 +7115,34 @@
       });
     });
 
-    // Orb parallax
-    gsap.to('#orb1', { scrollTrigger: { scrub: 2 }, y: -120 });
-    gsap.to('#orb2', { scrollTrigger: { scrub: 3 }, y:  100 });
-    gsap.to('#orb3', { scrollTrigger: { scrub: 1.5 }, y: -80 });
+    // Orb parallax — scoped to hero so GSAP isn't tracking full-page scroll
+    gsap.to('#orb1', { scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1 }, y: -120 });
+    gsap.to('#orb2', { scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1 }, y:  100 });
+    gsap.to('#orb3', { scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1 }, y:  -80 });
 
-    // Ambient blob scroll drift
-    gsap.to('#ab1', { scrollTrigger: { scrub: 4 }, y: -200, x: 80 });
-    gsap.to('#ab2', { scrollTrigger: { scrub: 3 }, y:  150, x: -60 });
-    gsap.to('#ab3', { scrollTrigger: { scrub: 2 }, y: -100 });
+    // Ambient blob scroll drift — scoped to hero
+    gsap.to('#ab1', { scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1 }, y: -200, x:  80 });
+    gsap.to('#ab2', { scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1 }, y:  150, x: -60 });
+    gsap.to('#ab3', { scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1 }, y: -100 });
 
     // Hero exit — content drifts up + fades as you scroll away
     gsap.to('#hero-content', {
-      scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.2 },
-      y: -80,
-      opacity: 0,
-      ease: 'none',
+      scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true },
+      y: -80, opacity: 0, ease: 'none',
     });
     // Stats fade out faster so they don't hang at the bottom as showcase loads
     gsap.to('#hero-stats', {
-      scrollTrigger: { trigger: '#hero', start: 'top top', end: '60% top', scrub: 0.8 },
+      scrollTrigger: { trigger: '#hero', start: 'top top', end: '60% top', scrub: true },
       opacity: 0, y: -20, ease: 'none',
     });
-    // Showcase phone rises into view — no section-level opacity, so there's never a black void
+    // Showcase phone rises into view
     gsap.fromTo('#sc-phone-col', { y: 50 }, {
-      scrollTrigger: { trigger: '#showcase', start: 'top 70%', end: 'top 10%', scrub: 1.5 },
+      scrollTrigger: { trigger: '#showcase', start: 'top 80%', end: 'top 15%', scrub: true },
       y: 0, ease: 'none',
     });
-    // Physics fragments drift in from slight scale
-    gsap.fromTo('#sc-physics-canvas', { opacity: 0, scale: 1.05 }, {
-      scrollTrigger: { trigger: '#showcase', start: 'top 80%', end: 'top 25%', scrub: 1.2 },
+    // Physics fragments drift in
+    gsap.fromTo('#sc-physics-canvas', { opacity: 0, scale: 1.04 }, {
+      scrollTrigger: { trigger: '#showcase', start: 'top 80%', end: 'top 30%', scrub: true },
       opacity: 1, scale: 1, ease: 'none',
       transformOrigin: '50% 50%',
     });
