@@ -1414,8 +1414,8 @@
     }
     #build-frame {
       position: relative;
-      width: 360px;
-      height: 640px;
+      width: 380px;
+      height: 720px;
       max-width: 92vw;
       max-height: 78vh;
       background: #14101A;
@@ -1473,7 +1473,7 @@
       50%     { transform: translateY(-4px) scale(1.005) rotateX(0); }
     }
     @media (max-width: 700px) {
-      #build-frame { width: 300px; height: 520px; padding: 6px; border-radius: 30px; }
+      #build-frame { width: 320px; height: 600px; padding: 6px; border-radius: 30px; }
     }
 
     /* Status bar at top of frame — sells the device feel */
@@ -2132,10 +2132,11 @@
     }
     .bs-logo {
       font-family: 'DM Serif Display', serif;
-      font-style: italic; font-size: 22px; color: #2B2547;
-      letter-spacing: -0.5px;
+      font-style: italic; font-size: 17px; color: #2B2547;
+      letter-spacing: -0.4px;
+      line-height: 1;
     }
-    .bs-logo span { color: #F0635A; }
+    .bs-logo span { color: #F0635A; font-weight: 400; }
     .bs-nav-right { display: flex; align-items: center; gap: 10px; }
     .bs-nav-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(43,37,71,0.45); }
     .bs-nav-link {
@@ -2147,36 +2148,47 @@
     /* ── Hero ── */
     .bs-hero {
       position: relative;
-      height: 240px;
+      height: 200px;
       overflow: hidden;
+      background: #14101A;
     }
-    .bs-hero-img {
+    .bs-hero-vid {
       position: absolute; inset: 0;
-      background:
-        radial-gradient(ellipse 70% 80% at 80% 30%, rgba(240,99,90,0.28) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 70% at 20% 80%, rgba(244,162,97,0.25) 0%, transparent 65%),
-        linear-gradient(150deg,
-          #2B2547 0%,
-          #4A3F66 35%,
-          #8C5A60 65%,
-          #C8806C 90%,
-          #F0635A 100%);
-      transform: scale(1.05);
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center;
+      filter: brightness(0.85) saturate(1.1) contrast(1.05);
+      z-index: 2;
+    }
+    .bs-hero-fallback {
+      position: absolute; inset: 0;
+      background-image: url("images/vecteezy_fashion-designer-tailor-or-sewer_7360006.jpg");
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.85) saturate(1.1) contrast(1.05);
+      z-index: 1;
     }
     .bs-hero-grain {
       position: absolute; inset: 0;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
       mix-blend-mode: overlay;
-      opacity: 0.18;
+      opacity: 0.10;
+      pointer-events: none;
+      z-index: 3;
     }
     .bs-hero-overlay {
       position: absolute; inset: 0;
-      background: linear-gradient(180deg, rgba(20,16,26,0.0) 35%, rgba(20,16,26,0.55) 100%);
+      background:
+        linear-gradient(180deg, rgba(20,16,26,0.0) 25%, rgba(20,16,26,0.65) 90%, rgba(20,16,26,0.85) 100%),
+        linear-gradient(95deg, rgba(20,16,26,0.45) 0%, transparent 40%);
+      pointer-events: none;
+      z-index: 4;
     }
     .bs-hero-content {
       position: absolute;
       left: 22px; right: 22px; bottom: 22px;
       display: flex; flex-direction: column; gap: 10px;
+      z-index: 5;
     }
     .bs-eyebrow {
       font-family: 'JetBrains Mono', monospace;
@@ -2200,6 +2212,7 @@
       position: absolute;
       bottom: 14px; right: 18px;
       display: flex; align-items: center; gap: 6px;
+      z-index: 5;
     }
     .bs-meta-k {
       font-family: 'JetBrains Mono', monospace;
@@ -2222,6 +2235,7 @@
       letter-spacing: -0.3px;
       margin: 0 0 14px;
     }
+    .bs-lead em { color: #F0635A; font-style: italic; }
     .bs-cta {
       display: inline-flex; align-items: center; gap: 6px;
       background: #F0635A; color: #fff;
@@ -2240,60 +2254,112 @@
     }
     .build-site.bs-cta-hovered .bs-cta-arrow { transform: translateX(4px); }
 
-    /* ── Project cards ── */
-    .bs-cards {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-      padding: 0 22px 18px;
-    }
-    .bs-card {
+    /* ── Featured project: image + caption side-by-side ── */
+    .bs-feature {
+      display: grid; grid-template-columns: 160px 1fr; gap: 0;
+      margin: 0 22px 18px;
       background: #fff;
       border-radius: 10px;
       overflow: hidden;
-      box-shadow: 0 4px 18px -8px rgba(43,37,71,0.20);
+      box-shadow: 0 6px 22px -10px rgba(43,37,71,0.25);
       border: 1px solid rgba(43,37,71,0.06);
     }
-    .bs-card-img {
-      width: 100%; aspect-ratio: 1.2 / 1;
+    .bs-feature-img {
+      background-image: url("images/vecteezy_fashion-designer-tailor-or-sewer_7360006.jpg");
+      background-size: cover;
+      background-position: 60% 50%;
+      min-height: 116px;
+    }
+    .bs-feature-body {
+      padding: 12px 14px;
+      display: flex; flex-direction: column; justify-content: center; gap: 6px;
+    }
+    .bs-feature-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7.5px; letter-spacing: 1.8px;
+      color: #F0635A;
+    }
+    .bs-feature-name {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic; font-size: 16px;
+      color: #2B2547; line-height: 1.1;
+      letter-spacing: -0.3px;
+    }
+    .bs-feature-meta {
+      display: flex; gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px; letter-spacing: 1.2px;
+      color: rgba(43,37,71,0.55);
+      margin-top: 2px;
+    }
+
+    /* ── Services strip ── */
+    .bs-services {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      margin: 0 22px 18px;
+      background: rgba(43,37,71,0.03);
+      border: 1px solid rgba(43,37,71,0.06);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .bs-service {
+      display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+      padding: 12px 12px 14px;
+      border-right: 1px solid rgba(43,37,71,0.06);
+    }
+    .bs-service:last-child { border-right: none; }
+    .bs-service-i {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px; letter-spacing: 1.5px;
+      color: rgba(43,37,71,0.4);
+    }
+    .bs-service-t {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic; font-size: 14px;
+      color: #2B2547; line-height: 1;
+      margin-top: 2px;
+    }
+    .bs-service-s {
+      font-family: 'Inter', sans-serif;
+      font-size: 8.5px;
+      color: rgba(43,37,71,0.6);
+    }
+
+    /* ── Detail card: testimonial + button image ── */
+    .bs-detail {
+      display: grid; grid-template-columns: 120px 1fr; gap: 0;
+      margin: 0 22px 18px;
+      background: #FBF6EE;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(43,37,71,0.06);
+      min-height: 86px;
+    }
+    .bs-detail-img {
+      background-image: url("images/vecteezy_needle-and-thread-with-button-on-material-mending-clothing_76760151.jpeg");
       background-size: cover;
       background-position: center;
-    }
-    .bs-card-img-1 {
-      background:
-        linear-gradient(135deg, #2B2547 0%, #5A547A 50%, #8C7C9A 100%),
-        radial-gradient(circle at 30% 70%, rgba(240,99,90,0.3) 0%, transparent 50%);
-      background-blend-mode: overlay;
       position: relative;
     }
-    .bs-card-img-1::before {
+    .bs-detail-img::after {
       content: '';
       position: absolute; inset: 0;
-      background:
-        linear-gradient(45deg, transparent 38%, rgba(254,249,244,0.08) 38%, rgba(254,249,244,0.08) 42%, transparent 42%, transparent 58%, rgba(254,249,244,0.08) 58%, rgba(254,249,244,0.08) 62%, transparent 62%);
+      background: linear-gradient(90deg, transparent 70%, rgba(251,246,238,0.6) 100%);
     }
-    .bs-card-img-2 {
-      background:
-        linear-gradient(160deg, #F4A27A 0%, #F0635A 60%, #C8505A 100%),
-        radial-gradient(circle at 70% 30%, rgba(254,249,244,0.4) 0%, transparent 40%);
-      background-blend-mode: overlay;
-      position: relative;
+    .bs-detail-body {
+      padding: 12px 14px;
+      display: flex; flex-direction: column; justify-content: center; gap: 6px;
     }
-    .bs-card-img-2::before {
-      content: '';
-      position: absolute; inset: 0;
-      background:
-        linear-gradient(180deg, transparent 60%, rgba(43,37,71,0.4) 100%);
-    }
-    .bs-card-body { padding: 10px 12px 12px; }
-    .bs-card-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 7px; letter-spacing: 1.5px;
-      color: #F0635A;
-      margin-bottom: 4px;
-    }
-    .bs-card-name {
+    .bs-detail-quote {
       font-family: 'DM Serif Display', serif;
-      font-style: italic; font-size: 14px; color: #2B2547;
-      line-height: 1.1;
+      font-style: italic; font-size: 12.5px; line-height: 1.35;
+      color: #2B2547;
+      letter-spacing: -0.2px;
+    }
+    .bs-detail-author {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7.5px; letter-spacing: 1.2px;
+      color: rgba(43,37,71,0.55);
     }
 
     /* ── Stats strip ── */
@@ -3847,60 +3913,92 @@
 
             <!-- Layered build viewport — site builds piece-by-piece in place -->
             <div class="bf-screen">
-              <!-- BASE: the "real" rendered site, parts hidden until they assemble -->
+              <!-- BASE: a real, working tailoring site. Parts hidden until they assemble. -->
               <div class="build-site" id="build-site">
+
                 <!-- NAV — assembles from off-screen left -->
                 <div class="bs-piece" data-piece="nav" data-from="left">
                   <div class="bs-nav">
-                    <div class="bs-logo">CASA<span>.</span></div>
+                    <div class="bs-logo">Atelier<span>&nbsp;Bond</span></div>
                     <div class="bs-nav-right">
-                      <span class="bs-nav-dot"></span><span class="bs-nav-dot"></span><span class="bs-nav-dot"></span>
                       <span class="bs-nav-link">Menu</span>
                     </div>
                   </div>
                 </div>
 
-                <!-- HERO image with overlay — drops from above -->
+                <!-- HERO video — drops from above -->
                 <div class="bs-piece bs-piece-hero" data-piece="hero-img" data-from="top">
                   <div class="bs-hero">
-                    <div class="bs-hero-img"></div>
+                    <video class="bs-hero-vid"
+                           autoplay muted loop playsinline preload="auto"
+                           poster="images/vecteezy_fashion-designer-tailor-or-sewer_7360006.jpg">
+                      <source src="images/vecteezy_macro-4k-of-a-sewing-machine-working_1624975.mov" type="video/mp4">
+                    </video>
+                    <!-- Fallback poster image painted under the video for browsers that can't decode -->
+                    <div class="bs-hero-fallback"></div>
                     <div class="bs-hero-grain"></div>
                     <div class="bs-hero-overlay"></div>
                     <div class="bs-hero-content">
-                      <span class="bs-eyebrow">EST 2026 · ST. JOHNS, FL</span>
-                      <h1 class="bs-title">Spaces<br><em>worth&nbsp;keeping.</em></h1>
+                      <span class="bs-eyebrow">EST 1986 · ST. JOHNS, FL</span>
+                      <h1 class="bs-title">Tailored.<br><em>Not&nbsp;adjusted.</em></h1>
                     </div>
                     <div class="bs-hero-meta">
-                      <span class="bs-meta-k">SCROLL</span>
+                      <span class="bs-meta-k">BY APPT</span>
                       <span class="bs-meta-line"></span>
                     </div>
                   </div>
                 </div>
 
-                <!-- Sub block: tagline + CTA -->
+                <!-- Lead + CTA -->
                 <div class="bs-piece" data-piece="sub" data-from="left">
                   <div class="bs-sub-block">
-                    <p class="bs-lead">A small studio with one rule:<br>nothing generic, nothing borrowed.</p>
-                    <a class="bs-cta">Start a project<span class="bs-cta-arrow">→</span></a>
+                    <p class="bs-lead">Three generations of hands.<br>One <em>well-fitted</em> jacket at a time.</p>
+                    <a class="bs-cta">Book a fitting<span class="bs-cta-arrow">→</span></a>
                   </div>
                 </div>
 
-                <!-- Project cards row -->
-                <div class="bs-piece" data-piece="cards" data-from="bottom">
-                  <div class="bs-cards">
-                    <div class="bs-card">
-                      <div class="bs-card-img bs-card-img-1"></div>
-                      <div class="bs-card-body">
-                        <div class="bs-card-tag">RESIDENCE · 2025</div>
-                        <div class="bs-card-name">Pine House</div>
+                <!-- Featured project: tailor at work -->
+                <div class="bs-piece" data-piece="feature" data-from="right">
+                  <div class="bs-feature">
+                    <div class="bs-feature-img"></div>
+                    <div class="bs-feature-body">
+                      <div class="bs-feature-tag">THE ATELIER · NO. 04</div>
+                      <div class="bs-feature-name">A wool blazer,<br>re-shouldered.</div>
+                      <div class="bs-feature-meta">
+                        <span>14 days</span><span>·</span><span>by hand</span>
                       </div>
                     </div>
-                    <div class="bs-card">
-                      <div class="bs-card-img bs-card-img-2"></div>
-                      <div class="bs-card-body">
-                        <div class="bs-card-tag">STUDIO · 2024</div>
-                        <div class="bs-card-name">Bay Atelier</div>
-                      </div>
+                  </div>
+                </div>
+
+                <!-- Services strip -->
+                <div class="bs-piece" data-piece="services" data-from="bottom">
+                  <div class="bs-services">
+                    <div class="bs-service">
+                      <span class="bs-service-i">01</span>
+                      <span class="bs-service-t">Bespoke</span>
+                      <span class="bs-service-s">made for you</span>
+                    </div>
+                    <div class="bs-service">
+                      <span class="bs-service-i">02</span>
+                      <span class="bs-service-t">Alterations</span>
+                      <span class="bs-service-s">cut, taken, let</span>
+                    </div>
+                    <div class="bs-service">
+                      <span class="bs-service-i">03</span>
+                      <span class="bs-service-t">Restoration</span>
+                      <span class="bs-service-s">heirloom care</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Detail card: needle + button image -->
+                <div class="bs-piece" data-piece="detail" data-from="left">
+                  <div class="bs-detail">
+                    <div class="bs-detail-img"></div>
+                    <div class="bs-detail-body">
+                      <div class="bs-detail-quote">"They re-set every button by hand. Even the spares."</div>
+                      <div class="bs-detail-author">— M. Reyes, client since 2009</div>
                     </div>
                   </div>
                 </div>
@@ -3908,27 +4006,27 @@
                 <!-- Stats strip -->
                 <div class="bs-piece" data-piece="stats" data-from="right">
                   <div class="bs-stats">
-                    <div class="bs-stat"><b>24</b><span>built</span></div>
-                    <div class="bs-stat"><b>11y</b><span>local</span></div>
-                    <div class="bs-stat"><b>0</b><span>templates</span></div>
+                    <div class="bs-stat"><b>39y</b><span>open</span></div>
+                    <div class="bs-stat"><b>4,200</b><span>fittings</span></div>
+                    <div class="bs-stat"><b>0</b><span>off-rack</span></div>
                   </div>
                 </div>
 
                 <!-- Footer -->
                 <div class="bs-piece" data-piece="foot" data-from="bottom">
                   <div class="bs-foot">
-                    <span>© 2026 Casa Studio</span>
-                    <span>casa-studio.com</span>
+                    <span>© 2026 Atelier Bond</span>
+                    <span>atelierbond.co</span>
                   </div>
                 </div>
 
-                <!-- Demo cursor for render phase -->
+                <!-- Demo cursor -->
                 <div class="bld-fakecursor"></div>
                 <div class="bld-tapring"></div>
               </div>
 
               <!-- BLUEPRINT: SVG construction layer that draws over each piece as it lands -->
-              <svg class="build-svg" id="build-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 620" preserveAspectRatio="none">
+              <svg class="build-svg" id="build-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 740" preserveAspectRatio="none">
                 <defs>
                   <linearGradient id="bs-line-grad" x1="0" y1="0" x2="1" y2="0">
                     <stop offset="0" stop-color="#F0635A" stop-opacity="0"/>
@@ -3936,32 +4034,41 @@
                     <stop offset="1" stop-color="#F0635A" stop-opacity="0"/>
                   </linearGradient>
                 </defs>
-                <!-- Construction lines drawn in for each piece — 6 pieces -->
-                <g class="bs-bp" data-for="nav"      stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
-                  <rect x="14" y="14" width="332" height="40" rx="2" stroke-dasharray="4 3"/>
-                  <line x1="0" y1="14" x2="360" y2="14"/>
-                  <line x1="0" y1="54" x2="360" y2="54"/>
+                <!-- Construction lines per piece — coordinates match in-device layout -->
+                <g class="bs-bp" data-for="nav"      stroke="#F0635A" stroke-width="0.8" fill="none" opacity="0">
+                  <rect x="10" y="10" width="340" height="42" rx="2" stroke-dasharray="4 3"/>
+                  <line x1="0" y1="10" x2="360" y2="10"/>
+                  <line x1="0" y1="52" x2="360" y2="52"/>
                 </g>
-                <g class="bs-bp" data-for="hero-img" stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
-                  <rect x="14" y="64" width="332" height="180" rx="2" stroke-dasharray="4 3"/>
-                  <line x1="14" y1="64" x2="346" y2="244"/>
-                  <line x1="346" y1="64" x2="14" y2="244"/>
-                  <circle cx="180" cy="154" r="6"/>
+                <g class="bs-bp" data-for="hero-img" stroke="#F0635A" stroke-width="0.8" fill="none" opacity="0">
+                  <rect x="10" y="58" width="340" height="200" rx="2" stroke-dasharray="4 3"/>
+                  <line x1="10" y1="58" x2="350" y2="258"/>
+                  <line x1="350" y1="58" x2="10" y2="258"/>
+                  <circle cx="180" cy="158" r="8"/>
                 </g>
-                <g class="bs-bp" data-for="sub"      stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
-                  <rect x="14" y="252" width="332" height="76" rx="2" stroke-dasharray="4 3"/>
+                <g class="bs-bp" data-for="sub"      stroke="#F0635A" stroke-width="0.8" fill="none" opacity="0">
+                  <rect x="10" y="266" width="340" height="76" rx="2" stroke-dasharray="4 3"/>
                 </g>
-                <g class="bs-bp" data-for="cards"    stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
-                  <rect x="14" y="338" width="160" height="130" rx="2" stroke-dasharray="4 3"/>
-                  <rect x="186" y="338" width="160" height="130" rx="2" stroke-dasharray="4 3"/>
+                <g class="bs-bp" data-for="feature"  stroke="#F0635A" stroke-width="0.8" fill="none" opacity="0">
+                  <rect x="10" y="350" width="340" height="116" rx="2" stroke-dasharray="4 3"/>
+                  <line x1="170" y1="350" x2="170" y2="466"/>
                 </g>
-                <g class="bs-bp" data-for="stats"    stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
-                  <rect x="14" y="478" width="332" height="60" rx="2" stroke-dasharray="4 3"/>
-                  <line x1="120" y1="478" x2="120" y2="538"/>
-                  <line x1="240" y1="478" x2="240" y2="538"/>
+                <g class="bs-bp" data-for="services" stroke="#F0635A" stroke-width="0.8" fill="none" opacity="0">
+                  <rect x="10" y="474" width="340" height="60" rx="2" stroke-dasharray="4 3"/>
+                  <line x1="123" y1="474" x2="123" y2="534"/>
+                  <line x1="237" y1="474" x2="237" y2="534"/>
                 </g>
-                <g class="bs-bp" data-for="foot"     stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
-                  <rect x="14" y="546" width="332" height="42" rx="2" stroke-dasharray="4 3"/>
+                <g class="bs-bp" data-for="detail"   stroke="#F0635A" stroke-width="0.8" fill="none" opacity="0">
+                  <rect x="10" y="542" width="340" height="86" rx="2" stroke-dasharray="4 3"/>
+                  <line x1="130" y1="542" x2="130" y2="628"/>
+                </g>
+                <g class="bs-bp" data-for="stats"    stroke="#F0635A" stroke-width="0.8" fill="none" opacity="0">
+                  <rect x="10" y="636" width="340" height="56" rx="2" stroke-dasharray="4 3"/>
+                  <line x1="123" y1="636" x2="123" y2="692"/>
+                  <line x1="237" y1="636" x2="237" y2="692"/>
+                </g>
+                <g class="bs-bp" data-for="foot"     stroke="#F0635A" stroke-width="0.8" fill="none" opacity="0">
+                  <rect x="10" y="700" width="340" height="36" rx="2" stroke-dasharray="4 3"/>
                 </g>
               </svg>
 
@@ -5219,10 +5326,11 @@
           }
         }, after));
       };
-      moveTo('.bs-cta',                    400,  true);
-      moveTo('.bs-card:nth-child(1)',      2400, true);
-      moveTo('.bs-card:nth-child(2)',      4100, true);
-      moveTo('.bs-cta',                    5700, true);
+      moveTo('.bs-cta',                       400,  true);
+      moveTo('.bs-feature',                   2200, true);
+      moveTo('.bs-service:nth-child(1)',      3700, true);
+      moveTo('.bs-service:nth-child(3)',      4900, true);
+      moveTo('.bs-cta',                       6300, true);
     }
     function stopCursorDemo() {
       clearCursorTimers();
