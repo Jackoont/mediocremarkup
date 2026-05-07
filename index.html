@@ -2085,7 +2085,21 @@
       font-family: 'Inter', sans-serif;
       color: #2B2547;
       overflow: hidden;
+      scroll-behavior: smooth;
+      pointer-events: none;
     }
+    #build-stage[data-phase="3"] { pointer-events: auto; }
+    #build-stage[data-phase="3"] #build-frame,
+    #build-stage[data-phase="3"] .bf-screen,
+    #build-stage[data-phase="3"] .build-site {
+      pointer-events: auto;
+    }
+    #build-stage[data-phase="3"] .build-site {
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+    }
+    #build-stage[data-phase="3"] .build-site::-webkit-scrollbar { display: none; }
 
     /* Each piece of the site lives off-screen until JS fires .bs-piece-in */
     .bs-piece {
@@ -2129,6 +2143,12 @@
       display: flex; align-items: center; justify-content: space-between;
       padding: 18px 22px;
       border-bottom: 1px solid rgba(43,37,71,0.08);
+      background: rgba(254,249,244,0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 5;
     }
     .bs-logo {
       font-family: 'DM Serif Display', serif;
@@ -2136,13 +2156,16 @@
       letter-spacing: -0.5px;
     }
     .bs-logo span { color: #F0635A; }
-    .bs-nav-right { display: flex; align-items: center; gap: 10px; }
+    .bs-nav-right { display: flex; align-items: center; gap: 8px; }
     .bs-nav-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(43,37,71,0.45); }
     .bs-nav-link {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
-      color: #2B2547; margin-left: 6px;
+      font-size: 8px; letter-spacing: 1.4px; text-transform: uppercase;
+      color: #2B2547;
+      opacity: 0.72;
+      transition: opacity 0.2s ease, color 0.2s ease;
     }
+    .bs-nav-link:hover { opacity: 1; color: #F0635A; }
 
     /* ── Hero ── */
     .bs-hero {
@@ -2227,6 +2250,10 @@
       cursor: pointer;
       pointer-events: auto;
     }
+    .bs-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 26px -4px rgba(240,99,90,0.65);
+    }
     .bs-cta-arrow { transition: transform 0.25s ease; }
     .build-site.bs-cta-hovered .bs-cta {
       transform: translateY(-2px);
@@ -2281,6 +2308,12 @@
       font-style: italic; font-size: 14px; color: #2B2547;
       line-height: 1.1;
     }
+    .bs-card p {
+      padding: 0 12px 12px;
+      font-size: 10px;
+      line-height: 1.45;
+      color: rgba(43,37,71,0.62);
+    }
 
     /* ── Stats strip ── */
     .bs-stats {
@@ -2310,461 +2343,118 @@
     /* ── Footer ── */
     .bs-foot {
       display: flex; justify-content: space-between;
-      padding: 14px 22px;
+      padding: 14px 22px 22px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 8px; letter-spacing: 1.5px;
       color: rgba(43,37,71,0.55);
     }
-
-    /* ════════════════════════════════════════════════════════════════════════
-       LIVE ATELIER SITE — the scroll-built tailoring site as a real page
-       ════════════════════════════════════════════════════════════════════════ */
-    .atelier-site {
-      position: relative;
-      z-index: 2;
-      background: #f8f3ea;
-      color: #241d18;
-      font-family: 'Inter', sans-serif;
-      overflow: hidden;
-      isolation: isolate;
+    .bs-section {
+      padding: 20px 22px;
+      border-top: 1px solid rgba(43,37,71,0.07);
     }
-    .atelier-site a,
-    .atelier-site button,
-    .atelier-site input,
-    .atelier-site textarea,
-    .atelier-site select { cursor: none; }
-    .atelier-site::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      z-index: -1;
-      background:
-        linear-gradient(90deg, rgba(36,29,24,0.035) 1px, transparent 1px),
-        linear-gradient(rgba(36,29,24,0.028) 1px, transparent 1px);
-      background-size: 56px 56px;
-      mask: linear-gradient(to bottom, transparent 0%, black 18%, black 86%, transparent 100%);
-      -webkit-mask: linear-gradient(to bottom, transparent 0%, black 18%, black 86%, transparent 100%);
-    }
-    .atelier-nav {
-      position: sticky;
-      top: 0;
-      z-index: 30;
-      min-height: 68px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 24px;
-      padding: 0 48px;
-      color: #fffaf2;
-      background: rgba(36,29,24,0.86);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(255,250,242,0.12);
-    }
-    .atelier-brand {
-      font-family: 'DM Serif Display', serif;
-      font-size: 28px;
-      font-style: italic;
-      letter-spacing: -0.4px;
-      white-space: nowrap;
-    }
-    .atelier-brand span { color: #d79a62; }
-    .atelier-links {
-      display: flex;
-      align-items: center;
-      gap: 26px;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-    }
-    .atelier-links a {
-      color: rgba(255,250,242,0.72);
-      transition: color 0.2s ease;
-    }
-    .atelier-links a:hover { color: #fffaf2; }
-    .atelier-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 42px;
-      padding: 0 20px;
-      border-radius: 999px;
-      background: #d79a62;
-      color: #241d18 !important;
-      font-weight: 800;
-      box-shadow: 0 10px 26px -16px rgba(0,0,0,0.55);
-    }
-    .atelier-hero {
-      min-height: calc(100vh - 68px);
-      display: grid;
-      grid-template-columns: minmax(0, 0.9fr) minmax(360px, 1.1fr);
-      align-items: stretch;
-      position: relative;
-    }
-    .atelier-hero-copy {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: clamp(56px, 7vw, 110px) clamp(28px, 6vw, 86px);
-    }
-    .atelier-kicker {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: #8d5d35;
-      margin-bottom: 28px;
-    }
-    .atelier-hero h1 {
-      font-family: 'DM Serif Display', serif;
-      font-style: italic;
-      font-weight: 400;
-      font-size: clamp(62px, 9vw, 132px);
-      line-height: 0.88;
-      letter-spacing: -1px;
-      color: #241d18;
-      max-width: 720px;
-    }
-    .atelier-hero h1 span {
-      display: block;
-      color: #8f3d2e;
-    }
-    .atelier-hero-copy p {
-      max-width: 520px;
-      margin: 30px 0 34px;
-      font-size: clamp(16px, 1.4vw, 19px);
-      line-height: 1.75;
-      color: rgba(36,29,24,0.72);
-    }
-    .atelier-actions {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-    .atelier-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 48px;
-      padding: 0 24px;
-      border-radius: 999px;
-      border: 1px solid rgba(36,29,24,0.18);
-      background: transparent;
-      color: #241d18;
-      font-weight: 800;
-      font-size: 14px;
-      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
-    }
-    .atelier-btn:hover {
-      transform: translateY(-2px);
-      background: rgba(36,29,24,0.06);
-    }
-    .atelier-btn.primary {
-      border-color: #8f3d2e;
-      background: #8f3d2e;
-      color: #fffaf2;
-    }
-    .atelier-hero-media {
-      min-height: 680px;
-      position: relative;
-      overflow: hidden;
+    .bs-section.dark {
       background: #241d18;
-    }
-    .atelier-hero-media video {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .atelier-hero-media::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(to right, rgba(36,29,24,0.38), transparent 38%),
-        linear-gradient(to top, rgba(36,29,24,0.56), transparent 52%);
-      pointer-events: none;
-    }
-    .atelier-media-note {
-      position: absolute;
-      left: 34px;
-      bottom: 34px;
-      z-index: 2;
       color: #fffaf2;
-      max-width: 300px;
     }
-    .atelier-media-note b {
-      display: block;
-      font-family: 'DM Serif Display', serif;
-      font-size: 34px;
-      font-style: italic;
-      font-weight: 400;
-      line-height: 1;
+    .bs-section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #F0635A;
       margin-bottom: 8px;
     }
-    .atelier-media-note span {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: rgba(255,250,242,0.74);
-    }
-    .atelier-section {
-      padding: clamp(70px, 9vw, 120px) clamp(24px, 6vw, 76px);
-    }
-    .atelier-section-head {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 32px;
-      margin-bottom: 36px;
-    }
-    .atelier-section h2 {
+    .bs-section.dark .bs-section-label { color: #F4A27A; }
+    .bs-section-title {
       font-family: 'DM Serif Display', serif;
       font-style: italic;
-      font-size: clamp(40px, 5vw, 76px);
-      font-weight: 400;
-      line-height: 0.98;
-      letter-spacing: -0.7px;
-      color: #241d18;
-    }
-    .atelier-section-head p {
-      max-width: 430px;
-      color: rgba(36,29,24,0.66);
-      line-height: 1.7;
-    }
-    .atelier-services {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      border-top: 1px solid rgba(36,29,24,0.14);
-      border-bottom: 1px solid rgba(36,29,24,0.14);
-    }
-    .atelier-service {
-      padding: 34px 28px;
-      border-right: 1px solid rgba(36,29,24,0.14);
-      min-height: 260px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .atelier-service:last-child { border-right: 0; }
-    .atelier-service span {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 2px;
-      color: #8f3d2e;
-    }
-    .atelier-service h3 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 34px;
-      font-style: italic;
-      font-weight: 400;
+      font-size: 25px;
       line-height: 1;
-      color: #241d18;
-    }
-    .atelier-service p {
-      color: rgba(36,29,24,0.68);
-      line-height: 1.65;
-    }
-    .atelier-service strong {
-      margin-top: auto;
-      color: #241d18;
-      font-size: 14px;
-    }
-    .atelier-gallery {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 22px;
-      align-items: stretch;
-    }
-    .atelier-photo {
-      position: relative;
-      min-height: 520px;
-      overflow: hidden;
-      background: #241d18;
-    }
-    .atelier-photo.small { min-height: 520px; }
-    .atelier-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.55s ease;
-    }
-    .atelier-photo:hover img { transform: scale(1.04); }
-    .atelier-photo label {
-      position: absolute;
-      left: 22px;
-      bottom: 22px;
-      padding: 8px 12px;
-      background: rgba(255,250,242,0.88);
-      color: #241d18;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-    .atelier-process {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1px;
-      background: rgba(36,29,24,0.12);
-      border: 1px solid rgba(36,29,24,0.12);
-    }
-    .atelier-step {
-      background: #f8f3ea;
-      padding: 28px;
-      min-height: 220px;
-    }
-    .atelier-step b {
-      display: block;
-      font-family: 'DM Serif Display', serif;
-      font-style: italic;
-      font-size: 42px;
       font-weight: 400;
-      color: #8f3d2e;
-      margin-bottom: 28px;
+      letter-spacing: -0.3px;
+      margin-bottom: 10px;
     }
-    .atelier-step h3 {
-      font-size: 16px;
-      margin-bottom: 12px;
-      color: #241d18;
+    .bs-section-copy {
+      font-size: 11px;
+      line-height: 1.55;
+      color: rgba(43,37,71,0.66);
     }
-    .atelier-step p {
-      color: rgba(36,29,24,0.66);
-      font-size: 14px;
-      line-height: 1.6;
-    }
-    .atelier-booking {
-      display: grid;
-      grid-template-columns: 0.8fr 1.2fr;
-      gap: 54px;
-      align-items: start;
-      background: #241d18;
-      color: #fffaf2;
-    }
-    .atelier-booking h2 { color: #fffaf2; }
-    .atelier-booking p { color: rgba(255,250,242,0.68); }
-    .atelier-contact-lines {
-      display: grid;
-      gap: 16px;
-      margin-top: 34px;
-      font-size: 15px;
-      color: rgba(255,250,242,0.78);
-    }
-    .atelier-contact-lines a { color: #d79a62; }
-    .atelier-form {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-    .atelier-form label {
+    .bs-section.dark .bs-section-copy { color: rgba(255,250,242,0.7); }
+    .bs-process-list {
       display: grid;
       gap: 8px;
-      font-family: 'JetBrains Mono', monospace;
+      margin-top: 14px;
+    }
+    .bs-process-row {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 10px;
+      align-items: start;
+      padding: 9px 0;
+      border-top: 1px solid rgba(43,37,71,0.08);
+    }
+    .bs-process-row b {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic;
+      font-size: 22px;
+      color: #F0635A;
+      font-weight: 400;
+      line-height: 1;
+    }
+    .bs-process-row strong {
+      display: block;
+      font-size: 11px;
+      margin-bottom: 2px;
+    }
+    .bs-process-row span {
+      display: block;
       font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: rgba(255,250,242,0.66);
+      line-height: 1.45;
+      color: rgba(43,37,71,0.62);
     }
-    .atelier-form label.full { grid-column: 1 / -1; }
-    .atelier-form input,
-    .atelier-form select,
-    .atelier-form textarea {
+    .bs-book-form {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .bs-book-form input,
+    .bs-book-form select,
+    .bs-book-form textarea {
       width: 100%;
-      min-height: 50px;
-      border: 1px solid rgba(255,250,242,0.18);
-      border-radius: 0;
-      background: rgba(255,250,242,0.06);
+      border: 1px solid rgba(255,250,242,0.16);
+      background: rgba(255,250,242,0.08);
       color: #fffaf2;
-      padding: 12px 14px;
-      font: 500 15px 'Inter', sans-serif;
+      border-radius: 6px;
+      padding: 10px 11px;
+      font: 500 11px 'Inter', sans-serif;
       outline: none;
-      transition: border-color 0.2s ease, background 0.2s ease;
     }
-    .atelier-form textarea {
-      min-height: 130px;
+    .bs-book-form textarea {
+      min-height: 70px;
       resize: vertical;
     }
-    .atelier-form input:focus,
-    .atelier-form select:focus,
-    .atelier-form textarea:focus {
-      border-color: #d79a62;
-      background: rgba(255,250,242,0.09);
-    }
-    .atelier-form select option {
-      color: #241d18;
+    .bs-book-form input::placeholder,
+    .bs-book-form textarea::placeholder { color: rgba(255,250,242,0.5); }
+    .bs-book-form select option {
       background: #fffaf2;
+      color: #241d18;
     }
-    .atelier-form button {
-      grid-column: 1 / -1;
+    .bs-book-form button {
       justify-self: start;
       border: 0;
-      min-height: 52px;
-      padding: 0 26px;
       border-radius: 999px;
-      background: #d79a62;
+      background: #F4A27A;
       color: #241d18;
-      font-weight: 900;
-      font-size: 14px;
-      transition: transform 0.2s ease, opacity 0.2s ease;
+      font: 800 11px 'Inter', sans-serif;
+      padding: 10px 16px;
+      cursor: pointer;
     }
-    .atelier-form button:hover {
-      transform: translateY(-2px);
-      opacity: 0.9;
-    }
-    .atelier-final {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 24px;
-      padding: 30px clamp(24px, 6vw, 76px);
-      background: #fffaf2;
-      border-top: 1px solid rgba(36,29,24,0.12);
-      color: rgba(36,29,24,0.68);
-      font-size: 13px;
-    }
-    .atelier-final b {
-      font-family: 'DM Serif Display', serif;
-      font-size: 24px;
-      font-style: italic;
-      font-weight: 400;
-      color: #241d18;
-    }
-    @media (max-width: 1000px) {
-      .atelier-nav { padding: 0 24px; }
-      .atelier-links a:not(.atelier-pill) { display: none; }
-      .atelier-hero { grid-template-columns: 1fr; }
-      .atelier-hero-media { min-height: 58vh; order: -1; }
-      .atelier-section-head,
-      .atelier-booking { grid-template-columns: 1fr; display: grid; }
-      .atelier-services,
-      .atelier-process { grid-template-columns: 1fr 1fr; }
-      .atelier-gallery { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 640px) {
-      .atelier-site a,
-      .atelier-site button,
-      .atelier-site input,
-      .atelier-site textarea,
-      .atelier-site select { cursor: pointer; }
-      .atelier-nav { min-height: 62px; }
-      .atelier-brand { font-size: 23px; }
-      .atelier-links { gap: 10px; }
-      .atelier-pill { min-height: 38px; padding: 0 14px; font-size: 11px; }
-      .atelier-hero h1 { font-size: clamp(54px, 18vw, 86px); }
-      .atelier-hero-copy { padding: 46px 22px 58px; }
-      .atelier-services,
-      .atelier-process,
-      .atelier-form { grid-template-columns: 1fr; }
-      .atelier-service { border-right: 0; border-bottom: 1px solid rgba(36,29,24,0.14); min-height: auto; }
-      .atelier-service:last-child { border-bottom: 0; }
-      .atelier-photo,
-      .atelier-photo.small { min-height: 360px; }
-      .atelier-final { flex-direction: column; align-items: flex-start; }
+    .bs-form-note {
+      min-height: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      letter-spacing: 1px;
+      color: rgba(255,250,242,0.64);
     }
 
     /* ══ Blueprint SVG layer (construction lines drawing in) ══ */
@@ -4289,17 +3979,18 @@
                 <!-- NAV — assembles from off-screen left -->
                 <div class="bs-piece" data-piece="nav" data-from="left">
                   <div class="bs-nav">
-                    <div class="bs-logo">ATELIER<span>.</span></div>
+                    <a class="bs-logo" href="#bs-home" data-phone-target="bs-home">ATELIER<span>.</span></a>
                     <div class="bs-nav-right">
-                      <span class="bs-nav-dot"></span><span class="bs-nav-dot"></span><span class="bs-nav-dot"></span>
-                      <span class="bs-nav-link">Menu</span>
+                      <a class="bs-nav-link" href="#bs-services" data-phone-target="bs-services">Services</a>
+                      <a class="bs-nav-link" href="#bs-process" data-phone-target="bs-process">Fit</a>
+                      <a class="bs-nav-link" href="#bs-booking" data-phone-target="bs-booking">Book</a>
                     </div>
                   </div>
                 </div>
 
                 <!-- HERO video with overlay — drops from above -->
                 <div class="bs-piece bs-piece-hero" data-piece="hero-img" data-from="top">
-                  <div class="bs-hero">
+                  <div class="bs-hero" id="bs-home">
                     <video class="bs-hero-video" autoplay muted loop playsinline>
                       <source src="images/sewing 2.mp4" type="video/mp4">
                     </video>
@@ -4320,19 +4011,20 @@
                 <div class="bs-piece" data-piece="sub" data-from="left">
                   <div class="bs-sub-block">
                     <p class="bs-lead">Every seam placed by hand.<br>Every fit measured twice.</p>
-                    <a class="bs-cta" href="#atelier-booking">Book a fitting<span class="bs-cta-arrow">→</span></a>
+                    <a class="bs-cta" href="#bs-booking" data-phone-target="bs-booking">Book a fitting<span class="bs-cta-arrow">→</span></a>
                   </div>
                 </div>
 
                 <!-- Service cards row -->
                 <div class="bs-piece" data-piece="cards" data-from="bottom">
-                  <div class="bs-cards">
+                  <div class="bs-cards" id="bs-services">
                     <div class="bs-card">
                       <div class="bs-card-img bs-card-img-1"></div>
                       <div class="bs-card-body">
                         <div class="bs-card-tag">BESPOKE · SUITS</div>
                         <div class="bs-card-name">Made to Measure</div>
                       </div>
+                      <p>Suits, trousers, and event pieces built from your measurements.</p>
                     </div>
                     <div class="bs-card">
                       <div class="bs-card-img bs-card-img-2"></div>
@@ -4340,21 +4032,50 @@
                         <div class="bs-card-tag">ALTERATIONS · REPAIR</div>
                         <div class="bs-card-name">Precision Work</div>
                       </div>
+                      <p>Hems, tapers, buttons, linings, and careful mending.</p>
                     </div>
                   </div>
                 </div>
 
-                <!-- Stats strip -->
+                <!-- Process and proof -->
                 <div class="bs-piece" data-piece="stats" data-from="right">
                   <div class="bs-stats">
                     <div class="bs-stat"><b>8y</b><span>crafting</span></div>
                     <div class="bs-stat"><b>400+</b><span>fitted</span></div>
-                    <div class="bs-stat"><b>0</b><span>machines</span></div>
+                    <div class="bs-stat"><b>0</b><span>templates</span></div>
+                  </div>
+                  <div class="bs-section" id="bs-process">
+                    <div class="bs-section-label">The fitting</div>
+                    <div class="bs-section-title">A simple rhythm.</div>
+                    <p class="bs-section-copy">Bring the piece, wear the shoes, and leave with a clear pickup date.</p>
+                    <div class="bs-process-list">
+                      <div class="bs-process-row"><b>01</b><div><strong>Pin and measure</strong><span>Adjustments are marked while the garment is on you.</span></div></div>
+                      <div class="bs-process-row"><b>02</b><div><strong>Stitch and press</strong><span>Finished with matched thread and clean seams.</span></div></div>
+                      <div class="bs-process-row"><b>03</b><div><strong>Final check</strong><span>Try it on before pickup so the fit lands right.</span></div></div>
+                    </div>
                   </div>
                 </div>
 
-                <!-- Footer -->
+                <!-- Booking -->
                 <div class="bs-piece" data-piece="foot" data-from="bottom">
+                  <div class="bs-section dark" id="bs-booking">
+                    <div class="bs-section-label">Appointments</div>
+                    <div class="bs-section-title">Book your fitting.</div>
+                    <p class="bs-section-copy">This demo form works inside the phone and opens an email with your fitting details.</p>
+                    <form class="bs-book-form">
+                      <input name="name" autocomplete="name" placeholder="Name" required>
+                      <input name="email" type="email" autocomplete="email" placeholder="Email" required>
+                      <select name="service" required>
+                        <option value="">Service</option>
+                        <option>Alterations</option>
+                        <option>Made to measure</option>
+                        <option>Repair</option>
+                      </select>
+                      <textarea name="notes" placeholder="What are you bringing in?"></textarea>
+                      <button type="submit">Request appointment</button>
+                      <div class="bs-form-note" aria-live="polite"></div>
+                    </form>
+                  </div>
                   <div class="bs-foot">
                     <span>© 2026 Atelier Studio</span>
                     <span>atelier-stitch.com</span>
@@ -4518,156 +4239,6 @@
   </div>
 
   <div id="light-zone"></div><!-- preserved for JS refs -->
-
-  <!-- LIVE ATELIER SITE: the scroll-built site, fully usable -->
-  <section class="atelier-site" id="atelier-site" aria-label="Atelier Stitch tailoring website">
-    <div class="atelier-nav">
-      <a class="atelier-brand" href="#atelier-site">Atelier<span>Stitch</span></a>
-      <div class="atelier-links">
-        <a href="#atelier-services">Services</a>
-        <a href="#atelier-gallery">Work</a>
-        <a href="#atelier-process">Process</a>
-        <a class="atelier-pill" href="#atelier-booking">Book fitting</a>
-      </div>
-    </div>
-
-    <div class="atelier-hero">
-      <div class="atelier-hero-copy">
-        <div class="atelier-kicker">Bespoke tailoring · alterations · repairs</div>
-        <h1>Atelier <span>Stitch</span></h1>
-        <p>Made-to-measure garments, precise alterations, and quiet repair work for pieces worth keeping. Every appointment is measured, pinned, and finished by hand.</p>
-        <div class="atelier-actions">
-          <a class="atelier-btn primary" href="#atelier-booking">Book a fitting</a>
-          <a class="atelier-btn" href="#atelier-services">View services</a>
-        </div>
-      </div>
-      <div class="atelier-hero-media">
-        <video autoplay muted loop playsinline poster="images/vecteezy_fashion-designer-tailor-or-sewer_7360006.jpg">
-          <source src="images/sewing 2.mp4" type="video/mp4">
-        </video>
-        <div class="atelier-media-note">
-          <b>Measured twice.</b>
-          <span>Finished once, beautifully.</span>
-        </div>
-      </div>
-    </div>
-
-    <section class="atelier-section" id="atelier-services">
-      <div class="atelier-section-head">
-        <h2>Services cut<br>to the occasion.</h2>
-        <p>From everyday hems to event-ready tailoring, the work is practical, polished, and built around the way you actually move.</p>
-      </div>
-      <div class="atelier-services">
-        <article class="atelier-service">
-          <span>01</span>
-          <h3>Alterations</h3>
-          <p>Hems, tapers, waist adjustments, sleeve length, button resets, and small fixes with clean finishing.</p>
-          <strong>From $24</strong>
-        </article>
-        <article class="atelier-service">
-          <span>02</span>
-          <h3>Made to Measure</h3>
-          <p>Suiting, trousers, shirts, and occasion pieces shaped from measurements, fabric choice, and fitting notes.</p>
-          <strong>Consultation required</strong>
-        </article>
-        <article class="atelier-service">
-          <span>03</span>
-          <h3>Repair</h3>
-          <p>Visible and invisible mending for garments you are not ready to lose: seams, patches, linings, and closures.</p>
-          <strong>From $18</strong>
-        </article>
-      </div>
-    </section>
-
-    <section class="atelier-section" id="atelier-gallery">
-      <div class="atelier-section-head">
-        <h2>Cloth, thread,<br>and patience.</h2>
-        <p>Two hands, sharp tools, good fabric, and the small adjustments that turn clothing into something personal.</p>
-      </div>
-      <div class="atelier-gallery">
-        <figure class="atelier-photo">
-          <img src="images/vecteezy_fashion-designer-tailor-or-sewer_7360006.jpg" alt="Tailor measuring and working on a garment">
-          <label>Fittings</label>
-        </figure>
-        <figure class="atelier-photo small">
-          <img src="images/vecteezy_needle-and-thread-with-button-on-material-mending-clothing_76760151.jpeg" alt="Needle, thread, and button on fabric">
-          <label>Mending</label>
-        </figure>
-      </div>
-    </section>
-
-    <section class="atelier-section" id="atelier-process">
-      <div class="atelier-section-head">
-        <h2>A simple fitting<br>rhythm.</h2>
-        <p>Clear steps, honest timing, and no mystery pile behind the counter.</p>
-      </div>
-      <div class="atelier-process">
-        <article class="atelier-step">
-          <b>01</b>
-          <h3>Bring the piece</h3>
-          <p>Arrive with the garment, shoes, and any reference fit you want to match.</p>
-        </article>
-        <article class="atelier-step">
-          <b>02</b>
-          <h3>Pin and measure</h3>
-          <p>We mark the adjustment while you wear it so the final fit follows your posture.</p>
-        </article>
-        <article class="atelier-step">
-          <b>03</b>
-          <h3>Stitch the work</h3>
-          <p>The garment is finished with matching thread, clean seams, and pressed details.</p>
-        </article>
-        <article class="atelier-step">
-          <b>04</b>
-          <h3>Final check</h3>
-          <p>Try it on before pickup and leave with the fit dialed in.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="atelier-section atelier-booking" id="atelier-booking">
-      <div>
-        <div class="atelier-kicker">Appointments</div>
-        <h2>Book your fitting.</h2>
-        <p>Tell us what you are bringing in and when you would like to come by. This form opens your email with the details filled in.</p>
-        <div class="atelier-contact-lines">
-          <span>Open Tue-Sat · 10am-6pm</span>
-          <span>Studio: 214 Thread Lane, Jacksonville</span>
-          <a href="tel:+19045550147">(904) 555-0147</a>
-          <a href="mailto:hello@atelier-stitch.com">hello@atelier-stitch.com</a>
-        </div>
-      </div>
-      <form class="atelier-form" action="mailto:hello@atelier-stitch.com" method="post" enctype="text/plain">
-        <label>Name
-          <input name="name" autocomplete="name" required>
-        </label>
-        <label>Email
-          <input name="email" type="email" autocomplete="email" required>
-        </label>
-        <label>Service
-          <select name="service" required>
-            <option value="">Choose one</option>
-            <option>Alterations</option>
-            <option>Made to measure</option>
-            <option>Repair</option>
-            <option>Not sure yet</option>
-          </select>
-        </label>
-        <label>Preferred date
-          <input name="preferred date" type="date">
-        </label>
-        <label class="full">Notes
-          <textarea name="notes" placeholder="Garment type, deadline, and anything fit-related."></textarea>
-        </label>
-        <button type="submit">Request appointment</button>
-      </form>
-    </section>
-
-    <footer class="atelier-final">
-      <b>AtelierStitch</b>
-      <span>Made to measure. Altered with care. Repaired for another season.</span>
-    </footer>
-  </section>
 
   <!-- PRICING -->
   <section id="pricing">
@@ -6960,24 +6531,52 @@
 
   /* ── BOOT ── */
   {
-    const atelierForm = document.querySelector('.atelier-form');
-    if (atelierForm) {
-      atelierForm.addEventListener('submit', e => {
-        e.preventDefault();
-        const data = new FormData(atelierForm);
-        const subject = 'Fitting request from ' + (data.get('name') || 'Atelier Stitch visitor');
-        const body = [
-          'Name: ' + (data.get('name') || ''),
-          'Email: ' + (data.get('email') || ''),
-          'Service: ' + (data.get('service') || ''),
-          'Preferred date: ' + (data.get('preferred date') || ''),
-          '',
-          'Notes:',
-          data.get('notes') || ''
-        ].join('\n');
-        window.location.href = 'mailto:hello@atelier-stitch.com?subject=' +
-          encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    const phoneSite = document.getElementById('build-site');
+    const buildStageEl = document.getElementById('build-stage');
+    if (phoneSite) {
+      const phoneIsLive = () => buildStageEl && buildStageEl.dataset.phase === '3';
+      const keepPhoneInputInside = e => {
+        if (phoneIsLive()) e.stopPropagation();
+      };
+      phoneSite.addEventListener('wheel', keepPhoneInputInside, { passive: true });
+      phoneSite.addEventListener('touchmove', keepPhoneInputInside, { passive: true });
+
+      phoneSite.querySelectorAll('[data-phone-target]').forEach(link => {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          if (!phoneIsLive()) return;
+          const target = phoneSite.querySelector('#' + link.dataset.phoneTarget);
+          if (!target) return;
+          const siteRect = phoneSite.getBoundingClientRect();
+          const targetRect = target.getBoundingClientRect();
+          phoneSite.scrollTo({
+            top: phoneSite.scrollTop + targetRect.top - siteRect.top - 54,
+            behavior: 'smooth'
+          });
+        });
       });
+
+      const phoneForm = phoneSite.querySelector('.bs-book-form');
+      if (phoneForm) {
+        phoneForm.addEventListener('submit', e => {
+          e.preventDefault();
+          if (!phoneIsLive()) return;
+          const data = new FormData(phoneForm);
+          const note = phoneForm.querySelector('.bs-form-note');
+          if (note) note.textContent = 'Opening email draft...';
+          const subject = 'Fitting request from ' + (data.get('name') || 'Atelier visitor');
+          const body = [
+            'Name: ' + (data.get('name') || ''),
+            'Email: ' + (data.get('email') || ''),
+            'Service: ' + (data.get('service') || ''),
+            '',
+            'Notes:',
+            data.get('notes') || ''
+          ].join('\n');
+          window.location.href = 'mailto:hello@atelier-stitch.com?subject=' +
+            encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+        });
+      }
     }
   }
 
@@ -6986,3 +6585,4 @@
   </script>
 </body>
 </html>
+
