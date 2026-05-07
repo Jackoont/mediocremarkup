@@ -841,10 +841,10 @@
        WHIRLPOOL INTRO — Code symbols spiral into page
        ═══════════════════════════════════════════════ */
     #whirlpool-container {
-      position: absolute;
+      position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      z-index: 2;
+      z-index: 30;
       pointer-events: none;
       display: flex;
       align-items: center;
@@ -963,25 +963,9 @@
       margin-bottom: -2px;
     }
     /* Showcase bottom dissolves into dive via matching color — no visible seam */
-    #video-reveal::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 60vh;
-      background: linear-gradient(to bottom, #FEF9F4 0%, transparent 100%);
-      pointer-events: none; z-index: 8;
-    }
+    #video-reveal::before { display: none; }
     /* Bottom of video-reveal bleeds into pricing */
-    #video-reveal::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 46vh;
-      background:
-        radial-gradient(ellipse 70% 40% at 50% 100%, rgba(244,162,97,0.08) 0%, transparent 68%),
-        linear-gradient(to bottom, transparent 0%, rgba(254,249,244,0.86) 48%, #FEF9F4 100%);
-      pointer-events: none; z-index: 10;
-    }
+    #video-reveal::after { display: none; }
     /* Pricing top absorbs from video-reveal bottom */
     #pricing-top-fade {
       position: absolute;
@@ -1034,29 +1018,9 @@
     #dive-letterbox-top { top: 0; }
     #dive-letterbox-bottom { bottom: 0; }
     /* Edge vignette — soft cream fade at screen edges only */
-    #dive-edge-vignette {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 7;
-      opacity: 0;
-      background:
-        linear-gradient(to right, rgba(254,249,244,0.70) 0%, transparent 14%, transparent 86%, rgba(254,249,244,0.70) 100%),
-        linear-gradient(to bottom, rgba(254,249,244,0.55) 0%, transparent 12%, transparent 88%, rgba(254,249,244,0.55) 100%);
-    }
+    #dive-edge-vignette { display: none; }
     /* Horizon glow — warm coral band at vanishing point */
-    #dive-portal-glow {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 3;
-      opacity: 0;
-      background:
-        radial-gradient(ellipse 80% 12% at 50% 50%,
-          rgba(240,99,90,0.22) 0%,
-          rgba(240,99,90,0.06) 55%,
-          transparent 100%);
-    }
+    #dive-portal-glow { display: none; }
     /* Speed-streak canvas — motion lines flying at viewer */
     #speed-canvas {
       position: absolute;
@@ -1068,15 +1032,7 @@
       opacity: 0;
     }
     /* Shockwave flash layer */
-    #video-clip-mask {
-      position: absolute;
-      inset: 0;
-      background: #fff;
-      opacity: 0;
-      pointer-events: none;
-      z-index: 9;
-      mix-blend-mode: overlay;
-    }
+    #video-clip-mask { display: none; }
     /* Chromatic aberration overlay — splits RGB on impact */
     #dive-chroma {
       position: absolute;
@@ -1217,20 +1173,7 @@
       line-height: 1;
     }
     /* Scan-line flicker overlay */
-    #dive-scanlines {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 7;
-      opacity: 0;
-      background: repeating-linear-gradient(
-        to bottom,
-        transparent 0px,
-        transparent 3px,
-        rgba(43,37,71,0.05) 3px,
-        rgba(43,37,71,0.05) 4px
-      );
-    }
+    #dive-scanlines { display: none; }
     @media (max-width: 900px) {
       #video-reveal { height: 280vh; }
       .video-headline { font-size: clamp(28px, 8vw, 52px); }
@@ -2042,15 +1985,7 @@
 
     /* ── Caption below frame ── */
     #build-caption {
-      position: absolute;
-      bottom: 6vh;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      text-align: center;
-      max-width: 520px;
-      width: 90%;
-      opacity: 0;
-      transition: opacity 0.6s ease, transform 0.6s ease;
+      display: none;
     }
     #build-stage.bs-in #build-caption {
       opacity: 1; transform: translateX(-50%) translateY(0);
