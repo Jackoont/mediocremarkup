@@ -857,7 +857,7 @@
       position: absolute;
       inset: 0;
       width: 100%; height: 100%;
-      opacity: 0.72;
+      opacity: 0.88;
     }
     /* Each orbiting code symbol */
     .wp-sym {
@@ -2555,6 +2555,82 @@
       font-weight: 800;
       white-space: nowrap;
     }
+    .bs-quote {
+      padding: 18px 20px;
+      background: #fffdf8;
+      border-top: 1px solid rgba(22,23,26,0.08);
+    }
+    .bs-quote p {
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: 18px;
+      line-height: 1.2;
+      color: #16171a;
+      margin-bottom: 9px;
+    }
+    .bs-quote span {
+      font-size: 8px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: rgba(22,23,26,0.54);
+      font-weight: 800;
+    }
+    .bs-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: rgba(22,23,26,0.10);
+      border-top: 1px solid rgba(22,23,26,0.08);
+    }
+    .bs-info-card {
+      background: #f5f3ee;
+      padding: 16px 16px;
+    }
+    .bs-info-card b {
+      display: block;
+      font-size: 8px;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: #8f5f2f;
+      margin-bottom: 7px;
+    }
+    .bs-info-card span {
+      display: block;
+      font-size: 10px;
+      line-height: 1.45;
+      color: rgba(22,23,26,0.68);
+    }
+    .bs-mini-cta {
+      padding: 18px 20px 20px;
+      background: #16171a;
+      color: #fffaf2;
+      border-top: 1px solid rgba(255,250,242,0.08);
+    }
+    .bs-mini-cta strong {
+      display: block;
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .bs-mini-cta p {
+      font-size: 10px;
+      line-height: 1.45;
+      color: rgba(255,250,242,0.68);
+      margin-bottom: 12px;
+    }
+    .bs-mini-cta a {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      background: #d0a15e;
+      color: #16171a;
+      padding: 9px 13px;
+      font-size: 8px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      font-weight: 900;
+    }
 
     /* ══ Blueprint SVG layer (construction lines drawing in) ══ */
     .build-svg {
@@ -4222,6 +4298,33 @@
                     <div class="bs-proof"><strong>12 min</strong><span>average booking time saved</span></div>
                     <div class="bs-proof"><strong>4.9</strong><span>client review signal</span></div>
                   </div>
+                  <div class="bs-quote">
+                    <p>"They saved my wedding suit with two days to spare."</p>
+                    <span>Marcus L. / verified client</span>
+                  </div>
+                  <div class="bs-info-grid">
+                    <div class="bs-info-card">
+                      <b>Studio</b>
+                      <span>San Marco by appointment. Easy parking, private fitting room.</span>
+                    </div>
+                    <div class="bs-info-card">
+                      <b>Hours</b>
+                      <span>Tue-Fri 10-6<br>Sat 9-2</span>
+                    </div>
+                    <div class="bs-info-card">
+                      <b>Turnaround</b>
+                      <span>Most alterations in 5-7 days. Rush work quoted up front.</span>
+                    </div>
+                    <div class="bs-info-card">
+                      <b>Guarantee</b>
+                      <span>Final try-on before pickup. Small adjustments included.</span>
+                    </div>
+                  </div>
+                  <div class="bs-mini-cta">
+                    <strong>Have a deadline?</strong>
+                    <p>Send the event date with your request and the studio will confirm what is realistic.</p>
+                    <a href="#bs-booking" data-phone-target="bs-booking">Check availability</a>
+                  </div>
                 </div>
 
                 <!-- Booking -->
@@ -4825,7 +4928,8 @@
     resizeV(); window.addEventListener('resize', resizeV);
 
     const SYMS = ['</', '/>', '{}', '()', '//', '=>', '[]', '&&', '/*', '*/', '<>', '::', '+=', 'fn', 'px', 'vh', 'rem', 'var', 'url', '##'];
-    const N = window.innerWidth < 600 ? 12 : 20;
+    const N = window.innerWidth < 600 ? 18 : 34;
+    const motes = [];
 
     // All symbols are canvas-drawn — no DOM elements, no compositing streaks
     const syms = Array.from({ length: N }, (_, i) => ({
@@ -4840,6 +4944,9 @@
       x: 0, y: 0,
       vx: 0, vy: 0,
       alpha: 0,          // fades in on boot
+      spin: Math.random() * Math.PI * 2,
+      spinV: (Math.random() - 0.5) * 0.08,
+      trail: [],
     }));
 
     // ── STATES: orbit → fall → land ──
@@ -4850,6 +4957,47 @@
     let fallStarted = false;
     let wpT         = 0;
     let dispProgress = 0;
+
+    function spawnMote(x, y, count, color) {
+      for (let i = 0; i < count; i++) {
+        const a = Math.random() * Math.PI * 2;
+        const sp = 0.5 + Math.random() * 3.2;
+        motes.push({
+          x, y,
+          vx: Math.cos(a) * sp,
+          vy: Math.sin(a) * sp - Math.random() * 1.5,
+          r: 0.8 + Math.random() * 2.2,
+          life: 1,
+          decay: 0.018 + Math.random() * 0.028,
+          color: color || (Math.random() < 0.55 ? '#F0635A' : '#F4A261')
+        });
+      }
+    }
+
+    function drawMotes() {
+      for (let i = motes.length - 1; i >= 0; i--) {
+        const m = motes[i];
+        m.vy += 0.025;
+        m.vx *= 0.985;
+        m.vy *= 0.985;
+        m.x += m.vx;
+        m.y += m.vy;
+        m.life -= m.decay;
+        if (m.life <= 0) {
+          motes.splice(i, 1);
+          continue;
+        }
+        vCtx.save();
+        vCtx.globalAlpha = Math.max(0, m.life);
+        vCtx.shadowColor = m.color;
+        vCtx.shadowBlur = 12;
+        vCtx.beginPath();
+        vCtx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+        vCtx.fillStyle = m.color;
+        vCtx.fill();
+        vCtx.restore();
+      }
+    }
 
     // Phone frame anchor points — normalized 0..1, resolved to px when needed
     // These sit on the phone frame edges: corners, notch, sides, bottom bar
@@ -4887,10 +5035,9 @@
     function animWhirlpool(ts) {
       if (wpDone) return;
       wpT = ts * 0.001;
-      vCtx.clearRect(0, 0, VW, VH);  // clean slate every frame — zero streaks
+      vCtx.clearRect(0, 0, VW, VH);
 
       const cx = VW / 2, cy = VH / 2;
-
       const pr = getPhoneRect();
       let fallProg = 0;
       if (pr) {
@@ -4898,14 +5045,32 @@
         const readyY = VH * 0.55;
         fallProg = Math.max(0, Math.min(1, (enterY - pr.top) / (enterY - readyY)));
       }
+      const aura = 0.28 + Math.sin(wpT * 1.4) * 0.08;
+      vCtx.save();
+      vCtx.globalAlpha = Math.max(0, 1 - fallProg * 0.75);
+      for (let ring = 0; ring < 3; ring++) {
+        const rr = 92 + ring * 82 + Math.sin(wpT * (0.8 + ring * 0.18)) * 18;
+        vCtx.beginPath();
+        vCtx.arc(cx, cy, rr, 0, Math.PI * 2);
+        vCtx.strokeStyle = ring === 1 ? `rgba(244,162,97,${aura * 0.32})` : `rgba(240,99,90,${aura * 0.42})`;
+        vCtx.lineWidth = 1;
+        vCtx.setLineDash([2 + ring * 2, 14 - ring * 2]);
+        vCtx.lineDashOffset = -wpT * (24 + ring * 12);
+        vCtx.stroke();
+      }
+      vCtx.restore();
 
       syms.forEach((s, i) => {
         if (s.state === 'done') return;
 
         if (s.state === 'orbit') {
           const angle = s.phase + wpT * s.speed;
-          s.x = cx + Math.cos(angle) * s.r;
-          s.y = cy + Math.sin(angle) * s.r;
+          const breathe = 1 + Math.sin(wpT * 1.6 + i) * 0.08;
+          const wobble = Math.sin(wpT * 2.2 + s.phase) * 18;
+          s.x = cx + Math.cos(angle) * (s.r * breathe + wobble);
+          s.y = cy + Math.sin(angle) * (s.r * breathe) + Math.cos(angle * 2) * 10;
+          s.spin += s.spinV;
+          if (Math.random() < 0.018) spawnMote(s.x, s.y, 1, s.color);
 
           // Fade in on boot
           s.alpha = Math.min(1, s.alpha + 0.04);
@@ -4916,6 +5081,7 @@
             const kickSpeed = 2.5 + Math.random() * 3;
             s.vx = Math.cos(s.phase) * kickSpeed * 0.5 + (Math.random() - 0.5) * 2;
             s.vy = -2 - Math.random() * 3;
+            spawnMote(s.x, s.y, 5, s.color);
           }
 
         } else if (s.state === 'fall') {
@@ -4934,11 +5100,15 @@
           s.vy += dy * homing + 0.35;
           s.vx *= 0.91;
           s.vy *= 0.91;
+          s.trail.push({ x: s.x, y: s.y, a: s.alpha });
+          if (s.trail.length > 8) s.trail.shift();
           s.x += s.vx;
           s.y += s.vy;
+          s.spin += s.spinV * 2.5;
 
           if (dist < 16) {
             s.state = 'impact';
+            spawnMote(s.x, s.y, 14, s.color);
             const pf = document.querySelector('.phone-frame');
             if (pf) {
               pf.style.transition = 'box-shadow 0.05s';
@@ -4949,19 +5119,39 @@
 
         } else if (s.state === 'impact') {
           s.alpha -= 0.025;
+          s.spin += s.spinV * 3;
           if (s.alpha <= 0) { s.alpha = 0; s.state = 'done'; return; }
         }
 
-        // Draw on canvas — cleared every frame so no trails possible
+        if (s.trail.length && s.state !== 'orbit') {
+          s.trail.forEach((pt, ti) => {
+            const ta = (ti / s.trail.length) * s.alpha * 0.20;
+            vCtx.save();
+            vCtx.globalAlpha = ta;
+            vCtx.font = `600 ${Math.max(8, s.fsize * (0.58 + ti / s.trail.length * 0.28))}px 'JetBrains Mono', monospace`;
+            vCtx.fillStyle = s.color;
+            vCtx.textAlign = 'center';
+            vCtx.textBaseline = 'middle';
+            vCtx.fillText(s.text, pt.x, pt.y);
+            vCtx.restore();
+          });
+        }
+
         vCtx.save();
         vCtx.globalAlpha = s.alpha;
+        vCtx.translate(s.x, s.y);
+        vCtx.rotate(s.spin);
+        vCtx.shadowColor = s.color;
+        vCtx.shadowBlur = s.state === 'fall' ? 22 : 12;
         vCtx.font = `600 ${s.fsize}px 'JetBrains Mono', monospace`;
         vCtx.fillStyle = s.color;
         vCtx.textAlign = 'center';
         vCtx.textBaseline = 'middle';
-        vCtx.fillText(s.text, s.x, s.y);
+        vCtx.fillText(s.text, 0, 0);
         vCtx.restore();
       });
+
+      drawMotes();
 
       // All done → fire flicker
       if (!wpDone && syms.every(s => s.state === 'done')) {
