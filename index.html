@@ -2190,8 +2190,9 @@
     /* ── Site nav ── */
     .bs-nav {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 18px 22px;
+      padding: 15px 18px;
       border-bottom: 1px solid rgba(43,37,71,0.08);
+      background: rgba(254,249,244,0.92);
     }
     .bs-logo {
       font-family: 'DM Serif Display', serif;
@@ -2200,18 +2201,26 @@
       line-height: 1;
     }
     .bs-logo span { color: #F0635A; font-weight: 400; }
-    .bs-nav-right { display: flex; align-items: center; gap: 10px; }
+    .bs-nav-right { display: flex; align-items: center; gap: 9px; }
     .bs-nav-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(43,37,71,0.45); }
     .bs-nav-link {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
-      color: #2B2547; margin-left: 6px;
+      font-size: 7.5px; letter-spacing: 1.4px; text-transform: uppercase;
+      color: rgba(43,37,71,0.68);
+      white-space: nowrap;
+    }
+    .bs-nav-book {
+      background: #2B2547;
+      color: #FEF9F4;
+      padding: 6px 9px;
+      border-radius: 999px;
+      font-weight: 700;
     }
 
     /* ── Hero ── */
     .bs-hero {
       position: relative;
-      height: 200px;
+      height: 186px;
       overflow: hidden;
       background: #14101A;
     }
@@ -2249,8 +2258,8 @@
     }
     .bs-hero-content {
       position: absolute;
-      left: 22px; right: 22px; bottom: 22px;
-      display: flex; flex-direction: column; gap: 10px;
+      left: 20px; right: 20px; bottom: 18px;
+      display: flex; flex-direction: column; gap: 9px;
       z-index: 5;
     }
     .bs-eyebrow {
@@ -2266,11 +2275,17 @@
     .bs-title {
       font-family: 'DM Serif Display', serif;
       font-style: italic; font-weight: 400;
-      font-size: 36px; line-height: 0.95; letter-spacing: -1.2px;
+      font-size: 34px; line-height: 0.95; letter-spacing: -1px;
       color: #fff;
       margin: 0;
     }
     .bs-title em { color: #F4A27A; font-style: italic; }
+    .bs-hero-copy {
+      max-width: 250px;
+      font-size: 9.5px;
+      line-height: 1.45;
+      color: rgba(255,255,255,0.82);
+    }
     .bs-hero-meta {
       position: absolute;
       bottom: 14px; right: 18px;
@@ -2289,26 +2304,31 @@
 
     /* ── Sub block: lead + CTA ── */
     .bs-sub-block {
-      padding: 22px 22px 18px;
+      padding: 16px 18px 14px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
     }
     .bs-lead {
       font-family: 'DM Serif Display', serif;
-      font-style: italic; font-size: 17px; line-height: 1.3;
+      font-style: italic; font-size: 16px; line-height: 1.2;
       color: #2B2547;
       letter-spacing: -0.3px;
-      margin: 0 0 14px;
+      margin: 0;
     }
     .bs-lead em { color: #F0635A; font-style: italic; }
     .bs-cta {
       display: inline-flex; align-items: center; gap: 6px;
       background: #F0635A; color: #fff;
       font-family: 'Inter', sans-serif;
-      font-size: 11px; font-weight: 600; letter-spacing: 0.3px;
-      padding: 11px 18px;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.2px;
+      padding: 10px 13px;
       border-radius: 999px;
       box-shadow: 0 6px 18px -4px rgba(240,99,90,0.55);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       cursor: pointer;
+      white-space: nowrap;
     }
     .bs-cta-arrow { transition: transform 0.25s ease; }
     .build-site.bs-cta-hovered .bs-cta {
@@ -2320,9 +2340,9 @@
     /* ── Featured project: image + caption side-by-side ── */
     .bs-feature {
       display: grid; grid-template-columns: 160px 1fr; gap: 0;
-      margin: 0 22px 18px;
+      margin: 0 18px 12px;
       background: #fff;
-      border-radius: 10px;
+      border-radius: 8px;
       overflow: hidden;
       box-shadow: 0 6px 22px -10px rgba(43,37,71,0.25);
       border: 1px solid rgba(43,37,71,0.06);
@@ -2331,10 +2351,10 @@
       background-image: url("images/vecteezy_fashion-designer-tailor-or-sewer_7360006.jpg");
       background-size: cover;
       background-position: 60% 50%;
-      min-height: 116px;
+      min-height: 98px;
     }
     .bs-feature-body {
-      padding: 12px 14px;
+      padding: 11px 13px;
       display: flex; flex-direction: column; justify-content: center; gap: 6px;
     }
     .bs-feature-tag {
@@ -2344,9 +2364,14 @@
     }
     .bs-feature-name {
       font-family: 'DM Serif Display', serif;
-      font-style: italic; font-size: 16px;
+      font-style: italic; font-size: 15px;
       color: #2B2547; line-height: 1.1;
       letter-spacing: -0.3px;
+    }
+    .bs-feature-copy {
+      font-size: 8.5px;
+      line-height: 1.35;
+      color: rgba(43,37,71,0.62);
     }
     .bs-feature-meta {
       display: flex; gap: 6px;
@@ -2359,15 +2384,15 @@
     /* ── Services strip ── */
     .bs-services {
       display: grid; grid-template-columns: repeat(3, 1fr);
-      margin: 0 22px 18px;
+      margin: 0 18px 12px;
       background: rgba(43,37,71,0.03);
       border: 1px solid rgba(43,37,71,0.06);
-      border-radius: 10px;
+      border-radius: 8px;
       overflow: hidden;
     }
     .bs-service {
       display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
-      padding: 12px 12px 14px;
+      padding: 10px 10px 11px;
       border-right: 1px solid rgba(43,37,71,0.06);
     }
     .bs-service:last-child { border-right: none; }
@@ -2378,57 +2403,43 @@
     }
     .bs-service-t {
       font-family: 'DM Serif Display', serif;
-      font-style: italic; font-size: 14px;
+      font-style: italic; font-size: 13px;
       color: #2B2547; line-height: 1;
       margin-top: 2px;
     }
     .bs-service-s {
       font-family: 'Inter', sans-serif;
-      font-size: 8.5px;
+      font-size: 8px;
       color: rgba(43,37,71,0.6);
     }
 
     /* ── Detail card: testimonial + button image ── */
     .bs-detail {
-      display: grid; grid-template-columns: 120px 1fr; gap: 0;
-      margin: 0 22px 18px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px;
+      margin: 0 18px 12px;
       background: #FBF6EE;
-      border-radius: 10px;
+      border-radius: 8px;
       overflow: hidden;
       border: 1px solid rgba(43,37,71,0.06);
-      min-height: 86px;
+      padding: 7px;
     }
     .bs-detail-img {
       background-image: url("images/vecteezy_needle-and-thread-with-button-on-material-mending-clothing_76760151.jpeg");
       background-size: cover;
       background-position: center;
       position: relative;
+      min-height: 74px;
+      border-radius: 6px;
+      overflow: hidden;
     }
-    .bs-detail-img::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(90deg, transparent 70%, rgba(251,246,238,0.6) 100%);
-    }
-    .bs-detail-body {
-      padding: 12px 14px;
-      display: flex; flex-direction: column; justify-content: center; gap: 6px;
-    }
-    .bs-detail-quote {
-      font-family: 'DM Serif Display', serif;
-      font-style: italic; font-size: 12.5px; line-height: 1.35;
-      color: #2B2547;
-      letter-spacing: -0.2px;
-    }
-    .bs-detail-author {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 7.5px; letter-spacing: 1.2px;
-      color: rgba(43,37,71,0.55);
-    }
+    .bs-detail-img:nth-child(2) { background-image: url("images/meric-dagli-7NBO76G5JsE-unsplash.jpg"); }
+    .bs-detail-img:nth-child(3) { background-image: url("images/rikonavt-oEWdQsbRVZk-unsplash.jpg"); }
+    .bs-detail-img::after { content: attr(data-label); position: absolute; left: 7px; bottom: 7px; right: 7px; font-family: 'JetBrains Mono', monospace; font-size: 6.5px; letter-spacing: 1px; color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,.55); text-transform: uppercase; }
 
     /* ── Stats strip ── */
     .bs-stats {
       display: grid; grid-template-columns: repeat(3, 1fr);
-      padding: 18px 22px;
+      padding: 12px 18px;
       border-top: 1px solid rgba(43,37,71,0.06);
       border-bottom: 1px solid rgba(43,37,71,0.06);
       background: rgba(43,37,71,0.02);
@@ -2441,7 +2452,7 @@
     .bs-stat b {
       font-family: 'DM Serif Display', serif;
       font-style: italic; font-weight: 400;
-      font-size: 22px; color: #F0635A;
+      font-size: 19px; color: #F0635A;
       line-height: 1;
     }
     .bs-stat span {
@@ -2453,9 +2464,9 @@
     /* ── Footer ── */
     .bs-foot {
       display: flex; justify-content: space-between;
-      padding: 14px 22px;
+      padding: 12px 18px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 8px; letter-spacing: 1.5px;
+      font-size: 7.5px; letter-spacing: 1.3px;
       color: rgba(43,37,71,0.55);
     }
 
@@ -3993,7 +4004,9 @@
                   <div class="bs-nav">
                     <div class="bs-logo">Atelier<span>&nbsp;Bond</span></div>
                     <div class="bs-nav-right">
-                      <span class="bs-nav-link">Menu</span>
+                      <span class="bs-nav-link">Work</span>
+                      <span class="bs-nav-link">Services</span>
+                      <span class="bs-nav-link bs-nav-book">Book</span>
                     </div>
                   </div>
                 </div>
@@ -4011,8 +4024,9 @@
                     <div class="bs-hero-grain"></div>
                     <div class="bs-hero-overlay"></div>
                     <div class="bs-hero-content">
-                      <span class="bs-eyebrow">EST 1986 · ST. JOHNS, FL</span>
+                      <span class="bs-eyebrow">MASTER TAILORING · ST. JOHNS, FL</span>
                       <h1 class="bs-title">Tailored.<br><em>Not&nbsp;adjusted.</em></h1>
+                      <p class="bs-hero-copy">Bespoke garments, precision alterations, and heirloom repairs from an appointment-only atelier.</p>
                     </div>
                     <div class="bs-hero-meta">
                       <span class="bs-meta-k">BY APPT</span>
@@ -4024,8 +4038,8 @@
                 <!-- Lead + CTA -->
                 <div class="bs-piece" data-piece="sub" data-from="left">
                   <div class="bs-sub-block">
-                    <p class="bs-lead">Three generations of hands.<br>One <em>well-fitted</em> jacket at a time.</p>
-                    <a class="bs-cta">Book a fitting<span class="bs-cta-arrow">→</span></a>
+                    <p class="bs-lead">Three generations of hands.<br>One <em>exact</em> silhouette.</p>
+                    <a class="bs-cta">Reserve fitting<span class="bs-cta-arrow">→</span></a>
                   </div>
                 </div>
 
@@ -4034,10 +4048,11 @@
                   <div class="bs-feature">
                     <div class="bs-feature-img"></div>
                     <div class="bs-feature-body">
-                      <div class="bs-feature-tag">THE ATELIER · NO. 04</div>
-                      <div class="bs-feature-name">A wool blazer,<br>re-shouldered.</div>
+                      <div class="bs-feature-tag">FEATURED WORK · NO. 04</div>
+                      <div class="bs-feature-name">A wool blazer,<br>re-shouldered by hand.</div>
+                      <div class="bs-feature-copy">Canvas preserved. Collar reset. Sleeves balanced to the client.</div>
                       <div class="bs-feature-meta">
-                        <span>14 days</span><span>·</span><span>by hand</span>
+                        <span>14 days</span><span>·</span><span>private fitting</span>
                       </div>
                     </div>
                   </div>
@@ -4049,12 +4064,12 @@
                     <div class="bs-service">
                       <span class="bs-service-i">01</span>
                       <span class="bs-service-t">Bespoke</span>
-                      <span class="bs-service-s">made for you</span>
+                      <span class="bs-service-s">from $1,800</span>
                     </div>
                     <div class="bs-service">
                       <span class="bs-service-i">02</span>
                       <span class="bs-service-t">Alterations</span>
-                      <span class="bs-service-s">cut, taken, let</span>
+                      <span class="bs-service-s">48h rush</span>
                     </div>
                     <div class="bs-service">
                       <span class="bs-service-i">03</span>
@@ -4064,31 +4079,29 @@
                   </div>
                 </div>
 
-                <!-- Detail card: needle + button image -->
+                <!-- Detail gallery: real textile proof -->
                 <div class="bs-piece" data-piece="detail" data-from="left">
                   <div class="bs-detail">
-                    <div class="bs-detail-img"></div>
-                    <div class="bs-detail-body">
-                      <div class="bs-detail-quote">"They re-set every button by hand. Even the spares."</div>
-                      <div class="bs-detail-author">— M. Reyes, client since 2009</div>
-                    </div>
+                    <div class="bs-detail-img" data-label="button work"></div>
+                    <div class="bs-detail-img" data-label="cloth library"></div>
+                    <div class="bs-detail-img" data-label="final press"></div>
                   </div>
                 </div>
 
-                <!-- Stats strip -->
+                <!-- Trust strip -->
                 <div class="bs-piece" data-piece="stats" data-from="right">
                   <div class="bs-stats">
                     <div class="bs-stat"><b>39y</b><span>open</span></div>
-                    <div class="bs-stat"><b>4,200</b><span>fittings</span></div>
-                    <div class="bs-stat"><b>0</b><span>off-rack</span></div>
+                    <div class="bs-stat"><b>4.9</b><span>rating</span></div>
+                    <div class="bs-stat"><b>24h</b><span>reply</span></div>
                   </div>
                 </div>
 
                 <!-- Footer -->
                 <div class="bs-piece" data-piece="foot" data-from="bottom">
                   <div class="bs-foot">
-                    <span>© 2026 Atelier Bond</span>
-                    <span>atelierbond.co</span>
+                    <span>Tue-Sat · 10-6</span>
+                    <span>hello@atelierbond.co</span>
                   </div>
                 </div>
 
@@ -4154,14 +4167,14 @@
                   <span class="ct-tab">style.css</span>
                   <span class="ct-tab-status">● compile</span>
                 </div>
-                <pre id="code-stream"><span class="ct-line"><span class="ct-num">01</span><span class="ct-content"><span class="ct-tag">&lt;section</span> <span class="ct-attr">class</span>=<span class="ct-str">"hero"</span><span class="ct-tag">&gt;</span></span></span>
-<span class="ct-line"><span class="ct-num">02</span><span class="ct-content">  <span class="ct-tag">&lt;img</span> <span class="ct-attr">src</span>=<span class="ct-str">"casa.jpg"</span><span class="ct-tag">/&gt;</span></span></span>
-<span class="ct-line"><span class="ct-num">03</span><span class="ct-content">  <span class="ct-tag">&lt;h1&gt;</span><span class="ct-text">Spaces worth keeping.</span><span class="ct-tag">&lt;/h1&gt;</span></span></span>
+                <pre id="code-stream"><span class="ct-line"><span class="ct-num">01</span><span class="ct-content"><span class="ct-tag">&lt;section</span> <span class="ct-attr">class</span>=<span class="ct-str">"atelier-home"</span><span class="ct-tag">&gt;</span></span></span>
+<span class="ct-line"><span class="ct-num">02</span><span class="ct-content">  <span class="ct-tag">&lt;video</span> <span class="ct-attr">src</span>=<span class="ct-str">"sewing.mp4"</span> <span class="ct-attr">autoplay</span><span class="ct-tag">&gt;</span><span class="ct-tag">&lt;/video&gt;</span></span></span>
+<span class="ct-line"><span class="ct-num">03</span><span class="ct-content">  <span class="ct-tag">&lt;h1&gt;</span><span class="ct-text">Tailored. Not adjusted.</span><span class="ct-tag">&lt;/h1&gt;</span></span></span>
 <span class="ct-line"><span class="ct-num">04</span><span class="ct-content"><span class="ct-tag">&lt;/section&gt;</span></span></span>
 <span class="ct-line"><span class="ct-num">05</span><span class="ct-content"></span></span>
-<span class="ct-line"><span class="ct-num">06</span><span class="ct-content"><span class="ct-sel">.hero</span> {</span></span>
+<span class="ct-line"><span class="ct-num">06</span><span class="ct-content"><span class="ct-sel">.atelier-home</span> {</span></span>
 <span class="ct-line"><span class="ct-num">07</span><span class="ct-content">  <span class="ct-prop">display</span>: <span class="ct-val">grid</span>;</span></span>
-<span class="ct-line"><span class="ct-num">08</span><span class="ct-content">  <span class="ct-prop">aspect-ratio</span>: <span class="ct-val">4 / 5</span>;</span></span>
+<span class="ct-line"><span class="ct-num">08</span><span class="ct-content">  <span class="ct-prop">grid-template-rows</span>: <span class="ct-val">auto 1fr</span>;</span></span>
 <span class="ct-line"><span class="ct-num">09</span><span class="ct-content">  <span class="ct-prop">background</span>: <span class="ct-val">#FEF9F4</span>;</span></span>
 <span class="ct-line"><span class="ct-num">10</span><span class="ct-content">}</span></span>
 <span class="ct-line"><span class="ct-num">11</span><span class="ct-content"></span></span>
@@ -5387,6 +5400,7 @@
     function startCursorDemo() {
       if (!fakeCursor || !buildSite) return;
       clearCursorTimers();
+      fakeCursor.style.opacity = '1';
       const moveTo = (selector, after, withTap) => {
         cursorTimers.push(setTimeout(() => {
           const target = buildSite.querySelector(selector);
