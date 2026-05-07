@@ -2218,9 +2218,8 @@
        NEW ASSEMBLY SYSTEM — Iron Man build
        ══════════════════════════════════════ */
 
-    /* Build layers — default hidden, fade in via .bl-show */
-    .build-layer { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity 0.55s ease; }
-    .build-layer.bl-show { opacity: 1; }
+    /* Build layers — opacity controlled directly by JS for scrub precision */
+    .build-layer { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: none; }
 
     /* The base "site" — fills the screen, parts assemble in */
     .build-site {
@@ -2297,17 +2296,15 @@
     }
     #build-stage[data-phase="3"] .build-site::-webkit-scrollbar { display: none; }
 
-    /* Each piece of the site lives off-screen until JS fires .bs-piece-in */
+    /* Each piece of the site lives off-screen until scroll drives it in */
     .bs-piece {
       position: relative;
       opacity: 0;
-      will-change: transform, opacity, filter;
-      filter: blur(8px);
+      will-change: transform, opacity, filter, clip-path;
+      filter: blur(4px);
       z-index: 2;
-      transition:
-        transform 0.78s cubic-bezier(0.16,1,0.3,1),
-        opacity   0.45s ease-out,
-        filter    0.45s ease-out;
+      /* No CSS transition — JS drives these directly for scrub precision */
+      transition: none;
     }
     .bs-piece[data-piece="nav"] { grid-area: nav; z-index: 6; }
     .bs-piece[data-piece="hero-img"] { grid-area: hero; }
@@ -2315,30 +2312,39 @@
     .bs-piece[data-piece="cards"] { grid-area: cards; }
     .bs-piece[data-piece="stats"] { grid-area: stats; }
     .bs-piece[data-piece="foot"] { grid-area: foot; }
-    .bs-piece[data-from="left"]   { transform: translate3d(-118%, 10px, 0) rotateY(-16deg) scale(0.96); }
-    .bs-piece[data-from="right"]  { transform: translate3d(118%, 10px, 0)  rotateY(16deg) scale(0.96); }
-    .bs-piece[data-from="top"]    { transform: translate3d(0, -128%, 0) rotateX(24deg) scale(1.08); }
-    .bs-piece[data-from="bottom"] { transform: translate3d(0, 128%, 0)  rotateX(-22deg) scale(0.96); }
+    /* Ink-sweep: pieces reveal via clip-path wipe from left, driven by JS */
     .bs-piece.bs-piece-in {
-      transform: translate3d(0,0,0) rotate(0) scale(1);
       opacity: 1;
       filter: blur(0);
     }
 
-    /* When a piece "lands" — micro overshoot bloom */
+    /* Piece ink-line: a hairline that sweeps across just before the piece reveals */
+    .bs-piece-ink {
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, transparent, rgba(240,99,90,0.9) 40%, rgba(244,162,97,0.7) 60%, transparent);
+      z-index: 10;
+      pointer-events: none;
+      opacity: 0;
+      box-shadow: 0 0 12px 3px rgba(240,99,90,0.45);
+      will-change: left, opacity;
+    }
+
+    /* When a piece fully arrives — brief glow trace on its border */
     .bs-piece.bs-piece-land::after {
       content: '';
-      position: absolute; inset: -2px;
-      border: 1.5px solid #b1874d;
+      position: absolute; inset: -1px;
+      border: 1px solid rgba(240,99,90,0.5);
       border-radius: 3px;
       opacity: 1;
       pointer-events: none;
-      animation: pieceBloom 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
+      animation: pieceBloom 0.9s cubic-bezier(0.16,1,0.3,1) forwards;
     }
     @keyframes pieceBloom {
-      0%   { opacity: 1;   transform: scale(1);    box-shadow: 0 0 0 0 rgba(177,135,77,0.48); }
-      60%  { opacity: 0.55; transform: scale(1.04); box-shadow: 0 0 30px 4px rgba(177,135,77,0.16); }
-      100% { opacity: 0;   transform: scale(1.07); box-shadow: 0 0 50px 8px rgba(177,135,77,0); }
+      0%   { opacity: 0.8; transform: scale(1);    box-shadow: 0 0 0 0 rgba(240,99,90,0.4); }
+      50%  { opacity: 0.4; transform: scale(1.01); box-shadow: 0 0 22px 4px rgba(240,99,90,0.12); }
+      100% { opacity: 0;   transform: scale(1.03); box-shadow: 0 0 40px 8px rgba(240,99,90,0); }
     }
 
     /* ── Site nav ── */
@@ -5170,17 +5176,33 @@
     }, { passive: true });
   }
 
-  /* ── 2. HERO CONSTELLATION — tiny reactive texture, hero-visible only ── */
+  /* ── 2. HERO CONSTELLATION — falls on scroll, converges into phone, triggers flicker ── */
   {
     const canvas = document.getElementById('particle-canvas');
     const ctx = canvas.getContext('2d');
     const hero = document.getElementById('hero');
+    const showcase = document.getElementById('showcase');
     let W, H;
     const resize = () => { W=canvas.width=canvas.offsetWidth; H=canvas.height=canvas.offsetHeight; };
     resize(); window.addEventListener('resize', resize);
     let particles=[], mouseX=-9999, mouseY=-9999;
-    const SYM_POOL = ['</', '/>', '{}', '=>', '[]', '//', 'fn', 'px', '&&'];
-    const N_PARTICLES = 32;
+    const SYM_POOL = ['</', '/>', '{}', '=>', '[]', '//', 'fn', 'px', '&&', '{', '}', '()', '/*', '*/'];
+    const N_PARTICLES = 42;
+
+    // scrollRatio: 0 = top of hero, 1 = showcase fully visible
+    let scrollRatio = 0;
+    let convergeFired = false;
+
+    function getScrollRatio() {
+      if (!hero || !showcase) return 0;
+      const heroRect = hero.getBoundingClientRect();
+      const scRect = showcase.getBoundingClientRect();
+      // 0 when hero top is at viewport top, 1 when showcase center is at viewport center
+      const total = scRect.top - heroRect.top;
+      const gone  = -heroRect.top;
+      return Math.max(0, Math.min(1, gone / (total || 1)));
+    }
+
     const initP = () => {
       particles=[];
       for(let i=0;i<N_PARTICLES;i++) {
@@ -5190,14 +5212,15 @@
           x:baseX, y:baseY, baseX, baseY,
           vx:(Math.random()-0.5)*0.03, vy:(Math.random()-0.5)*0.03,
           sym: SYM_POOL[Math.floor(Math.random()*SYM_POOL.length)],
-          fs: 6 + Math.random() * 2.5,
+          fs: 6 + Math.random() * 3,
           color:['#F0635A','#F4A261'][Math.floor(Math.random()*2)],
           alpha:0.12 + Math.random() * 0.10,
           drift:0.2 + Math.random() * 0.3,
           twinkle: Math.random() * Math.PI * 2,
           dot: 1.1 + Math.random() * 1.4,
-          // Pre-assign a fixed neighbor for O(n) connections instead of O(n²)
           neighborIdx: Math.floor(Math.random() * N_PARTICLES),
+          // fall offset — slight variation so they don't fall in lockstep
+          fallPhase: Math.random() * Math.PI * 2,
         });
       }
     };
@@ -5209,41 +5232,97 @@
     });
     hero.addEventListener('mouseleave', () => { mouseX = -9999; mouseY = -9999; });
 
+    // Update scrollRatio on scroll
+    window.addEventListener('scroll', () => {
+      scrollRatio = getScrollRatio();
+    }, { passive: true });
+
     let heroRaf = null, heroVisible = false;
     function drawP(){
       if (!heroVisible) { heroRaf = null; return; }
       heroRaf = requestAnimationFrame(drawP);
       ctx.clearRect(0,0,W,H);
       const now = performance.now() * 0.001;
+      const sr = scrollRatio;
+
+      // As scroll increases: particles fall faster + grow bigger
+      const fallStrength = sr * 2.8;        // extra downward pull (0→2.8)
+      const sizeBoost    = 1 + sr * 3.2;    // particles grow up to 4.2× base size
+      const alphaBoost   = 1 + sr * 1.4;    // become more visible
+
+      // Convergence target: center of where the phone sits in #showcase
+      // We estimate it as just below hero bottom center
+      const convergeX = W * 0.5;
+      const convergeY = H * 1.05; // just below canvas edge (they exit toward phone)
+      const convergeStrength = Math.max(0, (sr - 0.55) / 0.45); // 0→1 in final 45% of scroll
+
+      // Fire showcase flicker sequence when fully converged
+      if (convergeStrength > 0.88 && !convergeFired) {
+        convergeFired = true;
+        // Signal showcase to begin flicker if not already done
+        window._constellationConverged = true;
+        document.dispatchEvent(new CustomEvent('constellation-converged'));
+      }
+      if (sr < 0.5) convergeFired = false;
+
       particles.forEach((p, i)=>{
         const mdx = p.x - mouseX, mdy = p.y - mouseY;
         const md  = Math.sqrt(mdx*mdx + mdy*mdy) || 1;
-        if (md < 120) { const f=(120-md)/120*0.08; p.vx+=(mdx/md)*f; p.vy+=(mdy/md)*f; }
+        if (md < 120 && sr < 0.5) { const f=(120-md)/120*0.08; p.vx+=(mdx/md)*f; p.vy+=(mdy/md)*f; }
+
+        // Base drift
         p.vx += (p.baseX-p.x)*0.00018 + Math.sin(now+i)*0.0008*p.drift;
         p.vy += (p.baseY-p.y)*0.00018 + Math.cos(now*1.2+i)*0.0008*p.drift;
-        p.vx *= 0.985; p.vy *= 0.985;
+
+        // Gravity — particles fall as hero scrolls away
+        p.vy += fallStrength * 0.018 * (0.7 + Math.sin(p.fallPhase + now * 0.3) * 0.3);
+
+        // Convergence pull toward phone
+        if (convergeStrength > 0) {
+          const cx = convergeX - p.x, cy = convergeY - p.y;
+          const cd = Math.sqrt(cx*cx + cy*cy) || 1;
+          const cf = convergeStrength * convergeStrength * 0.12;
+          p.vx += (cx/cd) * cf;
+          p.vy += (cy/cd) * cf;
+        }
+
+        p.vx *= 0.982; p.vy *= 0.982;
         p.x += p.vx; p.y += p.vy;
+
+        // Wrap particles vertically if they haven't converged yet
+        if (convergeStrength < 0.6 && p.y > H + 40) { p.y = -10; p.baseY = Math.random() * H * 0.6; }
+        if (p.y < -40 && convergeStrength < 0.1) { p.y = H + 10; }
+
         const twinkle = 0.82 + Math.sin(now*1.5+p.twinkle)*0.18;
+        const curAlpha = Math.min(0.9, p.alpha * alphaBoost * twinkle);
+        const curDot   = p.dot * sizeBoost * (1 - convergeStrength * 0.4);
+        const curFs    = p.fs  * sizeBoost * (1 - convergeStrength * 0.3);
+
+        // Fade out as they converge into phone
+        const convergeAlpha = convergeStrength > 0.6 ? Math.max(0, 1 - (convergeStrength - 0.6) / 0.4) : 1;
+
         ctx.beginPath();
-        ctx.arc(p.x,p.y,p.dot,0,Math.PI*2);
-        ctx.globalAlpha = p.alpha*1.2*twinkle;
+        ctx.arc(p.x,p.y,curDot,0,Math.PI*2);
+        ctx.globalAlpha = curAlpha * convergeAlpha;
         ctx.fillStyle = p.color;
         ctx.fill();
         if (i%3===0) {
-          ctx.globalAlpha=p.alpha*0.7*twinkle;
-          ctx.font=`600 ${p.fs}px 'JetBrains Mono',monospace`;
+          ctx.globalAlpha = p.alpha * 0.7 * twinkle * convergeAlpha * alphaBoost;
+          ctx.font=`600 ${curFs}px 'JetBrains Mono',monospace`;
           ctx.fillStyle=p.color;
           ctx.textAlign='center'; ctx.textBaseline='middle';
           ctx.fillText(p.sym,p.x+10,p.y-8);
         }
-        // O(n) connections — each particle connects to its one pre-assigned neighbor
-        const nb = particles[p.neighborIdx];
-        if (nb) {
-          const dx=p.x-nb.x, dy=p.y-nb.y, d=Math.sqrt(dx*dx+dy*dy);
-          if (d<160) {
-            ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(nb.x,nb.y);
-            ctx.strokeStyle='rgba(240,99,90,0.14)';
-            ctx.globalAlpha=(1-d/160)*0.5; ctx.lineWidth=0.5; ctx.stroke();
+        // Connections — fade when converging
+        if (convergeStrength < 0.5) {
+          const nb = particles[p.neighborIdx];
+          if (nb) {
+            const dx=p.x-nb.x, dy=p.y-nb.y, d=Math.sqrt(dx*dx+dy*dy);
+            if (d<160) {
+              ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(nb.x,nb.y);
+              ctx.strokeStyle='rgba(240,99,90,0.14)';
+              ctx.globalAlpha=(1-d/160)*0.5*(1-convergeStrength*2); ctx.lineWidth=0.5; ctx.stroke();
+            }
           }
         }
         ctx.globalAlpha=1;
@@ -5253,7 +5332,6 @@
       heroVisible = e.isIntersecting;
       if (heroVisible && !heroRaf) heroRaf = requestAnimationFrame(drawP);
     }, { threshold: 0 }).observe(hero);
-    // Start immediately if hero is in view on load
     heroRaf = requestAnimationFrame(drawP); heroVisible = true;
   }
 
@@ -5976,6 +6054,18 @@
       }
     });
 
+    // Constellation converged → also triggers flicker (if not already landed)
+    document.addEventListener('constellation-converged', () => {
+      if (scVisible && !landed) {
+        if (!window._wpSymbolsDone) {
+          window._wpSymbolsDone = true;
+          document.dispatchEvent(new CustomEvent('wp-symbols-done'));
+        } else {
+          doShowcaseReveal();
+        }
+      }
+    });
+
     new IntersectionObserver(([e]) => {
       scVisible = e.isIntersecting;
       if (e.isIntersecting) {
@@ -6203,155 +6293,126 @@
       tapRing.classList.add('tap-go');
     }
 
-    // ── ASSEMBLY: pieces fly in like Iron Man parts ──
-    // Each piece has a "landed" state. Blueprint draws → orb flies in → piece lands.
-    const pieceState = sitePieces.map(() => ({ landed: false, blueprintShown: false }));
-    let activeOrbs = [];
+    // ── ASSEMBLY: scrub-driven ink-sweep reveal ──
+    // Each piece reveals as a continuous wipe from left to right, driven by scroll.
+    // No orbs, no blueprints, no phase gates — just clean continuous scrub.
 
-    // Get position of a piece in screen coords
-    function pieceCenter(idx) {
-      if (!sitePieces[idx] || !buildFrame) return null;
-      const pr = sitePieces[idx].getBoundingClientRect();
-      const fr = buildFrame.getBoundingClientRect();
-      return {
-        x: pr.left - fr.left + pr.width / 2,
-        y: pr.top  - fr.top  + pr.height / 2,
-      };
+    // Inject an ink-line element into each piece for the sweep effect
+    sitePieces.forEach(piece => {
+      const ink = document.createElement('div');
+      ink.className = 'bs-piece-ink';
+      piece.appendChild(ink);
+    });
+
+    const pieceState = sitePieces.map(() => ({ landed: false, prevProgress: 0 }));
+
+    // Reset all pieces
+    function resetAssembly() {
+      pieceState.forEach((s, i) => {
+        s.landed = false;
+        s.prevProgress = 0;
+        if (sitePieces[i]) {
+          sitePieces[i].classList.remove('bs-piece-in', 'bs-piece-land');
+          sitePieces[i].style.opacity = '';
+          sitePieces[i].style.filter = '';
+          sitePieces[i].style.transform = '';
+          sitePieces[i].style.clipPath = '';
+          const ink = sitePieces[i].querySelector('.bs-piece-ink');
+          if (ink) { ink.style.opacity = '0'; ink.style.left = '0'; }
+        }
+      });
+      blueprintGroups.forEach(g => g.classList.remove('bp-draw', 'bp-fade'));
+      if (buildSite) buildSite.classList.remove('bs-cta-hovered');
     }
 
-    // Spawn an orb that flies in from a side, then lands on a piece
-    function spawnDeliveryOrb(targetIdx, fromSide) {
-      if (!buildOrbs || !sitePieces[targetIdx]) return;
-      const target = pieceCenter(targetIdx);
-      if (!target) return;
-      const orb = document.createElement('div');
-      orb.className = 'bo-orb';
-      buildOrbs.appendChild(orb);
-      activeOrbs.push(orb);
+    // Drive assembly with direct scroll-scrub for each piece
+    // t = 0..1 maps over the entire assemble phase
+    let assemblyProgress = -1;
+    function setAssemblyProgress(t) {
+      if (sitePieces.length === 0) return;
+      const N = sitePieces.length;
 
-      const fr = buildFrame.getBoundingClientRect();
-      const startX = fromSide === 'left'  ? -60
-                   : fromSide === 'right' ? fr.width + 60
-                   : fr.width / 2 + (Math.random() - 0.5) * 80;
-      const startY = fromSide === 'top'    ? -40
-                   : fromSide === 'bottom' ? fr.height + 40
-                   : Math.random() * fr.height;
+      assemblyProgress = t;
+      sitePieces.forEach((p, i) => {
+        // Each piece occupies a band of the 0..1 range
+        const startT = i / N;
+        const endT   = (i + 1) / N;
+        // Local progress for this piece: 0 = just starting, 1 = fully revealed
+        const localT = Math.max(0, Math.min(1, (t - startT) / (endT - startT)));
 
-      orb.style.left = startX + 'px';
-      orb.style.top  = startY + 'px';
-      orb.style.opacity = '0';
+        const ink = p.querySelector('.bs-piece-ink');
+        const pieceW = p.offsetWidth || 100;
 
-      // Curved flight via two keyframes with control bezier
-      const ctrlX = (startX + target.x) / 2 + (Math.random() - 0.5) * 120;
-      const ctrlY = (startY + target.y) / 2 - 86;
+        if (localT <= 0) {
+          // Hidden
+          p.style.opacity = '0';
+          p.style.filter = 'blur(4px)';
+          p.style.clipPath = 'inset(0 100% 0 0)';
+          p.classList.remove('bs-piece-in', 'bs-piece-land');
+          if (ink) { ink.style.opacity = '0'; ink.style.left = '0'; }
+          pieceState[i].landed = false;
+          pieceState[i].prevProgress = 0;
+          return;
+        }
 
-      orb.animate([
-        { left: startX + 'px', top: startY + 'px', opacity: 0,   transform: 'scale(0.35) rotate(0deg)', filter: 'blur(2px)' },
-        { left: ctrlX  + 'px', top: ctrlY  + 'px', opacity: 1,   transform: 'scale(1.15) rotate(180deg)', filter: 'blur(0)', offset: 0.52 },
-        { left: target.x + 'px', top: target.y + 'px', opacity: 1, transform: 'scale(0.72) rotate(320deg)', filter: 'blur(0)' },
-      ], { duration: 620, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' });
+        // Ink line sweeps from 0% to 100% width as localT goes 0→0.7
+        const inkT = Math.min(1, localT / 0.7);
+        const inkX = inkT * 100; // percent across piece
+        if (ink) {
+          ink.style.opacity = inkT > 0 && inkT < 1 ? String(0.5 + inkT * 0.5) : '0';
+          ink.style.left = inkX + '%';
+        }
 
-      // Cleanup + trigger piece land slightly before arrival
-      setTimeout(() => {
-        // Quick flash on arrival
-        orb.animate([
-          { opacity: 1,   transform: 'scale(0.7)', boxShadow: '0 0 12px 2px rgba(240,99,90,0.7)' },
-          { opacity: 1,   transform: 'scale(2.2)', boxShadow: '0 0 30px 8px rgba(240,99,90,0.4)' },
-          { opacity: 0,   transform: 'scale(0.5)', boxShadow: '0 0 0 0 rgba(240,99,90,0)' },
-        ], { duration: 380, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' });
-        landPiece(targetIdx);
-      }, 500);
+        // Clip path: reveals from left edge following the ink line
+        const revealT = Math.min(1, Math.max(0, (localT - 0.05) / 0.65));
+        p.style.clipPath = `inset(0 ${Math.max(0, (1 - revealT) * 100).toFixed(1)}% 0 0)`;
+        p.style.opacity = String(Math.min(1, revealT * 1.4));
+        p.style.filter = `blur(${Math.max(0, (1 - revealT * 1.5) * 3).toFixed(1)}px)`;
 
-      setTimeout(() => {
-        if (orb.parentNode) orb.parentNode.removeChild(orb);
-        activeOrbs = activeOrbs.filter(o => o !== orb);
-      }, 980);
+        // Once fully revealed, fire landing effect (once)
+        if (localT >= 1 && !pieceState[i].landed) {
+          pieceState[i].landed = true;
+          p.classList.add('bs-piece-in');
+          p.style.clipPath = '';
+          p.style.opacity = '1';
+          p.style.filter = '';
+          p.classList.remove('bs-piece-land');
+          void p.offsetWidth;
+          p.classList.add('bs-piece-land');
+          if (ink) { ink.style.opacity = '0'; }
+
+          // Show blueprint briefly as a ghost after piece lands
+          const bp = blueprintGroups.find(g => g.dataset.for === p.dataset.piece);
+          if (bp) {
+            bp.classList.remove('bp-fade');
+            bp.classList.add('bp-draw');
+            setTimeout(() => { bp.classList.remove('bp-draw'); bp.classList.add('bp-fade'); }, 600);
+          }
+        }
+
+        // Unland if scrolling back
+        if (localT < 0.95 && pieceState[i].landed) {
+          pieceState[i].landed = false;
+          p.classList.remove('bs-piece-in', 'bs-piece-land');
+          const bp = blueprintGroups.find(g => g.dataset.for === p.dataset.piece);
+          if (bp) bp.classList.remove('bp-draw', 'bp-fade');
+        }
+
+        pieceState[i].prevProgress = localT;
+      });
     }
 
-    // Make a piece "land" — physics overshoot snap
+    // Keep legacy spawnDeliveryOrb as no-op (nothing calls it directly now)
+    function spawnDeliveryOrb() {}
+
+    // Legacy landPiece kept as stub
     function landPiece(idx) {
       const piece = sitePieces[idx];
       if (!piece || pieceState[idx].landed) return;
       pieceState[idx].landed = true;
       piece.classList.add('bs-piece-in');
-      piece.animate([
-        { transform: 'translate3d(0,0,0) scale(1.018)', filter: 'brightness(1.08)' },
-        { transform: 'translate3d(0,0,0) scale(1)', filter: 'brightness(1)' },
-      ], { duration: 520, easing: 'cubic-bezier(0.16,1,0.3,1)' });
-      // Bloom ring on landing
-      piece.classList.remove('bs-piece-land');
-      void piece.offsetWidth;
-      piece.classList.add('bs-piece-land');
-      // Hide the blueprint group for this piece a moment after landing
-      setTimeout(() => {
-        const bp = blueprintGroups.find(g => g.dataset.for === piece.dataset.piece);
-        if (bp) {
-          bp.classList.remove('bp-draw');
-          bp.classList.add('bp-fade');
-        }
-      }, 250);
     }
 
-    // Show blueprint for a piece (precedes its delivery)
-    function showBlueprint(idx) {
-      const piece = sitePieces[idx];
-      if (!piece || pieceState[idx].blueprintShown) return;
-      pieceState[idx].blueprintShown = true;
-      const bp = blueprintGroups.find(g => g.dataset.for === piece.dataset.piece);
-      if (bp) {
-        bp.classList.remove('bp-fade');
-        bp.classList.add('bp-draw');
-      }
-    }
-
-    // Reset all pieces (when scrolling out of section)
-    function resetAssembly() {
-      pieceState.forEach((s, i) => {
-        s.landed = false;
-        s.blueprintShown = false;
-        if (sitePieces[i]) {
-          sitePieces[i].classList.remove('bs-piece-in', 'bs-piece-land');
-        }
-      });
-      blueprintGroups.forEach(g => g.classList.remove('bp-draw', 'bp-fade'));
-      activeOrbs.forEach(o => { if (o.parentNode) o.parentNode.removeChild(o); });
-      activeOrbs = [];
-      if (buildSite) buildSite.classList.remove('bs-cta-hovered');
-    }
-
-    // Drive assembly progress (0..1) — chains blueprint → orb → land per piece
-    let assemblyProgress = -1;
-    function setAssemblyProgress(t) {
-      if (sitePieces.length === 0) return;
-      const N = sitePieces.length;
-      // Reverse if scrolling back significantly
-      if (t < assemblyProgress - 0.05) {
-        // Unwind landed pieces beyond current threshold
-        sitePieces.forEach((p, i) => {
-          const myT = (i + 0.6) / N;
-          if (t < myT - 0.08 && pieceState[i].landed) {
-            pieceState[i].landed = false;
-            pieceState[i].blueprintShown = false;
-            p.classList.remove('bs-piece-in', 'bs-piece-land');
-            const bp = blueprintGroups.find(g => g.dataset.for === p.dataset.piece);
-            if (bp) bp.classList.remove('bp-draw', 'bp-fade');
-          }
-        });
-      }
-      assemblyProgress = t;
-      // For each piece, fire blueprint at threshold-0.10, deliver at threshold
-      sitePieces.forEach((p, i) => {
-        const arriveT  = (i + 0.85) / N;
-        const blueT    = arriveT - 0.10;
-        if (t >= blueT && !pieceState[i].blueprintShown) {
-          showBlueprint(i);
-        }
-        if (t >= arriveT && !pieceState[i].landed) {
-          const fromMap = { left:'left', right:'right', top:'top', bottom:'bottom' };
-          spawnDeliveryOrb(i, fromMap[p.dataset.from] || 'top');
-        }
-      });
-    }
 
     let currentPhase = -1;
     function setPhase(p) {
@@ -6362,16 +6423,13 @@
       buildStage.setAttribute('data-phase', String(p));
       buildFrame.classList.toggle('bf-shipped', p === 3);
 
-      // Code overlay only visible in phase 2
-      blCode.classList.toggle('bl-show', p === 2);
-
       // Phase track
       phaseRows.forEach((row, i) => {
         row.classList.toggle('bp-active', i === p);
         row.classList.toggle('bp-done', i < p);
       });
 
-      // Caption flip animation
+      // Caption crossfade
       buildCaption.classList.add('bc-flip');
       setTimeout(() => {
         const copy = PHASE_COPY[p] || PHASE_COPY[0];
@@ -6384,26 +6442,12 @@
         buildCaption.classList.remove('bc-flip');
       }, 220);
 
-      // Cursor demo runs in phase 3 (render phase = ship buildup actually no, phase 2 in old, 3 here is ship)
-      // We'll start the cursor when assembly is mostly complete (phase 2 = code, but pieces are already there)
-      // Actually cursor should run during phase 2 (code) OR during the assembly phase 1 once everything has landed
-      if (p === 2) {
-        // start a cursor demo on the now-built site (slight delay to let glitch finish)
-        setTimeout(startCursorDemo, 600);
-      } else {
-        stopCursorDemo();
-      }
-
-      // Phase transition effects
+      // Smooth sweep effects on transitions (still nice, but subtle)
       if (prevPhase >= 0 && p > prevPhase) {
-        if (prevPhase === 0 && p === 1) fireSweep();
-        else if (prevPhase === 1 && p === 2) {
-          fireGlitch();
-          setTimeout(fireSweep, 100);
-        }
+        if (prevPhase === 1 && p === 2) fireGlitch();
         else if (prevPhase === 2 && p === 3) {
           fireSweep();
-          setTimeout(fireShipParticles, 80);
+          setTimeout(fireShipParticles, 60);
         }
       }
 
@@ -6774,12 +6818,10 @@
     function applyReveal() {
       rafPending = false;
       const ratio = currentRatio;
-
-      // Direct mapping — no lerp lag, build stage follows scroll precisely
       displayRatio = ratio;
       diveRatio = displayRatio;
 
-      // Start ambient code field on entry
+      // ── START / STOP ambient code rain ──
       if (ratio > 0 && !fcRunning) { fcRunning = true; drawFC(); }
       if (ratio <= 0 && fcRunning) {
         fcRunning = false;
@@ -6788,11 +6830,8 @@
         if (streakRaf) cancelAnimationFrame(streakRaf);
         swCtx.clearRect(0, 0, sw.width, sw.height);
         sCtx.clearRect(0, 0, sc.width, sc.height);
-        rings = [];
-        streaks = [];
-        swRaf = null;
-        streakRaf = null;
-        streaksRunning = false;
+        rings = []; streaks = [];
+        swRaf = null; streakRaf = null; streaksRunning = false;
         diveRatio = 0; displayRatio = 0;
         fc.style.opacity = '0';
         if (inner3d) inner3d.style.transform = '';
@@ -6814,73 +6853,64 @@
       const bsIn = displayRatio > 0.02;
       buildStage.classList.toggle('bs-in', bsIn);
 
-      const cameraPush = Math.max(0, Math.min(1, (displayRatio - 0.02) / 0.82));
-      const zoom = 0.92 + cameraPush * 0.12;
-      const lift = 68 - cameraPush * 78;
-      const tiltX = 8 - cameraPush * 8;
-      const tiltY = 2.8 - cameraPush * 4.2;
-      const zPush = -110 + cameraPush * 160;
+      // ── CAMERA: frame rises and levels, no snapping ──
+      // 0.00 → 0.15: frame enters tilted from below
+      // 0.15 → 0.90: frame sits level, zooms in slightly as site builds
+      const entryT  = Math.max(0, Math.min(1, displayRatio / 0.15));       // 0→1 during entry
+      const buildT  = Math.max(0, Math.min(1, (displayRatio - 0.15) / 0.75)); // 0→1 during build
+      const easeEntry = entryT < 0.5 ? 2*entryT*entryT : -1+(4-2*entryT)*entryT;
+      const tiltX   = (1 - easeEntry) * 10;   // starts at 10° tilt, lands at 0
+      const tiltY   = (1 - easeEntry) * 3.2;
+      const lift    = (1 - easeEntry) * 72;    // starts lifted, drops to 0
+      const zoom    = 0.90 + easeEntry * 0.05 + buildT * 0.05; // 0.90 → 0.95 → 1.00
+      const zPush   = -120 + easeEntry * 180;
       if (inner3d) {
-        inner3d.style.transform = `translate3d(0, ${Math.max(-18, lift * 0.14)}px, ${zPush}px) scale(${(0.965 + cameraPush * 0.035).toFixed(3)})`;
+        inner3d.style.transform = `translate3d(0, ${(lift * 0.12).toFixed(1)}px, ${zPush.toFixed(0)}px) scale(${(0.96 + easeEntry * 0.04).toFixed(3)})`;
       }
       if (buildFrameWrap) {
         buildFrameWrap.style.transform = `translateY(${lift.toFixed(1)}px) scale(${zoom.toFixed(3)}) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg)`;
         buildFrameWrap.style.transformStyle = 'preserve-3d';
       }
       if (overlayText) {
-        overlayText.style.transform = `translateY(${(40 - cameraPush * 120).toFixed(1)}px) scale(${(1.02 + cameraPush * 0.12).toFixed(3)})`;
-        overlayText.style.opacity = String(Math.max(0.08, 1 - Math.max(0, cameraPush - 0.72) * 2.6));
+        const otT = Math.max(0, Math.min(1, (displayRatio - 0.02) / 0.20));
+        overlayText.style.transform = `translateY(${(30 - otT * 90).toFixed(1)}px) scale(${(1 + otT * 0.06).toFixed(3)})`;
+        overlayText.style.opacity = String(Math.max(0, 1 - Math.max(0, otT - 0.72) * 3.5).toFixed(3));
       }
 
-      // Tiny letterbox just for cinematic framing
-      const lbT = Math.max(0, Math.min(1, (displayRatio - 0.02) / 0.14));
-      const lbH = Math.round(lbT * lbT * 28);
+      // ── LETTERBOX: cinematic bars, tied to entry ──
+      const lbH = Math.round(easeEntry * easeEntry * 26);
       lbTop.style.height    = lbH + 'px';
       lbBottom.style.height = lbH + 'px';
 
-      // Edge vignette — soft cream fade at edges
-      const evA = Math.max(0, Math.min(0.52, (displayRatio - 0.02) / 0.22));
-      edgeVignette.style.opacity = evA.toFixed(3);
+      // ── AMBIENT LAYERS ──
+      if (edgeVignette) edgeVignette.style.opacity = (Math.min(0.45, buildT * 0.45)).toFixed(3);
+      if (portalGlow)   portalGlow.style.opacity   = '0';
+      if (scanlines)    scanlines.style.opacity     = (Math.min(0.12, buildT * 0.12)).toFixed(3);
+      fc.style.opacity = (Math.min(0.20, (displayRatio - 0.03) * 1.6)).toFixed(3);
 
-      // Horizon glow behind frame
-      const pgA = Math.max(0, Math.min(1, (displayRatio - 0.01) / 0.18));
-      portalGlow.style.opacity = (pgA * 0.92).toFixed(3);
-
-      // Scanlines — very faint
-      const slA = Math.max(0, Math.min(1, (displayRatio - 0.04) / 0.32));
-      scanlines.style.opacity = (slA * 0.16).toFixed(3);
-
-      // Background ambient rain — minimal
-      const fcA = Math.max(0, Math.min(0.22, (displayRatio - 0.03) / 0.12));
-      fc.style.opacity = fcA.toFixed(3);
-
-      // ── PHASE GATING ──
-      // 0.04→0.18 BLUEPRINT (frame settles, atmospheric warmup)
-      // 0.18→0.62 ASSEMBLE (the meat — pieces fly in)
-      // 0.62→0.82 CODE (overlay appears, types out, dissolves)
-      // 0.82→1.00 SHIPPED (final glow, deploy stamp)
+      // ── SMOOTH PHASE TRANSITIONS ──
+      // Phases still drive caption copy + telemetry labels, but transitions are crossfades
+      // 0.00–0.12 = SCAN, 0.12–0.42 = ASSEMBLE, 0.42–0.68 = CODE, 0.68–1.00 = LIVE
       let p;
-      if      (displayRatio < 0.10) p = 0;
-      else if (displayRatio < 0.38) p = 1;
-      else if (displayRatio < 0.58) p = 2;
+      if      (displayRatio < 0.12) p = 0;
+      else if (displayRatio < 0.42) p = 1;
+      else if (displayRatio < 0.68) p = 2;
       else                          p = 3;
       if (bsIn) setPhase(p);
 
-      // ── ASSEMBLY: 0.06 → 0.36 maps to assemblyT 0..1 ──
-      const assemT = Math.max(0, Math.min(1, (displayRatio - 0.06) / 0.30));
+      // ── INK-SWEEP ASSEMBLY: continuous scrub from 0.08 → 0.65 ──
+      // Each piece wipes in continuously as scroll progresses — no orbs, no discrete steps
+      const assemT = Math.max(0, Math.min(1, (displayRatio - 0.08) / 0.57));
       setAssemblyProgress(assemT);
 
-      // ── CODE OVERLAY: 0.38 → 0.58 maps to typing 0..1 ──
-      if (p === 2) {
-        const codeT = Math.max(0, Math.min(1, (displayRatio - 0.38) / 0.20));
-        const totalLines = codeLines.length;
-        const visibleLines = Math.floor(codeT * totalLines);
-        codeLines.forEach((line, i) => {
-          line.classList.toggle('ct-typed', i <= visibleLines);
-        });
-        const lineCount = Math.min(totalLines, visibleLines + 1) * 3 + 12;
-        btLines.textContent = String(lineCount).padStart(3, '0');
-        positionCursor(visibleLines);
+      // ── CODE OVERLAY: continuously types as scroll goes 0.44 → 0.68 ──
+      const codeT = Math.max(0, Math.min(1, (displayRatio - 0.44) / 0.24));
+      const totalLines = codeLines.length;
+      const visibleLines = Math.floor(codeT * totalLines);
+      if (p >= 2) {
+        codeLines.forEach((line, i) => line.classList.toggle('ct-typed', i <= visibleLines));
+        btLines.textContent = String(Math.min(totalLines, visibleLines + 1) * 3 + 12).padStart(3, '0');
+        if (p === 2) positionCursor(visibleLines);
       } else if (p < 2) {
         codeLines.forEach(line => line.classList.remove('ct-typed'));
         btLines.textContent = '000';
@@ -6889,37 +6919,37 @@
         btLines.textContent = String(codeLines.length * 3 + 12).padStart(3, '0');
       }
 
-      // Render telemetry % — driven by assembly progress
+      // ── CODE OVERLAY opacity: fades in at 0.44, fades out at 0.65 ──
+      if (blCode) {
+        const codeIn  = Math.max(0, Math.min(1, (displayRatio - 0.42) / 0.06));
+        const codeOut = Math.max(0, Math.min(1, (displayRatio - 0.65) / 0.06));
+        blCode.classList.toggle('bl-show', codeIn > 0.05 && codeOut < 0.95);
+        blCode.style.opacity = (codeIn * (1 - codeOut)).toFixed(3);
+      }
+
+      // ── TELEMETRY ──
       const renderPct = Math.min(100, Math.round(assemT * 100));
       btRender.textContent = renderPct + ' %';
       btRender.classList.toggle('bt-live', renderPct === 100);
 
-      // ── PHASE 3: SHIP impact (one-shot) ──
-      if (p === 3 && !impactDone) {
-        impactDone = true;
-        slamText();
-      }
-      if (p < 3 && impactDone) {
-        impactDone = false;
-        textRevealed = false;
+      // ── SHIP IMPACT: one-shot at end ──
+      if (p === 3 && !impactDone) { impactDone = true; slamText(); }
+      if (p < 3 && impactDone)    { impactDone = false; textRevealed = false; }
+
+      // ── CURSOR DEMO: runs in phase 2 ──
+      if (p === 2 && currentPhase !== 2) setTimeout(startCursorDemo, 400);
+      else if (p !== 2) stopCursorDemo();
+
+      // ── HUD ──
+      if (depthHud) {
+        depthHud.style.opacity = displayRatio > 0.02 ? Math.min(1, (displayRatio - 0.02) / 0.08).toFixed(3) : '0';
+        if (depthVal) depthVal.textContent = String(Math.round(displayRatio * 100)).padStart(3, '0');
       }
 
-      // Build percentage HUD
-      if (displayRatio > 0.02) {
-        depthHud.style.opacity = Math.min(1, (displayRatio - 0.02) / 0.08).toFixed(3);
-        depthVal.textContent = String(Math.round(displayRatio * 100)).padStart(3, '0');
-      } else {
-        depthHud.style.opacity = '0';
-      }
-
-      // No mid-section fade-out anymore — the device IS the punchline
       buildFrame.style.opacity = '';
-
       const pct = Math.round(ratio * 100);
-      progressFill.style.width = pct + '%';
-      progressLabel.textContent = String(pct).padStart(3, '0') + '%';
-
-      // No perpetual self-scheduling — applyReveal is driven only by scroll events
+      if (progressFill)  progressFill.style.width       = pct + '%';
+      if (progressLabel) progressLabel.textContent       = String(pct).padStart(3, '0') + '%';
     }
 
     // Position the blinking cursor at the end of the last typed line's content
