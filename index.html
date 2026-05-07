@@ -48,6 +48,7 @@
 
     /* Apply variables to existing styles */
     body { background: var(--bg); color: var(--ink); font-family: var(--font-body); overflow-x: hidden; min-height: 100vh; cursor: auto; font-size: 15px; line-height: 1.6; transition: background 1.2s ease, color 1.2s ease; }
+    body.site-loading { overflow: hidden; }
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(240,99,90,0.35); border-radius: 2px; }
@@ -70,6 +71,46 @@
     .what-tag { background: var(--accent2); }
     .footer-copy, .footer-tagline, .footer-email { color: var(--muted); }
     a { color: inherit; text-decoration: none; }
+    #site-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 20000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at 50% 42%, rgba(240,99,90,0.16), transparent 24%),
+        linear-gradient(180deg, rgba(254,249,244,0.98), rgba(254,249,244,1));
+      transition: opacity 0.55s ease, visibility 0.55s ease;
+    }
+    #site-loader.loader-hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .loader-mark {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+    .loader-ring {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 1px solid rgba(240,99,90,0.16);
+      border-top-color: rgba(240,99,90,0.65);
+      animation: loaderSpin 1s linear infinite;
+    }
+    .loader-copy {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(43,37,71,0.62);
+    }
+    @keyframes loaderSpin {
+      to { transform: rotate(360deg); }
+    }
 
     /* ── NAV ── */
     nav { position: fixed; top: 0; left: 0; right: 0; height: 64px; background: rgba(43,37,71,0.90); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between; padding: 0 48px; z-index: 500; transition: background 0.4s ease, transform 0.45s cubic-bezier(0.4,0,0.2,1), opacity 0.45s ease; }
@@ -1012,7 +1053,7 @@
        ═══════════════════════════════════════════════ */
     #video-reveal {
       position: relative;
-      height: 620vh;
+      height: 500vh;
       background: #FEF9F4;
       margin-bottom: -2px;
     }
@@ -1229,7 +1270,7 @@
     /* Scan-line flicker overlay */
     #dive-scanlines { display: none; }
     @media (max-width: 900px) {
-      #video-reveal { height: 340vh; }
+      #video-reveal { height: 280vh; }
       .video-headline { font-size: clamp(28px, 8vw, 52px); }
       #dive-depth-hud { display: none; }
     }
@@ -1422,24 +1463,58 @@
       flex-direction: column;
       align-items: center;
       justify-self: center;
+      padding-bottom: 34px;
+      transform-origin: 50% 50%;
+    }
+    #build-frame-wrap::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      width: 122%;
+      height: 30px;
+      border-radius: 0 0 26px 26px;
+      transform: translateX(-50%);
+      background:
+        linear-gradient(180deg, rgba(216,218,224,0.98), rgba(171,176,188,0.94)),
+        linear-gradient(90deg, rgba(255,255,255,0.45), rgba(255,255,255,0));
+      box-shadow:
+        0 14px 28px rgba(43,37,71,0.18),
+        inset 0 1px 0 rgba(255,255,255,0.78),
+        inset 0 -1px 0 rgba(43,37,71,0.14);
+      pointer-events: none;
+    }
+    #build-frame-wrap::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: 9px;
+      width: 140px;
+      height: 8px;
+      border-radius: 999px;
+      transform: translateX(-50%);
+      background: rgba(122,126,138,0.28);
+      pointer-events: none;
+      z-index: 2;
     }
     #build-frame {
       position: relative;
-      width: 360px;
-      height: 640px;
+      width: min(760px, 88vw);
+      aspect-ratio: 16 / 10;
+      height: auto;
       max-width: 92vw;
-      max-height: 78vh;
-      background: #14101A;
-      border-radius: 36px;
-      padding: 8px;
+      max-height: 72vh;
+      background: linear-gradient(180deg, #d7dbe4 0%, #aeb4c0 100%);
+      border-radius: 18px 18px 10px 10px;
+      padding: 10px;
       display: flex;
       flex-direction: column;
       box-shadow:
-        0 0 0 1px rgba(43,37,71,0.12),
-        0 0 0 2px rgba(0,0,0,0.05),
-        0 40px 100px -25px rgba(43,37,71,0.35),
-        0 12px 40px -12px rgba(240,99,90,0.20),
-        inset 0 1px 0 rgba(255,255,255,0.10);
+        0 0 0 1px rgba(255,255,255,0.58),
+        0 0 0 2px rgba(43,37,71,0.09),
+        0 34px 90px -26px rgba(43,37,71,0.26),
+        0 10px 28px -10px rgba(240,99,90,0.14),
+        inset 0 1px 0 rgba(255,255,255,0.74);
       opacity: 0;
       transform: translateY(50px) scale(0.88) rotateX(8deg);
       transform-style: preserve-3d;
@@ -1472,11 +1547,11 @@
     #build-stage[data-phase="3"] #build-frame,
     #build-frame.bf-shipped {
       box-shadow:
-        0 0 0 1px rgba(240,99,90,0.70),
-        0 0 0 2px rgba(0,0,0,0.05),
-        0 40px 120px -20px rgba(43,37,71,0.45),
-        0 0 120px 0 rgba(240,99,90,0.45),
-        inset 0 1px 0 rgba(255,255,255,0.15);
+        0 0 0 1px rgba(240,99,90,0.36),
+        0 0 0 2px rgba(43,37,71,0.08),
+        0 38px 110px -26px rgba(43,37,71,0.34),
+        0 0 120px -18px rgba(240,99,90,0.32),
+        inset 0 1px 0 rgba(255,255,255,0.84);
       animation: shipPulse 2.4s ease-in-out infinite;
     }
     @keyframes shipPulse {
@@ -1484,70 +1559,70 @@
       50%     { transform: translateY(-4px) scale(1.005) rotateX(0); }
     }
     @media (max-width: 700px) {
-      #build-frame { width: 300px; height: 520px; padding: 6px; border-radius: 30px; }
+      #build-frame { width: min(96vw, 420px); padding: 8px; border-radius: 16px 16px 8px 8px; }
+      #build-frame-wrap { padding-bottom: 24px; }
+      #build-frame-wrap::after { height: 22px; border-radius: 0 0 18px 18px; }
+      #build-frame-wrap::before { width: 88px; height: 6px; bottom: 7px; }
     }
 
     /* Status bar at top of frame — sells the device feel */
     .bf-statusbar {
       position: relative;
-      height: 22px;
+      height: 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 18px;
-      color: #FAFAF8;
+      padding: 0 14px;
+      color: rgba(43,37,71,0.68);
       font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
+      font-size: 8px;
       font-weight: 600;
-      letter-spacing: 0.5px;
+      letter-spacing: 1px;
       z-index: 5;
+      flex-shrink: 0;
     }
-    .bf-time { opacity: 0.85; }
-    .bf-notch {
-      position: absolute;
-      left: 50%; top: 0;
-      transform: translateX(-50%);
-      width: 88px; height: 18px;
-      background: #000;
-      border-radius: 0 0 12px 12px;
+    .bf-window {
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    .bf-icons {
-      display: flex; align-items: center; gap: 5px;
+    .bf-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(43,37,71,0.18);
     }
-    .bf-sig {
-      width: 13px; height: 8px;
-      background: #FAFAF8;
-      opacity: 0.85;
-      clip-path: polygon(0 100%, 25% 100%, 25% 75%, 50% 75%, 50% 50%, 75% 50%, 75% 25%, 100% 25%, 100% 100%);
+    .bf-dot-red { background: rgba(240,99,90,0.8); }
+    .bf-dot-amber { background: rgba(244,162,97,0.82); }
+    .bf-dot-green { background: rgba(92,173,125,0.78); }
+    .bf-url {
+      padding: 5px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.62);
+      border: 1px solid rgba(43,37,71,0.08);
+      min-width: 180px;
+      text-align: center;
+      color: rgba(43,37,71,0.62);
     }
-    .bf-bat {
-      width: 16px; height: 8px;
-      border: 1px solid #FAFAF8;
-      border-radius: 1.5px;
-      background: linear-gradient(to right, #FAFAF8 75%, transparent 75%);
-      opacity: 0.85;
-      position: relative;
+    .bf-tabstate {
+      color: rgba(240,99,90,0.72);
     }
-    .bf-bat::after {
-      content: '';
-      position: absolute;
-      right: -2.5px; top: 2px;
-      width: 1.5px; height: 3px;
-      background: #FAFAF8;
-      border-radius: 0 1px 1px 0;
+    @media (max-width: 700px) {
+      .bf-statusbar { height: 24px; padding: 0 10px; }
+      .bf-url { min-width: 120px; padding: 4px 10px; }
     }
 
-    /* The actual screen viewport inside the device chrome */
     .bf-screen {
       position: relative;
       flex: 1;
       width: 100%;
       background: #FFFFFF;
-      border-radius: 28px;
+      border-radius: 10px;
       overflow: hidden;
+      border: 1px solid rgba(43,37,71,0.06);
     }
     @media (max-width: 700px) {
-      .bf-screen { border-radius: 24px; }
+      .bf-screen { border-radius: 8px; }
     }
 
     /* Sweep transition overlay — coral scan-line on phase change */
@@ -3681,7 +3756,13 @@
   </style>
 
 </head>
-<body>
+<body class="site-loading">
+  <div id="site-loader" aria-hidden="true">
+    <div class="loader-mark">
+      <div class="loader-ring"></div>
+      <div class="loader-copy">Loading the build</div>
+    </div>
+  </div>
 
   <!-- ══ GRAIN TEXTURE OVERLAY — subtle physicality ══ -->
   <div class="grain-overlay" aria-hidden="true"></div>
@@ -4248,14 +4329,15 @@
         <!-- Center stage: phone-shaped frame that morphs through phases -->
         <div id="build-frame-wrap">
           <div id="build-frame">
-            <!-- Notch / status bar — sells the device feel -->
+            <!-- Browser bar / laptop chrome -->
             <div class="bf-statusbar">
-              <span class="bf-time">9:41</span>
-              <span class="bf-notch"></span>
-              <span class="bf-icons">
-                <span class="bf-sig"></span>
-                <span class="bf-bat"></span>
+              <span class="bf-window">
+                <span class="bf-dot bf-dot-red"></span>
+                <span class="bf-dot bf-dot-amber"></span>
+                <span class="bf-dot bf-dot-green"></span>
               </span>
+              <span class="bf-url">northandneedle.com</span>
+              <span class="bf-tabstate">LIVE</span>
             </div>
 
             <!-- Layered build viewport — site builds piece-by-piece in place -->
@@ -4277,7 +4359,7 @@
                 <!-- HERO video with overlay — drops from above -->
                 <div class="bs-piece bs-piece-hero" data-piece="hero-img" data-from="top">
                   <div class="bs-hero" id="bs-home">
-                    <video class="bs-hero-video" autoplay muted loop playsinline>
+                    <video class="bs-hero-video" muted loop playsinline preload="metadata" poster="images/vecteezy_needle-and-thread-with-button-on-material-mending-clothing_76760151.jpeg" disablepictureinpicture>
                       <source src="images/sewing 2.mp4" type="video/mp4">
                     </video>
                     <div class="bs-hero-grain"></div>
@@ -5946,7 +6028,7 @@
 
     // Code column particles — gentle ambient drift, kept far from screen centre so
     // they don't compete with the build frame
-    const COL_COUNT = 14;
+    const COL_COUNT = 10;
     let cols = [];
 
     function initCols() {
@@ -6389,33 +6471,141 @@
       if (!rafPending) { rafPending = true; requestAnimationFrame(applyReveal); }
     }
 
-    // ── Native scroll-driven reveal ──
+    // ── Controlled scroll-driven reveal ──
+    let intercepting = false;
+    let animDone = false;
+    let virtualScrolled = 0;
+    let touchStartY = 0;
+    let exitIntent = 0;
+    let scrollWritePending = false;
+    let pendingScrollTop = 0;
+
+    function scheduleScrollTo(top) {
+      pendingScrollTop = top;
+      if (scrollWritePending) return;
+      scrollWritePending = true;
+      requestAnimationFrame(() => {
+        scrollWritePending = false;
+        window.scrollTo({ top: pendingScrollTop, behavior: 'instant' });
+      });
+    }
+
+    function unlockRevealAndAdvance() {
+      animDone = true;
+      intercepting = false;
+      exitIntent = 0;
+      if (!revealSection) return;
+      const sectionEnd = revealSection.offsetTop + revealSection.offsetHeight - window.innerHeight;
+      scheduleScrollTo(sectionEnd + 2);
+    }
+
+    function onWheel(e) {
+      if (window._navJumping || animDone || !revealSection) return;
+
+      const rect = revealSection.getBoundingClientRect();
+      const inSection = rect.top <= 0 && rect.bottom >= window.innerHeight;
+      if (!inSection) return;
+
+      e.preventDefault();
+      intercepting = true;
+
+      const total = revealSection.offsetHeight - window.innerHeight;
+      const rawDelta = e.deltaMode === 1 ? e.deltaY * 28 : e.deltaMode === 2 ? e.deltaY * 180 : e.deltaY;
+      const delta = Math.max(-90, Math.min(90, rawDelta)) * 0.68;
+
+      if (currentRatio >= 0.995 && delta > 0) {
+        exitIntent = Math.min(420, exitIntent + delta);
+        if (exitIntent > 240) {
+          setRatio(1);
+          virtualScrolled = total;
+          unlockRevealAndAdvance();
+        }
+      } else {
+        exitIntent = Math.max(0, exitIntent - Math.abs(delta) * 0.6);
+        virtualScrolled = Math.max(0, Math.min(total, virtualScrolled + delta));
+        setRatio(virtualScrolled / total);
+        scheduleScrollTo(revealSection.offsetTop + virtualScrolled);
+      }
+    }
+
+    function onTouchStart(e) {
+      touchStartY = e.touches[0].clientY;
+    }
+
+    function onTouchMove(e) {
+      if (window._navJumping || animDone || !revealSection) return;
+      const rect = revealSection.getBoundingClientRect();
+      const inSection = rect.top <= 0 && rect.bottom >= window.innerHeight;
+      if (!inSection) return;
+
+      e.preventDefault();
+      intercepting = true;
+
+      const total = revealSection.offsetHeight - window.innerHeight;
+      const dy = (touchStartY - e.touches[0].clientY) * 0.75;
+      touchStartY = e.touches[0].clientY;
+
+      if (currentRatio >= 0.995 && dy > 0) {
+        exitIntent = Math.min(420, exitIntent + dy);
+        if (exitIntent > 220) {
+          setRatio(1);
+          virtualScrolled = total;
+          unlockRevealAndAdvance();
+        }
+      } else {
+        exitIntent = Math.max(0, exitIntent - Math.abs(dy) * 0.6);
+        virtualScrolled = Math.max(0, Math.min(total, virtualScrolled + dy));
+        setRatio(virtualScrolled / total);
+        scheduleScrollTo(revealSection.offsetTop + virtualScrolled);
+      }
+    }
+
     function onScroll() {
       if (!revealSection || window._navJumping) return;
 
       const rect  = revealSection.getBoundingClientRect();
       const total = revealSection.offsetHeight - window.innerHeight;
       const r = Math.max(0, Math.min(1, -rect.top / total));
-      setRatio(r);
+      if (!intercepting) {
+        setRatio(r);
+        virtualScrolled = r * total;
+      }
+      if (r < 0.985) exitIntent = 0;
+      if (rect.bottom < window.innerHeight && !animDone) {
+        setRatio(1);
+        virtualScrolled = total;
+      }
     }
 
     const sectionObs = new IntersectionObserver(entries => {
       entries.forEach(e => {
         if (e.isIntersecting && !fcRunning) {
           fcRunning = true; swRunning = true; drawFC(); drawSW();
-          currentRatio = getRatioFromScroll();
+          const r = getRatioFromScroll();
+          currentRatio = r;
+          virtualScrolled = r * (revealSection.offsetHeight - window.innerHeight);
         }
         if (!e.isIntersecting && e.boundingClientRect.top > 0) {
           currentRatio = 0;
+          virtualScrolled = 0;
+          intercepting = false;
+          animDone = false;
+          exitIntent = 0;
         }
       });
     }, { threshold: 0 });
     if (revealSection) sectionObs.observe(revealSection);
+    window.addEventListener('wheel', onWheel, { passive: false });
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
+    window.addEventListener('touchmove', onTouchMove, { passive: false });
     window.addEventListener('scroll',     onScroll,     { passive: true  });
     onScroll();
 
     window._videoRevealUnlock = () => {
       currentRatio = 1;
+      animDone = true;
+      intercepting = false;
+      exitIntent = 0;
       if (buildFrameWrap) buildFrameWrap.style.transform = '';
     };
   }
@@ -6688,8 +6878,23 @@
 
   /* ── BOOT ── */
   {
+    const loader = document.getElementById('site-loader');
+    const hideLoader = () => {
+      document.body.classList.remove('site-loading');
+      if (!loader) return;
+      loader.classList.add('loader-hidden');
+      setTimeout(() => loader.remove(), 700);
+    };
+    if (document.readyState === 'complete') {
+      setTimeout(hideLoader, 220);
+    } else {
+      window.addEventListener('load', () => setTimeout(hideLoader, 220), { once: true });
+    }
+
     const phoneSite = document.getElementById('build-site');
     const buildStageEl = document.getElementById('build-stage');
+    const buildVideo = document.querySelector('.bs-hero-video');
+    const revealSection = document.getElementById('video-reveal');
     if (phoneSite) {
       const phoneIsLive = () => buildStageEl && buildStageEl.dataset.phase === '3';
       const keepPhoneInputInside = e => {
@@ -6734,6 +6939,24 @@
             encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
         });
       }
+    }
+
+    if (buildVideo && revealSection) {
+      const syncBuildVideo = () => {
+        const stageLive = buildStageEl && Number(buildStageEl.dataset.phase || -1) >= 2;
+        const rect = revealSection.getBoundingClientRect();
+        const visible = rect.top < window.innerHeight && rect.bottom > 0 && !document.hidden;
+        if (stageLive && visible) {
+          const playPromise = buildVideo.play();
+          if (playPromise && typeof playPromise.catch === 'function') playPromise.catch(() => {});
+        } else {
+          buildVideo.pause();
+        }
+      };
+      document.addEventListener('visibilitychange', syncBuildVideo);
+      window.addEventListener('scroll', syncBuildVideo, { passive: true });
+      window.addEventListener('resize', syncBuildVideo, { passive: true });
+      syncBuildVideo();
     }
   }
 
