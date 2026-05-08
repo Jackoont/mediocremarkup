@@ -958,7 +958,7 @@
        ═══════════════════════════════════════════════ */
     #video-reveal {
       position: relative;
-      height: 500vh;
+      height: 560vh;
       background: #FEF9F4;
       margin-bottom: -2px;
     }
@@ -985,8 +985,11 @@
       justify-content: center;
       overflow: hidden;
       /* Perspective for 3D depth on child elements */
-      perspective: 900px;
+      perspective: 1200px;
       perspective-origin: 50% 50%;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(240,99,90,0.06), transparent 45%),
+        linear-gradient(180deg, rgba(254,249,244,0.98) 0%, rgba(254,249,244,1) 100%);
     }
     /* The inner wrapper that gets Z-pushed on scroll */
     #video-inner-3d {
@@ -1018,9 +1021,33 @@
     #dive-letterbox-top { top: 0; }
     #dive-letterbox-bottom { bottom: 0; }
     /* Edge vignette — soft cream fade at screen edges only */
-    #dive-edge-vignette { display: none; }
+    #dive-edge-vignette {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9;
+      opacity: 0;
+      background:
+        radial-gradient(circle at 50% 45%, transparent 22%, rgba(254,249,244,0.16) 58%, rgba(43,37,71,0.26) 100%),
+        linear-gradient(90deg, rgba(43,37,71,0.14) 0%, transparent 14%, transparent 86%, rgba(43,37,71,0.14) 100%);
+      transition: opacity 0.3s ease;
+    }
     /* Horizon glow — warm coral band at vanishing point */
-    #dive-portal-glow { display: none; }
+    #dive-portal-glow {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: min(92vw, 1200px);
+      height: min(52vw, 520px);
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 4;
+      opacity: 0;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.32) 0%, rgba(244,162,97,0.16) 16%, rgba(240,99,90,0.10) 34%, transparent 70%);
+      filter: blur(20px);
+    }
     /* Speed-streak canvas — motion lines flying at viewer */
     #speed-canvas {
       position: absolute;
@@ -1032,7 +1059,17 @@
       opacity: 0;
     }
     /* Shockwave flash layer */
-    #video-clip-mask { display: none; }
+    #video-clip-mask {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 7;
+      opacity: 0;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.0) 0%, rgba(255,255,255,0.0) 18%, rgba(240,99,90,0.08) 44%, rgba(43,37,71,0.22) 100%);
+      mix-blend-mode: multiply;
+      transition: opacity 0.3s ease;
+    }
     /* Chromatic aberration overlay — splits RGB on impact */
     #dive-chroma {
       position: absolute;
@@ -1173,9 +1210,19 @@
       line-height: 1;
     }
     /* Scan-line flicker overlay */
-    #dive-scanlines { display: none; }
+    #dive-scanlines {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 8;
+      opacity: 0;
+      background:
+        repeating-linear-gradient(180deg, rgba(43,37,71,0.05) 0 1px, transparent 1px 4px);
+      mix-blend-mode: multiply;
+      transition: opacity 0.25s ease;
+    }
     @media (max-width: 900px) {
-      #video-reveal { height: 280vh; }
+      #video-reveal { height: 340vh; }
       .video-headline { font-size: clamp(28px, 8vw, 52px); }
       #dive-depth-hud { display: none; }
     }
@@ -1194,6 +1241,21 @@
       padding: 0 56px;
       pointer-events: none;
       gap: 32px;
+      --stage-shift-x: 0px;
+      --stage-shift-y: 0px;
+      --stage-rot-x: 0deg;
+      --stage-rot-y: 0deg;
+      --stage-scale: 1;
+      --stage-glow: 0.18;
+      --impact-flash: 0;
+      --caption-lift: 0px;
+      transform:
+        translate3d(var(--stage-shift-x), var(--stage-shift-y), 0)
+        rotateX(var(--stage-rot-x))
+        rotateY(var(--stage-rot-y))
+        scale(var(--stage-scale));
+      transform-style: preserve-3d;
+      transition: transform 0.18s linear;
     }
     @media (max-width: 1100px) {
       #build-stage { grid-template-columns: 1fr; padding: 0 24px; gap: 16px; }
@@ -1207,6 +1269,13 @@
       pointer-events: none;
       z-index: -1;
       overflow: hidden;
+    }
+    #build-atmosphere {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.95;
     }
     #build-spotlight {
       position: absolute;
@@ -1222,6 +1291,7 @@
       transition: opacity 1.2s ease, background 0.8s ease;
       will-change: opacity, background;
       animation: spotlightPulse 5s ease-in-out infinite;
+      filter: blur(4px);
     }
     #build-stage.bs-in #build-spotlight { opacity: 1; }
     @keyframes spotlightPulse {
@@ -1262,6 +1332,53 @@
     @keyframes blueprintDrift {
       from { background-position: 0 0, 0 0; }
       to   { background-position: 64px 96px, 96px 64px; }
+    }
+    #build-energy {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 0.9s ease;
+    }
+    #build-stage.bs-in #build-energy { opacity: 1; }
+    .be-beam,
+    .be-ring {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform-origin: center;
+      opacity: 0;
+    }
+    .be-beam {
+      width: min(90vw, 1000px);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(240,99,90,0.28), rgba(255,255,255,0.62), rgba(240,99,90,0.24), transparent);
+      filter: blur(0.4px);
+      animation: energySweep 8s linear infinite;
+    }
+    .be-beam-1 { transform: translate(-50%, -50%) rotate(8deg) scaleX(0.65); animation-delay: 0s; }
+    .be-beam-2 { transform: translate(-50%, -50%) rotate(-14deg) scaleX(0.8); animation-delay: 1.5s; }
+    .be-beam-3 { transform: translate(-50%, -50%) rotate(90deg) scaleX(0.42); animation-delay: 0.8s; }
+    .be-ring {
+      width: min(55vw, 620px);
+      height: min(55vw, 620px);
+      border-radius: 50%;
+      border: 1px solid rgba(240,99,90,0.16);
+      box-shadow: 0 0 60px rgba(240,99,90,0.08), inset 0 0 30px rgba(244,162,97,0.06);
+      mix-blend-mode: screen;
+    }
+    .be-ring-1 { animation: ringPulse 6s ease-in-out infinite; }
+    .be-ring-2 { width: min(78vw, 940px); height: min(78vw, 940px); animation: ringPulse 8s ease-in-out infinite reverse; }
+    @keyframes energySweep {
+      0%, 100% { opacity: 0; filter: blur(0.4px); }
+      12%, 34% { opacity: 0.22; }
+      50% { opacity: 0.06; filter: blur(1px); }
+      70% { opacity: 0.18; }
+    }
+    @keyframes ringPulse {
+      0%, 100% { opacity: 0.08; transform: translate(-50%, -50%) scale(0.94); }
+      50% { opacity: 0.22; transform: translate(-50%, -50%) scale(1.04); }
     }
 
     /* ── Left rail: phase track ── */
@@ -1368,6 +1485,7 @@
       flex-direction: column;
       align-items: center;
       justify-self: center;
+      transform-style: preserve-3d;
     }
     #build-frame {
       position: relative;
@@ -1387,7 +1505,7 @@
         0 12px 40px -12px rgba(240,99,90,0.20),
         inset 0 1px 0 rgba(255,255,255,0.10);
       opacity: 0;
-      transform: translateY(50px) scale(0.88) rotateX(8deg);
+      transform: translateY(50px) scale(0.88) rotateX(8deg) rotateY(-8deg);
       transform-style: preserve-3d;
       perspective: 1200px;
       transition: opacity 1.1s cubic-bezier(0.16,1,0.3,1),
@@ -1396,7 +1514,7 @@
       will-change: transform, opacity, box-shadow;
     }
     #build-stage.bs-in #build-frame {
-      opacity: 1; transform: translateY(0) scale(1) rotateX(0deg);
+      opacity: 1; transform: translateY(0) scale(1) rotateX(0deg) rotateY(0deg);
     }
     /* Per-phase frame state */
     #build-stage[data-phase="1"] #build-frame {
@@ -1985,7 +2103,19 @@
 
     /* ── Caption below frame ── */
     #build-caption {
-      display: none;
+      position: absolute;
+      left: 50%;
+      bottom: 30px;
+      width: min(540px, calc(100vw - 48px));
+      padding: 18px 22px 16px;
+      border: 1px solid rgba(43,37,71,0.12);
+      border-radius: 16px;
+      background: rgba(255,251,246,0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 18px 48px -26px rgba(43,37,71,0.34);
+      opacity: 0;
+      transform: translateX(-50%) translateY(28px);
     }
     #build-stage.bs-in #build-caption {
       opacity: 1; transform: translateX(-50%) translateY(0);
@@ -2008,15 +2138,41 @@
       font-size: 13.5px; color: rgba(43,37,71,0.75); line-height: 1.5;
       transition: opacity 0.4s ease, transform 0.4s ease;
     }
+    .bc-notes {
+      margin-top: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 2.4px;
+      text-transform: uppercase;
+      color: rgba(43,37,71,0.54);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .bc-progress {
+      margin-top: 14px;
+      height: 2px;
+      background: rgba(43,37,71,0.08);
+      overflow: hidden;
+      border-radius: 999px;
+    }
+    #bc-progress-fill {
+      display: block;
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #F4A261, #F0635A);
+      box-shadow: 0 0 12px rgba(240,99,90,0.35);
+      transition: width 0.18s linear;
+    }
     .bc-flip .bc-eyebrow,
     .bc-flip .bc-title,
-    .bc-flip .bc-body {
+    .bc-flip .bc-body,
+    .bc-flip .bc-notes {
       opacity: 0;
       transform: translateY(8px);
     }
     @media (max-width: 700px) {
-      #build-caption { bottom: 3vh; }
+      #build-caption { bottom: 3vh; padding: 16px 16px 14px; }
       .bc-body { font-size: 12px; }
+      .bc-notes { font-size: 8px; letter-spacing: 1.7px; }
     }
 
     /* ══════════════════════════════════════
@@ -4150,8 +4306,16 @@
       <div id="build-stage">
         <!-- Atmospheric backdrop: blueprint grid + spotlight -->
         <div id="build-backdrop">
+          <canvas id="build-atmosphere"></canvas>
           <div id="build-spotlight"></div>
           <div id="build-blueprint"></div>
+          <div id="build-energy">
+            <span class="be-beam be-beam-1"></span>
+            <span class="be-beam be-beam-2"></span>
+            <span class="be-beam be-beam-3"></span>
+            <span class="be-ring be-ring-1"></span>
+            <span class="be-ring be-ring-2"></span>
+          </div>
         </div>
 
         <!-- Phase track: vertical progress -->
@@ -4164,8 +4328,8 @@
             <span class="bp-marker"></span>
             <div class="bp-text">
               <span class="bp-num">01</span>
-              <span class="bp-name">Sketch</span>
-              <span class="bp-meta">structure first</span>
+              <span class="bp-name">Blueprint</span>
+              <span class="bp-meta">intent before polish</span>
             </div>
             <span class="bp-check">✓</span>
           </div>
@@ -4173,8 +4337,8 @@
             <span class="bp-marker"></span>
             <div class="bp-text">
               <span class="bp-num">02</span>
-              <span class="bp-name">Code</span>
-              <span class="bp-meta">hand-written, line by line</span>
+              <span class="bp-name">Assemble</span>
+              <span class="bp-meta">pieces lock under load</span>
             </div>
             <span class="bp-check">✓</span>
           </div>
@@ -4182,8 +4346,8 @@
             <span class="bp-marker"></span>
             <div class="bp-text">
               <span class="bp-num">03</span>
-              <span class="bp-name">Render</span>
-              <span class="bp-meta">structure becomes site</span>
+              <span class="bp-name">Code</span>
+              <span class="bp-meta">signal comes alive</span>
             </div>
             <span class="bp-check">✓</span>
           </div>
@@ -4491,6 +4655,8 @@
           <div class="bc-eyebrow" id="bc-eyebrow">PHASE 01 / 04</div>
           <div class="bc-title" id="bc-title">Every site starts as a sketch.</div>
           <div class="bc-body" id="bc-body">Layout. Hierarchy. The bones before the fabric.</div>
+          <div class="bc-notes" id="bc-notes">SCENE LOCKED · CAMERA CALM · INTENT ESTABLISHED</div>
+          <div class="bc-progress"><span id="bc-progress-fill"></span></div>
         </div>
       </div>
 
@@ -5610,6 +5776,8 @@
     const bcEyebrow     = document.getElementById('bc-eyebrow');
     const bcTitle       = document.getElementById('bc-title');
     const bcBody        = document.getElementById('bc-body');
+    const bcNotes       = document.getElementById('bc-notes');
+    const bcProgressFill = document.getElementById('bc-progress-fill');
     const buildCaption  = document.getElementById('build-caption');
     const btPhase       = document.getElementById('bt-phase');
     const btLines       = document.getElementById('bt-lines');
@@ -5627,6 +5795,7 @@
     const fakeCursor    = document.querySelector('.bld-fakecursor');
     const tapRing       = document.querySelector('.bld-tapring');
     const shipParticles = document.getElementById('ship-particles');
+    const buildAtmosphere = document.getElementById('build-atmosphere');
 
     // Phase copy — captions update at each major beat
     const PHASE_COPY = [
@@ -5634,31 +5803,95 @@
         eyebrow: 'PHASE 01 / 04 · BLUEPRINT',
         title:   'The offer gets mapped first.',
         body:    'Before the polish, we decide what a visitor should understand, trust, and do.',
+        notes:   'SCENE LOCKED · CAMERA CALM · INTENT ESTABLISHED',
         ph:      'BLUEPRINT',
         rail:    'build · blueprint',
       },
       {
         eyebrow: 'PHASE 02 / 04 · ASSEMBLE',
-        title:   'The business turns into a working page.',
-        body:    'Navigation, proof, service cards, and booking all assemble around the customer journey.',
+        title:   'The page gets thrown together like a machine under load.',
+        body:    'Navigation, proof, service cards, and booking slam into place around the customer journey, not around decoration.',
+        notes:   'MAGNETIC LOCKS ONLINE · MASS ARRIVING · STRUCTURE TAKES WEIGHT',
         ph:      'ASSEMBLE',
         rail:    'build · assemble',
       },
       {
         eyebrow: 'PHASE 03 / 04 · CODE',
-        title:   'Custom code gives it a pulse.',
-        body:    'Real HTML, CSS, and JS keep the experience fast, responsive, and easy to maintain.',
+        title:   'Now the thing starts breathing.',
+        body:    'Real HTML, CSS, and JS turn the layout into a responsive, living surface that can move fast without falling apart.',
+        notes:   'SIGNAL UP · SYSTEMS HOT · LIGHT LEAKS THROUGH THE SEAMS',
         ph:      'CODE',
         rail:    'build · code',
       },
       {
         eyebrow: 'PHASE 04 / 04 · SHIPPED',
-        title:   'The handoff should feel earned.',
-        body:    'A live domain, working actions, clean copy, and a page that looks ready to win business.',
+        title:   'Release should feel like impact, not just completion.',
+        body:    'A live domain, working actions, clean copy, and a page that lands with enough force to make the next scroll feel quiet.',
+        notes:   'FIELD STABLE · MOTION BLEEDS OFF · LIVE AND TAKING CUSTOMERS',
         ph:      'SHIPPED',
         rail:    'build · shipped',
       },
     ];
+
+    const cameraState = {
+      shiftX: 0,
+      shiftY: 0,
+      rotX: 0,
+      rotY: 0,
+      scale: 1,
+      vx: 0,
+      vy: 0,
+      vrx: 0,
+      vry: 0,
+      vs: 0,
+      impulse: 0,
+    };
+    const targetCamera = { shiftX: 0, shiftY: 0, rotX: 0, rotY: 0, scale: 1 };
+    let cameraLast = performance.now();
+    function kickCamera(dx = 0, dy = 0, rx = 0, ry = 0, scaleKick = 0) {
+      cameraState.vx += dx;
+      cameraState.vy += dy;
+      cameraState.vrx += rx;
+      cameraState.vry += ry;
+      cameraState.vs += scaleKick;
+      cameraState.impulse = Math.min(1, cameraState.impulse + Math.abs(dx + dy + rx + ry) * 0.015 + Math.abs(scaleKick) * 40);
+    }
+    function tickCamera() {
+      const now = performance.now();
+      const dt = Math.min(2, (now - cameraLast) / 16.6667);
+      cameraLast = now;
+
+      cameraState.vx += (targetCamera.shiftX - cameraState.shiftX) * 0.085 * dt;
+      cameraState.vy += (targetCamera.shiftY - cameraState.shiftY) * 0.085 * dt;
+      cameraState.vrx += (targetCamera.rotX - cameraState.rotX) * 0.085 * dt;
+      cameraState.vry += (targetCamera.rotY - cameraState.rotY) * 0.085 * dt;
+      cameraState.vs += (targetCamera.scale - cameraState.scale) * 0.07 * dt;
+
+      cameraState.vx *= 0.76;
+      cameraState.vy *= 0.76;
+      cameraState.vrx *= 0.74;
+      cameraState.vry *= 0.74;
+      cameraState.vs *= 0.72;
+
+      cameraState.shiftX += cameraState.vx;
+      cameraState.shiftY += cameraState.vy;
+      cameraState.rotX += cameraState.vrx;
+      cameraState.rotY += cameraState.vry;
+      cameraState.scale += cameraState.vs;
+      cameraState.impulse *= 0.9;
+
+      if (buildStage) {
+        buildStage.style.setProperty('--stage-shift-x', `${cameraState.shiftX.toFixed(2)}px`);
+        buildStage.style.setProperty('--stage-shift-y', `${cameraState.shiftY.toFixed(2)}px`);
+        buildStage.style.setProperty('--stage-rot-x', `${cameraState.rotX.toFixed(2)}deg`);
+        buildStage.style.setProperty('--stage-rot-y', `${cameraState.rotY.toFixed(2)}deg`);
+        buildStage.style.setProperty('--stage-scale', cameraState.scale.toFixed(4));
+        buildStage.style.setProperty('--impact-flash', cameraState.impulse.toFixed(3));
+      }
+
+      requestAnimationFrame(tickCamera);
+    }
+    requestAnimationFrame(tickCamera);
 
     // Trigger the coral scan-line sweep across the device screen
     function fireSweep() {
@@ -5832,10 +6065,20 @@
       if (!piece || pieceState[idx].landed) return;
       pieceState[idx].landed = true;
       piece.classList.add('bs-piece-in');
+      const from = piece.dataset.from || 'top';
+      const impactMap = {
+        left:   { dx: 14, dy: -3, rx: 1.2,  ry: -2.8 },
+        right:  { dx: -14, dy: -3, rx: 1.2,  ry: 2.8 },
+        top:    { dx: 0,  dy: 10, rx: -3.6, ry: 0.8 },
+        bottom: { dx: 0,  dy: -10, rx: 3.0, ry: -0.8 },
+      };
+      const impact = impactMap[from] || impactMap.top;
+      kickCamera(impact.dx, impact.dy, impact.rx, impact.ry, 0.014);
       piece.animate([
-        { transform: 'translate3d(0,0,0) scale(1.018)', filter: 'brightness(1.08)' },
-        { transform: 'translate3d(0,0,0) scale(1)', filter: 'brightness(1)' },
-      ], { duration: 520, easing: 'cubic-bezier(0.16,1,0.3,1)' });
+        { transform: `translate3d(${impact.dx * 0.24}px, ${impact.dy * 0.24}px, 0) rotate(${impact.ry * 0.65}deg) scale(0.94)`, filter: 'brightness(1.18)' },
+        { transform: `translate3d(${impact.dx * -0.08}px, ${impact.dy * -0.08}px, 0) rotate(${impact.ry * -0.18}deg) scale(1.03)`, filter: 'brightness(1.1)', offset: 0.48 },
+        { transform: 'translate3d(0,0,0) rotate(0deg) scale(1)', filter: 'brightness(1)' },
+      ], { duration: 760, easing: 'cubic-bezier(0.16,1,0.3,1)' });
       // Bloom ring on landing
       piece.classList.remove('bs-piece-land');
       void piece.offsetWidth;
@@ -5936,11 +6179,17 @@
         bcEyebrow.textContent = copy.eyebrow;
         bcTitle.textContent   = copy.title;
         bcBody.textContent    = copy.body;
+        if (bcNotes) bcNotes.textContent = copy.notes || '';
         btPhase.textContent   = copy.ph;
         if (bfRailText) bfRailText.textContent = copy.rail;
         flickerVal(btPhase);
         buildCaption.classList.remove('bc-flip');
       }, 220);
+
+      if (p === 0) kickCamera(0, -2, -0.8, 0.6, 0.004);
+      if (p === 1) kickCamera(0, -6, -1.4, 1.1, 0.008);
+      if (p === 2) kickCamera(0, -5, -1.8, -1.3, 0.01);
+      if (p === 3) kickCamera(0, -10, -2.6, 0, 0.018);
 
       // Cursor demo runs in phase 3 (render phase = ship buildup actually no, phase 2 in old, 3 here is ship)
       // We'll start the cursor when assembly is mostly complete (phase 2 = code, but pieces are already there)
@@ -6049,6 +6298,80 @@
       sc.width  = w; sc.height  = h;
     };
     sizeCanvases(); window.addEventListener('resize', sizeCanvases);
+
+    const baCtx = buildAtmosphere ? buildAtmosphere.getContext('2d') : null;
+    let atmoParticles = [];
+    function initAtmosphere() {
+      if (!buildAtmosphere || !baCtx) return;
+      const rect = buildAtmosphere.parentElement.getBoundingClientRect();
+      buildAtmosphere.width = Math.max(1, Math.round(rect.width));
+      buildAtmosphere.height = Math.max(1, Math.round(rect.height));
+      atmoParticles = Array.from({ length: 56 }, () => ({
+        x: Math.random() * buildAtmosphere.width,
+        y: Math.random() * buildAtmosphere.height,
+        z: 0.2 + Math.random() * 0.8,
+        size: 0.6 + Math.random() * 2.2,
+        vx: (Math.random() - 0.5) * 0.12,
+        vy: 0.12 + Math.random() * 0.38,
+        twinkle: Math.random() * Math.PI * 2,
+      }));
+    }
+    initAtmosphere();
+    window.addEventListener('resize', initAtmosphere);
+
+    function drawAtmosphere() {
+      if (!buildAtmosphere || !baCtx) {
+        requestAnimationFrame(drawAtmosphere);
+        return;
+      }
+      const W = buildAtmosphere.width;
+      const H = buildAtmosphere.height;
+      baCtx.clearRect(0, 0, W, H);
+
+      const phaseBoost = currentPhase < 0 ? 0 : currentPhase / 3;
+      const horizonY = H * (0.48 - displayRatio * 0.05);
+      const horizonGlow = baCtx.createRadialGradient(W * 0.5, horizonY, 0, W * 0.5, horizonY, Math.min(W, H) * 0.48);
+      horizonGlow.addColorStop(0, `rgba(240,99,90,${(0.1 + phaseBoost * 0.16).toFixed(3)})`);
+      horizonGlow.addColorStop(0.35, `rgba(244,162,97,${(0.06 + phaseBoost * 0.08).toFixed(3)})`);
+      horizonGlow.addColorStop(1, 'rgba(244,162,97,0)');
+      baCtx.fillStyle = horizonGlow;
+      baCtx.fillRect(0, 0, W, H);
+
+      const lineAlpha = Math.max(0, Math.min(0.3, displayRatio * 0.28));
+      baCtx.strokeStyle = `rgba(43,37,71,${lineAlpha.toFixed(3)})`;
+      baCtx.lineWidth = 1;
+      for (let i = -8; i <= 8; i++) {
+        const sx = W * 0.5 + i * W * 0.06;
+        baCtx.beginPath();
+        baCtx.moveTo(sx, H);
+        baCtx.lineTo(W * 0.5 + i * W * 0.012, horizonY);
+        baCtx.stroke();
+      }
+      for (let i = 0; i < 8; i++) {
+        const y = horizonY + Math.pow(i / 7, 1.9) * (H - horizonY);
+        baCtx.beginPath();
+        baCtx.moveTo(W * 0.16, y);
+        baCtx.quadraticCurveTo(W * 0.5, y - 16 + i * 4, W * 0.84, y);
+        baCtx.stroke();
+      }
+
+      atmoParticles.forEach(p => {
+        p.twinkle += 0.02 + p.z * 0.01;
+        p.x += p.vx + Math.sin(p.twinkle) * 0.08;
+        p.y += p.vy + displayRatio * p.z * 0.8;
+        if (p.y > H + 8) { p.y = -10; p.x = Math.random() * W; }
+        if (p.x < -12) p.x = W + 12;
+        if (p.x > W + 12) p.x = -12;
+        const alpha = (0.05 + p.z * 0.22 + Math.sin(p.twinkle) * 0.02) * Math.max(0.1, displayRatio);
+        baCtx.fillStyle = `rgba(${p.z > 0.65 ? '240,99,90' : '43,37,71'},${alpha.toFixed(3)})`;
+        baCtx.beginPath();
+        baCtx.arc(p.x, p.y, p.size * (0.85 + phaseBoost * 0.5), 0, Math.PI * 2);
+        baCtx.fill();
+      });
+
+      requestAnimationFrame(drawAtmosphere);
+    }
+    requestAnimationFrame(drawAtmosphere);
 
     // ── PERSPECTIVE GRID + FALLING CODE COLUMNS ──
     // A vanishing-point grid floor/ceiling rushes toward the viewer as they scroll.
@@ -6313,6 +6636,7 @@
 
       // Soft screen jolt
       if (stickyEl) screenShake(stickyEl, 5, 380);
+      kickCamera(0, -18, -4.8, 0.5, 0.024);
 
       // Shockwave + particles
       setTimeout(fireShockwave, 0);
@@ -6375,6 +6699,12 @@
         stopCursorDemo();
         resetAssembly();
         codeLines.forEach(l => l.classList.remove('ct-typed'));
+        if (bcProgressFill) bcProgressFill.style.width = '0%';
+        targetCamera.shiftX = 0;
+        targetCamera.shiftY = 0;
+        targetCamera.rotX = 0;
+        targetCamera.rotY = 0;
+        targetCamera.scale = 1;
       }
 
       const bsIn = displayRatio > 0.04;
@@ -6386,21 +6716,32 @@
       lbTop.style.height    = lbH + 'px';
       lbBottom.style.height = lbH + 'px';
 
-      // Edge vignette — soft cream fade at edges
-      const evA = Math.max(0, Math.min(0.45, (displayRatio - 0.04) / 0.30));
-      edgeVignette.style.opacity = evA.toFixed(3);
-
-      // Horizon glow behind frame
-      const pgA = Math.max(0, Math.min(1, (displayRatio - 0.04) / 0.40));
-      portalGlow.style.opacity = (pgA * 0.55).toFixed(3);
-
-      // Scanlines — very faint
-      const slA = Math.max(0, Math.min(1, (displayRatio - 0.10) / 0.50));
-      scanlines.style.opacity = (slA * 0.15).toFixed(3);
-
       // Background ambient rain — minimal
       const fcA = Math.max(0, Math.min(0.4, (displayRatio - 0.06) / 0.20));
       fc.style.opacity = fcA.toFixed(3);
+
+      const driftX = Math.sin(displayRatio * Math.PI * 1.15) * 18;
+      const driftY = Math.cos(displayRatio * Math.PI * 1.6) * -10 - displayRatio * 18;
+      const rotY = (displayRatio - 0.5) * 8 + Math.sin(displayRatio * 8) * 1.2;
+      const rotX = Math.sin(displayRatio * Math.PI * 1.4) * -4.2;
+      targetCamera.shiftX = driftX;
+      targetCamera.shiftY = driftY;
+      targetCamera.rotX = rotX;
+      targetCamera.rotY = rotY;
+      targetCamera.scale = 0.965 + displayRatio * 0.1;
+
+      if (portalGlow) {
+        portalGlow.style.opacity = (0.14 + Math.max(0, Math.min(0.42, displayRatio * 0.52))).toFixed(3);
+      }
+      if (edgeVignette) {
+        edgeVignette.style.opacity = Math.max(0, Math.min(0.72, displayRatio * 0.82)).toFixed(3);
+      }
+      if (scanlines) {
+        scanlines.style.opacity = Math.max(0, Math.min(0.22, (displayRatio - 0.42) * 0.55)).toFixed(3);
+      }
+      if (mask) {
+        mask.style.opacity = Math.max(0, Math.min(0.44, displayRatio * 0.36 + cameraState.impulse * 0.2)).toFixed(3);
+      }
 
       // ── PHASE GATING ──
       // 0.04→0.18 BLUEPRINT (frame settles, atmospheric warmup)
@@ -6441,6 +6782,7 @@
       const renderPct = Math.min(100, Math.round(assemT * 100));
       btRender.textContent = renderPct + ' %';
       btRender.classList.toggle('bt-live', renderPct === 100);
+      if (bcProgressFill) bcProgressFill.style.width = (displayRatio * 100).toFixed(1) + '%';
 
       // ── PHASE 3: SHIP impact (one-shot) ──
       if (p === 3 && !impactDone) {
