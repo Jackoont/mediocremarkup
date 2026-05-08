@@ -1081,18 +1081,15 @@
       height: 360vh;
       margin-bottom: -2px;
       overflow: clip;
-      background:
-        linear-gradient(180deg, #fbf6ef 0%, #13101d 18%, #0e0b16 70%, #FEF9F4 100%);
+      background: linear-gradient(180deg, #fbf6ef 0%, #0b0910 16%, #0b0910 78%, #FEF9F4 100%);
     }
     #video-reveal::before {
       content: '';
       position: absolute;
       inset: 0;
       pointer-events: none;
-      background:
-        linear-gradient(115deg, transparent 0 42%, rgba(240,99,90,0.14) 42.2% 42.6%, transparent 42.8% 100%),
-        linear-gradient(245deg, transparent 0 48%, rgba(244,162,122,0.10) 48.2% 48.7%, transparent 48.9% 100%);
-      opacity: 0.8;
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), transparent 34%, transparent 70%, rgba(255,255,255,0.04));
+      opacity: 0.55;
     }
     #video-reveal::after {
       content: '';
@@ -1123,37 +1120,25 @@
       justify-content: center;
       overflow: hidden;
       isolation: isolate;
-      background: #0e0b16;
+      background: #0b0910;
     }
     .cinema-build {
       position: absolute;
       inset: 0;
       overflow: hidden;
-      background:
-        linear-gradient(115deg, rgba(240,99,90,0.10), transparent 34%),
-        linear-gradient(245deg, rgba(244,162,122,0.10), transparent 32%),
-        linear-gradient(180deg, #171321 0%, #0d0a13 100%);
+      background: #0b0910;
       perspective: 1200px;
     }
     .cinema-build::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
-      background-size: 64px 64px;
-      opacity: 0.3;
-      transform: translateZ(0);
+      content: none;
     }
     .cinema-build::after {
       content: '';
       position: absolute;
       inset: 0;
-      background:
-        linear-gradient(90deg, rgba(255,255,255,0.02), transparent 9%, transparent 91%, rgba(255,255,255,0.02)),
-        radial-gradient(ellipse at center, transparent 0 42%, rgba(0,0,0,0.36) 100%);
+      background: radial-gradient(ellipse at center, transparent 0 58%, rgba(0,0,0,0.44) 100%);
       pointer-events: none;
+      z-index: 12;
     }
     .cinema-bars {
       position: absolute;
@@ -1165,7 +1150,7 @@
       position: absolute;
       left: 0;
       width: 100%;
-      height: 22vh;
+      height: 18vh;
       background: #06050a;
       transform: scaleY(0);
       will-change: transform;
@@ -1180,11 +1165,9 @@
     }
     .cinema-aperture {
       position: absolute;
-      inset: 11vh 6vw;
+      inset: 14vh 7vw;
       border: 1px solid rgba(255,249,245,0.10);
-      box-shadow:
-        inset 0 0 80px rgba(0,0,0,0.42),
-        0 0 120px rgba(240,99,90,0.13);
+      box-shadow: inset 0 0 72px rgba(0,0,0,0.55);
       transform: rotateX(14deg) scale(0.82);
       transform-style: preserve-3d;
       will-change: transform, opacity;
@@ -1197,43 +1180,21 @@
       inset: 0;
       pointer-events: none;
     }
-    .cinema-aperture::before {
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent);
-      opacity: 0;
-      transform: translateX(-120%);
-    }
     .cinema-aperture::after {
-      background:
-        linear-gradient(0deg, transparent 0 48%, rgba(240,99,90,0.22) 49% 51%, transparent 52% 100%),
-        linear-gradient(90deg, transparent 0 49%, rgba(244,162,122,0.18) 49.5% 50.5%, transparent 51% 100%);
-      opacity: 0.32;
-      mix-blend-mode: screen;
+      background: linear-gradient(90deg, transparent 0 49.8%, rgba(242,211,174,0.22) 50%, transparent 50.2%);
+      opacity: 0.25;
     }
-    .cinema-rail {
-      position: absolute;
-      width: 16vw;
-      min-width: 110px;
-      height: 130vh;
-      top: -15vh;
-      background: linear-gradient(180deg, rgba(240,99,90,0), rgba(240,99,90,0.32), rgba(244,162,122,0));
-      transform: skewX(-14deg) translateY(70vh);
-      opacity: 0;
-      will-change: transform, opacity;
-    }
-    .cinema-rail-a { left: 6vw; }
-    .cinema-rail-b { right: 9vw; transform: skewX(14deg) translateY(-70vh); }
-    .cinema-rail-c { left: 48vw; width: 9vw; opacity: 0; }
     .cinema-frame {
       position: absolute;
       left: 50%;
       top: 52%;
-      width: min(1040px, 82vw);
+      width: min(1180px, 88vw);
       aspect-ratio: 16 / 9;
       border: 1px solid rgba(255,249,245,0.15);
-      background: linear-gradient(180deg, rgba(255,249,245,0.10), rgba(255,249,245,0.02));
+      background: #f6efe6;
       box-shadow:
-        0 50px 160px rgba(0,0,0,0.52),
-        0 0 0 12px rgba(255,255,255,0.025),
+        0 50px 150px rgba(0,0,0,0.56),
+        0 0 0 10px rgba(255,255,255,0.025),
         inset 0 1px 0 rgba(255,255,255,0.12);
       overflow: hidden;
       transform: translate(-50%, -50%) rotateX(24deg) scale(0.56);
@@ -1250,75 +1211,224 @@
       pointer-events: none;
       z-index: 4;
     }
-    .cinema-site {
+    .tailor-site {
       position: absolute;
       inset: 0;
-      background: #fbf4ec;
+      background: #f7f0e7;
+      color: #231c18;
       overflow: hidden;
+      font-family: var(--font-body);
     }
-    .cinema-site > * {
+    .tailor-site > * {
       position: absolute;
       will-change: transform, opacity;
     }
-    .cinema-sky {
+    .tailor-backdrop {
       inset: 0;
       background:
-        linear-gradient(135deg, rgba(240,99,90,0.36), transparent 34%),
-        linear-gradient(245deg, rgba(43,37,71,0.36), transparent 38%),
-        linear-gradient(180deg, #fffaf4 0%, #eadccf 100%);
+        linear-gradient(90deg, rgba(117,79,55,0.08) 1px, transparent 1px),
+        linear-gradient(rgba(117,79,55,0.08) 1px, transparent 1px),
+        linear-gradient(180deg, #fffaf4 0%, #eaded0 100%);
+      background-size: 38px 38px, 38px 38px, auto;
       transform: scale(1.2);
     }
-    .cinema-nav {
-      left: 5%;
-      right: 5%;
-      top: 7%;
-      height: 7%;
-      border: 1px solid rgba(43,37,71,0.13);
-      background: rgba(255,255,255,0.62);
+    .tailor-thread {
+      inset: 0;
+      z-index: 7;
+      pointer-events: none;
+    }
+    .tailor-thread path {
+      fill: none;
+      stroke: #d94f45;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 12 15;
+      filter: drop-shadow(0 0 10px rgba(217,79,69,0.48));
+    }
+    .tailor-needle {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 76px;
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #f8efe4, #b99469 55%, #5d4534);
+      box-shadow: 0 0 20px rgba(255,235,200,0.55);
+      transform-origin: 88% 50%;
+      z-index: 8;
+      opacity: 0;
+    }
+    .tailor-spark {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #f8d79d;
+      box-shadow: 0 0 18px rgba(248,215,157,0.85);
+      opacity: 0;
+      z-index: 8;
+    }
+    .tailor-spark-a { left: 21%; top: 22%; }
+    .tailor-spark-b { left: 59%; top: 16%; }
+    .tailor-spark-c { left: 78%; top: 62%; }
+    .tailor-spark-d { left: 34%; top: 76%; }
+    .tailor-nav {
+      left: 4%;
+      right: 4%;
+      top: 5%;
+      height: 9%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 3%;
+      background: rgba(255,255,255,0.74);
+      border: 1px solid rgba(71,48,34,0.13);
       box-shadow: 0 18px 38px rgba(43,37,71,0.08);
       transform: translateY(-220%);
+      z-index: 4;
     }
-    .cinema-hero-block {
+    .tailor-brand {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      line-height: 1;
+      color: #231c18;
+    }
+    .tailor-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      color: rgba(35,28,24,0.66);
+    }
+    .tailor-nav-links a { color: inherit; }
+    .tailor-nav-links a:last-child {
+      padding: 9px 13px;
+      background: #231c18;
+      color: #fff8ef;
+    }
+    .tailor-hero-copy {
       left: 5%;
-      top: 20%;
+      top: 22%;
       width: 42%;
-      height: 42%;
-      background: #2B2547;
-      box-shadow: 0 26px 70px rgba(43,37,71,0.28);
-      transform: translateX(-130%) skewX(-8deg);
+      color: #231c18;
+      transform: translateX(-130%);
+      z-index: 3;
     }
-    .cinema-image-block {
+    .tailor-hero-kicker {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      color: #a24d3e;
+      margin-bottom: 12px;
+      letter-spacing: 0;
+    }
+    .tailor-hero-copy h3 {
+      font-family: var(--font-serif);
+      font-size: 56px;
+      line-height: 0.95;
+      font-weight: 600;
+      letter-spacing: 0;
+      margin-bottom: 16px;
+    }
+    .tailor-hero-copy p {
+      width: min(390px, 100%);
+      font-size: 14px;
+      line-height: 1.65;
+      color: rgba(35,28,24,0.72);
+      margin-bottom: 18px;
+    }
+    .tailor-cta {
+      display: inline-flex;
+      padding: 12px 17px;
+      background: #d94f45;
+      color: #fff8ef;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .tailor-hero-media {
       right: 5%;
       top: 18%;
       width: 42%;
       height: 48%;
-      background:
-        linear-gradient(135deg, rgba(240,99,90,0.22), transparent 38%),
-        url('images/vecteezy_needle-and-thread-with-button-on-material-mending-clothing_76760151.jpeg') center / cover;
       box-shadow: 0 34px 80px rgba(43,37,71,0.24);
-      transform: translateX(130%) skewX(7deg);
+      overflow: hidden;
+      transform: translateX(130%) rotate(4deg);
+      z-index: 3;
     }
-    .cinema-strip {
+    .tailor-hero-media img,
+    .tailor-video video,
+    .tailor-gallery img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .tailor-services {
       left: 5%;
       right: 5%;
-      bottom: 21%;
-      height: 12%;
-      background: linear-gradient(90deg, #F0635A, #F4A27A);
-      transform: scaleX(0);
-      transform-origin: 0 50%;
+      bottom: 7%;
+      height: 20%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      z-index: 5;
     }
-    .cinema-card {
-      bottom: 6%;
-      width: 27%;
-      height: 12%;
-      background: rgba(255,255,255,0.76);
-      border: 1px solid rgba(43,37,71,0.08);
-      box-shadow: 0 18px 38px rgba(43,37,71,0.10);
+    .tailor-service {
+      position: relative;
+      padding: 18px;
+      background: rgba(255,255,255,0.82);
+      border: 1px solid rgba(71,48,34,0.11);
+      box-shadow: 0 18px 38px rgba(43,37,71,0.08);
       transform: translateY(180%);
     }
-    .cinema-card-a { left: 5%; }
-    .cinema-card-b { left: 36.5%; }
-    .cinema-card-c { right: 5%; }
+    .tailor-service span {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: #d94f45;
+      margin-bottom: 7px;
+    }
+    .tailor-service strong {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 7px;
+    }
+    .tailor-service small {
+      display: block;
+      font-size: 11px;
+      line-height: 1.45;
+      color: rgba(35,28,24,0.64);
+    }
+    .tailor-video {
+      left: 50%;
+      top: 55%;
+      width: 24%;
+      height: 22%;
+      overflow: hidden;
+      box-shadow: 0 28px 60px rgba(43,37,71,0.20);
+      transform: translate(-50%, 120%) scale(0.8);
+      z-index: 4;
+    }
+    .tailor-gallery {
+      right: 5%;
+      bottom: 30%;
+      width: 42%;
+      height: 15%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      z-index: 4;
+      transform: translateX(120%);
+    }
+    .tailor-gallery figure {
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 18px 38px rgba(43,37,71,0.10);
+    }
     .cinema-shutter {
       position: absolute;
       inset: 0;
@@ -1344,11 +1454,11 @@
       position: absolute;
       left: 50%;
       top: 50%;
-      width: 42vmax;
-      height: 42vmax;
+      width: 30vmax;
+      height: 30vmax;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,249,245,0.34) 0%, rgba(240,99,90,0.14) 20%, transparent 64%);
-      filter: blur(28px);
+      background: radial-gradient(circle, rgba(248,215,157,0.34) 0%, rgba(217,79,69,0.18) 22%, transparent 62%);
+      filter: blur(22px);
       mix-blend-mode: screen;
       opacity: 0.08;
       transform: translate(-50%, -50%) scale(0.4);
@@ -1370,12 +1480,22 @@
     }
     @media (max-width: 760px) {
       #video-reveal { height: 320vh; }
-      .cinema-aperture { inset: 15vh 4vw; }
-      .cinema-frame { width: 94vw; aspect-ratio: 4 / 5; }
-      .cinema-hero-block { width: 58%; height: 34%; }
-      .cinema-image-block { top: 42%; width: 62%; height: 31%; }
-      .cinema-strip { bottom: 18%; }
-      .cinema-card { width: 28%; }
+      .cinema-aperture { inset: 14vh 4vw; }
+      .cinema-frame { width: 94vw; aspect-ratio: 4 / 5.2; }
+      .tailor-nav { top: 4%; height: 8%; }
+      .tailor-brand { font-size: 18px; }
+      .tailor-nav-links { gap: 10px; font-size: 8px; }
+      .tailor-nav-links a:nth-child(2),
+      .tailor-nav-links a:nth-child(3) { display: none; }
+      .tailor-hero-copy { top: 15%; width: 86%; }
+      .tailor-hero-copy h3 { font-size: 38px; }
+      .tailor-hero-copy p { font-size: 12px; width: 72%; }
+      .tailor-hero-media { top: 42%; right: 5%; width: 58%; height: 24%; }
+      .tailor-video { left: 23%; top: 53%; width: 34%; height: 18%; }
+      .tailor-gallery { left: 5%; right: auto; bottom: 25%; width: 90%; height: 12%; }
+      .tailor-services { grid-template-columns: 1fr; height: 22%; gap: 7px; }
+      .tailor-service { padding: 9px 12px; }
+      .tailor-service small { display: none; }
     }
 
     .gsap-reveal {
@@ -2644,22 +2764,70 @@
   <!-- PAGE 3 - CINEMATIC BUILD REVEAL -->
   <div id="video-reveal">
     <div id="video-sticky">
-      <div class="cinema-build" aria-hidden="true">
+      <div class="cinema-build" aria-label="Animated tailoring website build preview">
         <div class="cinema-flare"></div>
-        <div class="cinema-rail cinema-rail-a"></div>
-        <div class="cinema-rail cinema-rail-b"></div>
-        <div class="cinema-rail cinema-rail-c"></div>
         <div class="cinema-aperture"></div>
         <div class="cinema-frame">
-          <div class="cinema-site">
-            <div class="cinema-sky"></div>
-            <div class="cinema-nav"></div>
-            <div class="cinema-hero-block"></div>
-            <div class="cinema-image-block"></div>
-            <div class="cinema-strip"></div>
-            <div class="cinema-card cinema-card-a"></div>
-            <div class="cinema-card cinema-card-b"></div>
-            <div class="cinema-card cinema-card-c"></div>
+          <div class="tailor-site">
+            <div class="tailor-backdrop"></div>
+            <svg class="tailor-thread" viewBox="0 0 1200 675" preserveAspectRatio="none">
+              <path d="M70 135 C260 46 378 155 514 116 S775 42 1044 116 C1140 146 1115 278 986 288 C842 299 810 224 675 276 C544 326 559 458 392 469 C250 477 156 414 98 522"></path>
+            </svg>
+            <div class="tailor-needle"></div>
+            <div class="tailor-spark tailor-spark-a"></div>
+            <div class="tailor-spark tailor-spark-b"></div>
+            <div class="tailor-spark tailor-spark-c"></div>
+            <div class="tailor-spark tailor-spark-d"></div>
+
+            <nav class="tailor-nav">
+              <div class="tailor-brand">Atelier Vale</div>
+              <div class="tailor-nav-links">
+                <a href="#tailor-services">Services</a>
+                <a href="#tailor-gallery">Work</a>
+                <a href="#contact">Fittings</a>
+                <a href="#contact">Book</a>
+              </div>
+            </nav>
+
+            <section class="tailor-hero-copy">
+              <div class="tailor-hero-kicker">Bespoke tailoring and repairs</div>
+              <h3>Made to fit the life you actually wear.</h3>
+              <p>Alterations, custom garments, bridal fittings, and careful repairs from a small studio built around detail.</p>
+              <a class="tailor-cta" href="#contact">Book a fitting</a>
+            </section>
+
+            <div class="tailor-hero-media">
+              <img src="images/vecteezy_fashion-designer-tailor-or-sewer_7360006.jpg" alt="Tailor working at a sewing machine">
+            </div>
+
+            <div class="tailor-video">
+              <video src="images/sewing 2.mp4" poster="images/vecteezy_needle-and-thread-with-button-on-material-mending-clothing_76760151.jpeg" autoplay muted loop playsinline preload="metadata"></video>
+            </div>
+
+            <div class="tailor-gallery" id="tailor-gallery">
+              <figure><img src="images/meric-dagli-7NBO76G5JsE-unsplash.jpg" alt="Tailored suit fabric detail"></figure>
+              <figure><img src="images/rikonavt-oEWdQsbRVZk-unsplash.jpg" alt="Tailoring tools and clothing details"></figure>
+              <figure><img src="images/annie-spratt-vs6a4EHj_Ro-unsplash.jpg" alt="Textile and thread detail"></figure>
+            </div>
+
+            <div class="tailor-services" id="tailor-services">
+              <article class="tailor-service">
+                <span>01</span>
+                <strong>Alterations</strong>
+                <small>Hems, tapering, jacket shaping, and clean finish repairs.</small>
+              </article>
+              <article class="tailor-service">
+                <span>02</span>
+                <strong>Custom Fit</strong>
+                <small>Measured garments with a calm, appointment-first process.</small>
+              </article>
+              <article class="tailor-service">
+                <span>03</span>
+                <strong>Bridal</strong>
+                <small>Careful fittings, bustle work, lace, beading, and final polish.</small>
+              </article>
+            </div>
+
             <div class="cinema-shutter"><span></span><span></span></div>
           </div>
         </div>
@@ -3811,14 +3979,17 @@
     const frame = scene ? scene.querySelector('.cinema-frame') : null;
     const aperture = scene ? scene.querySelector('.cinema-aperture') : null;
     const bars = scene ? scene.querySelectorAll('.cinema-bar') : [];
-    const rails = scene ? scene.querySelectorAll('.cinema-rail') : [];
     const flare = scene ? scene.querySelector('.cinema-flare') : null;
-    const sky = scene ? scene.querySelector('.cinema-sky') : null;
-    const nav = scene ? scene.querySelector('.cinema-nav') : null;
-    const heroBlock = scene ? scene.querySelector('.cinema-hero-block') : null;
-    const imageBlock = scene ? scene.querySelector('.cinema-image-block') : null;
-    const strip = scene ? scene.querySelector('.cinema-strip') : null;
-    const cards = scene ? scene.querySelectorAll('.cinema-card') : [];
+    const backdrop = scene ? scene.querySelector('.tailor-backdrop') : null;
+    const threadPath = scene ? scene.querySelector('.tailor-thread path') : null;
+    const needle = scene ? scene.querySelector('.tailor-needle') : null;
+    const sparks = scene ? scene.querySelectorAll('.tailor-spark') : [];
+    const nav = scene ? scene.querySelector('.tailor-nav') : null;
+    const heroCopy = scene ? scene.querySelector('.tailor-hero-copy') : null;
+    const heroMedia = scene ? scene.querySelector('.tailor-hero-media') : null;
+    const videoPanel = scene ? scene.querySelector('.tailor-video') : null;
+    const gallery = scene ? scene.querySelector('.tailor-gallery') : null;
+    const services = scene ? scene.querySelectorAll('.tailor-service') : [];
     const shutters = scene ? scene.querySelectorAll('.cinema-shutter span') : [];
 
     if (!revealSection || !pinSection || !scene || !frame) {
@@ -3828,24 +3999,33 @@
         frame.style.transform = 'translate(-50%, -50%) rotateX(0deg) scale(1)';
         bars.forEach(bar => { bar.style.transform = 'scaleY(0.58)'; });
         if (nav) nav.style.transform = 'translateY(0)';
-        if (heroBlock) heroBlock.style.transform = 'translateX(0) skewX(0deg)';
-        if (imageBlock) imageBlock.style.transform = 'translateX(0) skewX(0deg)';
-        if (strip) strip.style.transform = 'scaleX(1)';
-        cards.forEach(card => { card.style.transform = 'translateY(0)'; });
+        if (heroCopy) heroCopy.style.transform = 'translateX(0)';
+        if (heroMedia) heroMedia.style.transform = 'translateX(0) rotate(0deg)';
+        if (videoPanel) videoPanel.style.transform = 'translate(-50%, 0) scale(1)';
+        if (gallery) gallery.style.transform = 'translateX(0)';
+        services.forEach(card => { card.style.transform = 'translateY(0)'; });
       } else {
         gsap.registerPlugin(ScrollTrigger);
+
+        if (threadPath && typeof threadPath.getTotalLength === 'function') {
+          const threadLength = threadPath.getTotalLength();
+          threadPath.style.strokeDasharray = String(threadLength);
+          threadPath.style.strokeDashoffset = String(threadLength);
+        }
 
         gsap.set(frame, { autoAlpha: 0, transformOrigin: '50% 50%' });
         gsap.set(aperture, { autoAlpha: 0.55, transformOrigin: '50% 50%' });
         gsap.set(bars, { scaleY: 0, force3D: true });
-        gsap.set(rails, { autoAlpha: 0, force3D: true });
         gsap.set(flare, { autoAlpha: 0.08, scale: 0.4, force3D: true });
-        gsap.set(sky, { scale: 1.2, force3D: true });
+        gsap.set(backdrop, { scale: 1.16, force3D: true });
+        gsap.set(needle, { autoAlpha: 0, x: '5vw', y: '12vh', rotate: -18, force3D: true });
+        gsap.set(sparks, { autoAlpha: 0, scale: 0, force3D: true });
         gsap.set(nav, { yPercent: -220, force3D: true });
-        gsap.set(heroBlock, { xPercent: -130, skewX: -8, force3D: true });
-        gsap.set(imageBlock, { xPercent: 130, skewX: 7, force3D: true });
-        gsap.set(strip, { scaleX: 0, transformOrigin: '0 50%', force3D: true });
-        gsap.set(cards, { yPercent: 180, force3D: true });
+        gsap.set(heroCopy, { autoAlpha: 0, xPercent: -120, force3D: true });
+        gsap.set(heroMedia, { autoAlpha: 0, xPercent: 120, rotate: 5, force3D: true });
+        gsap.set(videoPanel, { autoAlpha: 0, xPercent: -50, yPercent: 120, scale: 0.78, force3D: true });
+        gsap.set(gallery, { autoAlpha: 0, xPercent: 120, force3D: true });
+        gsap.set(services, { autoAlpha: 0, yPercent: 170, force3D: true });
         gsap.set(shutters, { scaleX: 0, force3D: true });
 
         const timeline = gsap.timeline({
@@ -3863,7 +4043,7 @@
 
         timeline
           .to(bars, {
-            scaleY: 0.58,
+            scaleY: 0.46,
             duration: 0.42,
             ease: 'power3.out'
           }, 0)
@@ -3874,17 +4054,10 @@
             duration: 0.52,
             ease: 'power3.out'
           }, 0.04)
-          .to(rails, {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.8,
-            stagger: 0.08,
-            ease: 'power4.out'
-          }, 0.08)
           .to(flare, {
-            autoAlpha: 0.7,
-            scale: 1.2,
-            duration: 0.58,
+            autoAlpha: 0.9,
+            scale: 1.1,
+            duration: 0.46,
             ease: 'power2.out'
           }, 0.16)
           .to(frame, {
@@ -3894,37 +4067,96 @@
             duration: 0.78,
             ease: 'power4.out'
           }, 0.24)
+          .to(threadPath, {
+            strokeDashoffset: 0,
+            duration: 0.9,
+            ease: 'power1.inOut'
+          }, 0.34)
+          .to(needle, {
+            autoAlpha: 1,
+            x: '28vw',
+            y: '9vh',
+            rotate: 12,
+            duration: 0.26,
+            ease: 'power2.out'
+          }, 0.34)
+          .to(needle, {
+            x: '54vw',
+            y: '19vh',
+            rotate: -22,
+            duration: 0.3,
+            ease: 'power1.inOut'
+          }, 0.6)
+          .to(needle, {
+            x: '26vw',
+            y: '46vh',
+            rotate: 18,
+            duration: 0.34,
+            ease: 'power1.inOut'
+          }, 0.88)
+          .to(needle, {
+            autoAlpha: 0,
+            x: '7vw',
+            y: '54vh',
+            rotate: -12,
+            duration: 0.22,
+            ease: 'power2.in'
+          }, 1.18)
+          .to(sparks, {
+            autoAlpha: 1,
+            scale: 1.7,
+            duration: 0.14,
+            stagger: 0.08,
+            ease: 'power4.out'
+          }, 0.48)
+          .to(sparks, {
+            autoAlpha: 0,
+            scale: 0,
+            duration: 0.26,
+            stagger: 0.08,
+            ease: 'power2.in'
+          }, 0.72)
           .to(nav, {
             yPercent: 0,
             duration: 0.28,
             ease: 'power3.out'
           }, 0.66)
-          .to(heroBlock, {
+          .to(heroCopy, {
+            autoAlpha: 1,
             xPercent: 0,
-            skewX: 0,
-            duration: 0.38,
+            duration: 0.42,
             ease: 'power3.out'
-          }, 0.82)
-          .to(imageBlock, {
+          }, 0.78)
+          .to(heroMedia, {
+            autoAlpha: 1,
             xPercent: 0,
-            skewX: 0,
+            rotate: 0,
             duration: 0.38,
             ease: 'power3.out'
           }, 0.92)
-          .to(strip, {
-            scaleX: 1,
-            duration: 0.36,
+          .to(videoPanel, {
+            autoAlpha: 1,
+            yPercent: 0,
+            scale: 1,
+            duration: 0.34,
+            ease: 'back.out(1.5)'
+          }, 1.06)
+          .to(gallery, {
+            autoAlpha: 1,
+            xPercent: 0,
+            duration: 0.34,
             ease: 'power3.out'
-          }, 1.12)
-          .to(cards, {
+          }, 1.18)
+          .to(services, {
+            autoAlpha: 1,
             yPercent: 0,
             duration: 0.34,
-            stagger: 0.06,
-            ease: 'power3.out'
-          }, 1.24)
-          .to(sky, {
+            stagger: 0.07,
+            ease: 'back.out(1.35)'
+          }, 1.3)
+          .to(backdrop, {
             scale: 1,
-            duration: 0.74,
+            duration: 0.9,
             ease: 'none'
           }, 0.7)
           .to(shutters, {
