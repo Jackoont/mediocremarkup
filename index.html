@@ -1275,7 +1275,7 @@
       inset: 0;
       width: 100%;
       height: 100%;
-      opacity: 0.95;
+      opacity: 0.5;
     }
     #build-spotlight {
       position: absolute;
@@ -1363,7 +1363,7 @@
       opacity: 0;
       transition: opacity 0.9s ease;
     }
-    #build-stage.bs-in #build-energy { opacity: 1; }
+    #build-stage.bs-in #build-energy { opacity: 0.5; }
     .be-beam,
     .be-ring {
       position: absolute;
@@ -2127,39 +2127,47 @@
     #build-caption {
       position: absolute;
       left: 50%;
-      bottom: 30px;
-      width: min(540px, calc(100vw - 48px));
-      padding: 18px 22px 16px;
-      border: 1px solid rgba(43,37,71,0.12);
-      border-radius: 16px;
-      background: rgba(255,251,246,0.72);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 18px 48px -26px rgba(43,37,71,0.34);
+      bottom: 26px;
+      width: auto;
+      max-width: min(320px, calc(100vw - 48px));
+      padding: 10px 14px;
+      border: 1px solid rgba(43,37,71,0.08);
+      border-radius: 999px;
+      background: rgba(255,251,246,0.52);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 10px 28px -20px rgba(43,37,71,0.24);
       opacity: 0;
       transform: translateX(-50%) translateY(28px);
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
     #build-stage.bs-in #build-caption {
       opacity: 1; transform: translateX(-50%) translateY(0);
     }
     .bc-eyebrow {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 9px; letter-spacing: 4px; text-transform: uppercase;
+      font-size: 8px; letter-spacing: 3px; text-transform: uppercase;
       color: #F0635A;
-      margin-bottom: 10px;
+      margin-bottom: 0;
       transition: opacity 0.4s ease, transform 0.4s ease;
+      white-space: nowrap;
     }
     .bc-title {
-      font-family: 'DM Serif Display', serif;
-      font-style: italic; font-size: clamp(22px, 3.2vw, 36px);
-      color: #2B2547; line-height: 1.15; letter-spacing: -0.5px;
-      margin-bottom: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-style: normal;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: rgba(43,37,71,0.78);
+      line-height: 1;
+      margin-bottom: 0;
       transition: opacity 0.4s ease, transform 0.4s ease;
+      white-space: nowrap;
     }
-    .bc-body {
-      font-size: 13.5px; color: rgba(43,37,71,0.75); line-height: 1.5;
-      transition: opacity 0.4s ease, transform 0.4s ease;
-    }
+    .bc-body { display: none; }
     .bc-flip .bc-eyebrow,
     .bc-flip .bc-title,
     .bc-flip .bc-body {
@@ -2167,8 +2175,8 @@
       transform: translateY(8px);
     }
     @media (max-width: 700px) {
-      #build-caption { bottom: 3vh; padding: 16px 16px 14px; }
-      .bc-body { font-size: 12px; }
+      #build-caption { bottom: 3vh; padding: 8px 12px; gap: 8px; }
+      .bc-title { font-size: 9px; letter-spacing: 1.4px; }
     }
 
     /* ══════════════════════════════════════
@@ -2188,6 +2196,17 @@
       overflow: hidden;
       scroll-behavior: smooth;
       pointer-events: none;
+    }
+    .build-site::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 3;
+      background:
+        radial-gradient(circle at 20% 14%, rgba(240,99,90,0.08), transparent 22%),
+        radial-gradient(circle at 80% 72%, rgba(244,162,97,0.08), transparent 24%);
+      opacity: 0.75;
     }
     .build-site::before {
       content: '';
@@ -2219,6 +2238,29 @@
       scrollbar-width: none;
     }
     #build-stage[data-phase="3"] .build-site::-webkit-scrollbar { display: none; }
+    .build-symbol-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 7;
+      overflow: hidden;
+      mix-blend-mode: multiply;
+    }
+    .bsym {
+      position: absolute;
+      left: 0;
+      top: 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.4px;
+      color: rgba(43,37,71,0.58);
+      text-shadow: 0 0 16px rgba(240,99,90,0.14);
+      white-space: nowrap;
+      will-change: transform, opacity;
+      pointer-events: none;
+    }
+    .bsym.bsym-accent { color: rgba(240,99,90,0.8); }
+    .bsym.bsym-warm { color: rgba(143,95,47,0.82); }
 
     /* Each piece of the site lives off-screen until JS fires .bs-piece-in */
     .bs-piece {
@@ -2230,6 +2272,26 @@
         transform 1.18s cubic-bezier(0.16,1,0.3,1),
         opacity   0.72s ease-out,
         filter    0.72s ease-out;
+    }
+    .bs-piece::before {
+      content: attr(data-piece-tag);
+      position: absolute;
+      left: 10px;
+      top: 8px;
+      z-index: 9;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(240,99,90,0.6);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+      pointer-events: none;
+    }
+    .bs-piece.bs-piece-in::before {
+      opacity: 1;
+      transform: translateY(0);
     }
     .bs-piece[data-from="left"]   { transform: translate3d(-118%, 10px, 0) rotateY(-16deg) scale(0.96); }
     .bs-piece[data-from="right"]  { transform: translate3d(118%, 10px, 0)  rotateY(16deg) scale(0.96); }
@@ -2256,6 +2318,9 @@
       60%  { opacity: 0.55; transform: scale(1.04); box-shadow: 0 0 30px 4px rgba(177,135,77,0.16); }
       100% { opacity: 0;   transform: scale(1.07); box-shadow: 0 0 50px 8px rgba(177,135,77,0); }
     }
+    .bs-piece-hero::before,
+    .bs-piece[data-piece="stats"]::before,
+    .bs-piece[data-piece="foot"]::before { top: 10px; }
 
     /* ── Site nav ── */
     .bs-nav {
@@ -4410,8 +4475,9 @@
             <div class="bf-screen">
               <!-- BASE: the "real" rendered site, parts hidden until they assemble -->
               <div class="build-site" id="build-site">
+                <div class="build-symbol-layer" id="build-symbol-layer"></div>
                 <!-- NAV — assembles from off-screen left -->
-                <div class="bs-piece" data-piece="nav" data-from="left">
+                <div class="bs-piece" data-piece="nav" data-piece-tag="nav.module" data-from="left">
                   <div class="bs-nav">
                     <a class="bs-logo" href="#bs-home" data-phone-target="bs-home">North<span>&amp;</span>Needle</a>
                     <div class="bs-nav-right">
@@ -4423,7 +4489,7 @@
                 </div>
 
                 <!-- HERO video with overlay — drops from above -->
-                <div class="bs-piece bs-piece-hero" data-piece="hero-img" data-from="top">
+                <div class="bs-piece bs-piece-hero" data-piece="hero-img" data-piece-tag="hero.frame" data-from="top">
                   <div class="bs-hero" id="bs-home">
                     <video class="bs-hero-video" autoplay muted loop playsinline>
                       <source src="images/sewing 2.mp4" type="video/mp4">
@@ -4442,7 +4508,7 @@
                 </div>
 
                 <!-- Sub block: tagline + CTA -->
-                <div class="bs-piece" data-piece="sub" data-from="left">
+                <div class="bs-piece" data-piece="sub" data-piece-tag="cta.block" data-from="left">
                   <div class="bs-sub-block">
                     <p class="bs-lead">Precise alterations, event suiting, and repairs handled by appointment in Jacksonville.</p>
                     <a class="bs-cta" href="#bs-booking" data-phone-target="bs-booking">Reserve a fitting<span class="bs-cta-arrow">→</span></a>
@@ -4450,7 +4516,7 @@
                 </div>
 
                 <!-- Service cards row -->
-                <div class="bs-piece" data-piece="cards" data-from="bottom">
+                <div class="bs-piece" data-piece="cards" data-piece-tag="grid.services" data-from="bottom">
                   <div class="bs-cards" id="bs-services">
                     <div class="bs-card">
                       <div class="bs-card-img bs-card-img-1"></div>
@@ -4472,7 +4538,7 @@
                 </div>
 
                 <!-- Process and proof -->
-                <div class="bs-piece" data-piece="stats" data-from="right">
+                <div class="bs-piece" data-piece="stats" data-piece-tag="proof.stack" data-from="right">
                   <div class="bs-stats">
                     <div class="bs-stat"><b>8y</b><span>in practice</span></div>
                     <div class="bs-stat"><b>400+</b><span>garments fit</span></div>
@@ -4522,7 +4588,7 @@
                 </div>
 
                 <!-- Booking -->
-                <div class="bs-piece" data-piece="foot" data-from="bottom">
+                <div class="bs-piece" data-piece="foot" data-piece-tag="form.launch" data-from="bottom">
                   <div class="bs-section dark" id="bs-booking">
                     <div class="bs-section-label">Appointments</div>
                     <div class="bs-section-title">Reserve a fitting.</div>
@@ -5823,33 +5889,34 @@
     const tapRing       = document.querySelector('.bld-tapring');
     const shipParticles = document.getElementById('ship-particles');
     const buildAtmosphere = document.getElementById('build-atmosphere');
+    const buildSymbolLayer = document.getElementById('build-symbol-layer');
 
     // Phase copy — captions update at each major beat
     const PHASE_COPY = [
       {
         eyebrow: 'PHASE 01 / 04 · BLUEPRINT',
-        title:   'The offer gets mapped first.',
+        title:   'Map',
         body:    'Before the polish, we decide what a visitor should understand, trust, and do.',
         ph:      'BLUEPRINT',
         rail:    'build · blueprint',
       },
       {
         eyebrow: 'PHASE 02 / 04 · ASSEMBLE',
-        title:   'HTML starts locking into a visual system.',
+        title:   'Assemble',
         body:    'Tagged sections, proof blocks, and conversion modules arrive like real markup becoming form.',
         ph:      'ASSEMBLE',
         rail:    'build · assemble',
       },
       {
         eyebrow: 'PHASE 03 / 04 · CODE',
-        title:   'Structure turns expressive without losing speed.',
+        title:   'Style',
         body:    'The code pass gives those modules rhythm, contrast, and motion without sliding into template sludge.',
         ph:      'CODE',
         rail:    'build · code',
       },
       {
         eyebrow: 'PHASE 04 / 04 · SHIPPED',
-        title:   'Release should feel authored, not merely finished.',
+        title:   'Ship',
         body:    'The end state should look like deliberate markup art that also happens to convert.',
         ph:      'SHIPPED',
         rail:    'build · shipped',
@@ -6010,6 +6077,48 @@
     // Each piece has a "landed" state. Blueprint draws → orb flies in → piece lands.
     const pieceState = sitePieces.map(() => ({ landed: false, blueprintShown: false }));
     let activeOrbs = [];
+    const BUILD_SYMBOLS = [
+      '<section>', '</section>', '<div>', '</div>', '<nav>', '</nav>',
+      '<article>', '<form>', '<button>', 'grid', 'gap:', 'display:',
+      '{ }', '</>', '::before', '::after', 'clamp()', 'fr', 'vh', 'px'
+    ];
+
+    function spawnMarkupBurst(targetIdx, mode = 'preview') {
+      if (!buildSymbolLayer || !sitePieces[targetIdx] || !buildFrame) return;
+      const target = pieceCenter(targetIdx);
+      if (!target) return;
+      const count = mode === 'land' ? 8 : 5;
+      for (let i = 0; i < count; i++) {
+        const el = document.createElement('span');
+        const token = BUILD_SYMBOLS[(targetIdx * 3 + i * 2) % BUILD_SYMBOLS.length];
+        el.className = 'bsym' + (i % 3 === 0 ? ' bsym-accent' : i % 4 === 0 ? ' bsym-warm' : '');
+        el.textContent = token;
+        buildSymbolLayer.appendChild(el);
+
+        const angle = (Math.PI * 2 * i) / count + (mode === 'land' ? 0.2 : -0.35);
+        const startRadius = mode === 'land' ? 18 + i * 4 : 70 + i * 10;
+        const endRadius = mode === 'land' ? 96 + Math.random() * 50 : 18 + Math.random() * 12;
+        const sx = target.x + Math.cos(angle) * startRadius;
+        const sy = target.y + Math.sin(angle) * startRadius;
+        const ex = target.x + Math.cos(angle + (Math.random() - 0.5) * 0.35) * endRadius;
+        const ey = target.y + Math.sin(angle + (Math.random() - 0.5) * 0.35) * endRadius;
+        const startScale = mode === 'land' ? 0.7 : 0.4;
+        const endScale = mode === 'land' ? 0.4 : 0.95;
+        const startOpacity = mode === 'land' ? 0.7 : 0;
+        const midOpacity = mode === 'land' ? 0.22 : 0.82;
+        const endOpacity = mode === 'land' ? 0 : 0.18;
+
+        el.animate([
+          { transform: `translate(${sx}px, ${sy}px) scale(${startScale}) rotate(${(i - 2) * 6}deg)`, opacity: startOpacity, filter: 'blur(0px)' },
+          { transform: `translate(${target.x}px, ${target.y}px) scale(1) rotate(0deg)`, opacity: midOpacity, filter: 'blur(0px)', offset: 0.45 },
+          { transform: `translate(${ex}px, ${ey}px) scale(${endScale}) rotate(${(i - 2) * 12}deg)`, opacity: endOpacity, filter: 'blur(0.2px)' },
+        ], {
+          duration: mode === 'land' ? 980 : 900,
+          easing: 'cubic-bezier(0.16,1,0.3,1)',
+          fill: 'forwards',
+        }).finished.finally(() => el.remove());
+      }
+    }
 
     // Get position of a piece in screen coords
     function pieceCenter(idx) {
@@ -6100,6 +6209,7 @@
         { transform: `translate3d(${impact.dx * -0.08}px, ${impact.dy * -0.08}px, 0) rotate(${impact.ry * -0.18}deg) scale(1.03)`, filter: 'brightness(1.1)', offset: 0.48 },
         { transform: 'translate3d(0,0,0) rotate(0deg) scale(1)', filter: 'brightness(1)' },
       ], { duration: 760, easing: 'cubic-bezier(0.16,1,0.3,1)' });
+      spawnMarkupBurst(idx, 'land');
       // Bloom ring on landing
       piece.classList.remove('bs-piece-land');
       void piece.offsetWidth;
@@ -6124,6 +6234,7 @@
         bp.classList.remove('bp-fade');
         bp.classList.add('bp-draw');
       }
+      spawnMarkupBurst(idx, 'preview');
     }
 
     // Reset all pieces (when scrolling out of section)
@@ -6138,6 +6249,7 @@
       blueprintGroups.forEach(g => g.classList.remove('bp-draw', 'bp-fade'));
       activeOrbs.forEach(o => { if (o.parentNode) o.parentNode.removeChild(o); });
       activeOrbs = [];
+      if (buildSymbolLayer) buildSymbolLayer.innerHTML = '';
       if (buildSite) buildSite.classList.remove('bs-cta-hovered');
     }
 
