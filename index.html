@@ -2324,36 +2324,22 @@
     .build-layer { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity 0.55s ease; }
     .build-layer.bl-show { opacity: 1; }
 
-    /* The base "site" — fills the screen, parts assemble in */
+    /* The base "site" — always visible as background, pieces paint in via clip-path */
     .build-site {
       position: absolute; inset: 0;
       background: #f5f3ee;
       font-family: "Sora", "Aptos", "Segoe UI", Arial, sans-serif;
       color: #16171a;
       overflow: hidden;
-      scroll-behavior: smooth;
       pointer-events: none;
     }
-    .build-site::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 3;
-      background:
-        radial-gradient(circle at 20% 14%, rgba(240,99,90,0.08), transparent 22%),
-        radial-gradient(circle at 80% 72%, rgba(244,162,97,0.08), transparent 24%);
-      opacity: 0.88;
-    }
+
+    /* Glass sheen in shipped state */
     .build-site::before {
       content: '';
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 8;
-      opacity: 0.28;
-      background:
-        linear-gradient(115deg, transparent 0%, transparent 40%, rgba(255,251,241,0.34) 50%, transparent 60%, transparent 100%);
+      position: absolute; inset: 0;
+      pointer-events: none; z-index: 8;
+      background: linear-gradient(115deg, transparent 40%, rgba(255,251,241,0.32) 50%, transparent 60%);
       transform: translateX(-120%);
     }
     #build-stage[data-phase="3"] .build-site::before {
@@ -2366,98 +2352,70 @@
     #build-stage[data-phase="3"] { pointer-events: auto; }
     #build-stage[data-phase="3"] #build-frame,
     #build-stage[data-phase="3"] .bf-screen,
-    #build-stage[data-phase="3"] .build-site {
-      pointer-events: auto;
-    }
-    #build-stage[data-phase="3"] .build-site {
-      overflow-y: auto;
-      overflow-x: hidden;
-      scrollbar-width: none;
-    }
+    #build-stage[data-phase="3"] .build-site { pointer-events: auto; }
+    #build-stage[data-phase="3"] .build-site { overflow-y: auto; overflow-x: hidden; scrollbar-width: none; }
     #build-stage[data-phase="3"] .build-site::-webkit-scrollbar { display: none; }
+
     .build-symbol-layer {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 7;
-      overflow: hidden;
-      mix-blend-mode: multiply;
+      position: absolute; inset: 0;
+      pointer-events: none; z-index: 7;
+      overflow: hidden; mix-blend-mode: multiply;
     }
     .bsym {
-      position: absolute;
-      left: 0;
-      top: 0;
+      position: absolute; left: 0; top: 0;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.4px;
+      font-size: 11px; letter-spacing: 0.4px;
       color: rgba(43,37,71,0.58);
       text-shadow: 0 0 16px rgba(240,99,90,0.14);
-      white-space: nowrap;
-      will-change: transform, opacity;
-      pointer-events: none;
+      white-space: nowrap; will-change: transform, opacity; pointer-events: none;
     }
     .bsym.bsym-accent { color: rgba(240,99,90,0.8); }
-    .bsym.bsym-warm { color: rgba(143,95,47,0.82); }
+    .bsym.bsym-warm   { color: rgba(143,95,47,0.82); }
 
-    /* Each piece of the site lives off-screen until JS fires .bs-piece-in */
+    /* ── PAINT-IN system: each piece is clipped and revealed top-to-bottom ── */
     .bs-piece {
       position: relative;
-      opacity: 0;
-      will-change: transform, opacity, filter;
-      filter: blur(8px);
-      transition:
-        transform 1.18s cubic-bezier(0.16,1,0.3,1),
-        opacity   0.72s ease-out,
-        filter    0.72s ease-out;
-    }
-    .bs-piece::before {
-      content: attr(data-piece-tag);
-      position: absolute;
-      left: 10px;
-      top: 8px;
-      z-index: 9;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 7px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: rgba(240,99,90,0.6);
-      opacity: 0;
-      transform: translateY(8px);
-      transition: opacity 0.45s ease, transform 0.45s ease;
-      pointer-events: none;
-    }
-    .bs-piece.bs-piece-in::before {
+      /* Start fully clipped (invisible) */
+      clip-path: inset(0 0 100% 0);
       opacity: 1;
-      transform: translateY(0);
+      will-change: clip-path, filter;
+      filter: brightness(1.08);
+      transition: none; /* driven by JS setProperty */
     }
-    .bs-piece[data-from="left"]   { transform: translate3d(-118%, 10px, 0) rotateY(-16deg) scale(0.96); }
-    .bs-piece[data-from="right"]  { transform: translate3d(118%, 10px, 0)  rotateY(16deg) scale(0.96); }
-    .bs-piece[data-from="top"]    { transform: translate3d(0, -128%, 0) rotateX(24deg) scale(1.08); }
-    .bs-piece[data-from="bottom"] { transform: translate3d(0, 128%, 0)  rotateX(-22deg) scale(0.96); }
-    .bs-piece.bs-piece-in {
-      transform: translate3d(0,0,0) rotate(0) scale(1);
-      opacity: 1;
-      filter: blur(0);
-    }
-
-    /* When a piece "lands" — micro overshoot bloom */
-    .bs-piece.bs-piece-land::after {
+    /* A thin horizontal "brush" edge that rides the reveal front */
+    .bs-piece::after {
       content: '';
-      position: absolute; inset: -2px;
-      border: 1.5px solid #b1874d;
-      border-radius: 3px;
-      opacity: 1;
+      position: absolute;
+      left: 0; right: 0;
+      bottom: calc(100% - var(--paint-edge, 100%));
+      height: 3px;
+      background: linear-gradient(90deg, transparent 0%, rgba(240,99,90,0.55) 30%, rgba(255,251,241,0.9) 50%, rgba(240,99,90,0.55) 70%, transparent 100%);
       pointer-events: none;
-      animation: pieceBloom 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
+      z-index: 10;
+      opacity: var(--paint-brush-opacity, 0);
+      transition: opacity 0.15s ease;
     }
-    @keyframes pieceBloom {
-      0%   { opacity: 1;   transform: scale(1);    box-shadow: 0 0 0 0 rgba(177,135,77,0.48); }
-      60%  { opacity: 0.55; transform: scale(1.04); box-shadow: 0 0 30px 4px rgba(177,135,77,0.16); }
-      100% { opacity: 0;   transform: scale(1.07); box-shadow: 0 0 50px 8px rgba(177,135,77,0); }
+    .bs-piece.bs-piece-in {
+      clip-path: inset(0 0 0% 0);
+      filter: brightness(1);
     }
-    .bs-piece-hero::before,
-    .bs-piece[data-piece="stats"]::before,
-    .bs-piece[data-piece="foot"]::before { top: 10px; }
+    /* Painted pieces get a brief afterglow border on their bottom edge */
+    .bs-piece.bs-piece-land {
+      filter: brightness(1);
+    }
+    .bs-piece.bs-piece-land::before {
+      content: '';
+      position: absolute; left: 0; right: 0; bottom: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(240,99,90,0.5), transparent);
+      animation: paintSeam 0.9s ease-out forwards;
+      pointer-events: none; z-index: 9;
+    }
+    @keyframes paintSeam {
+      0%   { opacity: 1; transform: scaleX(0.6); }
+      60%  { opacity: 0.6; transform: scaleX(1); }
+      100% { opacity: 0; transform: scaleX(1.1); }
+    }
 
     /* ── Site nav ── */
     .bs-nav {
@@ -6223,7 +6181,7 @@
 
     // ── ASSEMBLY: pieces fly in like Iron Man parts ──
     // Each piece has a "landed" state. Blueprint draws → orb flies in → piece lands.
-    const pieceState = sitePieces.map(() => ({ landed: false, blueprintShown: false }));
+    // pieceState declared below in paint-in system
     let activeOrbs = [];
     const BUILD_SYMBOLS = [
       '<section>', '</section>', '<div>', '</div>', '<nav>', '</nav>',
@@ -6386,55 +6344,123 @@
       spawnMarkupBurst(idx, 'preview');
     }
 
-    // Reset all pieces (when scrolling out of section)
+    // ── PAINT-IN ASSEMBLY ──
+    // Each piece paints in from top-to-bottom via clip-path as scroll progresses.
+    // Mid-paint: a brush-line rides the reveal edge.
+    // At full reveal: a seam flash fires.
+
+    // Reset all pieces
     function resetAssembly() {
-      pieceState.forEach((s, i) => {
-        s.landed = false;
-        s.blueprintShown = false;
-        if (sitePieces[i]) {
-          sitePieces[i].classList.remove('bs-piece-in', 'bs-piece-land');
-        }
+      paintProgress = -1;
+      sitePieces.forEach((p, i) => {
+        pieceState[i].painted = false;
+        pieceState[i].seamed  = false;
+        p.classList.remove('bs-piece-in', 'bs-piece-land');
+        p.style.setProperty('--paint-edge', '100%');
+        p.style.setProperty('--paint-brush-opacity', '0');
+        p.style.removeProperty('clip-path');
       });
       blueprintGroups.forEach(g => g.classList.remove('bp-draw', 'bp-fade'));
       activeOrbs.forEach(o => { if (o.parentNode) o.parentNode.removeChild(o); });
       activeOrbs = [];
       if (buildSymbolLayer) buildSymbolLayer.innerHTML = '';
       if (buildSite) buildSite.classList.remove('bs-cta-hovered');
+      // Update side panel token display
+      updateCodeToken(null);
     }
 
-    // Drive assembly progress (0..1) — chains blueprint → orb → land per piece
-    let assemblyProgress = -1;
+    // Side panel: show the current HTML token being "written"
+    const PIECE_TOKENS = {
+      nav:       '<nav>',
+      'hero-img':'<header>',
+      sub:       '<section>',
+      cards:     '<article>',
+      stats:     '<aside>',
+      foot:      '<form>',
+    };
+    function updateCodeToken(pieceKey) {
+      if (!codeStream) return;
+      const token = pieceKey ? (PIECE_TOKENS[pieceKey] || '<div>') : '';
+      // Find the active ct-line or just flicker the last typed one
+      const allTyped = Array.from(codeLines).filter(l => l.classList.contains('ct-typed'));
+      if (pieceKey && allTyped.length > 0) {
+        const last = allTyped[allTyped.length - 1];
+        const tag = last.querySelector('.ct-tag');
+        if (tag) {
+          tag.textContent = token;
+          tag.style.animation = 'none';
+          void tag.offsetWidth;
+          tag.style.animation = '';
+        }
+      }
+    }
+
+    let paintProgress = -1;
+    const pieceState = sitePieces.map(() => ({ painted: false, seamed: false, blueprintShown: false, landed: false }));
+
     function setAssemblyProgress(t) {
       if (sitePieces.length === 0) return;
       const N = sitePieces.length;
-      // Reverse if scrolling back significantly
-      if (t < assemblyProgress - 0.05) {
-        // Unwind landed pieces beyond current threshold
-        sitePieces.forEach((p, i) => {
-          const frac = (i + 1) / N;
-          const myT  = 0.08 + Math.pow(frac, 0.72) * 0.88;
-          if (t < myT - 0.10 && pieceState[i].landed) {
-            pieceState[i].landed = false;
+      paintProgress = t;
+
+      sitePieces.forEach((piece, i) => {
+        // Each piece occupies an equal slice of t: piece i fully painted at (i+1)/N
+        const startT  = i / N;
+        const endT    = (i + 1) / N;
+        const mid     = (startT + endT) / 2;
+
+        if (t < startT) {
+          // Not started — fully clipped
+          piece.style.clipPath = 'inset(0 0 100% 0)';
+          piece.style.setProperty('--paint-brush-opacity', '0');
+          if (pieceState[i].painted) {
+            pieceState[i].painted = false;
+            pieceState[i].seamed  = false;
             pieceState[i].blueprintShown = false;
-            p.classList.remove('bs-piece-in', 'bs-piece-land');
-            const bp = blueprintGroups.find(g => g.dataset.for === p.dataset.piece);
-            if (bp) bp.classList.remove('bp-draw', 'bp-fade');
+            piece.classList.remove('bs-piece-in', 'bs-piece-land');
           }
-        });
-      }
-      assemblyProgress = t;
-      // Ease-in stagger: first piece arrives early, last piece late — like a train of parts
-      // Uses a power curve so pieces don't all clump at the end
-      sitePieces.forEach((p, i) => {
-        const frac     = (i + 1) / N;                    // 1/N … N/N
-        const arriveT  = 0.08 + Math.pow(frac, 0.72) * 0.88;  // 0.08 … 0.96
-        const blueT    = arriveT - 0.12;
-        if (t >= blueT && !pieceState[i].blueprintShown) {
-          showBlueprint(i);
-        }
-        if (t >= arriveT && !pieceState[i].landed) {
-          const fromMap = { left:'left', right:'right', top:'top', bottom:'bottom' };
-          spawnDeliveryOrb(i, fromMap[p.dataset.from] || 'top');
+        } else if (t >= endT) {
+          // Fully painted
+          piece.style.clipPath = 'inset(0 0 0% 0)';
+          piece.style.setProperty('--paint-brush-opacity', '0');
+          if (!pieceState[i].painted) {
+            pieceState[i].painted = true;
+            piece.classList.add('bs-piece-in');
+            // Seam flash — one-shot
+            if (!pieceState[i].seamed) {
+              pieceState[i].seamed = true;
+              piece.classList.remove('bs-piece-land');
+              void piece.offsetWidth;
+              piece.classList.add('bs-piece-land');
+              // Update side panel token
+              updateCodeToken(piece.dataset.piece);
+              spawnMarkupBurst(i, 'land');
+            }
+            // Blueprint dissolve
+            const bp = blueprintGroups.find(g => g.dataset.for === piece.dataset.piece);
+            if (bp && !bp.classList.contains('bp-fade')) {
+              bp.classList.remove('bp-draw');
+              bp.classList.add('bp-fade');
+            }
+          }
+        } else {
+          // Mid-paint: compute fractional reveal (0..1)
+          const frac = (t - startT) / (endT - startT);
+          // Eased so start is slow (anticipation), end is fast (snap-in)
+          const eased = 1 - Math.pow(1 - frac, 1.6);
+          const hidePct = ((1 - eased) * 100).toFixed(2);
+          piece.style.clipPath = `inset(0 0 ${hidePct}% 0)`;
+          // Brush line rides the boundary
+          piece.style.setProperty('--paint-edge', (eased * 100).toFixed(2) + '%');
+          piece.style.setProperty('--paint-brush-opacity', frac > 0.05 && frac < 0.95 ? '1' : '0');
+          piece.classList.remove('bs-piece-in');
+          // Show blueprint preview while painting
+          if (frac > 0.08 && !pieceState[i].blueprintShown) {
+            pieceState[i].blueprintShown = true;
+            const bp = blueprintGroups.find(g => g.dataset.for === piece.dataset.piece);
+            if (bp) { bp.classList.remove('bp-fade'); bp.classList.add('bp-draw'); }
+            spawnMarkupBurst(i, 'preview');
+          }
         }
       });
     }
@@ -6940,12 +6966,13 @@
       rafPending = false;
       const ratio = currentRatio;
 
-      // Weighted lerp — device feels like it has mass, not weightless snap
-      displayRatio += (ratio - displayRatio) * 0.14;
+      // Smooth lerp — device feels weighted, not snappy
+      displayRatio += (ratio - displayRatio) * 0.13;
       if (Math.abs(displayRatio - ratio) < 0.001) displayRatio = ratio;
       diveRatio = displayRatio;
 
-      // Start ambient rain + shockwave system on entry
+      const r = displayRatio;
+
       if (ratio > 0 && !fcRunning) { fcRunning = true; drawFC(); drawSW(); swRunning = true; }
       if (ratio <= 0 && fcRunning) {
         fcRunning = false; swRunning = false;
@@ -6958,139 +6985,98 @@
         currentPhase = -1;
         buildStartTime = 0;
         sparkData = [];
-        assemblyProgress = -1;
+        paintProgress = -1;
         stopCursorDemo();
         resetAssembly();
         codeLines.forEach(l => l.classList.remove('ct-typed'));
-        targetCamera.shiftX = 0;
-        targetCamera.shiftY = 0;
-        targetCamera.rotX = 0;
-        targetCamera.rotY = 0;
-        targetCamera.scale = 1;
+        targetCamera.shiftX = 0; targetCamera.shiftY = 0;
+        targetCamera.rotX = 0; targetCamera.rotY = 0; targetCamera.scale = 1;
+        textRevealed = false;
       }
 
-      const bsIn = displayRatio > 0.04;
+      const bsIn = r > 0.04;
       buildStage.classList.toggle('bs-in', bsIn);
 
-      // Letterbox: ease in fast, hold wide through assembly, fade back at ship
-      const lbInT  = Math.max(0, Math.min(1, (displayRatio - 0.04) / 0.14));
-      const lbOutT = Math.max(0, Math.min(1, (displayRatio - 0.86) / 0.12));
-      const lbH = Math.round((lbInT * lbInT * (1 - lbOutT * lbOutT)) * 38);
+      // Letterbox: opens on entry, closes on ship
+      const lbT = Math.max(0, Math.min(1, (r - 0.04) / 0.12)) * (1 - Math.max(0, Math.min(1, (r - 0.88) / 0.10)));
+      const lbH = Math.round(lbT * lbT * 36);
       lbTop.style.height    = lbH + 'px';
       lbBottom.style.height = lbH + 'px';
 
-      // Ambient rain: builds up through assembly, peaks at code, fades at ship
-      const fcA = Math.max(0, Math.min(0.52, (displayRatio - 0.06) / 0.18)) * (1 - Math.max(0, (displayRatio - 0.82) / 0.18));
+      // Ambient code rain: fades in on entry, fades out approaching ship
+      const fcA = Math.max(0, Math.min(0.48, (r - 0.06) / 0.16)) * Math.max(0, 1 - Math.max(0, (r - 0.80) / 0.14));
       fc.style.opacity = fcA.toFixed(3);
 
-      const phaseEnergy = Math.max(0, Math.min(1, (displayRatio - 0.06) / 0.9));
-      const phaseBloom = Math.sin(Math.min(1, displayRatio) * Math.PI);
+      const phaseEnergy = Math.max(0, Math.min(1, (r - 0.05) / 0.88));
+      const phaseBloom  = Math.sin(Math.min(1, r) * Math.PI);
 
-      // ── CINEMATIC CAMERA ARC ──
-      // One clean parabola: device arrives from below-right, settles center,
-      // tilts into the build, then straightens as it ships. No micro-oscillations.
-      const r = displayRatio;
-      // Lateral: gentle S-curve, left on entry, right on exit — like panning past
-      const driftX = Math.sin(r * Math.PI) * 14 * (r < 0.5 ? 1 : -0.6);
-      // Vertical: rises smoothly as you scroll deeper, slight hold at peak
-      const driftY = -r * 22 + Math.pow(Math.max(0, r - 0.72), 2) * 38;
-      // Y-rotation: tilts from -3° (entry lean) through 0 to +1.8° (ship lean)
-      const rotY = (r - 0.38) * 6.2 * (1 - Math.pow(Math.max(0, r - 0.88), 2) * 6);
-      // X-rotation: arcs forward as pieces land, flattens out at ship
-      const rotX = Math.sin(Math.min(r, 0.82) * Math.PI) * -2.6;
+      // ── CAMERA: one clean arc, no oscillations ──
+      // Entry: device drifts up and tilts toward viewer. Ship: levels out and scales up.
+      const tilt = Math.sin(Math.min(r, 0.85) * Math.PI);          // 0→peak→0
+      targetCamera.shiftX = tilt * 8 * (r < 0.5 ? 1 : -0.5);      // gentle lateral sway
+      targetCamera.shiftY = -r * 18 + Math.max(0, r - 0.78) * 30;  // rises then settles
+      targetCamera.rotX   = tilt * -2.2;                             // leans into screen
+      targetCamera.rotY   = (r - 0.42) * 5.0 * Math.max(0, 1 - Math.max(0, r - 0.88) * 8);
+      targetCamera.scale  = 0.91 + r * 0.12 + Math.pow(Math.max(0, r - 0.90), 1.5) * 0.06;
 
-      targetCamera.shiftX = driftX;
-      targetCamera.shiftY = driftY;
-      targetCamera.rotX   = rotX;
-      targetCamera.rotY   = rotY;
-      // Scale: start small (device materialising), grow to full + tiny ship push
-      targetCamera.scale  = 0.90 + r * 0.14 + Math.pow(Math.max(0, r - 0.88), 2) * 0.08;
-      if (buildStage) {
-        buildStage.style.setProperty('--phase-energy', phaseEnergy.toFixed(3));
-        buildStage.style.setProperty('--phase-bloom', phaseBloom.toFixed(3));
-        buildStage.style.setProperty('--phase-spin', `${(displayRatio * 240).toFixed(2)}deg`);
-      }
+      buildStage.style.setProperty('--phase-energy', phaseEnergy.toFixed(3));
+      buildStage.style.setProperty('--phase-bloom',  phaseBloom.toFixed(3));
+      buildStage.style.setProperty('--phase-spin',   `${(r * 220).toFixed(1)}deg`);
 
       if (portalGlow) {
-        portalGlow.style.opacity = (0.16 + Math.max(0, Math.min(0.58, displayRatio * 0.72))).toFixed(3);
-        portalGlow.style.transform = `translate(-50%, -50%) scale(${(0.92 + displayRatio * 0.34).toFixed(3)})`;
-        portalGlow.style.filter = `blur(${(20 + displayRatio * 22).toFixed(1)}px) saturate(${(1.15 + displayRatio * 0.9).toFixed(2)})`;
+        portalGlow.style.opacity   = (0.14 + Math.min(0.54, r * 0.68)).toFixed(3);
+        portalGlow.style.transform = `translate(-50%,-50%) scale(${(0.92 + r * 0.30).toFixed(3)})`;
+        portalGlow.style.filter    = `blur(${(20 + r * 20).toFixed(1)}px) saturate(${(1.1 + r * 0.85).toFixed(2)})`;
       }
-      if (edgeVignette) {
-        edgeVignette.style.opacity = Math.max(0, Math.min(0.72, displayRatio * 0.82)).toFixed(3);
-      }
-      if (scanlines) {
-        scanlines.style.opacity = Math.max(0, Math.min(0.28, (displayRatio - 0.38) * 0.72)).toFixed(3);
-      }
-      if (mask) {
-        mask.style.opacity = Math.max(0, Math.min(0.34, displayRatio * 0.34)).toFixed(3);
-      }
-      if (buildAurora) {
-        buildAurora.style.opacity = (0.08 + phaseEnergy * 0.46).toFixed(3);
-      }
-      if (buildStarfield) {
-        buildStarfield.style.opacity = (0.1 + phaseEnergy * 0.28).toFixed(3);
-      }
-      if (buildSigilGrid) {
-        buildSigilGrid.style.opacity = Math.max(0.04, (phaseEnergy * 0.22) + (displayRatio > 0.78 ? 0.06 : 0)).toFixed(3);
-      }
-      if (buildCosmos) {
-        buildCosmos.style.filter = `saturate(${(1.08 + phaseEnergy * 0.95).toFixed(2)}) contrast(${(1.02 + phaseEnergy * 0.16).toFixed(2)})`;
-      }
+      if (edgeVignette) edgeVignette.style.opacity = Math.min(0.68, r * 0.76).toFixed(3);
+      if (scanlines)    scanlines.style.opacity    = Math.max(0, Math.min(0.22, (r - 0.40) * 0.60)).toFixed(3);
+      if (mask)         mask.style.opacity         = Math.min(0.30, r * 0.30).toFixed(3);
+      if (buildAurora)  buildAurora.style.opacity  = (0.08 + phaseEnergy * 0.44).toFixed(3);
+      if (buildStarfield) buildStarfield.style.opacity = (0.10 + phaseEnergy * 0.24).toFixed(3);
+      if (buildSigilGrid) buildSigilGrid.style.opacity = Math.max(0.04, phaseEnergy * 0.20).toFixed(3);
+      if (buildCosmos)  buildCosmos.style.filter   = `saturate(${(1.05 + phaseEnergy * 0.90).toFixed(2)}) contrast(${(1.02 + phaseEnergy * 0.14).toFixed(2)})`;
 
       // ── PHASE GATING ──
-      // 0.04→0.22 BLUEPRINT — frame settles, wireframe draws, atmospheric warmup
-      // 0.22→0.66 ASSEMBLE  — pieces fly in one by one, wide stagger, feels deliberate
-      // 0.66→0.84 CODE      — code overlay types out, cursor walks the site
-      // 0.84→1.00 SHIPPED   — ship impact, glow, deploy stamp, hold the moment
+      // 0.04–0.18  BLUEPRINT  — device settles, wireframes ghost in
+      // 0.18–0.72  ASSEMBLE   — site paints in section-by-section (the main show)
+      // 0.72–0.86  CODE       — code overlay types, cursor walks
+      // 0.86–1.00  SHIPPED    — warm glow, LIVE badge, particles, hold the moment
       let p;
-      if      (displayRatio < 0.22) p = 0;
-      else if (displayRatio < 0.66) p = 1;
-      else if (displayRatio < 0.84) p = 2;
-      else                          p = 3;
+      if      (r < 0.18) p = 0;
+      else if (r < 0.72) p = 1;
+      else if (r < 0.86) p = 2;
+      else               p = 3;
       if (bsIn) setPhase(p);
 
-      // ── ASSEMBLY: 0.18 → 0.68 maps to assemblyT 0..1 (wider window = more stagger) ──
-      const assemT = Math.max(0, Math.min(1, (displayRatio - 0.18) / 0.50));
+      // ── PAINT-IN: 0.14 → 0.74 drives the site building section-by-section ──
+      const assemT = Math.max(0, Math.min(1, (r - 0.14) / 0.60));
       setAssemblyProgress(assemT);
 
-      // ── CODE OVERLAY: 0.66 → 0.83 maps to typing 0..1 ──
+      // ── CODE OVERLAY: 0.72 → 0.85 ──
       if (p === 2) {
-        const codeT = (displayRatio - 0.66) / 0.18;
-        const totalLines = codeLines.length;
-        const visibleLines = Math.floor(codeT * totalLines);
-        codeLines.forEach((line, i) => {
-          line.classList.toggle('ct-typed', i <= visibleLines);
-        });
-        const lineCount = Math.min(totalLines, visibleLines + 1) * 3 + 12;
-        btLines.textContent = String(lineCount).padStart(3, '0');
+        const codeT = Math.max(0, Math.min(1, (r - 0.72) / 0.14));
+        const visibleLines = Math.floor(codeT * codeLines.length);
+        codeLines.forEach((line, i) => line.classList.toggle('ct-typed', i <= visibleLines));
+        btLines.textContent = String(Math.min(codeLines.length, visibleLines + 1) * 3 + 12).padStart(3, '0');
         positionCursor(visibleLines);
       } else if (p < 2) {
-        codeLines.forEach(line => line.classList.remove('ct-typed'));
+        codeLines.forEach(l => l.classList.remove('ct-typed'));
         btLines.textContent = '000';
       } else {
-        codeLines.forEach(line => line.classList.add('ct-typed'));
+        codeLines.forEach(l => l.classList.add('ct-typed'));
         btLines.textContent = String(codeLines.length * 3 + 12).padStart(3, '0');
       }
 
-      // Render telemetry % — driven by assembly progress
       const renderPct = Math.min(100, Math.round(assemT * 100));
       btRender.textContent = renderPct + ' %';
       btRender.classList.toggle('bt-live', renderPct === 100);
 
-      // ── PHASE 3: SHIP impact (one-shot) ──
-      if (p === 3 && !impactDone) {
-        impactDone = true;
-        slamText();
-      }
-      if (p < 3 && impactDone) {
-        impactDone = false;
-      }
+      if (p === 3 && !impactDone) { impactDone = true; slamText(); }
+      if (p < 3  && impactDone)   { impactDone = false; }
 
-      // Build percentage HUD
-      if (displayRatio > 0.04) {
-        depthHud.style.opacity = Math.min(1, (displayRatio - 0.04) / 0.10).toFixed(3);
-        depthVal.textContent = String(Math.round(displayRatio * 100)).padStart(3, '0');
+      if (r > 0.04) {
+        depthHud.style.opacity = Math.min(1, (r - 0.04) / 0.10).toFixed(3);
+        depthVal.textContent = String(Math.round(r * 100)).padStart(3, '0');
       } else {
         depthHud.style.opacity = '0';
       }
