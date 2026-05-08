@@ -12,6 +12,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
   <meta name="description" content="Custom websites for local businesses. Beautiful, professional, polished, memorable, effective.">
+  <link rel="preload" as="image" href="images/vecteezy_needle-and-thread-with-button-on-material-mending-clothing_76760151.jpeg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
@@ -1073,18 +1074,15 @@
     #ambient-blobs svg { position: absolute; }
 
     /* -----------------------------------------------
-       PAGE 3 - STUDIO BUILD CLEAN
+       PAGE 3 - CINEMATIC BUILD REVEAL
        ----------------------------------------------- */
     #video-reveal {
       position: relative;
-      height: 430vh;
+      height: 360vh;
       margin-bottom: -2px;
       overflow: clip;
       background:
-        radial-gradient(circle at 50% 12%, rgba(240,99,90,0.20), transparent 22%),
-        radial-gradient(circle at 82% 18%, rgba(244,162,122,0.14), transparent 20%),
-        radial-gradient(circle at 14% 22%, rgba(43,37,71,0.08), transparent 24%),
-        linear-gradient(180deg, #f7efe4 0%, #fbf6ef 38%, #f2e6d8 100%);
+        linear-gradient(180deg, #fbf6ef 0%, #13101d 18%, #0e0b16 70%, #FEF9F4 100%);
     }
     #video-reveal::before {
       content: '';
@@ -1092,12 +1090,9 @@
       inset: 0;
       pointer-events: none;
       background:
-        linear-gradient(90deg, rgba(43,37,71,0.06) 1px, transparent 1px),
-        linear-gradient(rgba(43,37,71,0.06) 1px, transparent 1px);
-      background-size: 68px 68px;
-      opacity: 0.32;
-      mask: linear-gradient(180deg, rgba(0,0,0,0.68), rgba(0,0,0,0.24) 66%, transparent 100%);
-      -webkit-mask: linear-gradient(180deg, rgba(0,0,0,0.68), rgba(0,0,0,0.24) 66%, transparent 100%);
+        linear-gradient(115deg, transparent 0 42%, rgba(240,99,90,0.14) 42.2% 42.6%, transparent 42.8% 100%),
+        linear-gradient(245deg, transparent 0 48%, rgba(244,162,122,0.10) 48.2% 48.7%, transparent 48.9% 100%);
+      opacity: 0.8;
     }
     #video-reveal::after {
       content: '';
@@ -1126,1051 +1121,261 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 92px 0 34px;
       overflow: hidden;
       isolation: isolate;
-      background:
-        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.26), transparent 34%),
-        linear-gradient(180deg, rgba(255,252,247,0.42) 0%, rgba(244,235,224,0.54) 100%);
+      background: #0e0b16;
     }
-    .studio-bg {
+    .cinema-build {
       position: absolute;
       inset: 0;
-      pointer-events: none;
       overflow: hidden;
-      z-index: 0;
+      background:
+        linear-gradient(115deg, rgba(240,99,90,0.10), transparent 34%),
+        linear-gradient(245deg, rgba(244,162,122,0.10), transparent 32%),
+        linear-gradient(180deg, #171321 0%, #0d0a13 100%);
+      perspective: 1200px;
     }
-    .studio-orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(10px);
-      opacity: 0.52;
-      mix-blend-mode: multiply;
-      animation: studioFloat 16s ease-in-out infinite;
-    }
-    .studio-orb-a {
-      width: 34vw;
-      height: 34vw;
-      min-width: 280px;
-      min-height: 280px;
-      max-width: 540px;
-      max-height: 540px;
-      left: -8vw;
-      top: 18vh;
-      background: radial-gradient(circle, rgba(240,99,90,0.18) 0%, rgba(240,99,90,0.06) 46%, transparent 72%);
-    }
-    .studio-orb-b {
-      width: 28vw;
-      height: 28vw;
-      min-width: 220px;
-      min-height: 220px;
-      max-width: 420px;
-      max-height: 420px;
-      right: -4vw;
-      top: 10vh;
-      animation-delay: -5s;
-      background: radial-gradient(circle, rgba(244,162,122,0.18) 0%, rgba(244,162,122,0.08) 44%, transparent 72%);
-    }
-    .studio-orb-c {
-      width: 26vw;
-      height: 26vw;
-      min-width: 210px;
-      min-height: 210px;
-      max-width: 360px;
-      max-height: 360px;
-      left: 42vw;
-      bottom: -8vh;
-      animation-delay: -9s;
-      background: radial-gradient(circle, rgba(43,37,71,0.10) 0%, rgba(43,37,71,0.04) 48%, transparent 74%);
-    }
-    @keyframes studioFloat {
-      0%, 100% { transform: translate3d(0, 0, 0) scale(0.98); }
-      50% { transform: translate3d(0, -24px, 0) scale(1.05); }
-    }
-    .studio-shell {
-      position: relative;
-      z-index: 2;
-      width: min(1320px, calc(100vw - 36px));
-      display: grid;
-      gap: 26px;
-    }
-    .studio-copy {
-      max-width: 770px;
-      padding-left: 10px;
-    }
-    #studio-kicker {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(43,37,71,0.10);
-      background: rgba(255,255,255,0.58);
-      box-shadow: 0 16px 34px -28px rgba(43,37,71,0.22);
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 2.6px;
-      text-transform: uppercase;
-      color: rgba(43,37,71,0.78);
-      margin-bottom: 16px;
-    }
-    #studio-kicker::before {
+    .cinema-build::before {
       content: '';
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #F0635A;
-      box-shadow: 0 0 0 6px rgba(240,99,90,0.10);
-      flex-shrink: 0;
-    }
-    #studio-title {
-      font-family: var(--font-serif);
-      font-size: clamp(40px, 5vw, 76px);
-      line-height: 0.95;
-      letter-spacing: -2px;
-      color: #2B2547;
-      margin-bottom: 14px;
-      text-wrap: balance;
-    }
-    #studio-body {
-      max-width: 620px;
-      font-size: 15px;
-      line-height: 1.75;
-      color: rgba(90,84,122,0.84);
-    }
-    #studio-stage {
-      position: relative;
-      display: grid;
-      grid-template-columns: 260px minmax(0, 1fr) 250px;
-      gap: 24px;
-      align-items: center;
-    }
-    .studio-panel {
-      border-radius: 28px;
-      border: 1px solid rgba(43,37,71,0.09);
-      background: linear-gradient(180deg, rgba(255,255,255,0.76), rgba(255,248,241,0.62));
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.82), 0 28px 60px -40px rgba(43,37,71,0.24);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      padding: 20px 18px;
-    }
-    .studio-panel-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 16px;
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 2.4px;
-      text-transform: uppercase;
-      color: rgba(90,84,122,0.76);
-    }
-    .studio-panel-label::before {
-      content: '';
-      width: 18px;
-      height: 1px;
-      background: linear-gradient(90deg, #F0635A, transparent);
-    }
-    .studio-step-grid {
-      display: grid;
-      gap: 10px;
-    }
-    .studio-step {
-      padding: 15px 16px 16px 18px;
-      border-radius: 20px;
-      border: 1px solid rgba(43,37,71,0.06);
-      background: rgba(255,255,255,0.58);
-      opacity: 0.48;
-      transition: opacity 0.28s ease, transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease, background 0.28s ease;
-    }
-    .studio-step.is-active {
-      opacity: 1;
-      transform: translateX(4px);
-      border-color: rgba(240,99,90,0.24);
-      background: linear-gradient(135deg, rgba(240,99,90,0.12), rgba(244,162,122,0.12));
-      box-shadow: 0 22px 42px -34px rgba(240,99,90,0.42);
-    }
-    .studio-step.is-done {
-      opacity: 0.82;
-      background: rgba(255,255,255,0.68);
-    }
-    .studio-step-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
-    .studio-step-index {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: #F0635A;
-    }
-    .studio-step-marker {
-      width: 32px;
-      height: 3px;
-      border-radius: 999px;
-      background: rgba(43,37,71,0.12);
-      transition: background 0.28s ease, box-shadow 0.28s ease;
-    }
-    .studio-step.is-active .studio-step-marker {
-      background: linear-gradient(90deg, #F0635A, #F4A27A);
-      box-shadow: 0 0 18px rgba(240,99,90,0.22);
-    }
-    .studio-step h3 {
-      font-size: 18px;
-      line-height: 1.1;
-      color: #2B2547;
-      margin-bottom: 6px;
-    }
-    .studio-step p {
-      font-size: 12px;
-      line-height: 1.6;
-      color: rgba(90,84,122,0.76);
-    }
-    #studio-device-wrap {
-      position: relative;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 18px;
-      filter: drop-shadow(0 40px 80px rgba(66,45,56,0.20));
-      perspective: 1800px;
-      transform-style: preserve-3d;
-    }
-    .studio-halo {
       position: absolute;
-      inset: auto 12% 14% 12%;
-      height: 34%;
-      border-radius: 999px;
-      background: radial-gradient(ellipse at center, rgba(240,99,90,0.18) 0%, rgba(240,99,90,0.05) 46%, transparent 74%);
-      filter: blur(22px);
-      opacity: 0.84;
+      inset: 0;
+      background:
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 64px 64px;
+      opacity: 0.3;
+      transform: translateZ(0);
+    }
+    .cinema-build::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0.02), transparent 9%, transparent 91%, rgba(255,255,255,0.02)),
+        radial-gradient(ellipse at center, transparent 0 42%, rgba(0,0,0,0.36) 100%);
       pointer-events: none;
-      z-index: -1;
-      transition: opacity 0.4s ease;
     }
-    .studio-stage.is-live .studio-halo {
-      opacity: 0.54;
+    .cinema-bars {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      pointer-events: none;
     }
-    .studio-device {
-      position: relative;
-      width: min(900px, 100%);
-      padding: 12px;
-      border-radius: 32px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(231,220,204,0.96) 100%);
+    .cinema-bar {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 22vh;
+      background: #06050a;
+      transform: scaleY(0);
+      will-change: transform;
+    }
+    .cinema-bar-top {
+      top: 0;
+      transform-origin: 50% 0;
+    }
+    .cinema-bar-bottom {
+      bottom: 0;
+      transform-origin: 50% 100%;
+    }
+    .cinema-aperture {
+      position: absolute;
+      inset: 11vh 6vw;
+      border: 1px solid rgba(255,249,245,0.10);
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.92),
-        0 0 0 1px rgba(43,37,71,0.12),
-        0 42px 100px -56px rgba(43,37,71,0.45),
-        0 28px 74px -52px rgba(240,99,90,0.40);
+        inset 0 0 80px rgba(0,0,0,0.42),
+        0 0 120px rgba(240,99,90,0.13);
+      transform: rotateX(14deg) scale(0.82);
       transform-style: preserve-3d;
-      will-change: transform;
-    }
-    .studio-device-bar {
-      height: 42px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      padding: 0 16px;
-      border-radius: 18px 18px 0 0;
-      background: rgba(252,248,242,0.92);
-      border: 1px solid rgba(43,37,71,0.08);
-      border-bottom: none;
-      color: rgba(43,37,71,0.76);
-      font-family: var(--font-mono);
-      font-size: 9px;
-      letter-spacing: 1.7px;
-      text-transform: uppercase;
-    }
-    .studio-device-dots {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .studio-device-dots span {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: rgba(43,37,71,0.16);
-    }
-    .studio-device-dots span:first-child { background: #F0635A; }
-    .studio-device-dots span:nth-child(2) { background: #F4A27A; }
-    .studio-device-dots span:last-child { background: #88BC8E; }
-    .studio-device-url {
-      max-width: 56%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      color: rgba(43,37,71,0.68);
-    }
-    .studio-device-mode {
-      color: rgba(90,84,122,0.74);
-    }
-    .studio-device-screen {
-      position: relative;
-      overflow: hidden;
-      border-radius: 0 0 24px 24px;
-      aspect-ratio: 1280 / 860;
-      background: linear-gradient(180deg, #fcf8f1 0%, #f1e7da 100%);
-      box-shadow: inset 0 0 0 1px rgba(43,37,71,0.07), inset 0 18px 34px -28px rgba(43,37,71,0.18);
-    }
-    #studio-preview {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      padding: 22px;
-      background:
-        radial-gradient(circle at 18% 12%, rgba(240,99,90,0.12), transparent 22%),
-        radial-gradient(circle at 82% 14%, rgba(244,162,122,0.12), transparent 22%),
-        linear-gradient(180deg, #fdf9f3 0%, #f2e8dc 100%);
-      transform-origin: 50% 50%;
-      will-change: transform;
-    }
-    #studio-preview::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        linear-gradient(rgba(43,37,71,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(43,37,71,0.03) 1px, transparent 1px);
-      background-size: 24px 24px;
-      opacity: 0.18;
-      mask: linear-gradient(180deg, rgba(0,0,0,0.18), transparent 92%);
-      -webkit-mask: linear-gradient(180deg, rgba(0,0,0,0.18), transparent 92%);
-    }
-    .studio-piece {
-      position: relative;
-      z-index: 1;
-      opacity: 0;
-      transform: translateY(44px) scale(0.975);
-      filter: blur(10px);
       will-change: transform, opacity;
-    }
-    .studio-preview a {
-      pointer-events: none;
-    }
-    .studio-stage.is-live .studio-preview a {
-      pointer-events: auto;
-    }
-    .studio-preview-nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      padding: 14px 18px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.78);
-      border: 1px solid rgba(43,37,71,0.07);
-      box-shadow: 0 18px 34px -28px rgba(43,37,71,0.16);
-    }
-    .studio-preview-brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 2.4px;
-      text-transform: uppercase;
-      font-weight: 700;
-      color: #2B2547;
-    }
-    .studio-preview-brand b {
-      display: inline-flex;
-      width: 18px;
-      height: 18px;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      background: rgba(240,99,90,0.12);
-      color: #F0635A;
-      font-size: 9px;
-    }
-    .studio-preview-links {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      font-size: 10px;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-      color: rgba(90,84,122,0.76);
-    }
-    .studio-preview-links span:last-child {
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(240,99,90,0.08);
-      color: #F0635A;
-    }
-    .studio-preview-hero {
-      display: grid;
-      grid-template-columns: minmax(0, 1.12fr) minmax(270px, 0.88fr);
-      gap: 18px;
-      padding: 26px;
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255,255,255,0.70), rgba(255,246,237,0.68));
-      border: 1px solid rgba(43,37,71,0.06);
-      box-shadow: 0 28px 46px -36px rgba(43,37,71,0.20);
-      min-height: 288px;
-    }
-    .studio-preview-hero-copy {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 18px;
-    }
-    .studio-preview-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      width: fit-content;
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(43,37,71,0.08);
-      background: rgba(255,255,255,0.62);
-      font-family: var(--font-mono);
-      font-size: 9px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: rgba(90,84,122,0.80);
-    }
-    .studio-preview-chip::before {
-      content: '';
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #F0635A;
-      box-shadow: 0 0 0 4px rgba(240,99,90,0.10);
-    }
-    .studio-preview-hero-copy h3 {
-      font-family: var(--font-serif);
-      font-size: clamp(34px, 3.2vw, 62px);
-      line-height: 0.94;
-      letter-spacing: -1.4px;
-      color: #2B2547;
-      text-wrap: balance;
-    }
-    .studio-preview-hero-copy p {
-      max-width: 460px;
-      font-size: 14px;
-      line-height: 1.7;
-      color: rgba(90,84,122,0.82);
-    }
-    .studio-preview-hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .studio-preview-hero-actions a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 18px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.3px;
-      transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
-    }
-    .studio-preview-hero-actions a:first-child {
-      background: #F0635A;
-      color: white;
-      box-shadow: 0 20px 36px -24px rgba(240,99,90,0.58);
-    }
-    .studio-preview-hero-actions a:last-child {
-      border: 1px solid rgba(43,37,71,0.08);
-      background: rgba(255,255,255,0.62);
-      color: #2B2547;
-    }
-    .studio-preview-hero-actions a:hover {
-      transform: translateY(-2px);
-    }
-    .studio-preview-hero-metrics {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .studio-preview-metric {
-      min-width: 110px;
-      padding: 12px 14px;
-      border-radius: 16px;
-      border: 1px solid rgba(43,37,71,0.07);
-      background: rgba(255,255,255,0.60);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.60);
-    }
-    .studio-preview-metric span {
-      display: block;
-      font-family: var(--font-mono);
-      font-size: 9px;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-      color: rgba(90,84,122,0.66);
-      margin-bottom: 6px;
-    }
-    .studio-preview-metric strong {
-      font-size: 15px;
-      color: #2B2547;
-      line-height: 1.1;
-    }
-    .studio-preview-visual {
-      position: relative;
-      border-radius: 24px;
-      overflow: hidden;
-      background: radial-gradient(circle at 28% 24%, rgba(255,255,255,0.26), transparent 18%), linear-gradient(135deg, #292331 0%, #3b3147 52%, #1c1824 100%);
-      min-height: 236px;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08), 0 30px 46px -34px rgba(43,37,71,0.36);
-    }
-    .studio-preview-visual::before {
-      content: '';
-      position: absolute;
-      left: 20px;
-      right: 20px;
-      top: 20px;
-      height: 1px;
-      background: linear-gradient(90deg, rgba(244,162,122,0.76), transparent);
-    }
-    .studio-preview-visual::after {
-      content: '';
-      position: absolute;
-      right: 20px;
-      top: 18px;
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.12);
-      box-shadow: inset 0 0 0 18px rgba(255,255,255,0.04);
-    }
-    .studio-visual-card {
-      position: absolute;
-      left: 24px;
-      right: 24px;
-      bottom: 24px;
-      padding: 18px 20px;
-      border-radius: 20px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.08));
-      border: 1px solid rgba(255,255,255,0.10);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      color: #fffaf6;
-    }
-    .studio-visual-card span {
-      display: block;
-      font-family: var(--font-mono);
-      font-size: 9px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: rgba(255,250,246,0.66);
-      margin-bottom: 10px;
-    }
-    .studio-visual-card strong {
-      display: block;
-      font-family: var(--font-serif);
-      font-size: 34px;
-      line-height: 0.96;
-      letter-spacing: -1px;
-    }
-    .studio-visual-badge {
-      position: absolute;
-      left: 24px;
-      top: 28px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.10);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: rgba(255,250,246,0.88);
-      font-family: var(--font-mono);
-      font-size: 9px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-    .studio-preview-proof {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
-      padding: 16px;
-      border-radius: 22px;
-      background: linear-gradient(135deg, #2B2547 0%, #352d54 100%);
-      color: #fff9f5;
-      box-shadow: 0 26px 42px -34px rgba(43,37,71,0.40);
-    }
-    .studio-preview-proof div {
-      padding: 10px 12px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.06);
-    }
-    .studio-preview-proof span {
-      display: block;
-      font-family: var(--font-mono);
-      font-size: 8px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: rgba(255,249,245,0.58);
-      margin-bottom: 6px;
-    }
-    .studio-preview-proof strong {
-      display: block;
-      font-size: 17px;
-      line-height: 1.1;
-      color: #fff9f5;
-    }
-    .studio-preview-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-    }
-    .studio-preview-card {
-      padding: 20px 18px;
-      border-radius: 22px;
-      background: rgba(255,255,255,0.76);
-      border: 1px solid rgba(43,37,71,0.07);
-      box-shadow: 0 22px 38px -30px rgba(43,37,71,0.18);
-    }
-    .studio-preview-card span {
-      display: block;
-      font-family: var(--font-mono);
-      font-size: 8px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: #F0635A;
-      margin-bottom: 12px;
-    }
-    .studio-preview-card h4 {
-      font-size: 18px;
-      line-height: 1.12;
-      color: #2B2547;
-      margin-bottom: 8px;
-    }
-    .studio-preview-card p {
-      font-size: 12px;
-      line-height: 1.65;
-      color: rgba(90,84,122,0.78);
-    }
-    .studio-preview-quote {
-      display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(220px, 0.8fr);
-      gap: 14px;
-    }
-    .studio-preview-quote-main,
-    .studio-preview-quote-side {
-      padding: 20px;
-      border-radius: 24px;
-      border: 1px solid rgba(43,37,71,0.07);
-      box-shadow: 0 20px 40px -34px rgba(43,37,71,0.16);
-    }
-    .studio-preview-quote-main {
-      background: rgba(255,255,255,0.78);
-    }
-    .studio-preview-quote-main span {
-      display: block;
-      font-family: var(--font-mono);
-      font-size: 8px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: rgba(90,84,122,0.62);
-      margin-bottom: 12px;
-    }
-    .studio-preview-quote-main p {
-      font-family: var(--font-serif);
-      font-size: 26px;
-      line-height: 1.06;
-      letter-spacing: -0.6px;
-      color: #2B2547;
-      margin-bottom: 14px;
-    }
-    .studio-preview-quote-main strong {
-      font-size: 11px;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-      color: rgba(90,84,122,0.68);
-    }
-    .studio-preview-quote-side {
-      background: linear-gradient(135deg, rgba(255,247,237,0.82), rgba(255,255,255,0.78));
-      display: grid;
-      gap: 10px;
-      align-content: start;
-    }
-    .studio-preview-quote-side div {
-      padding-bottom: 10px;
-      border-bottom: 1px solid rgba(43,37,71,0.06);
-    }
-    .studio-preview-quote-side div:last-child {
-      padding-bottom: 0;
-      border-bottom: none;
-    }
-    .studio-preview-quote-side span {
-      display: block;
-      font-family: var(--font-mono);
-      font-size: 8px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: rgba(90,84,122,0.60);
-      margin-bottom: 6px;
-    }
-    .studio-preview-quote-side strong {
-      display: block;
-      font-size: 14px;
-      color: #2B2547;
-      line-height: 1.4;
-    }
-    .studio-preview-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 18px 20px;
-      border-radius: 22px;
-      background: linear-gradient(135deg, rgba(240,99,90,0.12), rgba(244,162,122,0.14));
-      border: 1px solid rgba(240,99,90,0.16);
-      box-shadow: 0 22px 40px -32px rgba(240,99,90,0.24);
-    }
-    .studio-preview-footer-copy span {
-      display: block;
-      font-family: var(--font-mono);
-      font-size: 8px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: rgba(90,84,122,0.66);
-      margin-bottom: 8px;
-    }
-    .studio-preview-footer-copy strong {
-      display: block;
-      font-size: 18px;
-      line-height: 1.2;
-      color: #2B2547;
-    }
-    .studio-preview-footer a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 12px 18px;
-      border-radius: 999px;
-      background: #2B2547;
-      color: white;
-      font-size: 11px;
-      font-weight: 600;
-      box-shadow: 0 20px 36px -28px rgba(43,37,71,0.48);
-    }
-    .studio-live-chip {
-      position: absolute;
-      right: 24px;
-      bottom: 24px;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(43,37,71,0.08);
-      background: rgba(255,255,255,0.86);
-      box-shadow: 0 20px 42px -30px rgba(43,37,71,0.24);
-      color: #2B2547;
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-      opacity: 0;
-      transform: translateY(14px);
-      z-index: 7;
-    }
-    .studio-live-chip::before {
-      content: '';
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #F0635A;
-      box-shadow: 0 0 0 6px rgba(240,99,90,0.10);
-      flex-shrink: 0;
-    }
-    .studio-blueprint {
-      position: absolute;
-      inset: 22px;
-      width: auto;
-      height: auto;
       z-index: 3;
-      pointer-events: none;
-      mix-blend-mode: multiply;
-      opacity: 0.92;
     }
-    .studio-wire {
-      opacity: 0;
-    }
-    .studio-wire rect,
-    .studio-wire line,
-    .studio-wire circle {
-      fill: none;
-      stroke: rgba(240,99,90,0.92);
-      stroke-width: 1.6;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      vector-effect: non-scaling-stroke;
-      filter: drop-shadow(0 0 8px rgba(240,99,90,0.12));
-    }
-    #studio-build-sheet {
-      position: absolute;
-      left: 6%;
-      top: 8%;
-      width: min(400px, 46%);
-      border-radius: 24px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.06);
-      background: linear-gradient(180deg, rgba(27,23,40,0.98), rgba(16,13,24,0.98));
-      box-shadow: 0 34px 80px -40px rgba(43,37,71,0.72), 0 0 0 10px rgba(255,255,255,0.08);
-      opacity: 0;
-      z-index: 5;
-      pointer-events: none;
-      will-change: transform, opacity;
-    }
-    .studio-sheet-bar {
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 0 16px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.03);
-      font-family: var(--font-mono);
-      font-size: 9px;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-      color: rgba(224,217,245,0.72);
-    }
-    .studio-sheet-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #F0635A;
-      box-shadow: 14px 0 0 #F4A27A, 28px 0 0 #88BC8E;
-      margin-right: 28px;
-      flex-shrink: 0;
-    }
-    .studio-sheet-mode {
-      margin-left: auto;
-      color: #F4A27A;
-    }
-    .studio-code {
-      display: grid;
-      gap: 8px;
-      padding: 18px 18px 20px;
-      min-height: 244px;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      line-height: 1.7;
-      color: #f3eef9;
-      background: linear-gradient(180deg, rgba(31,26,46,0.96), rgba(19,16,28,0.98));
-    }
-    .studio-code-line {
-      display: block;
-      opacity: 0.2;
-      transform: translateX(-14px);
-      transition: opacity 0.22s ease, transform 0.22s ease;
-    }
-    .studio-code-no {
-      display: inline-block;
-      width: 28px;
-      color: rgba(220,212,245,0.34);
-      user-select: none;
-    }
-    .studio-code-key { color: #63d7ff; }
-    .studio-code-accent { color: #F4A27A; }
-    .studio-code-value { color: #f6efe3; }
-    .studio-code-line.is-typed {
-      opacity: 1;
-      transform: translateX(0);
-    }
-    #studio-scan {
+    .cinema-aperture::before,
+    .cinema-aperture::after {
+      content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, transparent 0%, rgba(240,99,90,0.05) 44%, rgba(255,255,255,0.60) 50%, rgba(240,99,90,0.16) 56%, transparent 100%);
-      mix-blend-mode: screen;
-      opacity: 0;
       pointer-events: none;
-      z-index: 6;
     }
-    .studio-floor-note {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      border-radius: 999px;
+    .cinema-aperture::before {
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent);
+      opacity: 0;
+      transform: translateX(-120%);
+    }
+    .cinema-aperture::after {
+      background:
+        linear-gradient(0deg, transparent 0 48%, rgba(240,99,90,0.22) 49% 51%, transparent 52% 100%),
+        linear-gradient(90deg, transparent 0 49%, rgba(244,162,122,0.18) 49.5% 50.5%, transparent 51% 100%);
+      opacity: 0.32;
+      mix-blend-mode: screen;
+    }
+    .cinema-rail {
+      position: absolute;
+      width: 16vw;
+      min-width: 110px;
+      height: 130vh;
+      top: -15vh;
+      background: linear-gradient(180deg, rgba(240,99,90,0), rgba(240,99,90,0.32), rgba(244,162,122,0));
+      transform: skewX(-14deg) translateY(70vh);
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+    .cinema-rail-a { left: 6vw; }
+    .cinema-rail-b { right: 9vw; transform: skewX(14deg) translateY(-70vh); }
+    .cinema-rail-c { left: 48vw; width: 9vw; opacity: 0; }
+    .cinema-frame {
+      position: absolute;
+      left: 50%;
+      top: 52%;
+      width: min(1040px, 82vw);
+      aspect-ratio: 16 / 9;
+      border: 1px solid rgba(255,249,245,0.15);
+      background: linear-gradient(180deg, rgba(255,249,245,0.10), rgba(255,249,245,0.02));
+      box-shadow:
+        0 50px 160px rgba(0,0,0,0.52),
+        0 0 0 12px rgba(255,255,255,0.025),
+        inset 0 1px 0 rgba(255,255,255,0.12);
+      overflow: hidden;
+      transform: translate(-50%, -50%) rotateX(24deg) scale(0.56);
+      transform-origin: 50% 50%;
+      z-index: 5;
+      will-change: transform, opacity;
+    }
+    .cinema-frame::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.20), transparent 18%);
+      opacity: 0.4;
+      pointer-events: none;
+      z-index: 4;
+    }
+    .cinema-site {
+      position: absolute;
+      inset: 0;
+      background: #fbf4ec;
+      overflow: hidden;
+    }
+    .cinema-site > * {
+      position: absolute;
+      will-change: transform, opacity;
+    }
+    .cinema-sky {
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(240,99,90,0.36), transparent 34%),
+        linear-gradient(245deg, rgba(43,37,71,0.36), transparent 38%),
+        linear-gradient(180deg, #fffaf4 0%, #eadccf 100%);
+      transform: scale(1.2);
+    }
+    .cinema-nav {
+      left: 5%;
+      right: 5%;
+      top: 7%;
+      height: 7%;
+      border: 1px solid rgba(43,37,71,0.13);
+      background: rgba(255,255,255,0.62);
+      box-shadow: 0 18px 38px rgba(43,37,71,0.08);
+      transform: translateY(-220%);
+    }
+    .cinema-hero-block {
+      left: 5%;
+      top: 20%;
+      width: 42%;
+      height: 42%;
+      background: #2B2547;
+      box-shadow: 0 26px 70px rgba(43,37,71,0.28);
+      transform: translateX(-130%) skewX(-8deg);
+    }
+    .cinema-image-block {
+      right: 5%;
+      top: 18%;
+      width: 42%;
+      height: 48%;
+      background:
+        linear-gradient(135deg, rgba(240,99,90,0.22), transparent 38%),
+        url('images/vecteezy_needle-and-thread-with-button-on-material-mending-clothing_76760151.jpeg') center / cover;
+      box-shadow: 0 34px 80px rgba(43,37,71,0.24);
+      transform: translateX(130%) skewX(7deg);
+    }
+    .cinema-strip {
+      left: 5%;
+      right: 5%;
+      bottom: 21%;
+      height: 12%;
+      background: linear-gradient(90deg, #F0635A, #F4A27A);
+      transform: scaleX(0);
+      transform-origin: 0 50%;
+    }
+    .cinema-card {
+      bottom: 6%;
+      width: 27%;
+      height: 12%;
       background: rgba(255,255,255,0.76);
       border: 1px solid rgba(43,37,71,0.08);
-      box-shadow: 0 18px 34px -28px rgba(43,37,71,0.22);
-      color: rgba(43,37,71,0.80);
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      box-shadow: 0 18px 38px rgba(43,37,71,0.10);
+      transform: translateY(180%);
     }
-    .studio-floor-note::before {
-      content: '';
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      border: 1px solid rgba(240,99,90,0.22);
-      background: radial-gradient(circle at center, rgba(240,99,90,0.82) 0 24%, transparent 26%), radial-gradient(circle at center, rgba(240,99,90,0.08) 0 56%, transparent 58%);
-      flex-shrink: 0;
+    .cinema-card-a { left: 5%; }
+    .cinema-card-b { left: 36.5%; }
+    .cinema-card-c { right: 5%; }
+    .cinema-shutter {
+      position: absolute;
+      inset: 0;
+      z-index: 8;
+      pointer-events: none;
     }
-    .studio-stage.is-live .studio-floor-note {
-      background: rgba(255,255,255,0.88);
+    .cinema-shutter span {
+      position: absolute;
+      inset: 0;
+      background: #0c0912;
+      transform: scaleX(0);
+      will-change: transform;
     }
-    .studio-stat-list {
-      display: grid;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-    .studio-stat-row {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 14px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid rgba(43,37,71,0.06);
-    }
-    .studio-stat-row span {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: rgba(90,84,122,0.72);
-    }
-    .studio-stat-row strong {
-      font-size: 17px;
-      line-height: 1.1;
-      color: #2B2547;
-    }
-    .studio-meter {
-      margin-bottom: 16px;
-    }
-    .studio-meter span {
-      display: block;
-      margin-bottom: 8px;
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: rgba(90,84,122,0.72);
-    }
-    .studio-meter-bar {
-      height: 8px;
-      border-radius: 999px;
-      overflow: hidden;
-      background: rgba(43,37,71,0.10);
-    }
-    #studio-meter-fill {
-      width: 100%;
-      height: 100%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, #F0635A, #F4A27A);
-      transform: scaleX(0.12);
+    .cinema-shutter span:first-child {
       transform-origin: 0 50%;
-      box-shadow: 0 0 18px rgba(240,99,90,0.20);
+      clip-path: polygon(0 0, 62% 0, 42% 100%, 0 100%);
     }
-    .studio-signal-list {
-      display: grid;
-      gap: 10px;
+    .cinema-shutter span:last-child {
+      transform-origin: 100% 50%;
+      clip-path: polygon(58% 0, 100% 0, 100% 100%, 38% 100%);
     }
-    .studio-signal {
-      display: grid;
-      grid-template-columns: 14px minmax(0, 1fr);
-      gap: 12px;
-      align-items: start;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(43,37,71,0.05);
-      opacity: 0.54;
-      transition: opacity 0.24s ease;
-    }
-    .studio-signal:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-    .studio-signal.is-active,
-    .studio-signal.is-done {
-      opacity: 1;
-    }
-    .studio-signal-dot {
-      width: 10px;
-      height: 10px;
-      margin-top: 4px;
+    .cinema-flare {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 42vmax;
+      height: 42vmax;
       border-radius: 50%;
-      background: rgba(43,37,71,0.12);
-      transition: background 0.24s ease, box-shadow 0.24s ease;
+      background: radial-gradient(circle, rgba(255,249,245,0.34) 0%, rgba(240,99,90,0.14) 20%, transparent 64%);
+      filter: blur(28px);
+      mix-blend-mode: screen;
+      opacity: 0.08;
+      transform: translate(-50%, -50%) scale(0.4);
+      pointer-events: none;
+      z-index: 2;
+      will-change: transform, opacity;
     }
-    .studio-signal.is-active .studio-signal-dot,
-    .studio-signal.is-done .studio-signal-dot {
-      background: #F0635A;
-      box-shadow: 0 0 0 5px rgba(240,99,90,0.10);
+    .cinema-grain {
+      position: absolute;
+      inset: -50%;
+      background-image:
+        linear-gradient(115deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 4px),
+        linear-gradient(245deg, rgba(0,0,0,0.08) 0 1px, transparent 1px 5px);
+      background-size: 7px 11px, 13px 17px;
+      opacity: 0.16;
+      transform: rotate(2deg);
+      pointer-events: none;
+      z-index: 9;
     }
-    .studio-signal b {
-      display: block;
-      font-size: 14px;
-      line-height: 1.2;
-      color: #2B2547;
-      margin-bottom: 4px;
-    }
-    .studio-signal span {
-      display: block;
-      font-size: 12px;
-      line-height: 1.55;
-      color: rgba(90,84,122,0.74);
-    }
-    @media (max-width: 1180px) {
-      #video-reveal { height: 390vh; }
-      .studio-shell { width: min(calc(100vw - 24px), 1100px); }
-      #studio-stage { grid-template-columns: 1fr; gap: 18px; }
-      .studio-panel-left { order: 1; }
-      #studio-device-wrap { order: 2; }
-      .studio-panel-right { order: 3; }
-      .studio-step-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .studio-stat-list { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 14px; }
-    }
-    @media (max-width: 860px) {
-      #video-sticky { padding-top: 108px; }
-      #studio-title { font-size: clamp(36px, 9vw, 58px); letter-spacing: -1.4px; }
-      #studio-body { font-size: 14px; }
-      .studio-preview-hero { grid-template-columns: 1fr; }
-      .studio-preview-proof { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .studio-preview-grid,
-      .studio-preview-quote { grid-template-columns: 1fr; }
-      .studio-preview-footer { flex-direction: column; align-items: flex-start; }
-      #studio-build-sheet { width: min(430px, 66%); }
-    }
-    @media (max-width: 680px) {
-      #video-reveal { height: 350vh; }
-      #video-sticky { padding: 96px 0 24px; }
-      .studio-shell { width: calc(100vw - 16px); gap: 18px; }
-      .studio-copy { padding-left: 2px; }
-      #studio-kicker { padding: 7px 12px; font-size: 9px; letter-spacing: 2px; }
-      .studio-panel { padding: 16px; border-radius: 22px; }
-      .studio-step-grid { grid-template-columns: 1fr; }
-      .studio-device { padding: 8px; border-radius: 24px; }
-      .studio-device-bar { height: 34px; padding: 0 12px; font-size: 7px; }
-      .studio-device-screen { border-radius: 0 0 18px 18px; aspect-ratio: 4 / 5.1; }
-      #studio-preview { padding: 12px; gap: 10px; }
-      .studio-preview-nav { padding: 12px 14px; }
-      .studio-preview-links { display: none; }
-      .studio-preview-hero { padding: 18px; min-height: 0; gap: 14px; }
-      .studio-preview-hero-copy h3 { font-size: clamp(28px, 9vw, 40px); }
-      .studio-preview-hero-copy p { font-size: 12px; }
-      .studio-preview-metric { min-width: 0; flex: 1 1 120px; }
-      .studio-preview-proof { grid-template-columns: 1fr 1fr; padding: 12px; }
-      .studio-preview-card,
-      .studio-preview-quote-main,
-      .studio-preview-quote-side,
-      .studio-preview-footer { padding: 16px; border-radius: 18px; }
-      .studio-preview-quote-main p { font-size: 22px; }
-      .studio-live-chip { right: 14px; bottom: 14px; font-size: 8px; letter-spacing: 1.4px; }
-      #studio-build-sheet { left: 8%; top: 7%; width: 84%; border-radius: 18px; }
-      .studio-code { min-height: 190px; padding: 14px 14px 16px; font-size: 9px; }
-      .studio-floor-note { width: 100%; justify-content: center; font-size: 8px; letter-spacing: 1.5px; }
-      .studio-stat-list { grid-template-columns: 1fr; }
+    @media (max-width: 760px) {
+      #video-reveal { height: 320vh; }
+      .cinema-aperture { inset: 15vh 4vw; }
+      .cinema-frame { width: 94vw; aspect-ratio: 4 / 5; }
+      .cinema-hero-block { width: 58%; height: 34%; }
+      .cinema-image-block { top: 42%; width: 62%; height: 31%; }
+      .cinema-strip { bottom: 18%; }
+      .cinema-card { width: 28%; }
     }
 
     .gsap-reveal {
@@ -3436,310 +2641,33 @@
     <div id="sc-bottom-pad"></div>
   </section>
 
-  <!-- PAGE 3 - STUDIO BUILD CLEAN -->
+  <!-- PAGE 3 - CINEMATIC BUILD REVEAL -->
   <div id="video-reveal">
     <div id="video-sticky">
-      <div class="studio-bg" aria-hidden="true">
-        <div class="studio-orb studio-orb-a"></div>
-        <div class="studio-orb studio-orb-b"></div>
-        <div class="studio-orb studio-orb-c"></div>
-      </div>
-
-      <div class="studio-shell">
-        <div class="studio-copy">
-          <div id="studio-kicker">Phase 01 / Brief</div>
-          <h2 id="studio-title">We start by engineering the story before we dress the screen.</h2>
-          <p id="studio-body">The point is not flashy motion for its own sake. It is shaping the promise, proof, and action so the finished site feels expensive, fast, and inevitable to say yes to.</p>
-        </div>
-
-        <div id="studio-stage">
-          <aside class="studio-panel studio-panel-left">
-            <div class="studio-panel-label">Build Sequence</div>
-            <div class="studio-step-grid">
-              <article class="studio-step" data-phase="0">
-                <div class="studio-step-top">
-                  <span class="studio-step-index">01</span>
-                  <span class="studio-step-marker"></span>
-                </div>
-                <h3>Brief</h3>
-                <p>Lock the offer, trust signal, and call to action before any decoration shows up.</p>
-              </article>
-              <article class="studio-step" data-phase="1">
-                <div class="studio-step-top">
-                  <span class="studio-step-index">02</span>
-                  <span class="studio-step-marker"></span>
-                </div>
-                <h3>Structure</h3>
-                <p>Assemble the hero, proof, services, and footer so the page feels deliberate.</p>
-              </article>
-              <article class="studio-step" data-phase="2">
-                <div class="studio-step-top">
-                  <span class="studio-step-index">03</span>
-                  <span class="studio-step-marker"></span>
-                </div>
-                <h3>Precision</h3>
-                <p>Tune motion, contrast, spacing, and load so the site feels custom instead of crowded.</p>
-              </article>
-              <article class="studio-step" data-phase="3">
-                <div class="studio-step-top">
-                  <span class="studio-step-index">04</span>
-                  <span class="studio-step-marker"></span>
-                </div>
-                <h3>Launch</h3>
-                <p>Pull the spectacle back so the final frame is readable, calm, and ready to sell.</p>
-              </article>
-            </div>
-          </aside>
-
-          <div id="studio-device-wrap">
-            <div class="studio-halo"></div>
-
-            <div class="studio-device">
-              <div class="studio-device-bar">
-                <div class="studio-device-dots" aria-hidden="true">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-                <span class="studio-device-url">asterandpine.co</span>
-                <span class="studio-device-mode">studio build</span>
-              </div>
-
-              <div class="studio-device-screen">
-                <div id="studio-preview">
-                  <div class="studio-piece studio-preview-nav">
-                    <div class="studio-preview-brand"><b>A</b> Aster &amp; Pine</div>
-                    <div class="studio-preview-links">
-                      <span>Services</span>
-                      <span>Process</span>
-                      <span>Book fitting</span>
-                    </div>
-                  </div>
-
-                  <section class="studio-piece studio-preview-hero">
-                    <div class="studio-preview-hero-copy">
-                      <div>
-                        <div class="studio-preview-chip">Private tailoring. Modern fit.</div>
-                        <h3>A premium service site that lands with confidence.</h3>
-                      </div>
-                      <p>For high-trust businesses, the first impression should feel like the appointment itself: precise, warm, and frictionless to move forward with.</p>
-                      <div class="studio-preview-hero-actions">
-                        <a href="#contact" data-studio-jump>Start the project</a>
-                        <a href="#pricing" data-studio-jump>See the process</a>
-                      </div>
-                      <div class="studio-preview-hero-metrics">
-                        <div class="studio-preview-metric">
-                          <span>Rush slots</span>
-                          <strong>48 hours</strong>
-                        </div>
-                        <div class="studio-preview-metric">
-                          <span>Average rating</span>
-                          <strong>4.9 / 5</strong>
-                        </div>
-                        <div class="studio-preview-metric">
-                          <span>Booking flow</span>
-                          <strong>Same-day reply</strong>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="studio-preview-visual">
-                      <div class="studio-visual-badge">Tailored experience</div>
-                      <div class="studio-visual-card">
-                        <span>Launch note</span>
-                        <strong>Elegant on the surface. Fast underneath.</strong>
-                      </div>
-                    </div>
-                  </section>
-
-                  <div class="studio-piece studio-preview-proof">
-                    <div>
-                      <span>Decision time</span>
-                      <strong>12 min faster</strong>
-                    </div>
-                    <div>
-                      <span>Trust cue</span>
-                      <strong>Instant clarity</strong>
-                    </div>
-                    <div>
-                      <span>Delivery</span>
-                      <strong>Responsive first</strong>
-                    </div>
-                    <div>
-                      <span>Feel</span>
-                      <strong>Quiet luxury</strong>
-                    </div>
-                  </div>
-
-                  <div class="studio-piece studio-preview-grid">
-                    <article class="studio-preview-card">
-                      <span>Offer</span>
-                      <h4>Hero with a real promise</h4>
-                      <p>The first fold says what the business does, why it matters, and what to do next.</p>
-                    </article>
-                    <article class="studio-preview-card">
-                      <span>Proof</span>
-                      <h4>Signals placed where doubt appears</h4>
-                      <p>Reviews, speed, and process cues arrive exactly when the visitor needs reassurance.</p>
-                    </article>
-                    <article class="studio-preview-card">
-                      <span>Action</span>
-                      <h4>CTA paths that feel frictionless</h4>
-                      <p>Buttons, contact entry points, and page flow work together instead of competing.</p>
-                    </article>
-                  </div>
-
-                  <div class="studio-piece studio-preview-quote">
-                    <div class="studio-preview-quote-main">
-                      <span>Client signal</span>
-                      <p>"This looks like a five-figure brand. People trust it before we even pick up the phone."</p>
-                      <strong>Verified launch feedback</strong>
-                    </div>
-                    <div class="studio-preview-quote-side">
-                      <div>
-                        <span>Layout</span>
-                        <strong>Mobile-first composition with room to breathe.</strong>
-                      </div>
-                      <div>
-                        <span>Motion</span>
-                        <strong>Controlled reveals that never bury the content.</strong>
-                      </div>
-                      <div>
-                        <span>Conversion</span>
-                        <strong>Clear CTA hierarchy from hero to footer.</strong>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="studio-piece studio-preview-footer">
-                    <div class="studio-preview-footer-copy">
-                      <span>Final frame</span>
-                      <strong>The page goes quiet on purpose so the message can do the selling.</strong>
-                    </div>
-                    <a href="#contact" data-studio-jump>Build mine</a>
-                  </div>
-
-                  <a class="studio-live-chip" href="#contact" data-studio-jump>Live preview ready</a>
-                </div>
-
-                <svg class="studio-blueprint" id="studio-blueprint" viewBox="0 0 1280 860" preserveAspectRatio="none" aria-hidden="true">
-                  <g class="studio-wire" data-wire="nav">
-                    <rect x="22" y="20" width="1236" height="54" rx="8"></rect>
-                    <line x1="220" y1="20" x2="220" y2="74"></line>
-                    <line x1="22" y1="74" x2="1258" y2="74"></line>
-                  </g>
-                  <g class="studio-wire" data-wire="hero">
-                    <rect x="22" y="96" width="1236" height="304" rx="20"></rect>
-                    <line x1="760" y1="96" x2="760" y2="400"></line>
-                    <line x1="810" y1="130" x2="1212" y2="130"></line>
-                    <circle cx="1040" cy="246" r="74"></circle>
-                  </g>
-                  <g class="studio-wire" data-wire="proof">
-                    <rect x="22" y="422" width="1236" height="88" rx="16"></rect>
-                    <line x1="331" y1="422" x2="331" y2="510"></line>
-                    <line x1="640" y1="422" x2="640" y2="510"></line>
-                    <line x1="949" y1="422" x2="949" y2="510"></line>
-                  </g>
-                  <g class="studio-wire" data-wire="cards">
-                    <rect x="22" y="532" width="396" height="180" rx="18"></rect>
-                    <rect x="442" y="532" width="396" height="180" rx="18"></rect>
-                    <rect x="862" y="532" width="396" height="180" rx="18"></rect>
-                  </g>
-                  <g class="studio-wire" data-wire="quote">
-                    <rect x="22" y="734" width="756" height="102" rx="20"></rect>
-                    <rect x="800" y="734" width="458" height="102" rx="20"></rect>
-                    <line x1="948" y1="734" x2="948" y2="836"></line>
-                  </g>
-                  <g class="studio-wire" data-wire="footer">
-                    <rect x="22" y="812" width="1236" height="36" rx="16"></rect>
-                    <line x1="964" y1="812" x2="964" y2="848"></line>
-                  </g>
-                </svg>
-
-                <div id="studio-build-sheet" aria-hidden="true">
-                  <div class="studio-sheet-bar">
-                    <span class="studio-sheet-dot"></span>
-                    <span>build.jsx</span>
-                    <span class="studio-sheet-mode">compile</span>
-                  </div>
-                  <div class="studio-code">
-                    <span class="studio-code-line"><span class="studio-code-no">01</span><span class="studio-code-key">define</span> <span class="studio-code-value">headline</span> = <span class="studio-code-accent">"clarity first"</span></span>
-                    <span class="studio-code-line"><span class="studio-code-no">02</span><span class="studio-code-key">map</span>(<span class="studio-code-value">proof</span>, <span class="studio-code-value">cta</span>, <span class="studio-code-value">objections</span>)</span>
-                    <span class="studio-code-line"><span class="studio-code-no">03</span><span class="studio-code-key">assemble</span>(<span class="studio-code-value">hero</span>, <span class="studio-code-value">proofStrip</span>, <span class="studio-code-value">services</span>)</span>
-                    <span class="studio-code-line"><span class="studio-code-no">04</span><span class="studio-code-key">tune</span>(<span class="studio-code-value">spacing</span>, <span class="studio-code-value">contrast</span>, <span class="studio-code-value">motion</span>)</span>
-                    <span class="studio-code-line"><span class="studio-code-no">05</span><span class="studio-code-key">optimize</span>(<span class="studio-code-value">assets</span>, <span class="studio-code-value">paint</span>, <span class="studio-code-value">interaction</span>)</span>
-                    <span class="studio-code-line"><span class="studio-code-no">06</span><span class="studio-code-key">verify</span>(<span class="studio-code-value">mobile</span>, <span class="studio-code-value">ctaFlow</span>, <span class="studio-code-value">readability</span>)</span>
-                    <span class="studio-code-line"><span class="studio-code-no">07</span><span class="studio-code-key">publish</span>(<span class="studio-code-accent">"live"</span>)</span>
-                  </div>
-                </div>
-
-                <div id="studio-scan"></div>
-              </div>
-            </div>
-
-            <div class="studio-floor-note">Custom layout / low-fat motion / readable finish</div>
+      <div class="cinema-build" aria-hidden="true">
+        <div class="cinema-flare"></div>
+        <div class="cinema-rail cinema-rail-a"></div>
+        <div class="cinema-rail cinema-rail-b"></div>
+        <div class="cinema-rail cinema-rail-c"></div>
+        <div class="cinema-aperture"></div>
+        <div class="cinema-frame">
+          <div class="cinema-site">
+            <div class="cinema-sky"></div>
+            <div class="cinema-nav"></div>
+            <div class="cinema-hero-block"></div>
+            <div class="cinema-image-block"></div>
+            <div class="cinema-strip"></div>
+            <div class="cinema-card cinema-card-a"></div>
+            <div class="cinema-card cinema-card-b"></div>
+            <div class="cinema-card cinema-card-c"></div>
+            <div class="cinema-shutter"><span></span><span></span></div>
           </div>
-
-          <aside class="studio-panel studio-panel-right">
-            <div class="studio-panel-label">Live Metrics</div>
-            <div class="studio-stat-list">
-              <div class="studio-stat-row">
-                <span>Phase</span>
-                <strong id="studio-phase-value">Brief</strong>
-              </div>
-              <div class="studio-stat-row">
-                <span>Render</span>
-                <strong id="studio-render-value">012%</strong>
-              </div>
-              <div class="studio-stat-row">
-                <span>Weight</span>
-                <strong id="studio-weight-value">148kb</strong>
-              </div>
-              <div class="studio-stat-row">
-                <span>State</span>
-                <strong id="studio-state-value">Mapping</strong>
-              </div>
-            </div>
-
-            <div class="studio-meter">
-              <span>Confidence path</span>
-              <div class="studio-meter-bar">
-                <div id="studio-meter-fill"></div>
-              </div>
-            </div>
-
-            <div class="studio-signal-list">
-              <div class="studio-signal" data-signal="0">
-                <span class="studio-signal-dot"></span>
-                <div>
-                  <b>Promise</b>
-                  <span>Lead with the real offer instead of decorative noise.</span>
-                </div>
-              </div>
-              <div class="studio-signal" data-signal="1">
-                <span class="studio-signal-dot"></span>
-                <div>
-                  <b>Hierarchy</b>
-                  <span>Every block arrives in the order a customer actually decides.</span>
-                </div>
-              </div>
-              <div class="studio-signal" data-signal="2">
-                <span class="studio-signal-dot"></span>
-                <div>
-                  <b>Polish</b>
-                  <span>Motion supports the sales story without becoming the whole story.</span>
-                </div>
-              </div>
-              <div class="studio-signal" data-signal="3">
-                <span class="studio-signal-dot"></span>
-                <div>
-                  <b>Launch</b>
-                  <span>The final frame is quiet enough to read, click, and trust.</span>
-                </div>
-              </div>
-            </div>
-          </aside>
         </div>
+        <div class="cinema-bars">
+          <div class="cinema-bar cinema-bar-top"></div>
+          <div class="cinema-bar cinema-bar-bottom"></div>
+        </div>
+        <div class="cinema-grain"></div>
       </div>
     </div>
   </div>
@@ -4875,293 +3803,151 @@
     updateNav();
   }
 
-  /* -- 8. PAGE 3 - STUDIO BUILD CLEAN -- */
+  /* -- 8. PAGE 3 - CINEMATIC BUILD REVEAL -- */
   {
-    const studioStage = document.getElementById('studio-stage');
-    const revealSection = studioStage ? studioStage.closest('#video-reveal') : null;
-    const pinSection = studioStage ? studioStage.closest('#video-sticky') : null;
-    const deviceWrap = document.getElementById('studio-device-wrap');
-    const device = studioStage ? studioStage.querySelector('.studio-device') : null;
-    const preview = document.getElementById('studio-preview');
-    const steps = studioStage ? Array.from(studioStage.querySelectorAll('.studio-step')) : [];
-    const signals = studioStage ? Array.from(studioStage.querySelectorAll('.studio-signal')) : [];
-    const pieces = preview ? Array.from(preview.querySelectorAll('.studio-piece')) : [];
-    const liveChip = preview ? preview.querySelector('.studio-live-chip') : null;
-    const codeSheet = document.getElementById('studio-build-sheet');
-    const codeLines = codeSheet ? Array.from(codeSheet.querySelectorAll('.studio-code-line')) : [];
-    const blueprint = document.getElementById('studio-blueprint');
-    const wireGroups = blueprint ? Array.from(blueprint.querySelectorAll('.studio-wire')) : [];
-    const scan = document.getElementById('studio-scan');
-    const kicker = document.getElementById('studio-kicker');
-    const title = document.getElementById('studio-title');
-    const body = document.getElementById('studio-body');
-    const phaseValue = document.getElementById('studio-phase-value');
-    const renderValue = document.getElementById('studio-render-value');
-    const weightValue = document.getElementById('studio-weight-value');
-    const stateValue = document.getElementById('studio-state-value');
-    const meterFill = document.getElementById('studio-meter-fill');
-    const jumpLinks = studioStage ? Array.from(studioStage.querySelectorAll('[data-studio-jump]')) : [];
+    const revealSection = document.getElementById('video-reveal');
+    const pinSection = document.getElementById('video-sticky');
+    const scene = revealSection ? revealSection.querySelector('.cinema-build') : null;
+    const frame = scene ? scene.querySelector('.cinema-frame') : null;
+    const aperture = scene ? scene.querySelector('.cinema-aperture') : null;
+    const bars = scene ? scene.querySelectorAll('.cinema-bar') : [];
+    const rails = scene ? scene.querySelectorAll('.cinema-rail') : [];
+    const flare = scene ? scene.querySelector('.cinema-flare') : null;
+    const sky = scene ? scene.querySelector('.cinema-sky') : null;
+    const nav = scene ? scene.querySelector('.cinema-nav') : null;
+    const heroBlock = scene ? scene.querySelector('.cinema-hero-block') : null;
+    const imageBlock = scene ? scene.querySelector('.cinema-image-block') : null;
+    const strip = scene ? scene.querySelector('.cinema-strip') : null;
+    const cards = scene ? scene.querySelectorAll('.cinema-card') : [];
+    const shutters = scene ? scene.querySelectorAll('.cinema-shutter span') : [];
 
-    const PHASES = [
-      {
-        kicker: 'Phase 01 / Brief',
-        title: 'We start by engineering the story before we dress the screen.',
-        body: 'Offer, proof, and action are mapped first so the finished site feels focused instead of decorative.',
-        phase: 'Brief',
-        state: 'Mapping'
-      },
-      {
-        kicker: 'Phase 02 / Structure',
-        title: 'Then the layout assembles around the path a real customer takes.',
-        body: 'Hero, proof, services, and the closing CTA arrive in sequence so the page feels deliberate and cinematic.',
-        phase: 'Structure',
-        state: 'Framing'
-      },
-      {
-        kicker: 'Phase 03 / Precision',
-        title: 'Motion and code sharpen the build without adding drag.',
-        body: 'Spacing, contrast, responsiveness, and asset weight get tuned so the final experience feels custom and fast.',
-        phase: 'Precision',
-        state: 'Tuning'
-      },
-      {
-        kicker: 'Phase 04 / Launch',
-        title: 'Then the effects back off and the website starts selling.',
-        body: 'The final frame is quiet on purpose: readable, clickable, and calm enough to trust in seconds.',
-        phase: 'Launch',
-        state: 'Live'
-      }
-    ];
-
-    let currentPhase = -1;
-
-    const setPhase = (phaseIndex, progress) => {
-      const safePhase = Math.max(0, Math.min(PHASES.length - 1, phaseIndex));
-      const copy = PHASES[safePhase];
-      const render = Math.round(progress * 100);
-      const weight = Math.round(148 - progress * 86);
-
-      if (safePhase !== currentPhase) {
-        currentPhase = safePhase;
-        if (kicker) kicker.textContent = copy.kicker;
-        if (title) title.textContent = copy.title;
-        if (body) body.textContent = copy.body;
-        if (phaseValue) phaseValue.textContent = copy.phase;
-        if (stateValue) stateValue.textContent = copy.state;
-
-        steps.forEach((step, index) => {
-          step.classList.toggle('is-active', index === safePhase);
-          step.classList.toggle('is-done', index < safePhase);
-        });
-        signals.forEach((signal, index) => {
-          signal.classList.toggle('is-active', index === safePhase);
-          signal.classList.toggle('is-done', index < safePhase);
-        });
-      }
-
-      if (renderValue) renderValue.textContent = String(render).padStart(3, '0') + '%';
-      if (weightValue) weightValue.textContent = String(weight).padStart(3, '0') + 'kb';
-      if (meterFill) meterFill.style.transform = `scaleX(${(0.12 + progress * 0.88).toFixed(3)})`;
-    };
-
-    const setLiveState = isLive => {
-      if (!studioStage) return;
-      studioStage.classList.toggle('is-live', isLive);
-      if (liveChip) liveChip.style.pointerEvents = isLive ? 'auto' : 'none';
-    };
-
-    jumpLinks.forEach(link => {
-      link.addEventListener('click', event => {
-        event.preventDefault();
-        const href = link.getAttribute('href') || '';
-        const targetId = href.replace('#', '');
-        if (!targetId) return;
-        if (typeof jumpToSection === 'function') {
-          jumpToSection(targetId);
-        } else {
-          const target = document.getElementById(targetId);
-          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      });
-    });
-
-    if (!studioStage || !revealSection || !pinSection || !preview || !deviceWrap || !device) {
+    if (!revealSection || !pinSection || !scene || !frame) {
       window._videoRevealUnlock = () => {};
     } else {
-      setPhase(0, 0);
-      setLiveState(false);
-
       if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
-        pieces.forEach(piece => {
-          piece.style.opacity = '1';
-          piece.style.transform = 'translateY(0) scale(1)';
-          piece.style.filter = 'blur(0)';
-        });
-        codeLines.forEach(line => line.classList.add('is-typed'));
-        wireGroups.forEach(group => {
-          group.style.opacity = '0.14';
-          group.querySelectorAll('rect, line, circle').forEach(shape => {
-            shape.style.strokeDasharray = '0';
-            shape.style.strokeDashoffset = '0';
-          });
-        });
-        if (codeSheet) {
-          codeSheet.style.opacity = '0';
-          codeSheet.style.transform = 'translateY(-16px)';
-        }
-        if (liveChip) {
-          liveChip.style.opacity = '1';
-          liveChip.style.transform = 'translateY(0)';
-        }
-        preview.style.transform = 'scale(1)';
-        setPhase(3, 1);
-        setLiveState(true);
+        frame.style.transform = 'translate(-50%, -50%) rotateX(0deg) scale(1)';
+        bars.forEach(bar => { bar.style.transform = 'scaleY(0.58)'; });
+        if (nav) nav.style.transform = 'translateY(0)';
+        if (heroBlock) heroBlock.style.transform = 'translateX(0) skewX(0deg)';
+        if (imageBlock) imageBlock.style.transform = 'translateX(0) skewX(0deg)';
+        if (strip) strip.style.transform = 'scaleX(1)';
+        cards.forEach(card => { card.style.transform = 'translateY(0)'; });
       } else {
         gsap.registerPlugin(ScrollTrigger);
 
-        const wireShapes = wireGroups.map(group =>
-          Array.from(group.querySelectorAll('rect, line, circle'))
-        );
-
-        wireShapes.flat().forEach(shape => {
-          const length = typeof shape.getTotalLength === 'function' ? shape.getTotalLength() : 240;
-          shape.style.strokeDasharray = String(length);
-          shape.style.strokeDashoffset = String(length);
-        });
-
-        gsap.set(deviceWrap, {
-          y: 84,
-          scale: 0.92,
-          rotateX: 16,
-          rotateY: -8,
-          transformOrigin: '50% 50%'
-        });
-        gsap.set(device, { transformOrigin: '50% 50%' });
-        gsap.set(preview, { scale: 0.95, transformOrigin: '50% 50%' });
-        gsap.set(pieces, { autoAlpha: 0, y: 44, scale: 0.975, filter: 'blur(10px)' });
-        gsap.set(liveChip, { autoAlpha: 0, y: 14 });
-        gsap.set(codeSheet, { autoAlpha: 0, y: 26, rotate: -3 });
-        gsap.set(codeLines, { autoAlpha: 0, x: -14 });
-        gsap.set(scan, { autoAlpha: 0, yPercent: -110 });
-
-        const revealPiece = (index, time) => {
-          const piece = pieces[index];
-          const group = wireGroups[index];
-          const shapes = wireShapes[index] || [];
-          if (group) {
-            timeline.to(group, { opacity: 1, duration: 0.05 }, time);
-            timeline.to(shapes, {
-              strokeDashoffset: 0,
-              duration: 0.34,
-              ease: 'none',
-              stagger: 0.03
-            }, time);
-          }
-          if (piece) {
-            timeline.to(piece, {
-              autoAlpha: 1,
-              y: 0,
-              scale: 1,
-              filter: 'blur(0px)',
-              duration: 0.34,
-              ease: 'power2.out'
-            }, time + 0.12);
-          }
-        };
+        gsap.set(frame, { autoAlpha: 0, transformOrigin: '50% 50%' });
+        gsap.set(aperture, { autoAlpha: 0.55, transformOrigin: '50% 50%' });
+        gsap.set(bars, { scaleY: 0, force3D: true });
+        gsap.set(rails, { autoAlpha: 0, force3D: true });
+        gsap.set(flare, { autoAlpha: 0.08, scale: 0.4, force3D: true });
+        gsap.set(sky, { scale: 1.2, force3D: true });
+        gsap.set(nav, { yPercent: -220, force3D: true });
+        gsap.set(heroBlock, { xPercent: -130, skewX: -8, force3D: true });
+        gsap.set(imageBlock, { xPercent: 130, skewX: 7, force3D: true });
+        gsap.set(strip, { scaleX: 0, transformOrigin: '0 50%', force3D: true });
+        gsap.set(cards, { yPercent: 180, force3D: true });
+        gsap.set(shutters, { scaleX: 0, force3D: true });
 
         const timeline = gsap.timeline({
-          defaults: { ease: 'power2.out' },
+          defaults: { ease: 'power2.inOut' },
           scrollTrigger: {
             trigger: revealSection,
             start: 'top top',
-            end: () => '+=' + Math.max(2400, revealSection.offsetHeight - window.innerHeight),
+            end: () => '+=' + Math.max(1900, revealSection.offsetHeight - window.innerHeight),
             pin: pinSection,
-            scrub: 0.55,
+            scrub: 0.65,
             anticipatePin: 1,
-            invalidateOnRefresh: true,
-            onUpdate(self) {
-              const progress = self.progress;
-              const phase = progress < 0.23 ? 0 : progress < 0.52 ? 1 : progress < 0.79 ? 2 : 3;
-              setPhase(phase, progress);
-              setLiveState(progress > 0.82);
-            },
-            onLeaveBack() {
-              setPhase(0, 0);
-              setLiveState(false);
-            }
+            invalidateOnRefresh: true
           }
         });
 
         timeline
-          .to(deviceWrap, {
-            y: 0,
-            scale: 1,
-            rotateX: 0,
-            rotateY: 0,
-            duration: 0.9,
+          .to(bars, {
+            scaleY: 0.58,
+            duration: 0.42,
             ease: 'power3.out'
           }, 0)
-          .to(preview, {
-            scale: 0.98,
-            duration: 0.8
-          }, 0.08);
-
-        revealPiece(0, 0.18);
-        revealPiece(1, 0.52);
-        revealPiece(2, 0.96);
-        revealPiece(3, 1.24);
-
-        timeline
-          .to(codeSheet, {
+          .to(aperture, {
             autoAlpha: 1,
-            y: 0,
-            rotate: 0,
-            duration: 0.32
-          }, 1.34)
-          .to(scan, {
-            autoAlpha: 0.92,
-            yPercent: 110,
-            duration: 0.7,
-            ease: 'power1.inOut'
-          }, 1.38)
-          .to(codeLines, {
-            autoAlpha: 1,
-            x: 0,
-            duration: 0.14,
-            stagger: 0.05,
-            onStart() {
-              codeLines.forEach(line => line.classList.add('is-typed'));
-            }
-          }, 1.42);
-
-        revealPiece(4, 1.86);
-        revealPiece(5, 2.12);
-
-        timeline
-          .to(codeSheet, {
-            autoAlpha: 0,
-            y: -18,
-            duration: 0.24,
-            ease: 'power2.in'
-          }, 2.18)
-          .to(scan, {
-            autoAlpha: 0,
-            duration: 0.18
-          }, 2.18)
-          .to(wireGroups, {
-            opacity: 0.14,
-            duration: 0.26,
-            stagger: 0.02
-          }, 2.28)
-          .to(preview, {
             scale: 1,
-            duration: 0.32
-          }, 2.34)
-          .to(liveChip, {
+            rotateX: 0,
+            duration: 0.52,
+            ease: 'power3.out'
+          }, 0.04)
+          .to(rails, {
             autoAlpha: 1,
             y: 0,
-            duration: 0.26
-          }, 2.46);
+            duration: 0.8,
+            stagger: 0.08,
+            ease: 'power4.out'
+          }, 0.08)
+          .to(flare, {
+            autoAlpha: 0.7,
+            scale: 1.2,
+            duration: 0.58,
+            ease: 'power2.out'
+          }, 0.16)
+          .to(frame, {
+            autoAlpha: 1,
+            scale: 1,
+            rotateX: 0,
+            duration: 0.78,
+            ease: 'power4.out'
+          }, 0.24)
+          .to(nav, {
+            yPercent: 0,
+            duration: 0.28,
+            ease: 'power3.out'
+          }, 0.66)
+          .to(heroBlock, {
+            xPercent: 0,
+            skewX: 0,
+            duration: 0.38,
+            ease: 'power3.out'
+          }, 0.82)
+          .to(imageBlock, {
+            xPercent: 0,
+            skewX: 0,
+            duration: 0.38,
+            ease: 'power3.out'
+          }, 0.92)
+          .to(strip, {
+            scaleX: 1,
+            duration: 0.36,
+            ease: 'power3.out'
+          }, 1.12)
+          .to(cards, {
+            yPercent: 0,
+            duration: 0.34,
+            stagger: 0.06,
+            ease: 'power3.out'
+          }, 1.24)
+          .to(sky, {
+            scale: 1,
+            duration: 0.74,
+            ease: 'none'
+          }, 0.7)
+          .to(shutters, {
+            scaleX: 1,
+            duration: 0.22,
+            ease: 'power4.in'
+          }, 1.72)
+          .to(shutters, {
+            scaleX: 0,
+            duration: 0.22,
+            ease: 'power4.out'
+          }, 1.98)
+          .to(frame, {
+            scale: 1.08,
+            duration: 0.5,
+            ease: 'power2.inOut'
+          }, 1.9)
+          .to(flare, {
+            autoAlpha: 0,
+            scale: 1.8,
+            duration: 0.42,
+            ease: 'power2.in'
+          }, 1.92);
 
         ScrollTrigger.refresh();
       }
@@ -5436,11 +4222,6 @@
 
     // sc-tagline fade handled by .sc-in CSS system
 
-    // Dive reveal — portal glow pulses on approach before section is pinned
-    gsap.fromTo('#dive-portal-glow', { opacity: 0 }, {
-      scrollTrigger: { trigger: '#video-reveal', start: 'top 85%', end: 'top 40%', scrub: 1.5 },
-      opacity: 0.35, ease: 'none',
-    });
   }
 
 
