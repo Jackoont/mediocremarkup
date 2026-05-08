@@ -1329,6 +1329,28 @@
     #build-stage.bs-in #build-blueprint {
       animation: blueprintDrift 18s linear infinite;
     }
+    #build-blueprint::before,
+    #build-blueprint::after {
+      position: absolute;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(52px, 8vw, 120px);
+      letter-spacing: -6px;
+      color: rgba(240,99,90,0.07);
+      pointer-events: none;
+      text-transform: none;
+    }
+    #build-blueprint::before {
+      content: '<section>';
+      top: 10%;
+      left: 8%;
+      transform: rotate(-8deg);
+    }
+    #build-blueprint::after {
+      content: '</html>';
+      right: 6%;
+      bottom: 16%;
+      transform: rotate(7deg);
+    }
     @keyframes blueprintDrift {
       from { background-position: 0 0, 0 0; }
       to   { background-position: 64px 96px, 96px 64px; }
@@ -2138,41 +2160,15 @@
       font-size: 13.5px; color: rgba(43,37,71,0.75); line-height: 1.5;
       transition: opacity 0.4s ease, transform 0.4s ease;
     }
-    .bc-notes {
-      margin-top: 14px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
-      letter-spacing: 2.4px;
-      text-transform: uppercase;
-      color: rgba(43,37,71,0.54);
-      transition: opacity 0.4s ease, transform 0.4s ease;
-    }
-    .bc-progress {
-      margin-top: 14px;
-      height: 2px;
-      background: rgba(43,37,71,0.08);
-      overflow: hidden;
-      border-radius: 999px;
-    }
-    #bc-progress-fill {
-      display: block;
-      width: 0%;
-      height: 100%;
-      background: linear-gradient(90deg, #F4A261, #F0635A);
-      box-shadow: 0 0 12px rgba(240,99,90,0.35);
-      transition: width 0.18s linear;
-    }
     .bc-flip .bc-eyebrow,
     .bc-flip .bc-title,
-    .bc-flip .bc-body,
-    .bc-flip .bc-notes {
+    .bc-flip .bc-body {
       opacity: 0;
       transform: translateY(8px);
     }
     @media (max-width: 700px) {
       #build-caption { bottom: 3vh; padding: 16px 16px 14px; }
       .bc-body { font-size: 12px; }
-      .bc-notes { font-size: 8px; letter-spacing: 1.7px; }
     }
 
     /* ══════════════════════════════════════
@@ -2832,28 +2828,63 @@
     }
     .bo-orb {
       position: absolute;
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #fff 0%, #F0635A 40%, transparent 75%);
-      box-shadow: 0 0 12px 2px rgba(240,99,90,0.7);
-      will-change: transform, opacity;
+      min-width: 58px;
+      height: 24px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(240,99,90,0.4);
+      background: linear-gradient(180deg, rgba(22,23,26,0.9), rgba(43,37,71,0.82));
+      box-shadow:
+        0 0 18px rgba(240,99,90,0.25),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+      color: #fff7f2;
+      font: 700 8px 'JetBrains Mono', monospace;
+      letter-spacing: 0.8px;
+      text-transform: lowercase;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      will-change: transform, opacity, filter;
       pointer-events: none;
     }
     .bo-orb::before {
       content: '';
       position: absolute;
-      inset: -10px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(240,99,90,0.30) 0%, transparent 70%);
+      inset: -16px -20px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(240,99,90,0.26) 0%, transparent 72%);
     }
     .bo-orb::after {
+      content: attr(data-token);
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff7f2;
+      opacity: 0.92;
+    }
+    .bo-orb .bo-trail {
+      position: absolute;
+      right: calc(100% - 8px);
+      top: 50%;
+      width: 74px;
+      height: 1px;
+      transform: translateY(-50%);
+      background: linear-gradient(to left, rgba(240,99,90,0.55), rgba(244,162,97,0.18), transparent);
+      opacity: 0.8;
+    }
+    .bo-orb .bo-trail::after {
       content: '';
       position: absolute;
-      right: 50%; top: 50%;
-      width: 42px; height: 1px;
+      right: 6px;
+      top: 50%;
+      width: 18px;
+      height: 18px;
       transform: translateY(-50%);
-      background: linear-gradient(to left, rgba(240,99,90,0.5), transparent);
-      opacity: 0.65;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(240,99,90,0.22), transparent 70%);
     }
 
     /* ══ Code overlay — appears mid-build, smaller window in upper region ══ */
@@ -4655,8 +4686,6 @@
           <div class="bc-eyebrow" id="bc-eyebrow">PHASE 01 / 04</div>
           <div class="bc-title" id="bc-title">Every site starts as a sketch.</div>
           <div class="bc-body" id="bc-body">Layout. Hierarchy. The bones before the fabric.</div>
-          <div class="bc-notes" id="bc-notes">SCENE LOCKED · CAMERA CALM · INTENT ESTABLISHED</div>
-          <div class="bc-progress"><span id="bc-progress-fill"></span></div>
         </div>
       </div>
 
@@ -5776,8 +5805,6 @@
     const bcEyebrow     = document.getElementById('bc-eyebrow');
     const bcTitle       = document.getElementById('bc-title');
     const bcBody        = document.getElementById('bc-body');
-    const bcNotes       = document.getElementById('bc-notes');
-    const bcProgressFill = document.getElementById('bc-progress-fill');
     const buildCaption  = document.getElementById('build-caption');
     const btPhase       = document.getElementById('bt-phase');
     const btLines       = document.getElementById('bt-lines');
@@ -5803,31 +5830,27 @@
         eyebrow: 'PHASE 01 / 04 · BLUEPRINT',
         title:   'The offer gets mapped first.',
         body:    'Before the polish, we decide what a visitor should understand, trust, and do.',
-        notes:   'SCENE LOCKED · CAMERA CALM · INTENT ESTABLISHED',
         ph:      'BLUEPRINT',
         rail:    'build · blueprint',
       },
       {
         eyebrow: 'PHASE 02 / 04 · ASSEMBLE',
-        title:   'The page gets thrown together like a machine under load.',
-        body:    'Navigation, proof, service cards, and booking slam into place around the customer journey, not around decoration.',
-        notes:   'MAGNETIC LOCKS ONLINE · MASS ARRIVING · STRUCTURE TAKES WEIGHT',
+        title:   'HTML starts locking into a visual system.',
+        body:    'Tagged sections, proof blocks, and conversion modules arrive like real markup becoming form.',
         ph:      'ASSEMBLE',
         rail:    'build · assemble',
       },
       {
         eyebrow: 'PHASE 03 / 04 · CODE',
-        title:   'Now the thing starts breathing.',
-        body:    'Real HTML, CSS, and JS turn the layout into a responsive, living surface that can move fast without falling apart.',
-        notes:   'SIGNAL UP · SYSTEMS HOT · LIGHT LEAKS THROUGH THE SEAMS',
+        title:   'Structure turns expressive without losing speed.',
+        body:    'The code pass gives those modules rhythm, contrast, and motion without sliding into template sludge.',
         ph:      'CODE',
         rail:    'build · code',
       },
       {
         eyebrow: 'PHASE 04 / 04 · SHIPPED',
-        title:   'Release should feel like impact, not just completion.',
-        body:    'A live domain, working actions, clean copy, and a page that lands with enough force to make the next scroll feel quiet.',
-        notes:   'FIELD STABLE · MOTION BLEEDS OFF · LIVE AND TAKING CUSTOMERS',
+        title:   'Release should feel authored, not merely finished.',
+        body:    'The end state should look like deliberate markup art that also happens to convert.',
         ph:      'SHIPPED',
         rail:    'build · shipped',
       },
@@ -5844,18 +5867,9 @@
       vrx: 0,
       vry: 0,
       vs: 0,
-      impulse: 0,
     };
     const targetCamera = { shiftX: 0, shiftY: 0, rotX: 0, rotY: 0, scale: 1 };
     let cameraLast = performance.now();
-    function kickCamera(dx = 0, dy = 0, rx = 0, ry = 0, scaleKick = 0) {
-      cameraState.vx += dx;
-      cameraState.vy += dy;
-      cameraState.vrx += rx;
-      cameraState.vry += ry;
-      cameraState.vs += scaleKick;
-      cameraState.impulse = Math.min(1, cameraState.impulse + Math.abs(dx + dy + rx + ry) * 0.015 + Math.abs(scaleKick) * 40);
-    }
     function tickCamera() {
       const now = performance.now();
       const dt = Math.min(2, (now - cameraLast) / 16.6667);
@@ -5878,7 +5892,6 @@
       cameraState.rotX += cameraState.vrx;
       cameraState.rotY += cameraState.vry;
       cameraState.scale += cameraState.vs;
-      cameraState.impulse *= 0.9;
 
       if (buildStage) {
         buildStage.style.setProperty('--stage-shift-x', `${cameraState.shiftX.toFixed(2)}px`);
@@ -5886,7 +5899,6 @@
         buildStage.style.setProperty('--stage-rot-x', `${cameraState.rotX.toFixed(2)}deg`);
         buildStage.style.setProperty('--stage-rot-y', `${cameraState.rotY.toFixed(2)}deg`);
         buildStage.style.setProperty('--stage-scale', cameraState.scale.toFixed(4));
-        buildStage.style.setProperty('--impact-flash', cameraState.impulse.toFixed(3));
       }
 
       requestAnimationFrame(tickCamera);
@@ -6015,8 +6027,18 @@
       if (!buildOrbs || !sitePieces[targetIdx]) return;
       const target = pieceCenter(targetIdx);
       if (!target) return;
+      const tokenMap = {
+        nav: '<nav>',
+        'hero-img': '<header>',
+        sub: '<section>',
+        cards: '<article>',
+        stats: '<aside>',
+        foot: '<form>',
+      };
       const orb = document.createElement('div');
       orb.className = 'bo-orb';
+      orb.dataset.token = tokenMap[sitePieces[targetIdx].dataset.piece] || '<div>';
+      orb.innerHTML = '<span class="bo-trail"></span>';
       buildOrbs.appendChild(orb);
       activeOrbs.push(orb);
 
@@ -6037,19 +6059,19 @@
       const ctrlY = (startY + target.y) / 2 - 86;
 
       orb.animate([
-        { left: startX + 'px', top: startY + 'px', opacity: 0,   transform: 'scale(0.35) rotate(0deg)', filter: 'blur(2px)' },
-        { left: ctrlX  + 'px', top: ctrlY  + 'px', opacity: 1,   transform: 'scale(1.15) rotate(180deg)', filter: 'blur(0)', offset: 0.52 },
-        { left: target.x + 'px', top: target.y + 'px', opacity: 1, transform: 'scale(0.72) rotate(320deg)', filter: 'blur(0)' },
-      ], { duration: 920, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' });
+        { left: startX + 'px', top: startY + 'px', opacity: 0,   transform: 'scale(0.6) rotate(0deg)', filter: 'blur(4px)' },
+        { left: ctrlX  + 'px', top: ctrlY  + 'px', opacity: 1,   transform: 'scale(1.08) rotate(9deg)', filter: 'blur(0)', offset: 0.52 },
+        { left: target.x + 'px', top: target.y + 'px', opacity: 1, transform: 'scale(0.92) rotate(0deg)', filter: 'blur(0)' },
+      ], { duration: 980, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' });
 
       // Cleanup + trigger piece land slightly before arrival
       setTimeout(() => {
         // Quick flash on arrival
         orb.animate([
-          { opacity: 1,   transform: 'scale(0.7)', boxShadow: '0 0 12px 2px rgba(240,99,90,0.7)' },
-          { opacity: 1,   transform: 'scale(2.2)', boxShadow: '0 0 30px 8px rgba(240,99,90,0.4)' },
-          { opacity: 0,   transform: 'scale(0.5)', boxShadow: '0 0 0 0 rgba(240,99,90,0)' },
-        ], { duration: 380, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' });
+          { opacity: 1,   transform: 'scale(0.96)', boxShadow: '0 0 18px rgba(240,99,90,0.36)' },
+          { opacity: 1,   transform: 'scale(1.16)', boxShadow: '0 0 30px rgba(240,99,90,0.2)' },
+          { opacity: 0,   transform: 'scale(0.82)', boxShadow: '0 0 0 rgba(240,99,90,0)' },
+        ], { duration: 320, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' });
         landPiece(targetIdx);
       }, 790);
 
@@ -6067,13 +6089,12 @@
       piece.classList.add('bs-piece-in');
       const from = piece.dataset.from || 'top';
       const impactMap = {
-        left:   { dx: 14, dy: -3, rx: 1.2,  ry: -2.8 },
-        right:  { dx: -14, dy: -3, rx: 1.2,  ry: 2.8 },
-        top:    { dx: 0,  dy: 10, rx: -3.6, ry: 0.8 },
-        bottom: { dx: 0,  dy: -10, rx: 3.0, ry: -0.8 },
+        left:   { dx: 6, dy: -1, rx: 0.35,  ry: -0.8 },
+        right:  { dx: -6, dy: -1, rx: 0.35,  ry: 0.8 },
+        top:    { dx: 0,  dy: 4, rx: -0.8, ry: 0.2 },
+        bottom: { dx: 0,  dy: -4, rx: 0.8, ry: -0.2 },
       };
       const impact = impactMap[from] || impactMap.top;
-      kickCamera(impact.dx, impact.dy, impact.rx, impact.ry, 0.014);
       piece.animate([
         { transform: `translate3d(${impact.dx * 0.24}px, ${impact.dy * 0.24}px, 0) rotate(${impact.ry * 0.65}deg) scale(0.94)`, filter: 'brightness(1.18)' },
         { transform: `translate3d(${impact.dx * -0.08}px, ${impact.dy * -0.08}px, 0) rotate(${impact.ry * -0.18}deg) scale(1.03)`, filter: 'brightness(1.1)', offset: 0.48 },
@@ -6179,17 +6200,11 @@
         bcEyebrow.textContent = copy.eyebrow;
         bcTitle.textContent   = copy.title;
         bcBody.textContent    = copy.body;
-        if (bcNotes) bcNotes.textContent = copy.notes || '';
         btPhase.textContent   = copy.ph;
         if (bfRailText) bfRailText.textContent = copy.rail;
         flickerVal(btPhase);
         buildCaption.classList.remove('bc-flip');
       }, 220);
-
-      if (p === 0) kickCamera(0, -2, -0.8, 0.6, 0.004);
-      if (p === 1) kickCamera(0, -6, -1.4, 1.1, 0.008);
-      if (p === 2) kickCamera(0, -5, -1.8, -1.3, 0.01);
-      if (p === 3) kickCamera(0, -10, -2.6, 0, 0.018);
 
       // Cursor demo runs in phase 3 (render phase = ship buildup actually no, phase 2 in old, 3 here is ship)
       // We'll start the cursor when assembly is mostly complete (phase 2 = code, but pieces are already there)
@@ -6597,22 +6612,6 @@
       swRaf = requestAnimationFrame(drawSW);
     }
 
-    // ── SCREEN SHAKE ──
-    function screenShake(el, intensity, duration) {
-      const start = performance.now();
-      const tick = () => {
-        const elapsed = performance.now() - start;
-        if (elapsed >= duration) { el.style.transform = ''; return; }
-        const t = elapsed / duration;
-        const decay = 1 - t;
-        const dx = (Math.random() - 0.5) * intensity * 2 * decay;
-        const dy = (Math.random() - 0.5) * intensity * 2 * decay;
-        el.style.transform = `translate(${dx}px, ${dy}px)`;
-        requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
-    }
-
     // ── SHIP IMPACT — fires once when build hits phase 3 (SHIPPED)
     let textRevealed = false;
     function slamText() {
@@ -6634,9 +6633,7 @@
         }, 35);
       }
 
-      // Soft screen jolt
-      if (stickyEl) screenShake(stickyEl, 5, 380);
-      kickCamera(0, -18, -4.8, 0.5, 0.024);
+      // Keep the payoff visual, not wobbly.
 
       // Shockwave + particles
       setTimeout(fireShockwave, 0);
@@ -6699,7 +6696,6 @@
         stopCursorDemo();
         resetAssembly();
         codeLines.forEach(l => l.classList.remove('ct-typed'));
-        if (bcProgressFill) bcProgressFill.style.width = '0%';
         targetCamera.shiftX = 0;
         targetCamera.shiftY = 0;
         targetCamera.rotX = 0;
@@ -6720,10 +6716,10 @@
       const fcA = Math.max(0, Math.min(0.4, (displayRatio - 0.06) / 0.20));
       fc.style.opacity = fcA.toFixed(3);
 
-      const driftX = Math.sin(displayRatio * Math.PI * 1.15) * 18;
-      const driftY = Math.cos(displayRatio * Math.PI * 1.6) * -10 - displayRatio * 18;
-      const rotY = (displayRatio - 0.5) * 8 + Math.sin(displayRatio * 8) * 1.2;
-      const rotX = Math.sin(displayRatio * Math.PI * 1.4) * -4.2;
+      const driftX = Math.sin(displayRatio * Math.PI * 1.15) * 4;
+      const driftY = Math.cos(displayRatio * Math.PI * 1.6) * -2 - displayRatio * 6;
+      const rotY = (displayRatio - 0.5) * 1.4;
+      const rotX = Math.sin(displayRatio * Math.PI * 1.4) * -0.9;
       targetCamera.shiftX = driftX;
       targetCamera.shiftY = driftY;
       targetCamera.rotX = rotX;
@@ -6740,7 +6736,7 @@
         scanlines.style.opacity = Math.max(0, Math.min(0.22, (displayRatio - 0.42) * 0.55)).toFixed(3);
       }
       if (mask) {
-        mask.style.opacity = Math.max(0, Math.min(0.44, displayRatio * 0.36 + cameraState.impulse * 0.2)).toFixed(3);
+        mask.style.opacity = Math.max(0, Math.min(0.28, displayRatio * 0.28)).toFixed(3);
       }
 
       // ── PHASE GATING ──
@@ -6782,7 +6778,6 @@
       const renderPct = Math.min(100, Math.round(assemT * 100));
       btRender.textContent = renderPct + ' %';
       btRender.classList.toggle('bt-live', renderPct === 100);
-      if (bcProgressFill) bcProgressFill.style.width = (displayRatio * 100).toFixed(1) + '%';
 
       // ── PHASE 3: SHIP impact (one-shot) ──
       if (p === 3 && !impactDone) {
