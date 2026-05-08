@@ -6311,9 +6311,10 @@
       orb.style.top  = startY + 'px';
       orb.style.opacity = '0';
 
-      // Curved flight via two keyframes with control bezier
-      const ctrlX = (startX + target.x) / 2 + (Math.random() - 0.5) * 120;
-      const ctrlY = (startY + target.y) / 2 - 86;
+      // Curved flight — arc height scales with frame so it feels physical at any size
+      const arcH = fr.height * 0.38 + 40;
+      const ctrlX = (startX + target.x) / 2 + (Math.random() - 0.5) * fr.width * 0.28;
+      const ctrlY = (startY + target.y) / 2 - arcH;
 
       orb.animate([
         { left: startX + 'px', top: startY + 'px', opacity: 0,   transform: 'scale(0.6) rotate(0deg)', filter: 'blur(4px)' },
@@ -6410,8 +6411,9 @@
       if (t < assemblyProgress - 0.05) {
         // Unwind landed pieces beyond current threshold
         sitePieces.forEach((p, i) => {
-          const myT = (i + 0.6) / N;
-          if (t < myT - 0.08 && pieceState[i].landed) {
+          const frac = (i + 1) / N;
+          const myT  = 0.08 + Math.pow(frac, 0.72) * 0.88;
+          if (t < myT - 0.10 && pieceState[i].landed) {
             pieceState[i].landed = false;
             pieceState[i].blueprintShown = false;
             p.classList.remove('bs-piece-in', 'bs-piece-land');
@@ -6421,10 +6423,12 @@
         });
       }
       assemblyProgress = t;
-      // For each piece, fire blueprint at threshold-0.10, deliver at threshold
+      // Ease-in stagger: first piece arrives early, last piece late — like a train of parts
+      // Uses a power curve so pieces don't all clump at the end
       sitePieces.forEach((p, i) => {
-        const arriveT  = (i + 0.85) / N;
-        const blueT    = arriveT - 0.10;
+        const frac     = (i + 1) / N;                    // 1/N … N/N
+        const arriveT  = 0.08 + Math.pow(frac, 0.72) * 0.88;  // 0.08 … 0.96
+        const blueT    = arriveT - 0.12;
         if (t >= blueT && !pieceState[i].blueprintShown) {
           showBlueprint(i);
         }
@@ -6936,9 +6940,9 @@
       rafPending = false;
       const ratio = currentRatio;
 
-      // Responsive but smooth lerp so the build follows scroll without stutter
-      displayRatio += (ratio - displayRatio) * 0.26;
-      if (Math.abs(displayRatio - ratio) < 0.002) displayRatio = ratio;
+      // Weighted lerp — device feels like it has mass, not weightless snap
+      displayRatio += (ratio - displayRatio) * 0.14;
+      if (Math.abs(displayRatio - ratio) < 0.001) displayRatio = ratio;
       diveRatio = displayRatio;
 
       // Start ambient rain + shockwave system on entry
@@ -6968,27 +6972,39 @@
       const bsIn = displayRatio > 0.04;
       buildStage.classList.toggle('bs-in', bsIn);
 
-      // Tiny letterbox just for cinematic framing
-      const lbT = Math.max(0, Math.min(1, (displayRatio - 0.04) / 0.18));
-      const lbH = Math.round(lbT * lbT * 28);
+      // Letterbox: ease in fast, hold wide through assembly, fade back at ship
+      const lbInT  = Math.max(0, Math.min(1, (displayRatio - 0.04) / 0.14));
+      const lbOutT = Math.max(0, Math.min(1, (displayRatio - 0.86) / 0.12));
+      const lbH = Math.round((lbInT * lbInT * (1 - lbOutT * lbOutT)) * 38);
       lbTop.style.height    = lbH + 'px';
       lbBottom.style.height = lbH + 'px';
 
-      // Background ambient rain — minimal
-      const fcA = Math.max(0, Math.min(0.4, (displayRatio - 0.06) / 0.20));
+      // Ambient rain: builds up through assembly, peaks at code, fades at ship
+      const fcA = Math.max(0, Math.min(0.52, (displayRatio - 0.06) / 0.18)) * (1 - Math.max(0, (displayRatio - 0.82) / 0.18));
       fc.style.opacity = fcA.toFixed(3);
 
       const phaseEnergy = Math.max(0, Math.min(1, (displayRatio - 0.06) / 0.9));
       const phaseBloom = Math.sin(Math.min(1, displayRatio) * Math.PI);
-      const driftX = Math.sin(displayRatio * Math.PI * 1.35) * 12;
-      const driftY = Math.cos(displayRatio * Math.PI * 1.9) * -5 - displayRatio * 18;
-      const rotY = (displayRatio - 0.5) * 4.4 + Math.sin(displayRatio * Math.PI * 4.6) * 0.75;
-      const rotX = Math.sin(displayRatio * Math.PI * 1.7) * -2.1;
+
+      // ── CINEMATIC CAMERA ARC ──
+      // One clean parabola: device arrives from below-right, settles center,
+      // tilts into the build, then straightens as it ships. No micro-oscillations.
+      const r = displayRatio;
+      // Lateral: gentle S-curve, left on entry, right on exit — like panning past
+      const driftX = Math.sin(r * Math.PI) * 14 * (r < 0.5 ? 1 : -0.6);
+      // Vertical: rises smoothly as you scroll deeper, slight hold at peak
+      const driftY = -r * 22 + Math.pow(Math.max(0, r - 0.72), 2) * 38;
+      // Y-rotation: tilts from -3° (entry lean) through 0 to +1.8° (ship lean)
+      const rotY = (r - 0.38) * 6.2 * (1 - Math.pow(Math.max(0, r - 0.88), 2) * 6);
+      // X-rotation: arcs forward as pieces land, flattens out at ship
+      const rotX = Math.sin(Math.min(r, 0.82) * Math.PI) * -2.6;
+
       targetCamera.shiftX = driftX;
       targetCamera.shiftY = driftY;
-      targetCamera.rotX = rotX;
-      targetCamera.rotY = rotY;
-      targetCamera.scale = 0.94 + displayRatio * 0.16;
+      targetCamera.rotX   = rotX;
+      targetCamera.rotY   = rotY;
+      // Scale: start small (device materialising), grow to full + tiny ship push
+      targetCamera.scale  = 0.90 + r * 0.14 + Math.pow(Math.max(0, r - 0.88), 2) * 0.08;
       if (buildStage) {
         buildStage.style.setProperty('--phase-energy', phaseEnergy.toFixed(3));
         buildStage.style.setProperty('--phase-bloom', phaseBloom.toFixed(3));
@@ -7023,24 +7039,24 @@
       }
 
       // ── PHASE GATING ──
-      // 0.04→0.18 BLUEPRINT (frame settles, atmospheric warmup)
-      // 0.18→0.62 ASSEMBLE (the meat — pieces fly in)
-      // 0.62→0.82 CODE (overlay appears, types out, dissolves)
-      // 0.82→1.00 SHIPPED (final glow, deploy stamp)
+      // 0.04→0.22 BLUEPRINT — frame settles, wireframe draws, atmospheric warmup
+      // 0.22→0.66 ASSEMBLE  — pieces fly in one by one, wide stagger, feels deliberate
+      // 0.66→0.84 CODE      — code overlay types out, cursor walks the site
+      // 0.84→1.00 SHIPPED   — ship impact, glow, deploy stamp, hold the moment
       let p;
-      if      (displayRatio < 0.18) p = 0;
-      else if (displayRatio < 0.56) p = 1;
-      else if (displayRatio < 0.82) p = 2;
+      if      (displayRatio < 0.22) p = 0;
+      else if (displayRatio < 0.66) p = 1;
+      else if (displayRatio < 0.84) p = 2;
       else                          p = 3;
       if (bsIn) setPhase(p);
 
-      // ── ASSEMBLY: 0.16 → 0.60 maps to assemblyT 0..1 ──
-      const assemT = Math.max(0, Math.min(1, (displayRatio - 0.15) / 0.45));
+      // ── ASSEMBLY: 0.18 → 0.68 maps to assemblyT 0..1 (wider window = more stagger) ──
+      const assemT = Math.max(0, Math.min(1, (displayRatio - 0.18) / 0.50));
       setAssemblyProgress(assemT);
 
-      // ── CODE OVERLAY: 0.62 → 0.80 maps to typing 0..1 ──
+      // ── CODE OVERLAY: 0.66 → 0.83 maps to typing 0..1 ──
       if (p === 2) {
-        const codeT = (displayRatio - 0.56) / 0.26;
+        const codeT = (displayRatio - 0.66) / 0.18;
         const totalLines = codeLines.length;
         const visibleLines = Math.floor(codeT * totalLines);
         codeLines.forEach((line, i) => {
@@ -7159,9 +7175,9 @@
 
       setRatio(newRatio);
 
-      // Hit the end — arm the hold timer
+      // Hit the end — hold the SHIPPED moment so it lands before releasing scroll
       if (newRatio >= 1 && doneLockUntil === null) {
-        doneLockUntil = performance.now() + 350;
+        doneLockUntil = performance.now() + 1400;
       }
 
       scheduleScrollTo(revealSection.offsetTop + virtualScrolled);
@@ -7204,7 +7220,7 @@
         scheduleScrollTo(revealSection.offsetTop + total);
         setRatio(1);
         virtualScrolled = total;
-        if (doneLockUntil === null) doneLockUntil = performance.now() + 350;
+        if (doneLockUntil === null) doneLockUntil = performance.now() + 1400;
         return;
       }
 
