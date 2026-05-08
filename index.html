@@ -1078,13 +1078,14 @@
        ----------------------------------------------- */
     #video-reveal {
       position: relative;
-      height: 340vh;
+      height: 460vh;
       margin-bottom: -2px;
       overflow: clip;
       background:
-        radial-gradient(circle at 50% 18%, rgba(240,99,90,0.16) 0%, transparent 28%),
-        radial-gradient(circle at 78% 34%, rgba(244,162,97,0.12) 0%, transparent 24%),
-        linear-gradient(180deg, #f7f1e8 0%, #120f18 16%, #09070d 78%, #FEF9F4 100%);
+        linear-gradient(90deg, rgba(43,37,71,0.05) 1px, transparent 1px),
+        linear-gradient(rgba(43,37,71,0.05) 1px, transparent 1px),
+        linear-gradient(180deg, #fbf7ee 0%, #f4efe5 18%, #f8f3ea 82%, #FEF9F4 100%);
+      background-size: 44px 44px, 44px 44px, auto;
     }
     #video-reveal::before {
       content: '';
@@ -1126,8 +1127,11 @@
       overflow: hidden;
       isolation: isolate;
       background:
-        radial-gradient(circle at 50% 22%, rgba(240,99,90,0.1) 0%, transparent 24%),
-        #09070d;
+        linear-gradient(90deg, rgba(43,37,71,0.055) 1px, transparent 1px),
+        linear-gradient(rgba(43,37,71,0.055) 1px, transparent 1px),
+        radial-gradient(ellipse at 50% 46%, rgba(240,99,90,0.1), transparent 58%),
+        #f8f3ea;
+      background-size: 38px 38px, 38px 38px, auto, auto;
     }
     .build-reveal {
       position: absolute;
@@ -1158,6 +1162,7 @@
       z-index: 1;
       pointer-events: none;
     }
+    .build-glow { display: none; }
     .build-shell {
       position: absolute;
       left: 50%;
@@ -1757,8 +1762,371 @@
       z-index: 3;
       pointer-events: none;
     }
+
+    /* Rigid HTML build lab variant */
+    .build-lab,
+    .build-ribbon,
+    .build-bubble,
+    .build-code-beads,
+    .build-lab-nodes,
+    .build-tool-brush,
+    .build-tool-cursor,
+    .build-pulse-ring {
+      display: none;
+    }
+    .lab-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .lab-bg::before {
+      content: '';
+      position: absolute;
+      inset: 10vh 8vw;
+      border: 1px solid rgba(43,37,71,0.08);
+      background:
+        linear-gradient(90deg, rgba(240,99,90,0.09) 1px, transparent 1px),
+        linear-gradient(rgba(240,99,90,0.08) 1px, transparent 1px);
+      background-size: 84px 84px;
+      opacity: 0.42;
+    }
+    .lab-panel {
+      position: absolute;
+      z-index: 4;
+      background: rgba(255,252,246,0.86);
+      border: 1px solid rgba(43,37,71,0.12);
+      box-shadow: 0 22px 58px rgba(43,37,71,0.1);
+      backdrop-filter: blur(12px);
+      overflow: hidden;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+    .lab-code-panel {
+      left: 4vw;
+      top: 14vh;
+      width: min(300px, 24vw);
+      height: 58vh;
+    }
+    .lab-inspector {
+      right: 4vw;
+      top: 16vh;
+      width: min(280px, 22vw);
+      height: 48vh;
+    }
+    .lab-toolbar {
+      left: 50%;
+      bottom: 7vh;
+      width: min(760px, 64vw);
+      min-height: 112px;
+      transform: translateX(-50%);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      padding: 14px;
+    }
+    .lab-panel-head {
+      height: 38px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 12px;
+      border-bottom: 1px solid rgba(43,37,71,0.08);
+      background: rgba(43,37,71,0.04);
+    }
+    .lab-panel-head span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(43,37,71,0.22);
+    }
+    .lab-panel-head span:first-child { background: #F0635A; }
+    .lab-panel-head span:nth-child(2) { background: #F4A261; }
+    .lab-code-lines,
+    .lab-inspector-grid {
+      padding: 18px;
+    }
+    .lab-code-line {
+      height: 12px;
+      margin-bottom: 13px;
+      background: linear-gradient(90deg, rgba(43,37,71,0.22), rgba(43,37,71,0.08));
+      transform-origin: 0 50%;
+      opacity: 0;
+    }
+    .lab-code-line:nth-child(3n) { width: 58%; background: rgba(240,99,90,0.24); }
+    .lab-code-line:nth-child(3n+1) { width: 86%; }
+    .lab-code-line:nth-child(3n+2) { width: 72%; margin-left: 18px; }
+    .lab-control {
+      height: 36px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(43,37,71,0.1);
+      background: rgba(255,255,255,0.54);
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      align-items: center;
+      padding: 0 10px;
+      gap: 10px;
+      opacity: 0;
+      transform: translateX(18px);
+    }
+    .lab-control::before,
+    .lab-control::after {
+      content: '';
+      display: block;
+      height: 8px;
+      background: rgba(43,37,71,0.16);
+    }
+    .lab-control::before { background: rgba(240,99,90,0.24); }
+    .lab-component {
+      min-height: 84px;
+      border: 1px solid rgba(43,37,71,0.12);
+      background: rgba(255,255,255,0.7);
+      padding: 12px;
+      display: grid;
+      align-content: center;
+      gap: 8px;
+      opacity: 0;
+      transform: translateY(28px);
+      will-change: transform, opacity;
+    }
+    .lab-component span {
+      display: block;
+      height: 8px;
+      background: rgba(43,37,71,0.16);
+    }
+    .lab-component span:first-child {
+      width: 48%;
+      background: rgba(240,99,90,0.32);
+    }
+    .lab-component span:nth-child(2) { width: 82%; }
+    .lab-component span:nth-child(3) { width: 62%; }
+    .lab-cursor-main {
+      position: absolute;
+      left: 19vw;
+      top: 22vh;
+      width: 28px;
+      height: 28px;
+      z-index: 20;
+      clip-path: polygon(0 0, 0 100%, 28% 72%, 44% 100%, 59% 91%, 44% 63%, 78% 63%);
+      background: #2B2547;
+      filter: drop-shadow(0 12px 12px rgba(43,37,71,0.22));
+      opacity: 0;
+    }
+    .lab-wire {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 3;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .lab-wire path {
+      fill: none;
+      stroke: rgba(240,99,90,0.68);
+      stroke-width: 1.5;
+      stroke-linecap: square;
+      stroke-linejoin: miter;
+      filter: drop-shadow(0 0 8px rgba(240,99,90,0.22));
+    }
+    .build-shell {
+      top: 48%;
+      width: min(980px, 66vw);
+      aspect-ratio: 16 / 10;
+      border-radius: 8px;
+      background: #fffdf8;
+      border: 1px solid rgba(43,37,71,0.16);
+      box-shadow: 0 34px 96px rgba(43,37,71,0.18);
+      transform: translate(-50%, -50%) rotateX(0deg) scale(0.72);
+    }
+    .build-shell::before {
+      background: linear-gradient(180deg, rgba(255,255,255,0.5), transparent 16%);
+    }
+    .build-site {
+      background: #fffaf4;
+      font-family: var(--font-body);
+      color: #241b19;
+    }
+    .build-grid {
+      background-image:
+        linear-gradient(rgba(43,37,71,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(43,37,71,0.06) 1px, transparent 1px);
+      background-size: 54px 54px;
+      opacity: 0.42;
+      z-index: 1;
+    }
+    .build-browser-chrome {
+      height: 54px;
+      background: #fbf8f1;
+      border-bottom: 1px solid rgba(43,37,71,0.12);
+      z-index: 12;
+    }
+    .build-address {
+      height: 14px;
+      border-radius: 0;
+    }
+    .lab-tailor-site {
+      position: absolute;
+      inset: 54px 0 0;
+      overflow: hidden;
+      z-index: 5;
+      background: #fffaf4;
+    }
+    .lab-tailor-site > * {
+      position: absolute;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+    .lab-tailor-nav {
+      left: 5%;
+      right: 5%;
+      top: 5%;
+      height: 58px;
+      border-bottom: 1px solid rgba(42,31,45,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #241b19;
+    }
+    .lab-tailor-logo {
+      font-family: var(--font-serif);
+      font-size: 25px;
+      color: #241b19;
+    }
+    .lab-tailor-links {
+      display: flex;
+      gap: 20px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: rgba(36,27,25,0.58);
+    }
+    .lab-tailor-hero {
+      left: 6%;
+      top: 20%;
+      width: 42%;
+    }
+    .lab-tailor-kicker {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #a94e44;
+      margin-bottom: 16px;
+    }
+    .lab-tailor-title {
+      font-family: var(--font-serif);
+      font-size: clamp(44px, 5vw, 74px);
+      line-height: 0.92;
+      font-weight: 600;
+      letter-spacing: 0;
+      margin: 0 0 18px;
+    }
+    .lab-tailor-copy {
+      width: 88%;
+      font-size: 14px;
+      line-height: 1.62;
+      color: rgba(36,27,25,0.66);
+      margin-bottom: 24px;
+    }
+    .lab-tailor-button {
+      display: inline-flex;
+      padding: 13px 18px;
+      background: #241b19;
+      color: #fffaf4;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    .lab-tailor-photo {
+      right: 6%;
+      top: 18%;
+      width: 42%;
+      height: 42%;
+      background:
+        linear-gradient(180deg, rgba(36,27,25,0.08), rgba(169,78,68,0.16)),
+        url("images/vecteezy_fashion-designer-tailor-or-sewer_7360006.jpg") center/cover no-repeat;
+      box-shadow: 0 28px 70px rgba(36,27,25,0.18);
+    }
+    .lab-tailor-badge {
+      right: 10%;
+      top: 54%;
+      width: 22%;
+      min-height: 82px;
+      padding: 16px;
+      background: #241b19;
+      color: #fffaf4;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      line-height: 1.7;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .lab-tailor-services {
+      left: 6%;
+      right: 6%;
+      bottom: 8%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .lab-tailor-service {
+      position: relative;
+      padding: 18px;
+      min-height: 118px;
+      background: #f3e8dc;
+      border: 1px solid rgba(36,27,25,0.1);
+    }
+    .lab-tailor-service strong {
+      display: block;
+      font-size: 16px;
+      color: #241b19;
+      margin-bottom: 10px;
+    }
+    .lab-tailor-service span {
+      display: block;
+      font-size: 12px;
+      line-height: 1.5;
+      color: rgba(36,27,25,0.62);
+    }
+    .lab-mobile-preview {
+      position: absolute;
+      right: 8vw;
+      bottom: 11vh;
+      width: 168px;
+      height: 310px;
+      z-index: 7;
+      padding: 10px;
+      background: #241b19;
+      border: 1px solid rgba(255,255,255,0.22);
+      box-shadow: 0 28px 64px rgba(43,37,71,0.22);
+      opacity: 0;
+      transform: translateY(40px) rotate(-4deg);
+    }
+    .lab-mobile-screen {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: #fffaf4;
+      overflow: hidden;
+    }
+    .lab-mobile-screen span {
+      position: absolute;
+      display: block;
+      background: rgba(36,27,25,0.16);
+    }
+    .lab-mobile-screen span:nth-child(1) { left: 12%; top: 8%; width: 50%; height: 8px; background: #241b19; }
+    .lab-mobile-screen span:nth-child(2) { left: 12%; top: 17%; width: 70%; height: 18px; background: #241b19; }
+    .lab-mobile-screen span:nth-child(3) { left: 12%; top: 26%; width: 76%; height: 86px; background: #d7aa88; }
+    .lab-mobile-screen span:nth-child(4) { left: 12%; top: 60%; width: 76%; height: 8px; }
+    .lab-mobile-screen span:nth-child(5) { left: 12%; top: 67%; width: 62%; height: 8px; }
+    .lab-mobile-screen span:nth-child(6) { left: 12%; top: 78%; width: 44%; height: 30px; background: #241b19; }
+
     @media (max-width: 760px) {
-      #video-reveal { height: 300vh; }
+      #video-reveal { height: 420vh; }
       .build-shell {
         width: 94vw;
         aspect-ratio: 4 / 5.5;
@@ -1827,6 +2195,65 @@
       .build-bubble-f { left: 48%; top: 89%; width: 72px; height: 72px; }
       .build-tool-brush { width: 42px; height: 11px; }
       .build-pulse-ring { width: 70vw; height: 70vw; }
+      .lab-code-panel {
+        left: 4vw;
+        top: 9vh;
+        width: 42vw;
+        height: 26vh;
+      }
+      .lab-inspector {
+        right: 4vw;
+        top: 9vh;
+        width: 42vw;
+        height: 26vh;
+      }
+      .lab-toolbar {
+        width: 92vw;
+        bottom: 4vh;
+        grid-template-columns: repeat(5, minmax(52px, 1fr));
+        min-height: 82px;
+        padding: 10px;
+      }
+      .lab-component {
+        min-height: 58px;
+        padding: 8px;
+      }
+      .lab-code-lines,
+      .lab-inspector-grid {
+        padding: 12px;
+      }
+      .lab-code-line {
+        height: 8px;
+        margin-bottom: 9px;
+      }
+      .lab-control {
+        height: 24px;
+        margin-bottom: 8px;
+        grid-template-columns: 24px 1fr;
+      }
+      .lab-tailor-title {
+        font-size: 34px;
+      }
+      .lab-tailor-copy {
+        font-size: 11px;
+      }
+      .lab-tailor-photo {
+        height: 22%;
+      }
+      .lab-tailor-services {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .lab-tailor-service {
+        min-height: 62px;
+        padding: 10px;
+      }
+      .lab-tailor-service span {
+        display: none;
+      }
+      .lab-mobile-preview {
+        display: none;
+      }
     }
 
     .gsap-reveal {
@@ -3097,39 +3524,47 @@
     <div id="video-sticky">
       <div class="build-reveal" aria-label="Animated site assembly preview">
         <div class="build-glow"></div>
-        <div class="build-lab" aria-hidden="true">
-          <svg class="build-ribbon" viewBox="0 0 1200 760" preserveAspectRatio="none">
-            <path d="M120 438 C210 205 417 176 522 300 S748 526 930 318 C1030 204 1105 282 1080 390 C1038 568 762 584 628 462 C470 318 348 640 164 574"></path>
-            <path d="M176 226 C308 136 464 164 548 246 C674 370 698 626 878 584 C1018 552 1052 418 972 334"></path>
-            <path d="M242 590 C354 510 432 534 510 604 C614 696 810 668 902 528"></path>
-          </svg>
-          <div class="build-bubble build-bubble-a" data-kind="image"></div>
-          <div class="build-bubble build-bubble-b" data-kind="form"></div>
-          <div class="build-bubble build-bubble-c" data-kind="button"></div>
-          <div class="build-bubble build-bubble-d" data-kind="mobile"></div>
-          <div class="build-bubble build-bubble-e"></div>
-          <div class="build-bubble build-bubble-f"></div>
-          <div class="build-pulse-ring"></div>
-          <div class="build-tool-brush"></div>
-          <div class="build-tool-cursor"></div>
-          <div class="build-measure build-measure-x"></div>
-          <div class="build-measure build-measure-y"></div>
-          <div class="build-code-beads">
-            <span class="build-code-bead"></span>
-            <span class="build-code-bead"></span>
-            <span class="build-code-bead"></span>
-            <span class="build-code-bead"></span>
-            <span class="build-code-bead"></span>
-            <span class="build-code-bead"></span>
-            <span class="build-code-bead"></span>
-          </div>
-          <div class="build-lab-nodes">
-            <span class="build-lab-node"></span>
-            <span class="build-lab-node"></span>
-            <span class="build-lab-node"></span>
-            <span class="build-lab-node"></span>
+        <div class="lab-bg" aria-hidden="true"></div>
+        <svg class="lab-wire lab-wire-a" viewBox="0 0 1200 720" preserveAspectRatio="none">
+          <path d="M150 210 H390 V318 H520"></path>
+          <path d="M1050 245 H820 V318 H690"></path>
+          <path d="M285 610 H465 V480 H570"></path>
+        </svg>
+        <div class="lab-panel lab-code-panel" aria-hidden="true">
+          <div class="lab-panel-head"><span></span><span></span><span></span></div>
+          <div class="lab-code-lines">
+            <div class="lab-code-line"></div>
+            <div class="lab-code-line"></div>
+            <div class="lab-code-line"></div>
+            <div class="lab-code-line"></div>
+            <div class="lab-code-line"></div>
+            <div class="lab-code-line"></div>
+            <div class="lab-code-line"></div>
+            <div class="lab-code-line"></div>
+            <div class="lab-code-line"></div>
+            <div class="lab-code-line"></div>
+            <div class="lab-code-line"></div>
           </div>
         </div>
+        <div class="lab-panel lab-inspector" aria-hidden="true">
+          <div class="lab-panel-head"><span></span><span></span><span></span></div>
+          <div class="lab-inspector-grid">
+            <div class="lab-control"></div>
+            <div class="lab-control"></div>
+            <div class="lab-control"></div>
+            <div class="lab-control"></div>
+            <div class="lab-control"></div>
+            <div class="lab-control"></div>
+          </div>
+        </div>
+        <div class="lab-panel lab-toolbar" aria-hidden="true">
+          <div class="lab-component"><span></span><span></span><span></span></div>
+          <div class="lab-component"><span></span><span></span><span></span></div>
+          <div class="lab-component"><span></span><span></span><span></span></div>
+          <div class="lab-component"><span></span><span></span><span></span></div>
+          <div class="lab-component"><span></span><span></span><span></span></div>
+        </div>
+        <div class="lab-cursor-main" aria-hidden="true"></div>
         <div class="build-shell">
           <div class="build-site">
             <div class="build-backdrop"></div>
@@ -3148,63 +3583,44 @@
               <div class="build-address"></div>
             </div>
 
-            <div class="build-nav">
-              <div class="build-logo"></div>
-              <div class="build-nav-links" aria-hidden="true">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-              <div class="build-nav-cta"></div>
-            </div>
-
-            <div class="build-hero">
-              <span class="build-kicker"></span>
-              <span class="build-line l1"></span>
-              <span class="build-line l2"></span>
-              <span class="build-line l3"></span>
-              <span class="build-copy c1"></span>
-              <span class="build-copy c2"></span>
-              <span class="build-copy c3"></span>
-              <span class="build-hero-action"></span>
-              <div class="build-stats" aria-hidden="true">
-                <span class="build-stat"></span>
-                <span class="build-stat"></span>
-                <span class="build-stat"></span>
-              </div>
-            </div>
-
-            <div class="build-hero-media"></div>
-
-            <div class="build-sidebar" aria-hidden="true">
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-
-            <div class="build-panel" aria-hidden="true">
-              <div class="build-card"></div>
-              <div class="build-card"></div>
-              <div class="build-card"></div>
-            </div>
-
-            <div class="build-mobile">
-              <div class="build-mobile-inner" aria-hidden="true">
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
+            <div class="lab-tailor-site">
+              <nav class="lab-tailor-nav">
+                <div class="lab-tailor-logo">Atelier Vale</div>
+                <div class="lab-tailor-links">
+                  <span>Alterations</span>
+                  <span>Custom</span>
+                  <span>Fittings</span>
+                </div>
+              </nav>
+              <section class="lab-tailor-hero">
+                <div class="lab-tailor-kicker">Bespoke tailoring studio</div>
+                <h3 class="lab-tailor-title">Clothes shaped around you.</h3>
+                <p class="lab-tailor-copy">Alterations, bridal fittings, custom garments, and careful repairs from a quiet studio built around exacting detail.</p>
+                <a class="lab-tailor-button" href="#contact">Book a fitting</a>
+              </section>
+              <div class="lab-tailor-photo"></div>
+              <div class="lab-tailor-badge">Measured by hand<br>Finished in studio<br>St. Johns, FL</div>
+              <div class="lab-tailor-services">
+                <article class="lab-tailor-service">
+                  <strong>Alterations</strong>
+                  <span>Hems, tapering, jacket shaping, repairs, and clean finishing.</span>
+                </article>
+                <article class="lab-tailor-service">
+                  <strong>Custom Fit</strong>
+                  <span>Measured garments with fittings that refine the silhouette.</span>
+                </article>
+                <article class="lab-tailor-service">
+                  <strong>Bridal</strong>
+                  <span>Dress fittings, bustle work, lace, beading, and final polish.</span>
+                </article>
               </div>
             </div>
-
-            <div class="build-spark"></div>
-            <div class="build-cursor"></div>
             <div class="build-sheen"></div>
+          </div>
+        </div>
+        <div class="lab-mobile-preview" aria-hidden="true">
+          <div class="lab-mobile-screen">
+            <span></span><span></span><span></span><span></span><span></span><span></span>
           </div>
         </div>
         <div class="build-grain"></div>
@@ -4349,48 +4765,38 @@
     const pinSection = document.getElementById('video-sticky');
     const scene = revealSection ? revealSection.querySelector('.build-reveal') : null;
     const frame = scene ? scene.querySelector('.build-shell') : null;
-    const glow = scene ? scene.querySelector('.build-glow') : null;
-    const backdrop = scene ? scene.querySelector('.build-backdrop') : null;
     const grid = scene ? scene.querySelector('.build-grid') : null;
     const outline = scene ? scene.querySelector('.build-outline') : null;
     const guides = scene ? scene.querySelectorAll('.build-guides span') : [];
     const chrome = scene ? scene.querySelector('.build-browser-chrome') : null;
-    const nav = scene ? scene.querySelector('.build-nav') : null;
-    const hero = scene ? scene.querySelector('.build-hero') : null;
-    const heroLines = scene ? scene.querySelectorAll('.build-line, .build-copy, .build-kicker, .build-stat') : [];
-    const heroAction = scene ? scene.querySelector('.build-hero-action') : null;
-    const heroMedia = scene ? scene.querySelector('.build-hero-media') : null;
-    const sidebar = scene ? scene.querySelector('.build-sidebar') : null;
-    const cards = scene ? scene.querySelectorAll('.build-card') : [];
-    const mobile = scene ? scene.querySelector('.build-mobile') : null;
-    const cursor = scene ? scene.querySelector('.build-cursor') : null;
-    const spark = scene ? scene.querySelector('.build-spark') : null;
     const sheen = scene ? scene.querySelector('.build-sheen') : null;
-    const ribbons = scene ? scene.querySelectorAll('.build-ribbon path') : [];
-    const bubbles = scene ? scene.querySelectorAll('.build-bubble') : [];
-    const beads = scene ? scene.querySelectorAll('.build-code-bead') : [];
-    const brush = scene ? scene.querySelector('.build-tool-brush') : null;
-    const labCursor = scene ? scene.querySelector('.build-tool-cursor') : null;
-    const measures = scene ? scene.querySelectorAll('.build-measure') : [];
-    const labNodes = scene ? scene.querySelectorAll('.build-lab-node') : [];
-    const pulseRing = scene ? scene.querySelector('.build-pulse-ring') : null;
+    const codePanel = scene ? scene.querySelector('.lab-code-panel') : null;
+    const inspector = scene ? scene.querySelector('.lab-inspector') : null;
+    const toolbar = scene ? scene.querySelector('.lab-toolbar') : null;
+    const codeLines = scene ? scene.querySelectorAll('.lab-code-line') : [];
+    const controls = scene ? scene.querySelectorAll('.lab-control') : [];
+    const components = scene ? scene.querySelectorAll('.lab-component') : [];
+    const cursor = scene ? scene.querySelector('.lab-cursor-main') : null;
+    const wires = scene ? scene.querySelectorAll('.lab-wire path') : [];
+    const mobile = scene ? scene.querySelector('.lab-mobile-preview') : null;
+    const tailorPieces = scene ? scene.querySelectorAll('.lab-tailor-site > *') : [];
+    const tailorNav = scene ? scene.querySelector('.lab-tailor-nav') : null;
+    const tailorHero = scene ? scene.querySelector('.lab-tailor-hero') : null;
+    const tailorPhoto = scene ? scene.querySelector('.lab-tailor-photo') : null;
+    const tailorBadge = scene ? scene.querySelector('.lab-tailor-badge') : null;
+    const tailorServices = scene ? scene.querySelectorAll('.lab-tailor-service') : [];
 
     if (!revealSection || !pinSection || !scene || !frame) {
       window._videoRevealUnlock = () => {};
     } else {
       if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
         frame.style.transform = 'translate(-50%, -50%) rotateX(0deg) scale(1)';
-        if (nav) nav.style.transform = 'translateY(0)';
-        if (hero) hero.style.transform = 'translateX(0)';
-        if (heroMedia) heroMedia.style.transform = 'translateX(0) scale(1)';
-        if (sidebar) sidebar.style.transform = 'translateX(0)';
-        if (mobile) mobile.style.transform = 'translate(0, 0) rotate(0deg)';
-        cards.forEach(card => { card.style.transform = 'translateY(0)'; });
-        bubbles.forEach(bubble => { bubble.style.opacity = '0.85'; });
+        tailorPieces.forEach(piece => { piece.style.opacity = '1'; });
+        if (mobile) mobile.style.opacity = '1';
       } else {
         gsap.registerPlugin(ScrollTrigger);
 
-        ribbons.forEach(path => {
+        wires.forEach(path => {
           if (path && typeof path.getTotalLength === 'function') {
             const len = path.getTotalLength();
             path.style.strokeDasharray = String(len);
@@ -4399,343 +4805,203 @@
         });
 
         gsap.set(frame, { autoAlpha: 0, transformOrigin: '50% 50%' });
-        gsap.set(glow, { autoAlpha: 0.05, scale: 0.45, force3D: true });
-        gsap.set(backdrop, { scale: 1.14, filter: 'saturate(0.82)', force3D: true });
-        gsap.set(grid, { autoAlpha: 0.16, scale: 1.12, force3D: true });
-        gsap.set(outline, { autoAlpha: 0, scale: 0.9, force3D: true });
-        gsap.set(chrome, { autoAlpha: 0, yPercent: -140, scaleX: 0.72, transformOrigin: '50% 50%', force3D: true });
-        gsap.set(nav, { autoAlpha: 0, yPercent: -150, scale: 0.86, force3D: true });
-        gsap.set(hero, { autoAlpha: 0, xPercent: -24, yPercent: 18, scale: 0.94, force3D: true });
-        gsap.set(heroLines, { autoAlpha: 0, scaleX: 0.2, transformOrigin: '0 50%', force3D: true });
-        gsap.set(heroAction, { autoAlpha: 0, scaleX: 0, transformOrigin: '0 50%', force3D: true });
-        gsap.set(heroMedia, { autoAlpha: 0, xPercent: 26, yPercent: 10, scale: 0.78, rotate: 8, force3D: true });
-        gsap.set(sidebar, { autoAlpha: 0, xPercent: -42, yPercent: 22, scale: 0.72, force3D: true });
-        gsap.set(cards, { autoAlpha: 0, yPercent: 72, scale: 0.78, rotate: -2, force3D: true });
-        gsap.set(mobile, { autoAlpha: 0, xPercent: 58, yPercent: 26, rotate: -18, scale: 0.76, force3D: true });
-        gsap.set(cursor, { autoAlpha: 0, xPercent: -180, yPercent: -120, force3D: true });
-        gsap.set(spark, { autoAlpha: 0, scale: 0, force3D: true });
+        gsap.set([codePanel, inspector, toolbar], { autoAlpha: 0, y: 24, force3D: true });
+        gsap.set(frame, { scale: 0.72, y: 28, force3D: true });
+        gsap.set(grid, { autoAlpha: 0.48, force3D: true });
+        gsap.set(outline, { autoAlpha: 0, scale: 0.94, force3D: true });
+        gsap.set(chrome, { autoAlpha: 0, yPercent: -100, force3D: true });
+        gsap.set(guides, { autoAlpha: 0, scaleX: 0, transformOrigin: '0 50%', force3D: true });
+        gsap.set(codeLines, { autoAlpha: 0, scaleX: 0, transformOrigin: '0 50%', force3D: true });
+        gsap.set(controls, { autoAlpha: 0, x: 18, force3D: true });
+        gsap.set(components, { autoAlpha: 0, y: 28, scale: 0.96, force3D: true });
+        gsap.set(cursor, { autoAlpha: 0, x: 0, y: 0, force3D: true });
+        gsap.set(wires, { autoAlpha: 0 });
+        gsap.set(tailorPieces, { autoAlpha: 0, y: 26, force3D: true });
+        gsap.set(tailorNav, { y: -30 });
+        gsap.set(tailorHero, { x: -42 });
+        gsap.set(tailorPhoto, { x: 56, scale: 0.92 });
+        gsap.set(tailorBadge, { x: 34, scale: 0.92 });
+        gsap.set(tailorServices, { y: 52, scale: 0.96 });
+        gsap.set(mobile, { autoAlpha: 0, y: 54, rotate: -5, scale: 0.9, force3D: true });
         gsap.set(sheen, { xPercent: -120, force3D: true });
-        gsap.set(bubbles, { autoAlpha: 0, scale: 0.22, y: 26, force3D: true });
-        gsap.set(beads, { autoAlpha: 0, scale: 0, force3D: true });
-        gsap.set(brush, { autoAlpha: 0, xPercent: -220, yPercent: -90, rotate: -24, force3D: true });
-        gsap.set(labCursor, { autoAlpha: 0, xPercent: -230, yPercent: -160, force3D: true });
-        gsap.set(measures, { autoAlpha: 0, scaleX: 0, scaleY: 0, transformOrigin: '0 0', force3D: true });
-        gsap.set(labNodes, { autoAlpha: 0, scale: 0, force3D: true });
-        gsap.set(pulseRing, { autoAlpha: 0, scale: 0.2, force3D: true });
-        gsap.set(guides, {
-          autoAlpha: 0,
-          scaleX: (_, el) => el.offsetWidth > 2 ? 0 : 1,
-          scaleY: (_, el) => el.offsetWidth > 2 ? 1 : 0,
-          transformOrigin: (_, el) => el.offsetWidth > 2 ? '0 50%' : '50% 0',
-          force3D: true
-        });
 
         const timeline = gsap.timeline({
           defaults: { ease: 'power2.inOut' },
           scrollTrigger: {
             trigger: revealSection,
             start: 'top top',
-            end: () => '+=' + Math.max(2200, revealSection.offsetHeight - window.innerHeight),
+            end: () => '+=' + Math.max(3100, revealSection.offsetHeight - window.innerHeight),
             pin: pinSection,
-            scrub: 0.82,
+            scrub: 0.9,
             anticipatePin: 1,
             invalidateOnRefresh: true
           }
         });
 
         timeline
-          .to(ribbons, {
-            strokeDashoffset: 0,
+          .to([codePanel, inspector, toolbar], {
             autoAlpha: 1,
-            duration: 0.78,
-            stagger: 0.08,
-            ease: 'power1.inOut'
-          }, 0.02)
-          .to(glow, {
-            autoAlpha: 0.9,
-            scale: 1.05,
-            duration: 0.72,
-            ease: 'power2.out'
-          }, 0.04)
-          .to(beads, {
-            autoAlpha: 1,
-            scale: 1,
-            duration: 0.16,
-            stagger: { each: 0.045, from: 'center' },
-            ease: 'back.out(2.2)'
-          }, 0.18)
-          .to(beads, {
-            x: (i) => Math.cos(i * 1.7) * 34,
-            y: (i) => Math.sin(i * 1.3) * 28,
-            duration: 0.62,
-            ease: 'sine.inOut'
-          }, 0.26)
-          .to(bubbles, {
-            autoAlpha: 0.98,
-            scale: 1,
             y: 0,
-            duration: 0.5,
-            stagger: { each: 0.055, from: 'random' },
-            ease: 'elastic.out(1, 0.58)'
-          }, 0.34)
-          .to(bubbles, {
-            x: (i) => [34, -42, 54, -30, 18, -22][i] || 0,
-            y: (i) => [-22, 30, -28, 24, 42, -36][i] || 0,
-            scale: (i) => [1.08, 0.96, 1.12, 0.98, 1.06, 1][i] || 1,
-            duration: 0.64,
-            ease: 'sine.inOut'
-          }, 0.72)
-          .to(labCursor, {
-            autoAlpha: 1,
-            xPercent: 40,
-            yPercent: -40,
-            duration: 0.32,
-            ease: 'power2.out'
-          }, 0.58)
-          .to(labCursor, {
-            xPercent: 560,
-            yPercent: 270,
             duration: 0.56,
-            ease: 'power1.inOut'
-          }, 0.88)
-          .to(pulseRing, {
-            autoAlpha: 0.8,
-            scale: 1,
-            duration: 0.34,
+            stagger: 0.12,
             ease: 'power3.out'
-          }, 1.02)
-          .to(pulseRing, {
-            autoAlpha: 0,
-            scale: 1.65,
-            duration: 0.44,
-            ease: 'power2.out'
-          }, 1.28)
-          .to(frame, {
+          }, 0)
+          .to(cursor, {
             autoAlpha: 1,
-            scale: 0.9,
-            rotateX: 0,
-            yPercent: 0,
-            duration: 0.7,
-            ease: 'power4.out'
-          }, 0.72)
-          .to(frame, {
-            scale: 1,
-            duration: 0.5,
-            ease: 'back.out(1.4)'
-          }, 1.18)
-          .to(outline, {
-            autoAlpha: 0.78,
-            scale: 1,
-            duration: 0.42,
+            x: 28,
+            y: 20,
+            duration: 0.28,
             ease: 'power2.out'
-          }, 0.94)
-          .to(measures, {
+          }, 0.14)
+          .to(codeLines, {
             autoAlpha: 1,
             scaleX: 1,
-            scaleY: 1,
-            duration: 0.36,
-            stagger: 0.08,
-            ease: 'power2.out'
-          }, 1.02)
-          .to(labNodes, {
+            duration: 0.34,
+            stagger: 0.045,
+            ease: 'power1.out'
+          }, 0.24)
+          .to(controls, {
             autoAlpha: 1,
+            x: 0,
+            duration: 0.3,
+            stagger: 0.055,
+            ease: 'power2.out'
+          }, 0.54)
+          .to(components, {
+            autoAlpha: 1,
+            y: 0,
             scale: 1,
-            duration: 0.18,
+            duration: 0.34,
             stagger: 0.07,
-            ease: 'back.out(2.6)'
-          }, 1.08)
+            ease: 'back.out(1.5)'
+          }, 0.82)
+          .to(wires, {
+            strokeDashoffset: 0,
+            autoAlpha: 1,
+            duration: 0.72,
+            stagger: 0.1,
+            ease: 'power1.inOut'
+          }, 1.04)
+          .to(frame, {
+            autoAlpha: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.62,
+            ease: 'power3.out'
+          }, 1.26)
           .to(chrome, {
             autoAlpha: 1,
             yPercent: 0,
-            scaleX: 1,
-            duration: 0.28,
-            ease: 'back.out(1.6)'
-          }, 1.16)
+            duration: 0.3,
+            ease: 'power2.out'
+          }, 1.48)
+          .to(outline, {
+            autoAlpha: 0.78,
+            scale: 1,
+            duration: 0.34,
+            ease: 'power2.out'
+          }, 1.54)
           .to(guides, {
-            autoAlpha: 0.72,
+            autoAlpha: 1,
             scaleX: 1,
-            scaleY: 1,
             duration: 0.36,
             stagger: 0.06,
             ease: 'power2.out'
-          }, 1.22)
-          .to(nav, {
-            yPercent: 0,
+          }, 1.62)
+          .to(tailorNav, {
             autoAlpha: 1,
-            scale: 1,
-            duration: 0.34,
-            ease: 'elastic.out(1, 0.7)'
-          }, 1.34)
-          .to(bubbles, {
-            x: (i) => [250, -220, 145, -185, 0, 0][i] || 0,
-            y: (i) => [190, 220, -64, -130, 90, -90][i] || 0,
-            scale: 0.26,
-            autoAlpha: 0,
-            duration: 0.58,
-            stagger: 0.035,
-            ease: 'power3.inOut'
-          }, 1.36)
-          .to(hero, {
-            autoAlpha: 1,
-            xPercent: 0,
-            yPercent: 0,
-            scale: 1,
-            duration: 0.44,
-            ease: 'back.out(1.35)'
-          }, 1.52)
-          .to(heroLines, {
-            autoAlpha: 1,
-            scaleX: 1,
-            duration: 0.3,
-            stagger: { each: 0.035, from: 'start' },
-            ease: 'power2.out'
-          }, 1.58)
-          .to(heroAction, {
-            autoAlpha: 1,
-            scaleX: 1,
-            duration: 0.24,
-            ease: 'back.out(1.4)'
-          }, 1.86)
-          .to(brush, {
-            autoAlpha: 1,
-            xPercent: 40,
-            yPercent: -10,
-            rotate: 16,
-            duration: 0.28,
-            ease: 'power2.out'
-          }, 1.66)
-          .to(brush, {
-            xPercent: 760,
-            yPercent: 280,
-            rotate: -8,
-            duration: 0.54,
-            ease: 'power1.inOut'
-          }, 1.86)
-          .to(heroMedia, {
-            autoAlpha: 1,
-            xPercent: 0,
-            yPercent: 0,
-            scale: 1,
-            rotate: 0,
-            duration: 0.48,
-            ease: 'elastic.out(1, 0.68)'
-          }, 1.94)
-          .to(spark, {
-            autoAlpha: 0.95,
-            scale: 1,
-            duration: 0.12,
-            ease: 'power3.out'
-          }, 2.06)
-          .to(spark, {
-            autoAlpha: 0,
-            scale: 2.1,
-            duration: 0.34,
-            ease: 'power2.out'
-          }, 2.18)
-          .to(sidebar, {
-            autoAlpha: 1,
-            xPercent: 0,
-            yPercent: 0,
-            scale: 1,
+            y: 0,
             duration: 0.36,
-            ease: 'back.out(1.55)'
-          }, 2.1)
-          .to(cards, {
+            ease: 'power3.out'
+          }, 1.82)
+          .to(tailorHero, {
             autoAlpha: 1,
-            yPercent: 0,
+            x: 0,
+            y: 0,
+            duration: 0.58,
+            ease: 'power3.out'
+          }, 2.02)
+          .to(tailorPhoto, {
+            autoAlpha: 1,
+            x: 0,
+            y: 0,
             scale: 1,
-            rotate: 0,
-            duration: 0.38,
-            stagger: 0.08,
-            ease: 'back.out(1.75)'
-          }, 2.18)
-          .to(cursor, {
+            duration: 0.58,
+            ease: 'power3.out'
+          }, 2.24)
+          .to(tailorBadge, {
             autoAlpha: 1,
-            xPercent: 0,
-            yPercent: 0,
-            duration: 0.24,
-            ease: 'power2.out'
-          }, 2.38)
-          .to(mobile, {
+            x: 0,
+            y: 0,
+            scale: 1,
+            duration: 0.4,
+            ease: 'back.out(1.3)'
+          }, 2.48)
+          .to(tailorServices, {
             autoAlpha: 1,
-            xPercent: 0,
-            yPercent: 0,
-            rotate: 0,
+            y: 0,
             scale: 1,
             duration: 0.42,
-            ease: 'elastic.out(1, 0.62)'
-          }, 2.48)
-          .to(measures, {
-            autoAlpha: 0,
-            duration: 0.28,
-            ease: 'power2.in'
-          }, 2.62)
-          .to(labNodes, {
-            autoAlpha: 0,
-            scale: 0,
-            duration: 0.22,
-            stagger: 0.04,
-            ease: 'power2.in'
-          }, 2.66)
-          .to(ribbons, {
-            autoAlpha: 0.18,
-            duration: 0.5,
-            ease: 'power2.inOut'
+            stagger: 0.08,
+            ease: 'back.out(1.25)'
           }, 2.68)
-          .to(backdrop, {
-            scale: 1,
-            filter: 'saturate(1.1)',
-            duration: 0.9,
-            ease: 'power1.out'
-          }, 1.46)
-          .to(grid, {
-            autoAlpha: 0.1,
-            scale: 1,
-            duration: 0.54,
-            ease: 'power1.out'
-          }, 2.72)
-          .to(cursor, {
-            xPercent: 28,
-            yPercent: 22,
-            duration: 0.3,
+          .to(controls, {
+            backgroundColor: 'rgba(240,99,90,0.08)',
+            duration: 0.32,
+            stagger: 0.04,
             ease: 'power1.inOut'
-          }, 2.76)
+          }, 2.94)
           .to(frame, {
-            scale: 1.055,
-            yPercent: -1,
-            duration: 0.56,
+            scale: 1.04,
+            duration: 0.5,
             ease: 'power2.out'
-          }, 2.84)
+          }, 3.08)
+          .to(mobile, {
+            autoAlpha: 1,
+            y: 0,
+            rotate: 0,
+            scale: 1,
+            duration: 0.52,
+            ease: 'power3.out'
+          }, 3.28)
+          .to(cursor, {
+            x: 590,
+            y: 320,
+            duration: 0.66,
+            ease: 'power1.inOut'
+          }, 3.42)
+          .to([codePanel, inspector, toolbar], {
+            autoAlpha: 0.48,
+            scale: 0.98,
+            duration: 0.46,
+            ease: 'power2.inOut'
+          }, 3.62)
+          .to(wires, {
+            autoAlpha: 0,
+            duration: 0.32,
+            ease: 'power2.inOut'
+          }, 3.74)
+          .to(grid, {
+            autoAlpha: 0.12,
+            duration: 0.42,
+            ease: 'power1.out'
+          }, 3.8)
+          .to(frame, {
+            scale: 1.075,
+            y: -8,
+            duration: 0.62,
+            ease: 'power2.out'
+          }, 3.86)
           .to(sheen, {
             xPercent: 132,
-            duration: 0.5,
+            duration: 0.62,
             ease: 'power2.out'
-          }, 2.88)
-          .to(glow, {
-            autoAlpha: 0.42,
-            scale: 1.28,
-            duration: 0.56,
-            ease: 'power2.inOut'
-          }, 2.9)
-          .to(beads, {
+          }, 3.92)
+          .to(cursor, {
             autoAlpha: 0,
-            scale: 0,
-            duration: 0.28,
-            stagger: { each: 0.025, from: 'edges' },
-            ease: 'power2.in'
-          }, 2.96)
-          .to(brush, {
-            autoAlpha: 0,
-            scale: 0.7,
-            duration: 0.26,
-            ease: 'power2.in'
-          }, 3.02)
-          .to(labCursor, {
-            autoAlpha: 0,
-            scale: 0.74,
             duration: 0.24,
             ease: 'power2.in'
-          }, 3.04);
+          }, 4.16);
 
         ScrollTrigger.refresh();
       }
