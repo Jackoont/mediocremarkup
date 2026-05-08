@@ -1249,6 +1249,9 @@
       --stage-glow: 0.18;
       --impact-flash: 0;
       --caption-lift: 0px;
+      --phase-energy: 0;
+      --phase-bloom: 0;
+      --phase-spin: 0deg;
       transform:
         translate3d(var(--stage-shift-x), var(--stage-shift-y), 0)
         rotateX(var(--stage-rot-x))
@@ -1269,6 +1272,55 @@
       pointer-events: none;
       z-index: -1;
       overflow: hidden;
+    }
+    #build-cosmos,
+    #build-aurora,
+    #build-starfield,
+    #build-sigil-grid {
+      position: absolute;
+      inset: -10%;
+      pointer-events: none;
+    }
+    #build-cosmos {
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.08) 6%, rgba(244,162,97,0.18) 11%, rgba(240,99,90,0.12) 20%, rgba(59,28,99,0.12) 36%, transparent 62%),
+        radial-gradient(circle at 20% 25%, rgba(255,196,153,0.14) 0%, transparent 30%),
+        radial-gradient(circle at 82% 72%, rgba(255,127,178,0.12) 0%, transparent 26%),
+        radial-gradient(circle at 50% 50%, rgba(14,12,28,0.08) 0%, rgba(14,12,28,0.32) 54%, rgba(14,12,28,0.76) 100%);
+      opacity: calc(0.48 + var(--phase-energy) * 0.28);
+      transform: scale(calc(1 + var(--phase-bloom) * 0.08));
+      filter: saturate(calc(1 + var(--phase-energy) * 0.85)) contrast(1.08);
+      transition: opacity 0.5s ease, transform 0.8s ease, filter 0.6s ease;
+    }
+    #build-aurora {
+      background:
+        conic-gradient(from 180deg at 50% 50%, rgba(240,99,90,0) 0deg, rgba(240,99,90,0.18) 58deg, rgba(255,208,145,0.2) 115deg, rgba(255,121,198,0.18) 188deg, rgba(109,82,255,0.18) 242deg, rgba(240,99,90,0.08) 310deg, rgba(240,99,90,0) 360deg);
+      mix-blend-mode: screen;
+      opacity: calc(0.12 + var(--phase-energy) * 0.42);
+      transform: rotate(calc(var(--phase-spin) * 0.45)) scale(calc(1.06 + var(--phase-bloom) * 0.12));
+      filter: blur(30px) saturate(1.35);
+      animation: auroraSpin 24s linear infinite;
+    }
+    #build-starfield {
+      opacity: calc(0.18 + var(--phase-energy) * 0.22);
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.95) 0 1px, transparent 1.5px),
+        radial-gradient(circle, rgba(255,214,170,0.9) 0 1px, transparent 1.5px),
+        radial-gradient(circle, rgba(255,136,188,0.85) 0 1px, transparent 1.4px);
+      background-size: 180px 180px, 240px 240px, 320px 320px;
+      background-position: 0 0, 50px 80px, 120px 30px;
+      animation: starfieldDrift 18s linear infinite;
+      mix-blend-mode: screen;
+    }
+    #build-sigil-grid {
+      opacity: calc(0.1 + var(--phase-energy) * 0.16);
+      background:
+        radial-gradient(circle at 50% 50%, transparent 0 32%, rgba(255,255,255,0.08) 32.2%, transparent 32.8%, transparent 38%, rgba(240,99,90,0.14) 38.3%, transparent 39.2%, transparent 50%, rgba(255,212,160,0.1) 50.3%, transparent 51.2%),
+        repeating-conic-gradient(from 0deg at 50% 50%, rgba(255,255,255,0.08) 0deg 2deg, transparent 2deg 18deg);
+      mix-blend-mode: screen;
+      filter: blur(0.2px);
+      transform: rotate(calc(var(--phase-spin) * -0.65)) scale(calc(0.94 + var(--phase-bloom) * 0.1));
+      animation: sigilFloat 16s ease-in-out infinite;
     }
     #build-atmosphere {
       position: absolute;
@@ -1291,7 +1343,7 @@
       transition: opacity 1.2s ease, background 0.8s ease;
       will-change: opacity, background;
       animation: spotlightPulse 5s ease-in-out infinite;
-      filter: blur(4px);
+      filter: blur(8px) saturate(1.2);
     }
     #build-stage.bs-in #build-spotlight { opacity: 1; }
     @keyframes spotlightPulse {
@@ -1402,6 +1454,19 @@
       0%, 100% { opacity: 0.08; transform: translate(-50%, -50%) scale(0.94); }
       50% { opacity: 0.22; transform: translate(-50%, -50%) scale(1.04); }
     }
+    @keyframes auroraSpin {
+      from { transform: rotate(0deg) scale(1.04); }
+      to   { transform: rotate(360deg) scale(1.12); }
+    }
+    @keyframes starfieldDrift {
+      from { transform: translate3d(0, 0, 0) scale(1); }
+      50%  { transform: translate3d(-18px, 14px, 0) scale(1.02); }
+      to   { transform: translate3d(-36px, 28px, 0) scale(1.04); }
+    }
+    @keyframes sigilFloat {
+      0%, 100% { transform: rotate(-2deg) scale(0.98); }
+      50%      { transform: rotate(2deg) scale(1.02); }
+    }
 
     /* ── Left rail: phase track ── */
     #build-phase-track {
@@ -1508,6 +1573,71 @@
       align-items: center;
       justify-self: center;
       transform-style: preserve-3d;
+      isolation: isolate;
+    }
+    .bf-halo,
+    .bf-prism {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .bf-halo {
+      width: min(96vw, 640px);
+      height: min(96vw, 640px);
+      border-radius: 50%;
+      mix-blend-mode: screen;
+      opacity: 0;
+      transition: opacity 0.8s ease, transform 0.8s ease, filter 0.8s ease;
+    }
+    .bf-halo-back {
+      z-index: -1;
+      background:
+        radial-gradient(circle, rgba(255,255,255,0.28) 0%, rgba(255,214,170,0.18) 10%, rgba(240,99,90,0.12) 28%, rgba(164,96,255,0.08) 44%, transparent 68%);
+      filter: blur(10px);
+    }
+    .bf-halo-front {
+      z-index: 5;
+      width: min(84vw, 560px);
+      height: min(84vw, 560px);
+      border: 1px solid rgba(255,255,255,0.26);
+      box-shadow:
+        0 0 0 1px rgba(255,214,170,0.12) inset,
+        0 0 38px rgba(255,198,140,0.18),
+        0 0 96px rgba(240,99,90,0.12);
+      background:
+        radial-gradient(circle, transparent 44%, rgba(255,255,255,0.08) 45%, transparent 47%, transparent 56%, rgba(255,208,145,0.12) 57%, transparent 58%);
+      filter: blur(0.2px);
+    }
+    .bf-prism {
+      z-index: 4;
+      width: 520px;
+      height: 780px;
+      border-radius: 48px;
+      opacity: 0;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.07) 24%, rgba(255,193,144,0.12) 44%, rgba(255,122,190,0.1) 58%, rgba(255,255,255,0) 76%),
+        linear-gradient(225deg, rgba(112,86,255,0.06) 0%, transparent 34%, rgba(255,255,255,0.06) 58%, transparent 100%);
+      filter: blur(6px);
+      transform: translate(-50%, -50%) rotate(calc(var(--phase-spin) * 0.4)) scale(calc(0.9 + var(--phase-bloom) * 0.08));
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    #build-stage.bs-in .bf-halo,
+    #build-stage.bs-in .bf-prism {
+      opacity: 1;
+    }
+    #build-stage[data-phase="2"] .bf-halo-back,
+    #build-stage[data-phase="3"] .bf-halo-back {
+      opacity: 0.88;
+      transform: translate(-50%, -50%) scale(calc(1.02 + var(--phase-bloom) * 0.1));
+    }
+    #build-stage[data-phase="3"] .bf-halo-front {
+      opacity: 0.82;
+      transform: translate(-50%, -50%) scale(calc(1.05 + var(--phase-bloom) * 0.06));
+    }
+    #build-stage[data-phase="3"] .bf-prism {
+      opacity: 0.8;
     }
     #build-frame {
       position: relative;
@@ -1515,7 +1645,9 @@
       height: 640px;
       max-width: 92vw;
       max-height: 78vh;
-      background: #14101A;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255,255,255,0.12), transparent 24%),
+        linear-gradient(180deg, #0f0b18 0%, #1b1325 48%, #0d0a12 100%);
       border-radius: 36px;
       padding: 8px;
       display: flex;
@@ -1525,7 +1657,8 @@
         0 0 0 2px rgba(0,0,0,0.05),
         0 40px 100px -25px rgba(43,37,71,0.35),
         0 12px 40px -12px rgba(240,99,90,0.20),
-        inset 0 1px 0 rgba(255,255,255,0.10);
+        inset 0 1px 0 rgba(255,255,255,0.10),
+        inset 0 0 0 1px rgba(255,214,170,0.08);
       opacity: 0;
       transform: translateY(50px) scale(0.88) rotateX(8deg) rotateY(-8deg);
       transform-style: preserve-3d;
@@ -1558,10 +1691,11 @@
     #build-stage[data-phase="3"] #build-frame,
     #build-frame.bf-shipped {
       box-shadow:
-        0 0 0 1px rgba(240,99,90,0.70),
+        0 0 0 1px rgba(255,214,170,0.46),
         0 0 0 2px rgba(0,0,0,0.05),
         0 40px 120px -20px rgba(43,37,71,0.45),
-        0 0 120px 0 rgba(240,99,90,0.45),
+        0 0 110px -10px rgba(240,99,90,0.34),
+        0 0 140px -18px rgba(255,122,190,0.26),
         inset 0 1px 0 rgba(255,255,255,0.15);
       animation: shipPulse 2.4s ease-in-out infinite;
     }
@@ -1628,7 +1762,9 @@
       position: relative;
       flex: 1;
       width: 100%;
-      background: #FFFFFF;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255,255,255,0.06), transparent 28%),
+        linear-gradient(180deg, #f9f0e6 0%, #f7eee5 100%);
       border-radius: 28px;
       overflow: hidden;
     }
@@ -1710,13 +1846,14 @@
       display: flex; align-items: center; gap: 10px;
       margin-top: 14px;
       padding: 6px 14px;
-      background: rgba(43,37,71,0.06);
+      background: linear-gradient(90deg, rgba(255,255,255,0.38), rgba(255,244,232,0.65));
       border-radius: 999px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
-      color: rgba(43,37,71,0.75);
+      color: rgba(43,37,71,0.82);
       opacity: 0;
       transition: opacity 0.6s 0.4s ease;
+      box-shadow: 0 12px 34px -24px rgba(43,37,71,0.46);
     }
     #build-stage.bs-in .bf-rail { opacity: 1; }
     .bf-rail-dot {
@@ -2057,10 +2194,10 @@
       padding: 18px 16px;
       border: 1px solid rgba(43,37,71,0.12);
       border-radius: 8px;
-      background: rgba(255,255,255,0.55);
+      background: linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(255,245,233,0.62) 100%);
       backdrop-filter: blur(6px);
       -webkit-backdrop-filter: blur(6px);
-      box-shadow: 0 12px 40px -16px rgba(43,37,71,0.18);
+      box-shadow: 0 22px 64px -28px rgba(43,37,71,0.28), 0 0 0 1px rgba(255,255,255,0.28) inset;
       opacity: 0; transform: translateX(30px);
       transition: opacity 0.9s 0.2s cubic-bezier(0.16,1,0.3,1),
                   transform 0.9s 0.2s cubic-bezier(0.16,1,0.3,1);
@@ -2133,10 +2270,10 @@
       padding: 10px 14px;
       border: 1px solid rgba(43,37,71,0.08);
       border-radius: 999px;
-      background: rgba(255,251,246,0.52);
+      background: linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(255,246,236,0.66) 100%);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      box-shadow: 0 10px 28px -20px rgba(43,37,71,0.24);
+      box-shadow: 0 18px 46px -26px rgba(43,37,71,0.34), 0 0 0 1px rgba(255,255,255,0.3) inset;
       opacity: 0;
       transform: translateX(-50%) translateY(28px);
       display: flex;
@@ -2206,7 +2343,7 @@
       background:
         radial-gradient(circle at 20% 14%, rgba(240,99,90,0.08), transparent 22%),
         radial-gradient(circle at 80% 72%, rgba(244,162,97,0.08), transparent 24%);
-      opacity: 0.75;
+      opacity: 0.88;
     }
     .build-site::before {
       content: '';
@@ -4402,6 +4539,10 @@
       <div id="build-stage">
         <!-- Atmospheric backdrop: blueprint grid + spotlight -->
         <div id="build-backdrop">
+          <div id="build-cosmos"></div>
+          <div id="build-aurora"></div>
+          <div id="build-starfield"></div>
+          <div id="build-sigil-grid"></div>
           <canvas id="build-atmosphere"></canvas>
           <div id="build-spotlight"></div>
           <div id="build-blueprint"></div>
@@ -4460,6 +4601,7 @@
 
         <!-- Center stage: phone-shaped frame that morphs through phases -->
         <div id="build-frame-wrap">
+          <div class="bf-halo bf-halo-back"></div>
           <div id="build-frame">
             <!-- Notch / status bar — sells the device feel -->
             <div class="bf-statusbar">
@@ -4715,6 +4857,8 @@
             <div class="bf-chrome bf-bl"></div>
             <div class="bf-chrome bf-br"></div>
           </div>
+          <div class="bf-prism"></div>
+          <div class="bf-halo bf-halo-front"></div>
 
           <!-- Bottom rail with build label (outside frame so it never clips) -->
           <div class="bf-rail">
@@ -5890,36 +6034,40 @@
     const shipParticles = document.getElementById('ship-particles');
     const buildAtmosphere = document.getElementById('build-atmosphere');
     const buildSymbolLayer = document.getElementById('build-symbol-layer');
+    const buildCosmos = document.getElementById('build-cosmos');
+    const buildAurora = document.getElementById('build-aurora');
+    const buildStarfield = document.getElementById('build-starfield');
+    const buildSigilGrid = document.getElementById('build-sigil-grid');
 
     // Phase copy — captions update at each major beat
     const PHASE_COPY = [
       {
         eyebrow: 'PHASE 01 / 04 · BLUEPRINT',
-        title:   'Map',
-        body:    'Before the polish, we decide what a visitor should understand, trust, and do.',
+        title:   'Conjure',
+        body:    'The first pass is pure intent: hierarchy, trust, and momentum summoned before a single flourish lands.',
         ph:      'BLUEPRINT',
-        rail:    'build · blueprint',
+        rail:    'ritual · blueprint',
       },
       {
         eyebrow: 'PHASE 02 / 04 · ASSEMBLE',
         title:   'Assemble',
-        body:    'Tagged sections, proof blocks, and conversion modules arrive like real markup becoming form.',
+        body:    'Modules fly in like charged fragments and lock into a shape that already feels inevitable.',
         ph:      'ASSEMBLE',
-        rail:    'build · assemble',
+        rail:    'ritual · forge',
       },
       {
         eyebrow: 'PHASE 03 / 04 · CODE',
-        title:   'Style',
-        body:    'The code pass gives those modules rhythm, contrast, and motion without sliding into template sludge.',
+        title:   'Enchant',
+        body:    'Now the structure gets its voltage: typography, light, motion, and the details that make it feel expensive.',
         ph:      'CODE',
-        rail:    'build · code',
+        rail:    'ritual · enchant',
       },
       {
         eyebrow: 'PHASE 04 / 04 · SHIPPED',
-        title:   'Ship',
-        body:    'The end state should look like deliberate markup art that also happens to convert.',
+        title:   'Ascend',
+        body:    'The finish should feel less like a page load and more like the brand stepping fully into the room.',
         ph:      'SHIPPED',
-        rail:    'build · shipped',
+        rail:    'ritual · live',
       },
     ];
 
@@ -5998,21 +6146,21 @@
     function fireShipParticles() {
       if (!shipParticles) return;
       shipParticles.innerHTML = '';
-      const N = 44;
+      const N = 78;
       for (let i = 0; i < N; i++) {
         const f = document.createElement('div');
         f.className = 'sp-flake';
         const angle = (i / N) * Math.PI * 2 + Math.random() * 0.4;
-        const dist  = 120 + Math.random() * 200;
+        const dist  = 150 + Math.random() * 260;
         const dx    = Math.cos(angle) * dist;
         const dy    = Math.sin(angle) * dist - 40;
         const rot   = (Math.random() - 0.5) * 720;
         const dur   = 1100 + Math.random() * 900;
         const delay = Math.random() * 250;
-        const sz    = 4 + Math.random() * 6;
+        const sz    = 3 + Math.random() * 8;
         f.style.width = f.style.height = sz + 'px';
         f.style.left = '50%'; f.style.top = '50%';
-        f.style.background = Math.random() < 0.6 ? '#F0635A' : '#F4A261';
+        f.style.background = Math.random() < 0.45 ? '#F0635A' : Math.random() < 0.75 ? '#F4A261' : '#FF8EC8';
         f.style.transform = 'translate(-50%,-50%)';
         shipParticles.appendChild(f);
         // Animate via WAAPI
@@ -6333,10 +6481,12 @@
         if (prevPhase === 0 && p === 1) fireSweep();
         else if (prevPhase === 1 && p === 2) {
           fireGlitch();
+          spawnStreaks(18);
           setTimeout(fireSweep, 100);
         }
         else if (prevPhase === 2 && p === 3) {
           fireSweep();
+          spawnStreaks(30);
           setTimeout(fireShipParticles, 80);
         }
       }
@@ -6749,9 +6899,9 @@
 
       // Shockwave + particles
       setTimeout(fireShockwave, 0);
-      setTimeout(() => spawnStreaks(34), 0);
-      setTimeout(() => spawnStreaks(22), 160);
-      setTimeout(() => spawnStreaks(14), 320);
+      setTimeout(() => spawnStreaks(42), 0);
+      setTimeout(() => spawnStreaks(28), 140);
+      setTimeout(() => spawnStreaks(18), 300);
       setTimeout(fireShipParticles, 80);
     }
 
@@ -6787,7 +6937,7 @@
       const ratio = currentRatio;
 
       // Responsive but smooth lerp so the build follows scroll without stutter
-      displayRatio += (ratio - displayRatio) * 0.32;
+      displayRatio += (ratio - displayRatio) * 0.26;
       if (Math.abs(displayRatio - ratio) < 0.002) displayRatio = ratio;
       diveRatio = displayRatio;
 
@@ -6828,27 +6978,48 @@
       const fcA = Math.max(0, Math.min(0.4, (displayRatio - 0.06) / 0.20));
       fc.style.opacity = fcA.toFixed(3);
 
-      const driftX = Math.sin(displayRatio * Math.PI * 1.15) * 4;
-      const driftY = Math.cos(displayRatio * Math.PI * 1.6) * -2 - displayRatio * 6;
-      const rotY = (displayRatio - 0.5) * 1.4;
-      const rotX = Math.sin(displayRatio * Math.PI * 1.4) * -0.9;
+      const phaseEnergy = Math.max(0, Math.min(1, (displayRatio - 0.06) / 0.9));
+      const phaseBloom = Math.sin(Math.min(1, displayRatio) * Math.PI);
+      const driftX = Math.sin(displayRatio * Math.PI * 1.35) * 12;
+      const driftY = Math.cos(displayRatio * Math.PI * 1.9) * -5 - displayRatio * 18;
+      const rotY = (displayRatio - 0.5) * 4.4 + Math.sin(displayRatio * Math.PI * 4.6) * 0.75;
+      const rotX = Math.sin(displayRatio * Math.PI * 1.7) * -2.1;
       targetCamera.shiftX = driftX;
       targetCamera.shiftY = driftY;
       targetCamera.rotX = rotX;
       targetCamera.rotY = rotY;
-      targetCamera.scale = 0.965 + displayRatio * 0.1;
+      targetCamera.scale = 0.94 + displayRatio * 0.16;
+      if (buildStage) {
+        buildStage.style.setProperty('--phase-energy', phaseEnergy.toFixed(3));
+        buildStage.style.setProperty('--phase-bloom', phaseBloom.toFixed(3));
+        buildStage.style.setProperty('--phase-spin', `${(displayRatio * 240).toFixed(2)}deg`);
+      }
 
       if (portalGlow) {
-        portalGlow.style.opacity = (0.14 + Math.max(0, Math.min(0.42, displayRatio * 0.52))).toFixed(3);
+        portalGlow.style.opacity = (0.16 + Math.max(0, Math.min(0.58, displayRatio * 0.72))).toFixed(3);
+        portalGlow.style.transform = `translate(-50%, -50%) scale(${(0.92 + displayRatio * 0.34).toFixed(3)})`;
+        portalGlow.style.filter = `blur(${(20 + displayRatio * 22).toFixed(1)}px) saturate(${(1.15 + displayRatio * 0.9).toFixed(2)})`;
       }
       if (edgeVignette) {
         edgeVignette.style.opacity = Math.max(0, Math.min(0.72, displayRatio * 0.82)).toFixed(3);
       }
       if (scanlines) {
-        scanlines.style.opacity = Math.max(0, Math.min(0.22, (displayRatio - 0.42) * 0.55)).toFixed(3);
+        scanlines.style.opacity = Math.max(0, Math.min(0.28, (displayRatio - 0.38) * 0.72)).toFixed(3);
       }
       if (mask) {
-        mask.style.opacity = Math.max(0, Math.min(0.28, displayRatio * 0.28)).toFixed(3);
+        mask.style.opacity = Math.max(0, Math.min(0.34, displayRatio * 0.34)).toFixed(3);
+      }
+      if (buildAurora) {
+        buildAurora.style.opacity = (0.08 + phaseEnergy * 0.46).toFixed(3);
+      }
+      if (buildStarfield) {
+        buildStarfield.style.opacity = (0.1 + phaseEnergy * 0.28).toFixed(3);
+      }
+      if (buildSigilGrid) {
+        buildSigilGrid.style.opacity = Math.max(0.04, (phaseEnergy * 0.22) + (displayRatio > 0.78 ? 0.06 : 0)).toFixed(3);
+      }
+      if (buildCosmos) {
+        buildCosmos.style.filter = `saturate(${(1.08 + phaseEnergy * 0.95).toFixed(2)}) contrast(${(1.02 + phaseEnergy * 0.16).toFixed(2)})`;
       }
 
       // ── PHASE GATING ──
@@ -6857,19 +7028,19 @@
       // 0.62→0.82 CODE (overlay appears, types out, dissolves)
       // 0.82→1.00 SHIPPED (final glow, deploy stamp)
       let p;
-      if      (displayRatio < 0.16) p = 0;
-      else if (displayRatio < 0.58) p = 1;
-      else if (displayRatio < 0.80) p = 2;
+      if      (displayRatio < 0.18) p = 0;
+      else if (displayRatio < 0.56) p = 1;
+      else if (displayRatio < 0.82) p = 2;
       else                          p = 3;
       if (bsIn) setPhase(p);
 
       // ── ASSEMBLY: 0.16 → 0.60 maps to assemblyT 0..1 ──
-      const assemT = Math.max(0, Math.min(1, (displayRatio - 0.13) / 0.49));
+      const assemT = Math.max(0, Math.min(1, (displayRatio - 0.15) / 0.45));
       setAssemblyProgress(assemT);
 
       // ── CODE OVERLAY: 0.62 → 0.80 maps to typing 0..1 ──
       if (p === 2) {
-        const codeT = (displayRatio - 0.58) / 0.20;
+        const codeT = (displayRatio - 0.56) / 0.26;
         const totalLines = codeLines.length;
         const visibleLines = Math.floor(codeT * totalLines);
         codeLines.forEach((line, i) => {
