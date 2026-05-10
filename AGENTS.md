@@ -45,30 +45,20 @@ If a section feels noisy or overbuilt, simplify it.
 # Visual Design Principles
 
 ## Hierarchy
-Use:
-- size
-- contrast
-- spacing
-- placement
-- color restraint
-
-to guide attention intentionally.
+Use size, contrast, spacing, placement, and restrained color to guide attention intentionally.
 
 Most important content should dominate visually.
 
 Users scan, not read.
 
----
-
 ## Whitespace
 Whitespace is critical.
 
 Premium interfaces breathe.
+
 Avoid cramped layouts.
 
 Use generous spacing between sections and grouped spacing within related content.
-
----
 
 ## Typography
 Typography carries the design.
@@ -80,17 +70,9 @@ Requirements:
 - clear contrast between headline, body, metadata, and labels
 - maximum ~6 font sizes per page
 
-Prefer:
-- confidence
-- clarity
-- readability
-
-over decorative typography.
-
----
+Prefer confidence, clarity, and readability over decorative typography.
 
 ## Color Philosophy
-
 Use mostly neutrals.
 
 Typical palette distribution:
@@ -113,11 +95,8 @@ Dark mode should feel cinematic and restrained:
 - subtle elevation
 - layered surfaces
 
----
-
 ## Depth & Shadows
-
-Shadows should be FELT, not noticed.
+Shadows should be felt, not noticed.
 
 Use:
 - soft blur
@@ -126,8 +105,7 @@ Use:
 
 Avoid aggressive shadows.
 
-In dark mode:
-- elevation comes from lighter surfaces, not stronger shadows.
+In dark mode, elevation comes from lighter surfaces, not stronger shadows.
 
 ---
 
@@ -226,11 +204,87 @@ The interface should feel:
 - calm
 - refined
 
-Reduce cognitive load:
+Reduce cognitive load through:
 - simple navigation
 - predictable layouts
 - obvious hierarchy
 - intentional spacing
+
+---
+
+# Agentic Engineering Principles
+
+Do not randomly “vibe code” by stacking prompts until something works.
+
+The correct workflow is agentic engineering: define clearly, then direct the AI to execute.
+
+Before building any feature or section, define:
+- what the final outcome should be
+- who the user is
+- what the user should be able to do
+- what success looks like
+- what information is needed
+- what constraints must be respected
+- what should NOT be included
+
+Never start with vague prompts like:
+- “make this better”
+- “build a dashboard”
+- “make it modern”
+- “add a cool section”
+
+Instead, use precise direction:
+- what the section does
+- what content it includes
+- what data it uses
+- what states it needs
+- how it should behave
+- how it should feel
+- how it should fit the existing design system
+
+Give the AI one clear job at a time.
+
+Build in small verified steps:
+1. Define the outcome.
+2. Build one section or feature.
+3. Test it.
+4. Review the design and code.
+5. Fix issues.
+6. Continue to the next step.
+
+Do not ask the AI to rebuild the entire app unless absolutely necessary.
+
+Each AI task should be small enough to inspect and verify before moving forward.
+
+After every change, review:
+- Did this solve the actual goal?
+- Did it introduce visual clutter?
+- Did it break the design system?
+- Did it create security risk?
+- Did it duplicate existing logic?
+- Did it make the code harder to maintain?
+
+The human is the director.
+
+AI is used for:
+- implementation
+- scaffolding
+- options
+- repetitive work
+- fast iteration
+
+The human is responsible for:
+- defining success
+- taste
+- hierarchy
+- architecture
+- restraint
+- security
+- final judgment
+
+The goal is not to prompt more.
+
+The goal is to think more clearly before prompting.
 
 ---
 
@@ -310,15 +364,21 @@ Humans are responsible for:
 - final polish
 
 Workflow:
-1. Generate fast
-2. Simplify aggressively
-3. Improve hierarchy
-4. Reduce clutter
-5. Improve spacing
-6. Add polish
-7. Audit security
-8. Refine interactions
-9. Deploy
+1. Define the outcome.
+2. Generate/build one focused piece.
+3. Simplify aggressively.
+4. Improve hierarchy.
+5. Reduce clutter.
+6. Improve spacing.
+7. Add polish.
+8. Test the change.
+9. Audit security.
+10. Refine interactions.
+11. Deploy.
+
+Before prompting Codex, get inspiration and animation ideas first, choose a direction, then create a precise implementation prompt.
+
+Do not let AI invent the taste from scratch.
 
 ---
 
@@ -335,5 +395,7 @@ The final result should feel:
 - professionally crafted
 
 Never generic.
+
 Never noisy.
+
 Never obviously AI-generated.
