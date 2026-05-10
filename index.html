@@ -14,7 +14,7 @@
   <meta name="description" content="Custom websites for local businesses. Beautiful, professional, polished, memorable, effective.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
@@ -4095,6 +4095,747 @@
       flex-shrink: 0;
     }
 
+    /* ── HERO: interactive markup field ── */
+    .hero {
+      --hero-ink: #0d1110;
+      --hero-ink-2: #111715;
+      --hero-paper: #f1ead9;
+      --hero-muted: rgba(241,234,217,0.64);
+      --hero-line: rgba(241,234,217,0.16);
+      --hero-clay: #d66b45;
+      --hero-blue: #7fa7ba;
+      --hero-yellow: #d5c96d;
+      --hero-green: #8fac84;
+      min-height: 100svh;
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+      color: var(--hero-paper);
+      background:
+        radial-gradient(circle at 78% 18%, rgba(127, 167, 186, 0.13), transparent 24%),
+        radial-gradient(circle at 18% 76%, rgba(214, 107, 69, 0.12), transparent 28%),
+        linear-gradient(135deg, #090d0c 0%, var(--hero-ink) 48%, #121814 100%) !important;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: -16%;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(rgba(241,234,217,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(241,234,217,0.03) 1px, transparent 1px);
+      background-size: 56px 56px;
+      opacity: 0.5;
+      transform: rotate(-2deg) scale(1.06);
+      mask-image: radial-gradient(circle at 56% 42%, #000 0 58%, transparent 82%);
+    }
+
+    .hero::after {
+      z-index: 3;
+      height: 16vh;
+      background: linear-gradient(to bottom, transparent 0%, rgba(13,17,16,0.72) 42%, #f7f8f5 100%) !important;
+    }
+
+    #whirlpool-container {
+      display: none !important;
+    }
+
+    nav {
+      background: rgba(9,13,12,0.9);
+      border-bottom-color: rgba(241,234,217,0.08);
+    }
+
+    nav .nav-cta {
+      background: #d5c96d !important;
+      color: #0d1110 !important;
+      border-radius: 0;
+      font-family: var(--font-mono);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero-bg-scraps {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .hero-bg-scraps::before,
+    .hero-bg-scraps::after {
+      content: '';
+      position: absolute;
+      border: 1px dashed rgba(241,234,217,0.10);
+      border-radius: 48% 52% 45% 55%;
+      opacity: 0.42;
+      animation: heroBlobBreathe 10s ease-in-out infinite;
+    }
+
+    .hero-bg-scraps::before {
+      width: 360px;
+      height: 260px;
+      right: 6%;
+      top: 14%;
+      transform: rotate(-7deg);
+    }
+
+    .hero-bg-scraps::after {
+      width: 300px;
+      height: 220px;
+      left: -5%;
+      bottom: 7%;
+      transform: rotate(10deg);
+      animation-delay: -3s;
+    }
+
+    .markup-float {
+      position: absolute;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      color: rgba(241,234,217,0.22);
+      transform: rotate(var(--r, 0deg));
+      animation: markupDrift 8s ease-in-out infinite;
+    }
+
+    .markup-float:nth-child(1) { left: 7%; top: 24%; --r: -8deg; color: rgba(143,172,132,0.48); }
+    .markup-float:nth-child(2) { left: 43%; top: 13%; --r: 4deg; animation-delay: -2s; color: rgba(213,201,109,0.44); }
+    .markup-float:nth-child(3) { right: 7%; bottom: 14%; --r: -4deg; animation-delay: -4s; color: rgba(214,107,69,0.46); }
+
+    .hero-content {
+      display: grid;
+      grid-template-columns: minmax(500px, 0.82fr) minmax(520px, 0.9fr);
+      align-items: center;
+      max-width: 1440px;
+      min-height: 100svh;
+      padding: 106px clamp(28px, 5vw, 76px) 76px;
+      gap: clamp(34px, 4.6vw, 68px);
+      z-index: 4;
+    }
+
+    .hero-left {
+      max-width: 650px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .hero-eyebrow {
+      align-items: center;
+      width: fit-content;
+      margin-bottom: 22px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: rgba(143,172,132,0.78) !important;
+      box-shadow: none;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: none;
+      transform: rotate(-0.5deg);
+    }
+
+    .hero-eyebrow::before {
+      display: none;
+    }
+
+    .hero-headline {
+      font-family: var(--font-body);
+      font-size: clamp(44px, 4.45vw, 66px);
+      font-weight: 800;
+      line-height: 0.96;
+      letter-spacing: -0.055em;
+      max-width: 650px;
+      margin-bottom: 28px;
+      color: var(--hero-paper);
+      text-wrap: balance;
+    }
+
+    .hero-headline .line {
+      display: block;
+    }
+
+    .hero-headline .hl-dim,
+    .hero-headline .hl-accent,
+    .hero-headline .hl-outlined {
+      color: var(--hero-paper) !important;
+    }
+
+    .hero-headline .hl-accent {
+      color: var(--hero-paper) !important;
+      background: none;
+    }
+
+    .hero-headline .hl-outlined {
+      color: var(--hero-paper) !important;
+    }
+
+    .hero-sub {
+      max-width: 590px;
+      margin-bottom: 32px;
+      color: var(--hero-muted) !important;
+      font-size: clamp(15px, 1.12vw, 18px);
+      line-height: 1.75;
+    }
+
+    .hero-sub::after {
+      content: '';
+      display: block;
+      width: min(280px, 64%);
+      height: 1px;
+      margin-top: 5px;
+      background: var(--hero-yellow);
+      opacity: 0.54;
+      transform: rotate(-1deg);
+    }
+
+    .hero-actions {
+      gap: 14px;
+    }
+
+    .hero-actions .btn {
+      border-radius: 0;
+      border: 1px solid rgba(241,234,217,0.42);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 14px 22px;
+      box-shadow: none !important;
+      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+    }
+
+    .hero-actions .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: none !important;
+    }
+
+    .hero-actions .btn-primary {
+      background: var(--hero-yellow) !important;
+      color: #0d1110 !important;
+      border-color: var(--hero-yellow) !important;
+    }
+
+    .hero-actions .btn-primary:hover {
+      background: #e0d875 !important;
+    }
+
+    .hero-actions .btn-secondary {
+      background: transparent !important;
+      color: rgba(241,234,217,0.86) !important;
+      border-color: rgba(241,234,217,0.34) !important;
+    }
+
+    .hero-actions .btn-secondary:hover {
+      background: rgba(241,234,217,0.06) !important;
+      border-color: rgba(241,234,217,0.56) !important;
+    }
+
+    .hero-stats {
+      display: none;
+    }
+
+    .hero-system {
+      position: relative;
+      min-height: clamp(460px, 51vw, 640px);
+      z-index: 4;
+      pointer-events: auto;
+    }
+
+    .hero-system::before {
+      content: '';
+      position: absolute;
+      inset: 44px 10px 30px 30px;
+      border: 1px dashed rgba(241,234,217,0.12);
+      transform: rotate(1deg);
+      pointer-events: none;
+    }
+
+    .markup-field {
+      position: relative;
+      width: min(calc(100% - clamp(72px, 5.5vw, 92px)), 620px);
+      height: clamp(430px, 50vw, 620px);
+      margin-left: auto;
+      margin-right: clamp(72px, 5.5vw, 92px);
+      border: 1.5px dashed rgba(241,234,217,0.34);
+      background:
+        radial-gradient(circle at 50% 45%, rgba(241,234,217,0.072), transparent 34%),
+        radial-gradient(circle at 78% 30%, rgba(127,167,186,0.12), transparent 26%),
+        radial-gradient(circle at 28% 78%, rgba(214,107,69,0.10), transparent 28%),
+        rgba(12,16,15,0.78);
+      box-shadow: 0 38px 92px rgba(0,0,0,0.32), inset 0 0 0 1px rgba(241,234,217,0.06);
+      overflow: hidden;
+      isolation: isolate;
+      cursor: crosshair;
+      touch-action: manipulation;
+    }
+
+    .markup-field::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background:
+        linear-gradient(rgba(241,234,217,0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(241,234,217,0.04) 1px, transparent 1px);
+      background-size: 52px 52px;
+      opacity: 0.52;
+      pointer-events: none;
+    }
+
+    .markup-field::after {
+      content: '';
+      position: absolute;
+      inset: 18px;
+      z-index: 1;
+      border: 1px dashed rgba(241,234,217,0.16);
+      pointer-events: none;
+    }
+
+    .field-code-label,
+    .field-sticker,
+    .field-note,
+    .symbol-word-ghost,
+    .field-wireframe {
+      position: absolute;
+      font-family: var(--font-mono);
+      pointer-events: none;
+    }
+
+    .field-code-label {
+      z-index: 5;
+      color: rgba(241,234,217,0.58);
+      font-size: 11px;
+      letter-spacing: 0.03em;
+      background: rgba(13,17,16,0.72);
+      border: 1px solid rgba(241,234,217,0.08);
+      padding: 6px 8px;
+    }
+
+    .field-code-label-top { top: 18px; left: 24px; }
+    .field-code-label-bottom { right: 18px; bottom: 18px; }
+    .field-code-label-left {
+      left: 8px;
+      top: 58%;
+      color: var(--hero-clay);
+      transform: translateY(-50%) rotate(-90deg);
+      transform-origin: left center;
+    }
+    .field-code-label-right {
+      right: -18px;
+      top: 22%;
+      color: var(--hero-blue);
+      transform: rotate(90deg);
+    }
+
+    .field-sticker {
+      z-index: 6;
+      padding: 6px 9px;
+      border: 1px solid rgba(13,17,16,0.84);
+      color: #0d1110;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.20);
+    }
+
+    .field-sticker-html {
+      left: 18px;
+      bottom: 25%;
+      background: var(--hero-clay);
+      transform: rotate(-1.5deg);
+    }
+
+    .field-sticker-css {
+      right: 20px;
+      top: 18%;
+      background: #b9a6ca;
+      transform: rotate(1.5deg);
+      writing-mode: vertical-rl;
+    }
+
+    .field-sticker-visibility {
+      right: 11%;
+      top: 38%;
+      background: transparent;
+      color: rgba(241,234,217,0.76);
+      border: 0;
+      box-shadow: none;
+      text-transform: lowercase;
+      letter-spacing: 0.02em;
+    }
+
+    .field-sticker-visibility::before,
+    .field-sticker-trust::before {
+      content: '>';
+      margin-right: 6px;
+      color: var(--hero-yellow);
+    }
+
+    .field-sticker-visibility::after,
+    .field-sticker-trust::after {
+      content: '';
+      display: block;
+      height: 1px;
+      margin-top: 2px;
+      background: currentColor;
+      opacity: 0.36;
+    }
+
+    .field-sticker-trust {
+      left: 13%;
+      bottom: 17%;
+      background: transparent;
+      color: rgba(241,234,217,0.64);
+      border: 0;
+      box-shadow: none;
+      text-transform: lowercase;
+      letter-spacing: 0.02em;
+    }
+
+    .field-note {
+      --note-ink: rgba(213, 190, 99, 0.78);
+      z-index: 9;
+      right: clamp(-58px, -4vw, -38px);
+      top: 39%;
+      width: 140px;
+      color: var(--note-ink);
+      font-family: 'Caveat', 'Source Serif 4', cursive;
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 0.9;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      pointer-events: auto;
+      opacity: 0.84;
+      transform: translateY(-50%) rotate(-7deg);
+      transform-origin: 22% 58%;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.16));
+      animation: annotationDrift 6.8s ease-in-out infinite;
+      mix-blend-mode: screen;
+    }
+
+    .field-note b {
+      position: relative;
+      display: inline-block;
+      margin-left: 48px;
+      color: transparent;
+      font: inherit;
+      text-shadow: 0.35px -0.2px rgba(213, 190, 99, 0.50), -0.45px 0.35px rgba(188, 118, 69, 0.32);
+      background:
+        linear-gradient(91deg, rgba(213,190,99,0.72), rgba(196,128,76,0.66) 46%, rgba(213,190,99,0.78)),
+        repeating-linear-gradient(94deg, rgba(255,255,255,0.18) 0 1px, transparent 1px 4px);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    .field-note b::after {
+      content: '';
+      position: absolute;
+      left: 2px;
+      right: -4px;
+      bottom: -10px;
+      height: 12px;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 122 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 10 C24 4 44 13 67 7 C87 2 103 7 120 4' fill='none' stroke='%23d5be63' stroke-width='2.4' stroke-linecap='round' opacity='.72'/%3E%3Cpath d='M6 12 C31 8 47 14 72 9 C91 6 105 10 118 7' fill='none' stroke='%23bc7645' stroke-width='1.2' stroke-linecap='round' opacity='.38'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+      transform: rotate(1.5deg);
+      opacity: 0.72;
+    }
+
+    .field-note-arrow {
+      position: absolute;
+      left: -18px;
+      top: -22px;
+      width: 106px;
+      height: 72px;
+      overflow: visible;
+      color: var(--note-ink);
+      opacity: 0.78;
+      transform: rotate(2deg);
+      animation: annotationArrowBreathe 3.8s ease-in-out infinite;
+    }
+
+    .field-note-arrow path {
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .field-note:hover {
+      animation: annotationJitter 0.34s steps(2, end) infinite;
+      opacity: 0.94;
+    }
+
+    @keyframes annotationDrift {
+      0%, 100% { transform: translate(0, -50%) rotate(-7deg); }
+      42% { transform: translate(1px, calc(-50% - 2px)) rotate(-6.2deg); }
+      68% { transform: translate(-1px, calc(-50% + 1px)) rotate(-7.8deg); }
+    }
+
+    @keyframes annotationArrowBreathe {
+      0%, 100% { transform: translate(0, 0) rotate(2deg) scale(1); opacity: 0.70; }
+      50% { transform: translate(-2px, 1px) rotate(0deg) scale(1.025); opacity: 0.88; }
+    }
+
+    @keyframes annotationJitter {
+      0%, 100% { transform: translate(0, -50%) rotate(-7deg); }
+      33% { transform: translate(1px, calc(-50% - 1px)) rotate(-8.5deg); }
+      66% { transform: translate(-1px, calc(-50% + 1px)) rotate(-5.8deg); }
+    }
+
+    .symbol-stage {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+    }
+
+    .symbol-particle {
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      line-height: 1;
+      user-select: none;
+      pointer-events: none;
+      will-change: transform, opacity, filter;
+      text-shadow: 0 0 10px rgba(241,234,217,0.06);
+    }
+
+    .symbol-particle.is-word {
+      color: var(--hero-paper) !important;
+      font-weight: 700;
+      text-shadow: 0 0 16px rgba(213,201,109,0.30);
+      z-index: 8;
+    }
+
+    .symbol-word-ghost {
+      z-index: 2;
+      left: 50%;
+      top: 52%;
+      color: rgba(241,234,217,0.13);
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: lowercase;
+      opacity: 0;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.28s ease, transform 0.28s ease;
+      white-space: nowrap;
+    }
+
+    .symbol-word-ghost.is-visible {
+      opacity: 1;
+      transform: translate(-50%, -53%);
+    }
+
+    .symbol-word-ghost::after {
+      content: '';
+      position: absolute;
+      left: 4%;
+      right: 7%;
+      bottom: -6px;
+      height: 2px;
+      background: var(--hero-yellow);
+      opacity: 0.34;
+      transform: rotate(-1deg);
+    }
+
+    .field-wireframe {
+      z-index: 2;
+      left: 50%;
+      bottom: 42px;
+      width: min(190px, 36%);
+      height: min(250px, 42%);
+      border: 1px solid rgba(241,234,217,0.18);
+      opacity: 0;
+      transform: translateX(-50%) translateY(24px);
+      transition: opacity 0.22s ease;
+    }
+
+    .field-wireframe::before {
+      content: '<layout>';
+      position: absolute;
+      left: 10px;
+      top: -24px;
+      color: rgba(143,172,132,0.52);
+      font-size: 10px;
+    }
+
+    .field-wireframe span {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      height: 1px;
+      background: rgba(241,234,217,0.16);
+    }
+
+    .field-wireframe span:nth-child(1) { top: 24%; height: 22px; background: rgba(241,234,217,0.10); }
+    .field-wireframe span:nth-child(2) { top: 46%; width: 54%; }
+    .field-wireframe span:nth-child(3) { top: 59%; width: 72%; }
+    .field-wireframe span:nth-child(4) { top: 74%; width: 42%; background: rgba(214,107,69,0.25); }
+
+    .markup-field.is-scrolling .field-wireframe {
+      opacity: 1;
+    }
+
+    .markup-field.is-active {
+      border-color: rgba(213,201,109,0.42);
+      box-shadow: 0 38px 92px rgba(0,0,0,0.32), 0 0 0 1px rgba(213,201,109,0.08), inset 0 0 0 1px rgba(241,234,217,0.055);
+    }
+
+    .scroll-tag {
+      position: absolute;
+      left: clamp(24px, 5vw, 76px);
+      bottom: 28px;
+      z-index: 5;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.10em;
+      color: rgba(241,234,217,0.38);
+      animation: markupDrift 2.6s ease-in-out infinite;
+    }
+
+    .hero-status-bar {
+      display: none;
+    }
+
+    @keyframes heroBlobBreathe {
+      0%, 100% { border-radius: 42% 58% 50% 50%; transform: rotate(-7deg) scale(1); }
+      50% { border-radius: 55% 45% 58% 42%; transform: rotate(-4deg) scale(1.018); }
+    }
+
+    @keyframes markupDrift {
+      0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+      50% { transform: translateY(-8px) rotate(calc(var(--r, 0deg) + 2deg)); }
+    }
+
+    @media (max-width: 980px) {
+      .hero-content {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        padding: 104px 24px 84px;
+        gap: 38px;
+      }
+      .hero-left {
+        max-width: 760px;
+      }
+      .hero-headline {
+        font-size: clamp(44px, 12.5vw, 66px);
+        letter-spacing: -0.06em;
+      }
+      .hero-sub {
+        max-width: 96%;
+      }
+      .hero-system {
+        min-height: 370px;
+      }
+      .hero-system::before {
+        display: none;
+      }
+      .markup-field {
+        width: 100%;
+        height: min(380px, 76vw);
+        margin: 0;
+      }
+      .field-sticker-trust,
+      .field-sticker-visibility {
+        display: none;
+      }
+      .field-note {
+        right: -26px;
+        top: 31%;
+        width: 142px;
+        font-size: 25px;
+      }
+      .field-note-arrow {
+        width: 94px;
+        height: 64px;
+      }
+      .field-code-label {
+        font-size: 9px;
+      }
+      .field-code-label-left,
+      .field-code-label-right {
+        display: none;
+      }
+      .scroll-tag {
+        left: 24px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      nav {
+        padding: 0 16px;
+      }
+      nav img {
+        height: 42px;
+      }
+      .nav-links {
+        display: none;
+      }
+      nav .nav-cta {
+        padding: 8px 10px !important;
+        font-size: 9px !important;
+        letter-spacing: 0.04em;
+      }
+      .hero-content {
+        padding: 98px 24px 68px;
+      }
+      .hero-headline {
+        max-width: min(342px, calc(100vw - 48px));
+        font-size: clamp(30px, 8vw, 34px);
+        line-height: 1.02;
+        letter-spacing: -0.045em;
+        text-wrap: initial;
+      }
+      .hero-headline .line {
+        display: block;
+      }
+      .hero-headline .line::after {
+        content: '';
+      }
+      .hero-sub {
+        max-width: min(330px, calc(100vw - 48px));
+      }
+      .markup-float:nth-child(2) {
+        display: none;
+      }
+      .hero-actions {
+        width: min(342px, 100%);
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .hero-actions .btn {
+        justify-content: center;
+      }
+      .markup-field {
+        max-width: min(342px, calc(100vw - 48px));
+        height: 330px;
+      }
+      .field-sticker-css {
+        display: none;
+      }
+      .field-note {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .field-note,
+      .field-note-arrow,
+      .field-note:hover {
+        animation: none;
+      }
+    }
+
     /* Consistent mono label style used across sections */
     .mono-label {
       font-family: var(--font-mono);
@@ -4171,25 +4912,31 @@
   </nav>
 
   <section class="hero" id="hero">
-    <canvas id="particle-canvas"></canvas>
+    <div class="hero-bg-scraps" aria-hidden="true">
+      <span class="markup-float">&lt;section&gt;</span>
+      <span class="markup-float">/* visible again */</span>
+      <span class="markup-float">&lt;/div&gt;</span>
+    </div>
 
     <!-- MAIN CONTENT GRID -->
     <div class="hero-content" id="hero-content">
 
       <!-- LEFT — headline + CTA -->
       <div class="hero-left" id="hero-left">
-        <div class="hero-eyebrow" id="hero-eyebrow">Custom websites for businesses without one</div>
+        <div class="hero-eyebrow" id="hero-eyebrow">&lt;!-- digital presence check --&gt;</div>
 
         <h1 class="hero-headline" id="hero-headline">
-          <span class="line hl-dim" id="hl1">Start getting customers</span>
-          <span class="line hl-accent" id="hl2">from your website.</span>
+          <span class="line hl-dim" id="hl1">If you’re invisible</span>
+          <span class="line hl-accent" id="hl2">online, you’re</span>
+          <span class="line hl-outlined clarity-word" id="hl3">invisible to</span>
+          <span class="line hl-outlined">customers.</span>
         </h1>
 
-        <p class="hero-sub" id="hero-sub">If people already search for what you do, your business should be there when they’re ready to call.</p>
+        <p class="hero-sub" id="hero-sub">Too many great businesses lose opportunities online because their digital presence fails to reflect the quality of their work.</p>
 
         <div class="hero-actions" id="hero-actions">
-          <a href="#contact" onclick="jumpToContact(event)" class="btn btn-primary magnetic-btn" style="font-size:15px;padding:15px 32px;box-shadow:0 10px 28px rgba(47,111,143,0.18);">Build my site</a>
-          <a href="#pricing" onclick="jumpToPricing(event)" class="btn" style="background:rgba(255,255,255,0.74);color:rgba(23,33,29,0.9);border:1.5px solid rgba(23,33,29,0.14);border-radius:999px;padding:13px 28px;font-size:14px;font-weight:600;transition:all 0.2s;">See pricing</a>
+          <a href="#contact" onclick="jumpToContact(event)" class="btn btn-primary magnetic-btn">Start a project →</a>
+          <a href="#process" class="btn btn-secondary">See the process</a>
         </div>
 
         <div class="hero-stats" id="hero-stats">
@@ -4200,19 +4947,38 @@
       </div>
 
       <div class="hero-system" aria-hidden="true">
-        <div class="signal-shell">
-          <svg class="signal-path" viewBox="0 0 390 390" preserveAspectRatio="none">
-            <path d="M48 92 C 138 78, 148 174, 195 195 S 276 238, 340 152" />
-            <path d="M82 318 C 132 238, 176 228, 195 195 S 242 120, 312 138" />
-            <path d="M32 250 C 96 214, 132 196, 195 195 S 296 178, 358 266" />
+        <div class="markup-field" id="symbol-field">
+          <span class="field-code-label field-code-label-top">&lt;div class="presence"&gt;</span>
+          <span class="field-code-label field-code-label-bottom">&lt;/div&gt;</span>
+          <span class="field-code-label field-code-label-left">HTML</span>
+          <span class="field-code-label field-code-label-right">CSS</span>
+
+          <span class="field-sticker field-sticker-html">HTML</span>
+          <span class="field-sticker field-sticker-css">CSS</span>
+          <span class="field-sticker field-sticker-visibility">visibility</span>
+          <span class="field-sticker field-sticker-trust">trust</span>
+
+          <div class="symbol-word-ghost" id="symbol-word-ghost">visibility</div>
+          <div class="symbol-stage" id="symbol-stage"></div>
+          <div class="field-wireframe" id="field-wireframe">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+        <div class="field-note">
+          <svg class="field-note-arrow" viewBox="0 0 120 82" aria-hidden="true" focusable="false">
+            <path d="M114 43 C92 35 75 34 59 41 C44 47 35 58 18 57" stroke-width="2.2" opacity=".82"></path>
+            <path d="M111 46 C91 38 72 38 57 44 C42 50 33 60 17 60" stroke-width="1.1" opacity=".36"></path>
+            <path d="M23 47 C19 52 15 56 9 59 C15 61 20 64 24 69" stroke-width="2.1" opacity=".82"></path>
+            <path d="M26 49 C21 54 18 57 13 60 C18 61 23 64 27 67" stroke-width="1" opacity=".38"></path>
           </svg>
-          <div class="signal-core">Site live<span>calls can land</span></div>
-          <div class="signal-card">service near me</div>
-          <div class="signal-card">quote request</div>
-          <div class="signal-card">ready to book</div>
+          <b>INTERACT</b>
         </div>
       </div>
     </div>
+    <div class="scroll-tag" aria-hidden="true">&lt;scroll&gt;</div>
   </section>
 
   <section id="showcase">
@@ -5106,270 +5872,275 @@
      MEDIOCRE MARKUP — FULL ANIMATION SYSTEM
      ════════════════════════════════════════════════════════ */
 
-  /* ── 1. HERO SYMBOL TEXTURE ── */
+  /* ── 1. HERO SYMBOL FIELD ── */
   {
-    const canvas = document.getElementById('particle-canvas');
-    if (canvas) {
-      const ctx = canvas.getContext('2d');
-      const symbols = ['</', '/>', '{}', '()', '=>', '[]', '//', 'px', 'url', 'fn', 'seo', 'tel'];
-      let W = 0, H = 0, DPR = 1, motes = [], threads = [], pulses = [];
-      let mouseX = -1000, mouseY = -1000, running = true;
+    const field = document.getElementById('symbol-field');
+    const stage = document.getElementById('symbol-stage');
+    const ghost = document.getElementById('symbol-word-ghost');
+    const hero = document.getElementById('hero');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      function resizeHeroTexture() {
-        DPR = window.devicePixelRatio || 1;
-        W = canvas.offsetWidth;
-        H = canvas.offsetHeight;
-        canvas.width = W * DPR;
-        canvas.height = H * DPR;
-        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-        seedHeroPhysics();
+    if (field && stage) {
+      const symbols = ['<', '>', '/', '{', '}', '#', '.', '*', ';', 'px', 'div', 'css', 'html', '</>', '{}', '/*', '*/'];
+      const words = ['visibility', 'trust', 'clarity', 'found', 'credible'];
+      const palette = ['#f1ead9', '#d66b45', '#7fa7ba', '#d5c96d', '#8fac84', '#b9a6ca'];
+      const pointer = { x: -9999, y: -9999, active: false, enteredAt: 0, movedAt: 0, moves: 0 };
+      let particles = [];
+      let activeWord = null;
+      let wordIndex = 0;
+      let lastReveal = 0;
+      let width = 1;
+      let height = 1;
+      let scrollProgress = 0;
+      let seed = 24051986;
+
+      function rand() {
+        seed = (seed * 1664525 + 1013904223) >>> 0;
+        return seed / 4294967296;
       }
 
-      function seedHeroPhysics() {
-        const isSmall = window.innerWidth < 760;
-        const count = isSmall ? 26 : 54;
-        const attractor = getAttractor();
-        motes = [];
-        threads = [];
-        pulses = [];
+      function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+      }
+
+      function particleCount() {
+        if (window.innerWidth < 560) return 42;
+        if (window.innerWidth < 980) return 68;
+        return 118;
+      }
+
+      function seedParticles() {
+        seed = 24051986;
+        width = field.clientWidth || 1;
+        height = field.clientHeight || 1;
+        particles = [];
+        activeWord = null;
+        ghost?.classList.remove('is-visible');
+        stage.replaceChildren();
+
+        const count = particleCount();
+        const cols = Math.ceil(Math.sqrt(count * 1.35));
+        const rows = Math.ceil(count / cols);
 
         for (let i = 0; i < count; i++) {
-          const lane = i / Math.max(1, count - 1);
-          const side = Math.random() < 0.64 ? 1 : -1;
-          const orbit = 80 + Math.random() * (isSmall ? 170 : 260);
-          const angle = lane * Math.PI * 2 + Math.random() * 0.8;
-          const ax = attractor.x + Math.cos(angle) * orbit * side;
-          const ay = attractor.y + Math.sin(angle) * orbit * 0.72;
-          motes.push({
-            ax: Math.max(24, Math.min(W - 24, ax)),
-            ay: Math.max(76, Math.min(H - 40, ay)),
-            x: Math.random() * W,
-            y: Math.random() * H,
+          const col = i % cols;
+          const row = Math.floor(i / cols);
+          const symbol = symbols[Math.floor(rand() * symbols.length)];
+          const baseXN = clamp((col + 0.28 + rand() * 0.66) / cols, 0.06, 0.94);
+          const baseYN = clamp((row + 0.24 + rand() * 0.68) / rows, 0.08, 0.92);
+          const el = document.createElement('span');
+          const size = (window.innerWidth < 560 ? 10 : 11) + rand() * (symbol.length > 2 ? 4 : 7);
+
+          el.className = 'symbol-particle';
+          el.textContent = symbol;
+          el.style.fontSize = `${size.toFixed(1)}px`;
+          el.style.color = palette[Math.floor(rand() * palette.length)];
+          stage.appendChild(el);
+
+          particles.push({
+            el,
+            symbol,
+            baseXN,
+            baseYN,
+            x: baseXN * width,
+            y: baseYN * height,
             vx: 0,
             vy: 0,
-            radius: 10 + Math.random() * 12,
-            mass: 0.8 + Math.random() * 0.8,
-            sym: symbols[i % symbols.length],
-            size: 8 + Math.random() * 6,
-            alpha: 0.04 + Math.random() * 0.08,
-            phase: Math.random() * Math.PI * 2,
-            pull: 0.006 + Math.random() * 0.007,
-            orbit: 0.2 + Math.random() * 0.55
+            phase: rand() * Math.PI * 2,
+            driftX: 4 + rand() * 14,
+            driftY: 5 + rand() * 16,
+            speed: 0.42 + rand() * 0.7,
+            rotation: -10 + rand() * 20,
+            rotationSpeed: -0.18 + rand() * 0.36,
+            baseOpacity: 0.46 + rand() * 0.40,
+            target: null,
+            wordChar: null
           });
         }
-
-        for (let i = 0; i < motes.length; i++) {
-          const target = (i + 5 + Math.floor(Math.random() * 9)) % motes.length;
-          if (i !== target) threads.push([i, target]);
-        }
       }
 
-      function getAttractor() {
-        const isSmall = window.innerWidth < 760;
-        return {
-          x: isSmall ? W * 0.52 : W * 0.76,
-          y: isSmall ? H * 0.67 : H * 0.48
-        };
+      function releaseWord() {
+        if (!activeWord) return;
+        activeWord.particles.forEach(p => {
+          p.target = null;
+          p.wordChar = null;
+          p.el.textContent = p.symbol;
+          p.el.classList.remove('is-word');
+        });
+        activeWord = null;
+        ghost?.classList.remove('is-visible');
       }
 
-      function drawGrid() {
-        ctx.save();
-        ctx.strokeStyle = 'rgba(23,33,29,0.035)';
-        ctx.lineWidth = 1;
-        for (let x = -20; x < W + 20; x += 42) {
-          ctx.beginPath();
-          ctx.moveTo(x, 0);
-          ctx.lineTo(x + H * 0.12, H);
-          ctx.stroke();
-        }
-        for (let y = 82; y < H; y += 42) {
-          ctx.beginPath();
-          ctx.moveTo(0, y);
-          ctx.lineTo(W, y - W * 0.04);
-          ctx.stroke();
-        }
-        ctx.restore();
-      }
+      function revealWord(now, force = false) {
+        if (reducedMotion || !particles.length) return;
+        if (activeWord && !force && now < activeWord.releaseAt - 280) return;
 
-      function drawOrganicHull(points, t) {
-        if (points.length < 4) return;
-        const attractor = getAttractor();
-        const hull = points
+        releaseWord();
+
+        const text = words[wordIndex % words.length];
+        wordIndex += 1;
+
+        const spacing = clamp(width / (text.length + 8), 18, 34);
+        const wordWidth = (text.length - 1) * spacing;
+        const centerX = clamp(pointer.active ? pointer.x : width * 0.54, wordWidth / 2 + 42, width - wordWidth / 2 - 42);
+        const centerY = clamp(pointer.active ? pointer.y : height * 0.52, height * 0.28, height * 0.72);
+        const startX = centerX - wordWidth / 2;
+        const candidates = particles
           .slice()
-          .sort((a, b) => Math.atan2(a.y - attractor.y, a.x - attractor.x) - Math.atan2(b.y - attractor.y, b.x - attractor.x))
-          .filter((_, i) => i % 3 === 0)
-          .slice(0, 16);
+          .sort((a, b) => (Math.abs(a.x - centerX) + Math.abs(a.y - centerY)) - (Math.abs(b.x - centerX) + Math.abs(b.y - centerY)))
+          .slice(0, text.length);
 
-        ctx.save();
-        ctx.beginPath();
-        hull.forEach((p, i) => {
-          const wobble = Math.sin(t * 0.0005 + p.phase) * 8;
-          const x = p.x + wobble;
-          const y = p.y + Math.cos(t * 0.0004 + p.phase) * 7;
-          if (i === 0) ctx.moveTo(x, y);
-          else {
-            const prev = hull[i - 1];
-            ctx.quadraticCurveTo(prev.x, prev.y, x, y);
-          }
+        candidates.forEach((p, i) => {
+          p.wordChar = text[i];
+          p.target = {
+            x: startX + i * spacing + Math.sin(i * 1.7) * 1.4,
+            y: centerY + Math.cos(i * 1.15) * 2.2,
+            rotation: -2 + Math.sin(i * 0.9) * 4
+          };
+          p.el.textContent = text[i];
+          p.el.classList.add('is-word');
         });
-        ctx.closePath();
-        ctx.fillStyle = 'rgba(47,111,143,0.025)';
-        ctx.strokeStyle = 'rgba(47,111,143,0.07)';
-        ctx.lineWidth = 1;
-        ctx.fill();
-        ctx.stroke();
-        ctx.restore();
-      }
 
-      function spawnPulse(t) {
-        if (pulses.length > 8) return;
-        const attractor = getAttractor();
-        const side = Math.random() < 0.5 ? -1 : 1;
-        pulses.push({
-          x: side < 0 ? -30 : W + 30,
-          y: H * (0.18 + Math.random() * 0.56),
-          tx: attractor.x + (Math.random() - 0.5) * 70,
-          ty: attractor.y + (Math.random() - 0.5) * 70,
-          life: 0,
-          speed: 0.006 + Math.random() * 0.004,
-          label: Math.random() < 0.5 ? 'search' : 'call'
-        });
-      }
-
-      resizeHeroTexture();
-      window.addEventListener('resize', resizeHeroTexture);
-      document.addEventListener('visibilitychange', () => {
-        running = !document.hidden;
-        if (running) requestAnimationFrame(drawHeroTexture);
-      });
-      document.getElementById('hero').addEventListener('mousemove', e => {
-        const r = canvas.getBoundingClientRect();
-        mouseX = e.clientX - r.left;
-        mouseY = e.clientY - r.top;
-      });
-      document.getElementById('hero').addEventListener('mouseleave', () => {
-        mouseX = -1000;
-        mouseY = -1000;
-      });
-
-      function drawHeroTexture(t) {
-        if (!running) return;
-        ctx.clearRect(0, 0, W, H);
-        drawGrid();
-        if (Math.random() < 0.018) spawnPulse(t);
-
-        const attractor = getAttractor();
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(attractor.x, attractor.y, 128 + Math.sin(t * 0.001) * 8, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(47,111,143,0.07)';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(attractor.x, attractor.y, 76 + Math.cos(t * 0.0012) * 5, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(23,33,29,0.06)';
-        ctx.stroke();
-        ctx.restore();
-
-        for (let a = 0; a < motes.length; a++) {
-          const m = motes[a];
-          for (let b = a + 1; b < motes.length; b++) {
-            const n = motes[b];
-            const dx = n.x - m.x;
-            const dy = n.y - m.y;
-            const dist = Math.hypot(dx, dy);
-            const min = m.radius + n.radius + 10;
-            if (dist < min && dist > 0.01) {
-              const push = (min - dist) * 0.004;
-              const nx = dx / dist;
-              const ny = dy / dist;
-              m.vx -= nx * push / m.mass;
-              m.vy -= ny * push / m.mass;
-              n.vx += nx * push / n.mass;
-              n.vy += ny * push / n.mass;
-            }
-          }
+        if (ghost) {
+          ghost.textContent = text;
+          ghost.style.left = `${(centerX / width) * 100}%`;
+          ghost.style.top = `${(centerY / height) * 100}%`;
+          ghost.classList.add('is-visible');
         }
 
-        motes.forEach(m => {
-          const orbitX = Math.cos(t * 0.00022 * m.orbit + m.phase) * 28;
-          const orbitY = Math.sin(t * 0.00018 * m.orbit + m.phase) * 22;
-          const tx = m.ax + orbitX + (attractor.x - m.ax) * 0.035;
-          const ty = m.ay + orbitY + (attractor.y - m.ay) * 0.035;
-          const dx = m.x - mouseX;
-          const dy = m.y - mouseY;
-          const d = Math.hypot(dx, dy);
-          if (d < 170 && d > 0) {
-            const force = (170 - d) / 170;
-            m.vx += (dx / d) * force * 0.22;
-            m.vy += (dy / d) * force * 0.22;
-          }
-          m.vx += (tx - m.x) * m.pull;
-          m.vy += (ty - m.y) * m.pull;
-          m.vx += (attractor.x - m.x) * 0.0007;
-          m.vy += (attractor.y - m.y) * 0.0007;
-          m.vx *= 0.9;
-          m.vy *= 0.9;
-          m.x += m.vx;
-          m.y += m.vy;
-        });
+        activeWord = { particles: candidates, releaseAt: now + 1850 };
+        lastReveal = now;
+      }
 
-        drawOrganicHull(motes, t);
+      function outlineTarget(index) {
+        const frameW = Math.min(width * 0.42, 215);
+        const frameH = Math.min(height * 0.52, 310);
+        const left = width * 0.5 - frameW / 2;
+        const top = height * 0.42 - frameH / 2 + height * 0.16;
+        const t = (index * 0.61803398875) % 1;
 
-        threads.forEach(([a, b], i) => {
-          const m = motes[a];
-          const n = motes[b];
-          if (!m || !n) return;
-          const dx = n.x - m.x;
-          const dy = n.y - m.y;
-          const dist = Math.hypot(dx, dy);
-          if (dist > 240) return;
-          const alpha = Math.max(0, 1 - dist / 240) * 0.14;
-          const cx = (m.x + n.x) / 2 + Math.sin(t * 0.0004 + i) * 18;
-          const cy = (m.y + n.y) / 2 + Math.cos(t * 0.0003 + i) * 16;
-          ctx.beginPath();
-          ctx.moveTo(m.x, m.y);
-          ctx.quadraticCurveTo(cx, cy, n.x, n.y);
-          ctx.strokeStyle = `rgba(47,111,143,${alpha})`;
-          ctx.lineWidth = 1;
-          ctx.stroke();
-        });
-
-        for (let i = pulses.length - 1; i >= 0; i--) {
-          const p = pulses[i];
-          p.life += p.speed;
-          const eased = 1 - Math.pow(1 - Math.min(1, p.life), 3);
-          const x = p.x + (p.tx - p.x) * eased;
-          const y = p.y + (p.ty - p.y) * eased + Math.sin(t * 0.002 + i) * 12;
-          ctx.save();
-          ctx.globalAlpha = Math.max(0, 1 - p.life) * 0.34;
-          ctx.beginPath();
-          ctx.arc(x, y, 4, 0, Math.PI * 2);
-          ctx.fillStyle = '#2f6f8f';
-          ctx.fill();
-          ctx.font = "600 9px 'JetBrains Mono', monospace";
-          ctx.fillText(p.label, x + 18, y - 10);
-          ctx.restore();
-          if (p.life >= 1) pulses.splice(i, 1);
+        if (index % 7 === 0) {
+          return {
+            x: left + frameW * (0.18 + ((index * 0.19) % 0.64)),
+            y: top + frameH * (0.24 + ((index * 0.13) % 0.52))
+          };
         }
 
-        motes.forEach(m => {
-          ctx.globalAlpha = m.alpha;
-          ctx.font = `600 ${m.size}px 'JetBrains Mono', monospace`;
-          ctx.fillStyle = '#2f6f8f';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(m.sym, m.x, m.y);
-          ctx.globalAlpha = m.alpha * 0.35;
-          ctx.beginPath();
-          ctx.arc(m.x, m.y, m.radius * 0.38, 0, Math.PI * 2);
-          ctx.strokeStyle = '#17211d';
-          ctx.stroke();
-        });
-        ctx.globalAlpha = 1;
-        requestAnimationFrame(drawHeroTexture);
+        if (t < 0.25) return { x: left + frameW * (t / 0.25), y: top };
+        if (t < 0.5) return { x: left + frameW, y: top + frameH * ((t - 0.25) / 0.25) };
+        if (t < 0.75) return { x: left + frameW * (1 - (t - 0.5) / 0.25), y: top + frameH };
+        return { x: left, y: top + frameH * (1 - (t - 0.75) / 0.25) };
       }
-      requestAnimationFrame(drawHeroTexture);
+
+      function updateScrollState() {
+        if (!hero) return;
+        const progress = clamp(-hero.getBoundingClientRect().top / (hero.offsetHeight * 0.82), 0, 1);
+        scrollProgress += (progress - scrollProgress) * 0.12;
+        field.classList.toggle('is-scrolling', scrollProgress > 0.34);
+      }
+
+      function updatePointer(event) {
+        const rect = field.getBoundingClientRect();
+        pointer.x = event.clientX - rect.left;
+        pointer.y = event.clientY - rect.top;
+        pointer.movedAt = performance.now();
+        pointer.moves += 1;
+
+        if (pointer.moves > 2 && pointer.movedAt - pointer.enteredAt > 180 && pointer.movedAt - lastReveal > 1450) {
+          revealWord(pointer.movedAt);
+        }
+      }
+
+      field.addEventListener('pointerenter', event => {
+        pointer.active = true;
+        pointer.enteredAt = performance.now();
+        pointer.moves = 0;
+        field.classList.add('is-active');
+        updatePointer(event);
+      });
+
+      field.addEventListener('pointermove', updatePointer);
+
+      field.addEventListener('pointerleave', () => {
+        pointer.active = false;
+        pointer.x = -9999;
+        pointer.y = -9999;
+        field.classList.remove('is-active');
+      });
+
+      field.addEventListener('click', () => revealWord(performance.now(), true));
+      window.addEventListener('resize', seedParticles);
+
+      function animate(now) {
+        width = field.clientWidth || width;
+        height = field.clientHeight || height;
+        updateScrollState();
+
+        if (activeWord && now > activeWord.releaseAt) {
+          releaseWord();
+        }
+
+        const time = now * 0.001;
+        const fall = clamp((scrollProgress - 0.16) / 0.84, 0, 1);
+        const fallEase = fall * fall * (3 - 2 * fall);
+
+        particles.forEach((p, i) => {
+          const idleX = Math.sin(time * p.speed + p.phase) * p.driftX;
+          const idleY = Math.cos(time * (p.speed * 0.82) + p.phase * 1.3) * p.driftY;
+          let targetX = p.baseXN * width + idleX;
+          let targetY = p.baseYN * height + idleY;
+          let spring = reducedMotion ? 0.06 : 0.018;
+
+          if (fallEase > 0 && !p.target) {
+            const outline = outlineTarget(i);
+            const loosen = Math.sin(fallEase * Math.PI) * (28 + (i % 5) * 5);
+            targetX = targetX * (1 - fallEase) + outline.x * fallEase;
+            targetY = (targetY + loosen) * (1 - fallEase) + outline.y * fallEase;
+            spring += fallEase * 0.055;
+          }
+
+          if (p.target) {
+            targetX = p.target.x;
+            targetY = p.target.y;
+            spring = 0.13;
+          }
+
+          const dx = p.x - pointer.x;
+          const dy = p.y - pointer.y;
+          const dist = Math.hypot(dx, dy) || 1;
+          const radius = p.target ? 78 : 138;
+          const near = pointer.active ? clamp(1 - dist / radius, 0, 1) : 0;
+
+          if (!reducedMotion && near > 0 && !p.target) {
+            const force = near * near * 0.72;
+            p.vx += (dx / dist) * force;
+            p.vy += (dy / dist) * force;
+            p.vx += Math.sin(time * 18 + i) * near * 0.08;
+            p.vy += Math.cos(time * 17 + i) * near * 0.08;
+          }
+
+          p.vx += (targetX - p.x) * spring;
+          p.vy += (targetY - p.y) * spring;
+          p.vx *= p.target ? 0.78 : 0.88;
+          p.vy *= p.target ? 0.78 : 0.88;
+          p.x = clamp(p.x + p.vx, -34, width + 34);
+          p.y = clamp(p.y + p.vy, -34, height + 34);
+
+          const rotation = p.target
+            ? p.target.rotation
+            : p.rotation + Math.sin(time * 0.8 + p.phase) * 5 + p.rotationSpeed * now * 0.01 + near * 10;
+          const opacity = clamp((p.target ? 0.96 : p.baseOpacity + near * 0.36 + fallEase * 0.16) * (1 - Math.max(0, scrollProgress - 0.82) * 1.6), 0.08, 1);
+
+          p.el.style.opacity = opacity.toFixed(3);
+          p.el.style.transform = `translate3d(${p.x.toFixed(2)}px, ${p.y.toFixed(2)}px, 0) rotate(${rotation.toFixed(2)}deg)`;
+          p.el.style.filter = near > 0.1 || p.target ? `drop-shadow(0 0 ${(8 + near * 12).toFixed(1)}px rgba(213,201,109,${(0.12 + near * 0.26).toFixed(2)}))` : 'none';
+        });
+
+        requestAnimationFrame(animate);
+      }
+
+      seedParticles();
+      requestAnimationFrame(animate);
     }
   }
 
@@ -7541,17 +8312,7 @@
       return el.querySelectorAll('.split-inner');
     }
 
-    // Hero text entrance — lines rise in sequence, right column fades
-    gsap.timeline({ delay: 0.25 })
-      .from('#hero-eyebrow',   { opacity:0, x:-20, duration:0.6, ease:'power2.out' })
-      .from('#hl1',            { opacity:0, y:60, duration:0.8, ease:'power3.out' }, '-=0.3')
-      .from('#hl2',            { opacity:0, y:60, duration:0.8, ease:'power3.out' }, '-=0.6')
-      .from('#hl3',            { opacity:0, y:60, duration:0.8, ease:'power3.out' }, '-=0.6')
-      .from('.hero-tag',       { opacity:0, y:16, duration:0.5, ease:'power2.out' }, '-=0.3')
-      .from('#hero-sub',       { opacity:0, y:16, duration:0.6, ease:'power2.out' }, '-=0.35')
-      .from('#hero-actions',   { opacity:0, y:16, duration:0.5, ease:'power2.out' }, '-=0.3')
-      .from('#hero-stats .stat', { opacity:0, y:12, stagger:0.1, duration:0.5, ease:'power2.out' }, '-=0.25')
-      .from('.hero-system', { opacity:0, y:18, duration:0.7, ease:'power2.out' }, '-=0.45');
+    // The hero remains visible immediately; the symbol field carries the signature motion.
 
     // Section title reveals
     document.querySelectorAll('.section-title').forEach(el => {
@@ -7637,17 +8398,18 @@
     gsap.to('#ab2', { scrollTrigger: { scrub: 3 }, y:  150, x: -60 });
     gsap.to('#ab3', { scrollTrigger: { scrub: 2 }, y: -100 });
 
-    // Hero exit — content drifts up + fades as you scroll away
-    gsap.to('#hero-content', {
+    // Hero exit — copy fades first while the markup field keeps animating into its scroll state
+    gsap.to('#hero-left', {
       scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.2 },
-      y: -80,
+      y: -72,
       opacity: 0,
       ease: 'none',
     });
-    // Stats fade out faster so they don't hang at the bottom as showcase loads
-    gsap.to('#hero-stats', {
-      scrollTrigger: { trigger: '#hero', start: 'top top', end: '60% top', scrub: 0.8 },
-      opacity: 0, y: -20, ease: 'none',
+    gsap.to('.markup-field', {
+      scrollTrigger: { trigger: '#hero', start: '25% top', end: 'bottom top', scrub: 1.2 },
+      y: -42,
+      opacity: 0.18,
+      ease: 'none',
     });
     // Hero tokens parallax slower — linger as content leaves
     gsap.to('.hero-token', {
