@@ -4652,10 +4652,75 @@
     .built-site {
       position: absolute;
       inset: 0;
-      z-index: 3;
+      z-index: 5;
       pointer-events: none;
       font-family: var(--font-body);
       color: rgba(241,234,217,0.88);
+    }
+
+    .sandbox-hotspots {
+      position: absolute;
+      inset: 0;
+      z-index: 6;
+      pointer-events: none;
+    }
+
+    .sandbox-hotspot {
+      --charge: 0;
+      position: absolute;
+      left: var(--hotspot-x);
+      top: var(--hotspot-y);
+      width: clamp(38px, 7vw, 58px);
+      height: clamp(38px, 7vw, 58px);
+      transform: translate(-50%, -50%) scale(0.88);
+      opacity: 0.08;
+      transition: opacity 0.28s ease, transform 0.28s ease, filter 0.28s ease;
+      filter: blur(0.1px);
+    }
+
+    .sandbox-hotspot::before,
+    .sandbox-hotspot::after {
+      content: '';
+      position: absolute;
+      pointer-events: none;
+    }
+
+    .sandbox-hotspot::before {
+      inset: 0;
+      border-radius: 50%;
+      border: 1px dotted rgba(241,234,217,0.28);
+      background:
+        conic-gradient(from -90deg, rgba(213,201,109,0.72) calc(var(--charge) * 1turn), transparent 0),
+        radial-gradient(circle, transparent 56%, rgba(213,201,109,0.08) 57% 63%, transparent 64%);
+      -webkit-mask: radial-gradient(circle, transparent 58%, #000 59% 70%, transparent 71%);
+      mask: radial-gradient(circle, transparent 58%, #000 59% 70%, transparent 71%);
+    }
+
+    .sandbox-hotspot::after {
+      left: 50%;
+      bottom: -8px;
+      width: calc(12px + (34px * var(--charge)));
+      height: 1px;
+      background: rgba(213,201,109,0.62);
+      transform: translateX(-50%) rotate(-2deg);
+      box-shadow: 0 0 10px rgba(213,201,109,0.22);
+    }
+
+    .sandbox-hotspot.is-hovered,
+    .sandbox-hotspot.is-charging {
+      opacity: 0.58;
+      transform: translate(-50%, -50%) scale(1);
+      filter: drop-shadow(0 0 14px rgba(213,201,109,0.14));
+    }
+
+    .sandbox-hotspot.is-building {
+      opacity: 0.72;
+      transform: translate(-50%, -50%) scale(0.94);
+    }
+
+    .sandbox-hotspot.is-built {
+      opacity: 0.05;
+      transform: translate(-50%, -50%) scale(0.78);
     }
 
     .built-piece {
@@ -4694,6 +4759,7 @@
         linear-gradient(180deg, rgba(241,234,217,0.075), transparent 24%),
         rgba(12,16,15,0.54);
       box-shadow: inset 0 1px 0 rgba(241,234,217,0.08), 0 18px 44px rgba(0,0,0,0.22);
+      overflow: hidden;
     }
 
     .built-frame::after {
@@ -4737,85 +4803,68 @@
       bottom: 15px;
       font-family: var(--font-mono);
       font-size: 10px;
-      color: rgba(143,172,132,0.54);
+      color: rgba(143,172,132,0.58);
     }
 
     .built-hero {
       left: 18%;
       top: 27%;
       width: 64%;
-      min-height: 142px;
+      min-height: 148px;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 34%;
-      gap: 22px;
+      grid-template-columns: minmax(0, 1fr) 38%;
+      gap: 18px;
       align-items: center;
       padding: 0;
     }
 
     .mini-kicker {
       display: block;
-      width: 46px;
-      height: 5px;
-      margin-bottom: 13px;
-      background: rgba(213,201,109,0.56);
+      margin-bottom: 8px;
+      font-family: var(--font-mono);
+      font-size: 8px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(213,201,109,0.68);
     }
 
     .mini-headline {
       display: block;
-      width: 92%;
-      height: 17px;
-      margin-bottom: 9px;
-      background: rgba(241,234,217,0.72);
-    }
-
-    .mini-headline:nth-child(3) {
-      width: 72%;
+      max-width: 230px;
+      color: rgba(241,234,217,0.92);
+      font-family: 'Source Serif 4', serif;
+      font-size: clamp(18px, 2.2vw, 25px);
+      font-weight: 650;
+      line-height: 0.94;
+      letter-spacing: 0;
     }
 
     .mini-copy {
       display: block;
-      width: 84%;
-      height: 4px;
-      margin-top: 16px;
-      background: rgba(185,166,202,0.38);
-    }
-
-    .mini-copy + .mini-copy {
-      width: 68%;
-      margin-top: 7px;
+      max-width: 205px;
+      margin-top: 10px;
+      color: rgba(241,234,217,0.54);
+      font-size: 10px;
+      line-height: 1.45;
     }
 
     .mini-image {
       display: block;
       aspect-ratio: 1 / 1.05;
       border: 1px solid rgba(127,167,186,0.24);
-      background:
-        linear-gradient(135deg, rgba(127,167,186,0.12), rgba(143,172,132,0.07)),
-        rgba(241,234,217,0.035);
+      background: rgba(241,234,217,0.035);
       position: relative;
       overflow: hidden;
     }
 
-    .mini-image::before,
-    .mini-image::after {
-      content: '';
-      position: absolute;
-      background: rgba(241,234,217,0.14);
-      transform: rotate(-18deg);
-    }
-
-    .mini-image::before {
-      width: 68%;
-      height: 1px;
-      left: 13%;
-      top: 48%;
-    }
-
-    .mini-image::after {
-      width: 40%;
-      height: 1px;
-      left: 29%;
-      top: 58%;
+    .mini-image video,
+    .mini-image img,
+    .mini-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: saturate(0.86) contrast(0.96) brightness(0.86);
     }
 
     .built-card {
@@ -4825,7 +4874,7 @@
       min-height: 116px;
       padding: 11px;
       border: 1px solid rgba(241,234,217,0.16);
-      background: rgba(241,234,217,0.045);
+      background: rgba(241,234,217,0.052);
       box-shadow: 0 12px 28px rgba(0,0,0,0.14);
     }
 
@@ -4835,26 +4884,23 @@
       margin-bottom: 12px;
       border: 1px solid rgba(127,167,186,0.20);
       background: rgba(127,167,186,0.10);
+      overflow: hidden;
     }
 
     .mini-card-title {
       display: block;
-      width: 70%;
-      height: 7px;
-      margin-bottom: 9px;
-      background: rgba(241,234,217,0.62);
+      margin-bottom: 6px;
+      color: rgba(241,234,217,0.84);
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.1;
     }
 
     .mini-card-line {
       display: block;
-      width: 92%;
-      height: 4px;
-      margin-top: 6px;
-      background: rgba(241,234,217,0.19);
-    }
-
-    .mini-card-line:last-child {
-      width: 58%;
+      color: rgba(241,234,217,0.45);
+      font-size: 9px;
+      line-height: 1.35;
     }
 
     .built-cta {
@@ -4902,26 +4948,32 @@
       border-radius: 50%;
       border: 1px solid rgba(213,201,109,0.36);
       background: rgba(213,201,109,0.09);
+      position: relative;
     }
 
-    .mini-stars {
+    .mini-seal::before {
+      content: '';
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      border: 1px solid rgba(213,201,109,0.32);
+    }
+
+    .mini-trust-title {
       display: block;
-      width: 62px;
-      height: 5px;
-      margin-bottom: 8px;
-      background: repeating-linear-gradient(90deg, rgba(213,201,109,0.64) 0 7px, transparent 7px 11px);
+      margin-bottom: 4px;
+      color: rgba(213,201,109,0.74);
+      font-family: var(--font-mono);
+      font-size: 8px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     .mini-trust-line {
       display: block;
-      width: 92%;
-      height: 4px;
-      background: rgba(241,234,217,0.20);
-    }
-
-    .mini-trust-line + .mini-trust-line {
-      width: 68%;
-      margin-top: 6px;
+      color: rgba(241,234,217,0.52);
+      font-size: 9px;
+      line-height: 1.25;
     }
 
     .sandbox-reset {
@@ -4998,21 +5050,17 @@
       box-shadow: 0 38px 92px rgba(0,0,0,0.32), 0 0 0 1px rgba(213,201,109,0.08), inset 0 0 0 1px rgba(241,234,217,0.055);
     }
 
-    .markup-field.is-reacting::before,
-    .markup-field.is-gathering::before,
-    .markup-field.is-constructing::before,
-    .markup-field.is-transmuting::before,
-    .markup-field.is-assembling::before,
-    .markup-field.is-holding::before {
+    .markup-field.is-hovering-hotspot::before,
+    .markup-field.is-charging::before,
+    .markup-field.is-building::before,
+    .markup-field.is-built::before {
       opacity: 0.74;
       background-size: 42px 42px;
     }
 
-    .markup-field.is-gathering,
-    .markup-field.is-constructing,
-    .markup-field.is-transmuting,
-    .markup-field.is-assembling,
-    .markup-field.is-holding {
+    .markup-field.is-charging,
+    .markup-field.is-building,
+    .markup-field.is-built {
       border-color: rgba(213,201,109,0.50);
       box-shadow: 0 38px 92px rgba(0,0,0,0.34), 0 0 0 1px rgba(213,201,109,0.12), inset 0 0 0 1px rgba(241,234,217,0.07);
     }
@@ -5112,11 +5160,11 @@
         top: 29%;
         width: 70%;
         min-height: 124px;
-        grid-template-columns: 1fr 30%;
+        grid-template-columns: 1fr 32%;
         gap: 16px;
       }
       .mini-headline {
-        height: 14px;
+        font-size: 20px;
       }
       .built-card {
         left: 16%;
@@ -5245,15 +5293,16 @@
         gap: 10px;
       }
       .mini-kicker {
-        width: 34px;
+        font-size: 7px;
         margin-bottom: 10px;
       }
       .mini-headline {
-        height: 11px;
+        font-size: 16px;
         margin-bottom: 7px;
       }
       .mini-copy {
         margin-top: 11px;
+        font-size: 8px;
       }
       .built-card {
         left: 15%;
@@ -5267,7 +5316,7 @@
         min-width: 82px;
         height: 31px;
         padding: 0 10px;
-        font-size: 10px;
+        font-size: 9px;
       }
       .built-trust {
         left: 49%;
@@ -5943,23 +5992,29 @@
         this.palette = ['#f1ead9', '#d5c96d', '#d66b45', '#7fa7ba', '#8fac84', '#b9a6ca'];
         this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         this.staticMode = this.reducedMotion;
-        this.pointer = { x: -9999, y: -9999, px: -9999, py: -9999, active: false, enteredAt: 0, movedAt: 0, moves: 0, distance: 0 };
+        this.pointer = { x: -9999, y: -9999, px: -9999, py: -9999, active: false, enteredAt: 0, movedAt: 0 };
         this.particles = [];
         this.width = 1;
         this.height = 1;
         this.seed = 24051986;
         this.state = 'idle';
         this.stateStarted = 0;
-        this.buildAt = 0;
         this.cooldownUntil = 0;
-        this.resetAt = 0;
-        this.nextBuildIndex = 0;
         this.activeBuild = null;
+        this.activeHotspotKey = null;
+        this.hoverStartedAt = 0;
         this.builtComponents = [];
+        this.allBuiltAt = 0;
+        this.resetAvailableAt = 0;
         this.buildSteps = this.createBuildSteps();
+        this.componentState = {};
+        this.chargeProgress = {};
         this.builtLayer = null;
+        this.hotspotLayer = null;
+        this.hotspotEls = {};
         this.resetButton = null;
         this.resizeQueued = false;
+        this.lastFrame = 0;
 
         this.animate = this.animate.bind(this);
         this.onPointerEnter = this.onPointerEnter.bind(this);
@@ -5970,12 +6025,15 @@
 
       init() {
         this.createBuiltLayer();
+        this.createHotspotLayer();
+        this.resetComponentStates();
         this.seedParticles();
         this.field.addEventListener('pointerenter', this.onPointerEnter);
         this.field.addEventListener('pointerdown', this.onPointerEnter);
         this.field.addEventListener('pointermove', this.onPointerMove);
         this.field.addEventListener('pointerleave', this.onPointerLeave);
         window.addEventListener('resize', this.onResize);
+        window.markupSandbox = this;
         requestAnimationFrame(this.animate);
       }
 
@@ -6017,11 +6075,11 @@
 
       createBuildSteps() {
         return [
-          { key: 'frame', count: 22, bounds: { x: 12, y: 13, w: 76, h: 72 }, trace: 'rect' },
-          { key: 'hero', count: 22, bounds: { x: 18, y: 27, w: 64, h: 28 }, trace: 'hero' },
-          { key: 'card', count: 18, bounds: { x: 20, y: 58, w: 30, h: 22 }, trace: 'rect' },
-          { key: 'cta', count: 14, bounds: { x: 56, y: 61, w: 20, h: 8 }, trace: 'pill' },
-          { key: 'trust', count: 16, bounds: { x: 53, y: 73, w: 28, h: 10 }, trace: 'rect' }
+          { key: 'frame', count: 24, bounds: { x: 12, y: 13, w: 76, h: 72 }, trace: 'rect', hotspot: { x: 23, y: 18, r: 15, chargeDuration: 820 } },
+          { key: 'hero', count: 24, bounds: { x: 18, y: 27, w: 64, h: 28 }, trace: 'hero', hotspot: { x: 55, y: 36, r: 15, chargeDuration: 920 } },
+          { key: 'trust', count: 14, bounds: { x: 53, y: 73, w: 28, h: 10 }, trace: 'rect', hotspot: { x: 65, y: 78, r: 12, chargeDuration: 760 } },
+          { key: 'card', count: 18, bounds: { x: 20, y: 58, w: 30, h: 22 }, trace: 'rect', hotspot: { x: 35, y: 70, r: 13, chargeDuration: 980 } },
+          { key: 'cta', count: 14, bounds: { x: 56, y: 61, w: 20, h: 8 }, trace: 'pill', hotspot: { x: 67, y: 65, r: 11, chargeDuration: 720 } }
         ];
       }
 
@@ -6033,31 +6091,31 @@
           <div class="built-piece built-frame" data-build-key="frame">
             <span class="browser-dots"><i></i><i></i><i></i></span>
             <span class="browser-line"></span>
-            <span class="browser-label">&lt;main&gt;</span>
+            <span class="browser-label">atelierstudio.local</span>
           </div>
           <div class="built-piece built-hero" data-build-key="hero">
             <div>
-              <span class="mini-kicker"></span>
-              <span class="mini-headline"></span>
-              <span class="mini-headline"></span>
-              <span class="mini-copy"></span>
-              <span class="mini-copy"></span>
+              <span class="mini-kicker">Bespoke atelier</span>
+              <span class="mini-headline">Custom tailoring, made personal</span>
+              <span class="mini-copy">Hand-finished alterations and made-to-measure pieces shaped around the person wearing them.</span>
             </div>
-            <span class="mini-image"></span>
+            <span class="mini-image">
+              <video muted loop playsinline preload="metadata" poster="images/vecteezy_fashion-designer-tailor-or-sewer_7360006.jpg">
+                <source src="images/sewing%202.mp4" type="video/mp4">
+              </video>
+            </span>
           </div>
           <div class="built-piece built-card" data-build-key="card">
-            <span class="mini-card-image"></span>
-            <span class="mini-card-title"></span>
-            <span class="mini-card-line"></span>
-            <span class="mini-card-line"></span>
+            <span class="mini-card-image"><img src="images/vecteezy_needle-and-thread-with-button-on-material-mending-clothing_76760151.jpeg" alt=""></span>
+            <span class="mini-card-title">Alterations & custom fits</span>
+            <span class="mini-card-line">Quiet craft, clean lines, exacting detail.</span>
           </div>
-          <button class="built-piece built-cta" data-build-key="cta" type="button">View site</button>
+          <button class="built-piece built-cta" data-build-key="cta" type="button">Book a fitting</button>
           <div class="built-piece built-trust" data-build-key="trust">
             <span class="mini-seal"></span>
             <span>
-              <span class="mini-stars"></span>
-              <span class="mini-trust-line"></span>
-              <span class="mini-trust-line"></span>
+              <span class="mini-trust-title">Hand-finished</span>
+              <span class="mini-trust-line">Local tailoring studio</span>
             </span>
           </div>
         `;
@@ -6074,6 +6132,35 @@
         this.field.appendChild(this.resetButton);
       }
 
+      createHotspotLayer() {
+        if (this.hotspotLayer) return;
+        this.hotspotLayer = document.createElement('div');
+        this.hotspotLayer.className = 'sandbox-hotspots';
+        this.buildSteps.forEach(step => {
+          const el = document.createElement('span');
+          el.className = 'sandbox-hotspot';
+          el.dataset.buildKey = step.key;
+          el.style.setProperty('--hotspot-x', `${step.hotspot.x}%`);
+          el.style.setProperty('--hotspot-y', `${step.hotspot.y}%`);
+          el.style.setProperty('--charge', '0');
+          this.hotspotLayer.appendChild(el);
+          this.hotspotEls[step.key] = el;
+        });
+        this.field.insertBefore(this.hotspotLayer, this.stage);
+      }
+
+      resetComponentStates() {
+        this.buildSteps.forEach(step => {
+          this.componentState[step.key] = 'unbuilt';
+          this.chargeProgress[step.key] = 0;
+          this.updateHotspotEl(step.key);
+        });
+        this.builtComponents = [];
+        this.allBuiltAt = 0;
+        this.resetAvailableAt = 0;
+        this.field.dataset.builtCount = '0';
+      }
+
       getParticleCount() {
         if (window.innerWidth < 560) return 70;
         if (window.innerWidth < 980) return 82;
@@ -6087,8 +6174,9 @@
         this.particles = [];
         this.stage.replaceChildren();
         this.state = 'idle';
-        this.nextBuildIndex = 0;
-        this.builtComponents = [];
+        this.activeBuild = null;
+        this.activeHotspotKey = null;
+        this.cooldownUntil = 0;
         this.field.classList.toggle('is-static', this.staticMode);
         this.setFieldState('idle');
 
@@ -6160,9 +6248,6 @@
         this.pointer.active = true;
         this.pointer.enteredAt = now;
         this.pointer.movedAt = now;
-        this.pointer.moves = 0;
-        this.pointer.distance = 0;
-        this.setFieldState(this.canStartBuild(now) ? 'reacting' : this.state);
         this.updatePointer(event, now);
       }
 
@@ -6176,10 +6261,8 @@
         this.pointer.y = -9999;
         this.pointer.px = -9999;
         this.pointer.py = -9999;
-        this.pointer.distance = 0;
-        this.buildAt = 0;
-
-        if (this.state === 'reacting') {
+        this.clearActiveHotspot();
+        if (!this.activeBuild && this.state !== 'cooldown' && this.state !== 'built') {
           this.state = 'idle';
           this.setFieldState('idle');
         }
@@ -6190,47 +6273,41 @@
         const rect = this.field.getBoundingClientRect();
         const x = this.clamp(event.clientX - rect.left, 0, rect.width);
         const y = this.clamp(event.clientY - rect.top, 0, rect.height);
-
-        if (this.pointer.px > -1000) {
-          this.pointer.distance += Math.hypot(x - this.pointer.px, y - this.pointer.py);
-        }
-
-        this.pointer.px = this.pointer.x = x;
-        this.pointer.py = this.pointer.y = y;
+        this.pointer.px = this.pointer.x;
+        this.pointer.py = this.pointer.y;
+        this.pointer.x = x;
+        this.pointer.y = y;
         this.pointer.movedAt = now;
-        this.pointer.moves += 1;
-
-        if (this.state === 'idle' && this.canStartBuild(now)) {
-          this.state = 'reacting';
-          this.setFieldState('reacting');
-        }
-
-        const ready = this.pointer.moves > 2 &&
-          this.pointer.distance > 24 &&
-          now - this.pointer.enteredAt > 220 &&
-          this.canStartBuild(now);
-
-        if (ready && this.state === 'reacting' && !this.buildAt) {
-          this.buildAt = now + 280;
-        }
-      }
-
-      canStartBuild(now) {
-        return this.nextBuildIndex < this.buildSteps.length &&
-          !this.activeBuild &&
-          now >= this.cooldownUntil &&
-          (this.state === 'idle' || this.state === 'reacting' || this.state === 'cooldown');
       }
 
       setFieldState(state) {
         this.field.classList.toggle('is-active', state !== 'idle');
-        this.field.classList.toggle('is-reacting', state === 'reacting');
-        this.field.classList.toggle('is-gathering', state === 'gathering');
-        this.field.classList.toggle('is-constructing', state === 'constructing');
-        this.field.classList.toggle('is-transmuting', state === 'transmuting');
-        this.field.classList.toggle('is-assembling', false);
-        this.field.classList.toggle('is-holding', false);
+        this.field.classList.toggle('is-hovering-hotspot', state === 'hoveringHotspot');
+        this.field.classList.toggle('is-charging', state === 'charging');
+        this.field.classList.toggle('is-building', state === 'building');
+        this.field.classList.toggle('is-built', state === 'built');
         this.field.dataset.sandboxState = state;
+      }
+
+      setComponentState(key, state) {
+        this.componentState[key] = state;
+        this.updateHotspotEl(key);
+      }
+
+      updateHotspotEl(key) {
+        const el = this.hotspotEls[key];
+        if (!el) return;
+        const state = this.componentState[key] || 'unbuilt';
+        el.style.setProperty('--charge', `${this.clamp(this.chargeProgress[key] || 0, 0, 1)}`);
+        el.classList.toggle('is-hovered', this.activeHotspotKey === key && state !== 'built');
+        el.classList.toggle('is-charging', state === 'charging');
+        el.classList.toggle('is-building', state === 'building');
+        el.classList.toggle('is-built', state === 'built');
+        el.dataset.componentState = state;
+      }
+
+      getStep(key) {
+        return this.buildSteps.find(step => step.key === key);
       }
 
       absoluteBounds(bounds) {
@@ -6240,6 +6317,14 @@
           w: this.pctX(bounds.w),
           h: this.pctY(bounds.h)
         };
+      }
+
+      hotspotCenter(step) {
+        return { x: this.pctX(step.hotspot.x), y: this.pctY(step.hotspot.y) };
+      }
+
+      hotspotRadius(step, multiplier = 1) {
+        return Math.min(this.width, this.height) * (step.hotspot.r / 100) * multiplier;
       }
 
       rectPoint(bounds, t) {
@@ -6264,15 +6349,15 @@
             const colT = ((i * 0.37) % 1);
             if (row < 3) {
               point = {
-                x: b.x + b.w * (0.04 + colT * 0.54),
-                y: b.y + b.h * (0.22 + row * 0.18),
+                x: b.x + b.w * (0.04 + colT * 0.50),
+                y: b.y + b.h * (0.24 + row * 0.18),
                 rotation: Math.sin(i) * 2
               };
             } else {
               const angle = colT * Math.PI * 2;
               point = {
-                x: b.x + b.w * 0.77 + Math.cos(angle) * b.w * 0.15,
-                y: b.y + b.h * 0.44 + Math.sin(angle) * b.h * 0.34,
+                x: b.x + b.w * 0.80 + Math.cos(angle) * b.w * 0.15,
+                y: b.y + b.h * 0.48 + Math.sin(angle) * b.h * 0.34,
                 rotation: angle * 12
               };
             }
@@ -6287,26 +6372,93 @@
         return targets;
       }
 
+      findHotspot() {
+        if (!this.pointer.active || this.activeBuild || performance.now() < this.cooldownUntil) return null;
+        let nearest = null;
+        this.buildSteps.forEach(step => {
+          if (this.componentState[step.key] === 'built' || this.componentState[step.key] === 'building') return;
+          const center = this.hotspotCenter(step);
+          const dist = Math.hypot(this.pointer.x - center.x, this.pointer.y - center.y);
+          const radius = this.hotspotRadius(step, 1);
+          if (dist <= radius && (!nearest || dist < nearest.dist)) {
+            nearest = { step, dist, radius };
+          }
+        });
+        return nearest;
+      }
+
+      clearActiveHotspot() {
+        const previous = this.activeHotspotKey;
+        this.activeHotspotKey = null;
+        this.hoverStartedAt = 0;
+        if (previous && this.componentState[previous] === 'charging') {
+          this.setComponentState(previous, 'unbuilt');
+        }
+        if (previous) this.updateHotspotEl(previous);
+      }
+
+      updateHotspotCharge(now, dt) {
+        if (this.activeBuild || this.staticMode) return;
+
+        const found = this.findHotspot();
+        this.buildSteps.forEach(step => {
+          if (found?.step.key === step.key || this.componentState[step.key] === 'built') return;
+          const current = this.chargeProgress[step.key] || 0;
+          if (current <= 0) return;
+          this.chargeProgress[step.key] = Math.max(0, current - dt / 320);
+          this.updateHotspotEl(step.key);
+        });
+
+        if (!found) {
+          this.clearActiveHotspot();
+          if (this.state !== 'cooldown' && this.state !== 'built') {
+            this.state = 'idle';
+            this.setFieldState('idle');
+          }
+          return;
+        }
+
+        const { step } = found;
+        if (this.activeHotspotKey !== step.key) {
+          this.clearActiveHotspot();
+          this.activeHotspotKey = step.key;
+          this.hoverStartedAt = now;
+          this.setComponentState(step.key, 'charging');
+        }
+
+        const hoverAge = now - this.hoverStartedAt;
+        this.state = hoverAge < 120 ? 'hoveringHotspot' : 'charging';
+        this.setFieldState(this.state);
+
+        this.chargeProgress[step.key] = this.clamp(
+          (this.chargeProgress[step.key] || 0) + dt / step.hotspot.chargeDuration,
+          0,
+          1
+        );
+        this.updateHotspotEl(step.key);
+
+        if (this.chargeProgress[step.key] >= 1) {
+          this.beginBuild(step.key, now);
+        }
+      }
+
       selectParticles(step, targets) {
-        const b = this.absoluteBounds(step.bounds);
-        const center = { x: b.x + b.w * 0.5, y: b.y + b.h * 0.5 };
-        const cursor = this.pointer.active ? this.pointer : center;
-        const available = this.particles
+        const center = this.hotspotCenter(step);
+        return this.particles
           .filter(p => !p.consumed && !p.assignedToBuild && p.renderOpacity > 0.08)
           .map(p => ({
             p,
-            score: Math.hypot(p.x - cursor.x, p.y - cursor.y) * 0.62 + Math.hypot(p.x - center.x, p.y - center.y) * 0.38
+            score: Math.hypot(p.x - center.x, p.y - center.y)
           }))
           .sort((a, b) => a.score - b.score)
           .slice(0, targets.length)
           .map(item => item.p);
-
-        return available;
       }
 
-      beginBuild(now) {
-        if (!this.canStartBuild(now)) return;
-        const step = this.buildSteps[this.nextBuildIndex];
+      beginBuild(key, now) {
+        if (this.activeBuild || now < this.cooldownUntil || this.componentState[key] === 'built') return;
+        const step = this.getStep(key);
+        if (!step) return;
         const targets = this.createTraceTargets(step, step.count);
         const selected = this.selectParticles(step, targets);
         if (!selected.length) return;
@@ -6319,9 +6471,9 @@
           selected,
           targets,
           center,
-          gatherDuration: this.reducedMotion ? 1 : 430,
+          gatherDuration: this.reducedMotion ? 1 : 460,
           constructDuration: this.reducedMotion ? 1 : 680,
-          transmuteDuration: this.reducedMotion ? 1 : 540,
+          transmuteDuration: this.reducedMotion ? 1 : 560,
           phase: 'gathering',
           phaseStarted: now,
           componentRevealed: false
@@ -6343,7 +6495,7 @@
             gatherX: center.x + Math.cos(angle) * (20 + (index % 4) * 4),
             gatherY: center.y + Math.sin(angle) * (15 + (index % 5) * 3),
             orbit: angle,
-            color: this.palette[(index + this.nextBuildIndex) % this.palette.length]
+            color: this.palette[(index + this.buildSteps.indexOf(step)) % this.palette.length]
           };
           p.vx *= 0.08;
           p.vy *= 0.08;
@@ -6352,10 +6504,11 @@
           p.el.style.color = p.build.color;
         });
 
-        this.state = 'gathering';
+        this.activeHotspotKey = null;
+        this.setComponentState(step.key, 'building');
+        this.state = 'building';
         this.stateStarted = now;
-        this.buildAt = 0;
-        this.setFieldState('gathering');
+        this.setFieldState('building');
       }
 
       revealComponent(key) {
@@ -6363,9 +6516,12 @@
         if (!el) return;
         el.classList.remove('is-dissolving');
         requestAnimationFrame(() => el.classList.add('is-built'));
+        if (key === 'hero') {
+          const video = el.querySelector('video');
+          video?.play?.().catch(() => {});
+        }
         if (!this.builtComponents.includes(key)) this.builtComponents.push(key);
         this.field.dataset.builtCount = String(this.builtComponents.length);
-        this.resetButton?.classList.add('is-visible');
       }
 
       finishBuild(now) {
@@ -6376,7 +6532,7 @@
           p.assignedToBuild = null;
           p.build = null;
           p.consumed = true;
-          p.hiddenUntil = now + 1900 + this.rand() * 2200;
+          p.hiddenUntil = now + 1500 + this.rand() * 1800;
           p.respawnStart = 0;
           p.el.classList.remove('is-building');
           p.el.classList.add('is-consumed');
@@ -6384,30 +6540,31 @@
           p.el.style.filter = 'none';
         });
 
-        this.nextBuildIndex += 1;
+        this.chargeProgress[build.step.key] = 1;
+        this.setComponentState(build.step.key, 'built');
         this.activeBuild = null;
-        this.state = 'built';
-        this.stateStarted = now;
-        this.cooldownUntil = now + 620;
-        this.setFieldState('built');
+        this.cooldownUntil = now + 560;
 
-        if (this.nextBuildIndex >= this.buildSteps.length) {
-          this.resetAt = now + 5600;
+        if (this.builtComponents.length >= this.buildSteps.length) {
+          this.allBuiltAt = now;
+          this.resetAvailableAt = now + 20000;
+          this.state = 'built';
+          this.setFieldState('built');
+        } else {
+          this.state = 'cooldown';
+          this.setFieldState('cooldown');
         }
       }
 
       resetSandbox(now) {
-        if (this.state === 'resetting') return;
-        this.state = 'resetting';
+        this.state = 'cooldown';
         this.stateStarted = now;
-        this.buildAt = 0;
         this.cooldownUntil = now + 1150;
-        this.resetAt = 0;
         this.activeBuild = null;
-        this.nextBuildIndex = 0;
-        this.builtComponents = [];
-        this.setFieldState('resetting');
+        this.activeHotspotKey = null;
         this.resetButton?.classList.remove('is-visible');
+        this.resetComponentStates();
+        this.setFieldState('cooldown');
 
         this.builtLayer?.querySelectorAll('.built-piece').forEach(el => {
           el.classList.add('is-dissolving');
@@ -6435,10 +6592,6 @@
       }
 
       updateLifecycle(now) {
-        if (this.buildAt && now >= this.buildAt && this.canStartBuild(now)) {
-          this.beginBuild(now);
-        }
-
         if (this.activeBuild) {
           const build = this.activeBuild;
           const elapsed = now - build.phaseStarted;
@@ -6446,35 +6599,22 @@
           if (build.phase === 'gathering' && elapsed >= build.gatherDuration) {
             build.phase = 'constructing';
             build.phaseStarted = now;
-            this.state = 'constructing';
-            this.setFieldState('constructing');
           } else if (build.phase === 'constructing' && elapsed >= build.constructDuration) {
             build.phase = 'transmuting';
             build.phaseStarted = now;
-            this.state = 'transmuting';
             this.revealComponent(build.step.key);
             build.componentRevealed = true;
-            this.setFieldState('transmuting');
           } else if (build.phase === 'transmuting' && elapsed >= build.transmuteDuration) {
             this.finishBuild(now);
           }
-        } else if (this.state === 'built' && now >= this.cooldownUntil) {
-          this.state = this.pointer.active && this.nextBuildIndex < this.buildSteps.length ? 'reacting' : 'idle';
-          this.pointer.enteredAt = now;
-          this.pointer.moves = 0;
-          this.pointer.distance = 0;
-          this.setFieldState(this.state);
         } else if (this.state === 'cooldown' && now >= this.cooldownUntil) {
-          this.state = this.pointer.active ? 'reacting' : 'idle';
-          this.setFieldState(this.state);
-        } else if (this.state === 'resetting' && now >= this.cooldownUntil) {
-          this.builtLayer?.querySelectorAll('.built-piece').forEach(el => el.classList.remove('is-dissolving'));
-          this.state = this.pointer.active ? 'reacting' : 'idle';
-          this.setFieldState(this.state);
+          this.state = 'idle';
+          this.setFieldState('idle');
         }
 
-        if (this.resetAt && now >= this.resetAt) {
-          this.resetSandbox(now);
+        if (this.resetAvailableAt && now >= this.resetAvailableAt) {
+          this.resetButton?.classList.add('is-visible');
+          this.resetAvailableAt = 0;
         }
       }
 
@@ -6535,29 +6675,29 @@
         if (build.phase === 'gathering') {
           raw = this.clamp(elapsed / build.gatherDuration, 0, 1);
           const eased = this.easeOut(raw);
-          const swirl = Math.sin(raw * Math.PI) * (18 + (data.index % 5) * 3);
-          x = this.mix(data.startX, data.gatherX, eased) + Math.cos(data.orbit + raw * 5.2) * swirl;
-          y = this.mix(data.startY, data.gatherY, eased) + Math.sin(data.orbit + raw * 5.2) * swirl;
-          rotation = this.mix(data.startRotation, data.targetRotation + 24, eased);
+          const swirl = Math.sin(raw * Math.PI) * (14 + (data.index % 5) * 2.6);
+          x = this.mix(data.startX, data.gatherX, eased) + Math.cos(data.orbit + raw * 4.6) * swirl;
+          y = this.mix(data.startY, data.gatherY, eased) + Math.sin(data.orbit + raw * 4.6) * swirl;
+          rotation = this.mix(data.startRotation, data.targetRotation + 18, eased);
           opacity = this.mix(data.startOpacity, 0.96, this.smoothstep(0, 0.62, raw));
-          scale = this.mix(1, 1.12, Math.sin(raw * Math.PI));
+          scale = this.mix(1, 1.1, Math.sin(raw * Math.PI));
         } else if (build.phase === 'constructing') {
           raw = this.clamp(elapsed / build.constructDuration, 0, 1);
           const eased = this.easeInOut(raw);
-          const orbit = Math.sin(raw * Math.PI) * 7;
-          x = this.mix(data.gatherX, data.targetX, eased) + Math.cos(data.orbit + raw * 7) * orbit;
-          y = this.mix(data.gatherY, data.targetY, eased) + Math.sin(data.orbit + raw * 7) * orbit;
-          rotation = this.mix(data.targetRotation + 18, data.targetRotation, eased);
+          const orbit = Math.sin(raw * Math.PI) * 6;
+          x = this.mix(data.gatherX, data.targetX, eased) + Math.cos(data.orbit + raw * 6.2) * orbit;
+          y = this.mix(data.gatherY, data.targetY, eased) + Math.sin(data.orbit + raw * 6.2) * orbit;
+          rotation = this.mix(data.targetRotation + 16, data.targetRotation, eased);
           opacity = 0.92 + Math.sin(raw * Math.PI) * 0.06;
-          scale = 1.03 + Math.sin(raw * Math.PI) * 0.08;
+          scale = 1.03 + Math.sin(raw * Math.PI) * 0.07;
           glow = 0.18 + Math.sin(raw * Math.PI) * 0.12;
         } else if (build.phase === 'transmuting') {
           raw = this.clamp(elapsed / build.transmuteDuration, 0, 1);
           const eased = this.easeInOut(raw);
           const spark = Math.sin(raw * Math.PI);
-          x = this.mix(data.targetX, build.center.x, eased * 0.18);
-          y = this.mix(data.targetY, build.center.y, eased * 0.18);
-          rotation = data.targetRotation + raw * 28;
+          x = this.mix(data.targetX, build.center.x, eased * 0.16);
+          y = this.mix(data.targetY, build.center.y, eased * 0.16);
+          rotation = data.targetRotation + raw * 24;
           opacity = this.mix(0.9, 0, this.smoothstep(0.08, 1, raw));
           scale = this.mix(1.04, 0.38, eased);
           glow = 0.34 * spark;
@@ -6568,13 +6708,41 @@
         return true;
       }
 
+      activeHotspotInfluence(p, time, index) {
+        const step = this.activeHotspotKey ? this.getStep(this.activeHotspotKey) : null;
+        if (!step || this.componentState[step.key] === 'built') return { pull: 0, glow: 0 };
+        const center = this.hotspotCenter(step);
+        const radius = this.hotspotRadius(step, 2.35);
+        const dx = center.x - p.x;
+        const dy = center.y - p.y;
+        const dist = Math.hypot(dx, dy) || 1;
+        const near = this.clamp(1 - dist / radius, 0, 1);
+        if (!near || this.reducedMotion) return { pull: near, glow: near * 0.08 };
+
+        const charge = this.chargeProgress[step.key] || 0;
+        const orbitRadius = this.hotspotRadius(step, 0.42 + charge * 0.32);
+        const angle = p.phase + time * (1.1 + charge * 1.25) + index * 0.34;
+        const targetX = center.x + Math.cos(angle) * orbitRadius;
+        const targetY = center.y + Math.sin(angle) * orbitRadius * 0.72;
+        const force = near * near * (0.018 + charge * 0.044);
+        p.vx += (targetX - p.x) * force;
+        p.vy += (targetY - p.y) * force;
+        p.vx += Math.cos(angle + Math.PI * 0.5) * near * (0.018 + charge * 0.028);
+        p.vy += Math.sin(angle + Math.PI * 0.5) * near * (0.018 + charge * 0.028);
+        return { pull: near, glow: near * (0.08 + charge * 0.18) };
+      }
+
       animate(now) {
         this.width = this.field.clientWidth || this.width;
         this.height = this.field.clientHeight || this.height;
+        const rawDt = this.lastFrame ? Math.min(180, now - this.lastFrame) : 16;
+        this.lastFrame = now;
         this.updateLifecycle(now);
+        this.updateHotspotCharge(now, rawDt);
 
         const time = now * 0.001;
         const pointerFresh = this.pointer.active && now - this.pointer.movedAt < 1600;
+        const cursorInfluence = this.activeBuild ? 0 : (this.activeHotspotKey ? 0.28 : 1);
 
         this.particles.forEach((p, i) => {
           if (p.assignedToBuild && this.animateBuildParticle(p, now, time)) return;
@@ -6612,15 +6780,16 @@
           const dx = p.x - this.pointer.x;
           const dy = p.y - this.pointer.y;
           const dist = Math.hypot(dx, dy) || 1;
-          const near = pointerFresh ? this.clamp(1 - dist / 150, 0, 1) : 0;
+          const nearCursor = pointerFresh ? this.clamp(1 - dist / 118, 0, 1) : 0;
+          const hotspot = this.activeHotspotInfluence(p, time, i);
           const spring = this.reducedMotion ? 0.22 : 0.018;
 
-          if (!this.reducedMotion && near > 0 && this.canStartBuild(now)) {
-            const force = near * near * 0.72;
-            p.vx += (-dx / dist) * force;
-            p.vy += (-dy / dist) * force;
-            p.vx += Math.sin(time * 11 + i) * near * 0.045;
-            p.vy += Math.cos(time * 10 + i) * near * 0.045;
+          if (!this.reducedMotion && nearCursor > 0 && cursorInfluence > 0) {
+            const force = nearCursor * nearCursor * 0.16 * cursorInfluence;
+            p.vx += (dx / dist) * force;
+            p.vy += (dy / dist) * force;
+            p.vx += Math.sin(time * 9 + i) * nearCursor * 0.012 * cursorInfluence;
+            p.vy += Math.cos(time * 8 + i) * nearCursor * 0.012 * cursorInfluence;
           }
 
           p.vx += (target.x - p.x) * spring;
@@ -6630,12 +6799,42 @@
 
           const x = p.x + p.vx;
           const y = p.y + p.vy;
-          const opacity = this.clamp(p.baseOpacity + near * 0.28, 0.08, 1);
-          const scale = 1 + near * 0.05;
-          this.renderParticle(p, x, y, baseRotation + near * 9, opacity, scale, near * 0.18);
+          const opacity = this.clamp(p.baseOpacity + nearCursor * 0.12 + hotspot.pull * 0.24, 0.08, 1);
+          const scale = 1 + nearCursor * 0.025 + hotspot.pull * 0.06;
+          this.renderParticle(p, x, y, baseRotation + nearCursor * 3 + hotspot.pull * 6, opacity, scale, hotspot.glow);
         });
 
         requestAnimationFrame(this.animate);
+      }
+
+      // Future scroll transition hooks: page-2 phone handoff can read these
+      // positions, bounds, and built states before calling an exit animation.
+      getParticleSnapshot() {
+        return this.particles.map(p => ({
+          id: p.id,
+          symbol: p.symbol,
+          x: p.x,
+          y: p.y,
+          vx: p.vx,
+          vy: p.vy,
+          opacity: p.renderOpacity,
+          scale: p.renderScale
+        }));
+      }
+
+      getBuiltComponentState() {
+        return { ...this.componentState };
+      }
+
+      getSandboxBounds() {
+        return this.field.getBoundingClientRect();
+      }
+
+      exitToTarget(target) {
+        this.exitTarget = target;
+        this.state = 'cooldown';
+        this.setFieldState('cooldown');
+        return this.getParticleSnapshot();
       }
     }
 
