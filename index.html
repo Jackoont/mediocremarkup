@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -72,7 +72,7 @@
     @media (max-width: 900px) { body { cursor: auto; } }
     a { color: inherit; text-decoration: none; }
 
-    /* ── NAV ── */
+    /* -- NAV -- */
     nav { position: fixed; top: 0; left: 0; right: 0; height: 64px; background: rgba(23,33,29,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: space-between; padding: 0 48px; z-index: 500; transition: background 0.4s ease, transform 0.45s cubic-bezier(0.4,0,0.2,1), opacity 0.45s ease; }
     nav.nav-hidden { transform: translateY(-100%); opacity: 0; pointer-events: none; }
     .nav-left { display: flex; align-items: center; }
@@ -87,7 +87,7 @@
     .nav-cta:hover { opacity: 0.88; transform: translateY(-1px); }
     @media (max-width: 900px) { nav { padding: 0 24px; } .nav-links .hide-mobile { display: none; } }
 
-    /* ── BUTTONS ── */
+    /* -- BUTTONS -- */
     .btn { font-family: var(--font-body); font-size: 14px; font-weight: 600; padding: 13px 28px; border-radius: 999px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s, opacity 0.2s, background 0.2s, color 0.2s; border: 1.5px solid transparent; }
     @media (max-width: 900px) { .btn { cursor: pointer; } }
     .btn-primary { background: var(--accent); color: white; border-color: var(--accent); transition: all 0.2s, background 1.2s, border-color 1.2s; }
@@ -97,7 +97,7 @@
     .btn-ghost { background: transparent; color: #2B2547; border: 1.5px solid rgba(43,37,71,0.3); }
     .btn-ghost:hover { background: rgba(42,31,45,0.06); transform: translateY(-2px); }
 
-    /* ── HERO — full overhaul ── */
+    /* -- HERO — full overhaul -- */
     .hero {
       min-height: 92vh;
       position: relative;
@@ -583,7 +583,7 @@
       .signal-card { font-size: 11px; padding: 9px 10px; }
     }
 
-    /* ── BOKEH / FLORAL DECOS (beautiful, permanent) ── */
+    /* -- BOKEH / FLORAL DECOS (beautiful, permanent) -- */
     .bokeh { position: absolute; pointer-events: none; z-index: 2; animation: bokehRise linear forwards; filter: blur(0.6px) brightness(1.08); }
     @keyframes bokehRise {
       0%   { transform: translateY(0) scale(0.7) rotate(0deg);   opacity: 0; }
@@ -594,9 +594,9 @@
     }
     .floral-vine { position: absolute; pointer-events: none; z-index: 2; opacity: 0.14; }
 
-    /* ══════════════════════════════════════
+    /* --------------------------------------
        SHOWCASE — immersive phone stage
-       ══════════════════════════════════════ */
+       -------------------------------------- */
     #showcase {
       position: relative;
       background: #FEF9F4;
@@ -686,7 +686,7 @@
 
     /* sc-right removed — new layout is single centered column */
 
-    /* ── PHONE MOCKUP ── */
+    /* -- PHONE MOCKUP -- */
     .phone-wrapper {
       transform-style: preserve-3d;
       cursor: default; position: relative; display: inline-block;
@@ -778,7 +778,7 @@
     .phone-screen::-webkit-scrollbar { display: none; }
     .phone-home-bar { width: 90px; height: 4px; background: rgba(255,255,255,0.18); border-radius: 999px; margin-top: 8px; flex-shrink: 0; }
 
-    /* ── PHONE TEMPLATE SWITCHER ── */
+    /* -- PHONE TEMPLATE SWITCHER -- */
     .phone-templates-wrap { position: absolute; inset: 0; }
     .phone-template { position: absolute; inset: 0; opacity: 0; transition: opacity 0.7s ease; pointer-events: none; font-family: 'Inter', sans-serif; overflow-y: scroll; overflow-x: hidden; scrollbar-width: none; }
     .phone-template::-webkit-scrollbar { display: none; }
@@ -794,7 +794,7 @@
     .phone-badge { position: absolute; bottom: -28px; left: 0; font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
     @media (max-width: 900px) { .phone-badge { display: none; } }
 
-    /* ══ TEMPLATE 0: MERIDIAN LAW GROUP — Professional ══ */
+    /* -- TEMPLATE 0: MERIDIAN LAW GROUP — Professional -- */
     #tpl-0 { background:#f7f8fa; font-family:'Inter',sans-serif; }
     .t1-topbar { background:#0f1f3d; padding:5px 14px; display:flex; justify-content:space-between; align-items:center; }
     .t1-topbar-logo { font-size:9px; font-weight:700; color:#c8a96e; letter-spacing:2px; text-transform:uppercase; }
@@ -837,7 +837,7 @@
     .t1-cta-btn { background:#c8a96e; color:#0f1f3d; border:none; border-radius:3px; padding:7px 12px; font-size:8px; font-weight:800; letter-spacing:1px; text-transform:uppercase; white-space:nowrap; }
     .t1-footer { padding:8px 14px; font-size:8px; color:#aab; text-align:center; background:#fff; border-top:1px solid rgba(0,0,0,0.06); letter-spacing:0.3px; }
 
-    /* ══ TEMPLATE 1: BLOOM & CO. — Editorial Floral ══ */
+    /* -- TEMPLATE 1: BLOOM & CO. — Editorial Floral -- */
     #tpl-1 { background:#0e0a0b; font-family:'Georgia',serif; color:#FAFAF8; }
 
     /* nav */
@@ -905,7 +905,7 @@
     /* footer */
     .t2-footer { padding:12px 16px; font-size:7px; color:rgba(245,237,232,0.25); text-align:center; border-top:1px solid rgba(255,255,255,0.06); letter-spacing:1px; text-transform:uppercase; font-family:'Inter',sans-serif; }
 
-    /* ══ TEMPLATE 2: COASTAL PROPERTIES — Real Estate ══ */
+    /* -- TEMPLATE 2: COASTAL PROPERTIES — Real Estate -- */
     #tpl-2 { background:#f8f9fb; font-family:'Inter',sans-serif; }
     .t3-nav { background:#fff; padding:11px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,0,0,0.07); }
     .t3-logo { font-size:13px; font-weight:800; color:#1a2c44; letter-spacing:-0.5px; }
@@ -954,7 +954,7 @@
     .t3-cta-btn { background:#c8a96e; color:#1a2c44; border:none; border-radius:4px; padding:7px 12px; font-size:8px; font-weight:800; text-transform:uppercase; letter-spacing:1px; }
     .t3-footer { padding:8px 14px; font-size:8px; color:#aab; text-align:center; background:#f8f9fb; border-top:1px solid rgba(0,0,0,0.06); }
 
-    /* ══ TEMPLATE 3: ELEVEN NORTH COFFEE — Memorable ══ */
+    /* -- TEMPLATE 3: ELEVEN NORTH COFFEE — Memorable -- */
     #tpl-3 { background:#1e120a; font-family:'Inter',sans-serif; }
     .t4-nav { background:#1e120a; padding:12px 14px; display:flex; justify-content:space-between; align-items:center; }
     .t4-logo { font-size:14px; font-weight:800; color:#e8d5b0; letter-spacing:-0.5px; }
@@ -1000,9 +1000,9 @@
     .t4-hours-day { font-size:8px; color:rgba(232,213,176,0.5); }
     .t4-hours-time { font-size:8px; color:#e8d5b0; font-weight:600; text-align:right; }
     .t4-footer { padding:9px 14px; font-size:8px; color:rgba(232,213,176,0.2); text-align:center; background:#140c05; border-top:1px solid rgba(200,134,10,0.1); }
-    /* ═══════════════════════════════════════════════
+    /* -----------------------------------------------
        WHIRLPOOL INTRO — Code symbols spiral into page
-       ═══════════════════════════════════════════════ */
+       ----------------------------------------------- */
     #whirlpool-container {
       position: fixed;
       top: 0; left: 0;
@@ -1064,9 +1064,9 @@
       50%       { opacity: 1;    transform: scaleY(1);   }
     }
 
-    /* ═══════════════════════════════════════════════
+    /* -----------------------------------------------
        PARALLAX / ORGANIC AMBIENT BLOB
-       ═══════════════════════════════════════════════ */
+       ----------------------------------------------- */
     .parallax-blob {
       position: absolute;
       border-radius: 50%;
@@ -1091,9 +1091,9 @@
       top: 40%; right: 10%;
     }
 
-    /* ═══════════════════════════════════════════════
+    /* -----------------------------------------------
        AMBIENT MORPHING SVG ORBS
-       ═══════════════════════════════════════════════ */
+       ----------------------------------------------- */
     .orb {
       position: fixed;
       border-radius: 50%;
@@ -1116,9 +1116,9 @@
     }
     #ambient-blobs svg { position: absolute; }
 
-    /* ═══════════════════════════════════════════════
+    /* -----------------------------------------------
        SCROLL-PINNED DIVE REVEAL
-       ═══════════════════════════════════════════════ */
+       ----------------------------------------------- */
     #video-reveal {
       position: relative;
       height: 560vh;
@@ -1390,9 +1390,9 @@
       #dive-depth-hud { display: none; }
     }
 
-    /* ══════════════════════════════════════
+    /* --------------------------------------
        BUILD STAGE — Iron Man assembly cinema
-       ══════════════════════════════════════ */
+       -------------------------------------- */
     #build-stage {
       position: absolute;
       inset: 0;
@@ -1428,7 +1428,7 @@
       #build-phase-track, #build-telemetry { display: none !important; }
     }
 
-    /* ── Atmospheric backdrop ── */
+    /* -- Atmospheric backdrop -- */
     #build-backdrop {
       position: absolute;
       inset: 0;
@@ -1631,7 +1631,7 @@
       50%      { transform: rotate(2deg) scale(1.02); }
     }
 
-    /* ── Left rail: phase track ── */
+    /* -- Left rail: phase track -- */
     #build-phase-track {
       display: flex; flex-direction: column; gap: 14px;
       align-self: center;
@@ -1728,7 +1728,7 @@
     }
     .bp-row.bp-done .bp-check { opacity: 1; transform: scale(1); }
 
-    /* ── Center: phone-like build frame ── */
+    /* -- Center: phone-like build frame -- */
     #build-frame-wrap {
       position: relative;
       display: flex;
@@ -1964,7 +1964,7 @@
       100% { opacity: 0; top: 110%; }
     }
 
-    /* Glitch overlay for code→render hand-off */
+    /* Glitch overlay for code?render hand-off */
     .bf-glitch {
       position: absolute; inset: 0;
       pointer-events: none;
@@ -2055,7 +2055,7 @@
     }
     .build-layer.bl-show { opacity: 1; }
 
-    /* ── Phase 0: Wireframe ── */
+    /* -- Phase 0: Wireframe -- */
     #build-wireframe {
       padding: 0;
     }
@@ -2077,7 +2077,7 @@
     #build-wireframe.bl-show .wf-box,
     #build-wireframe.bl-show .wf-cta { opacity: 1; }
 
-    /* ── Phase 1: Code typing — IDE feel ── */
+    /* -- Phase 1: Code typing — IDE feel -- */
     #build-code {
       background: #FAFAF6;
       display: flex; flex-direction: column;
@@ -2153,7 +2153,7 @@
     #build-code.bl-show #code-cursor { display: block; }
     @keyframes codeCursorBlink { 0%,100% { opacity: 1; } 50% { opacity: 0.15; } }
 
-    /* ── Phase 2: Rendered preview ── */
+    /* -- Phase 2: Rendered preview -- */
     #build-render {
       background: #FEF9F4;
       display: flex; flex-direction: column;
@@ -2261,7 +2261,7 @@
       100% { opacity: 0; transform: translate(-50%,-50%) scale(4.5); }
     }
 
-    /* ── Phase 3: Ship overlay ── */
+    /* -- Phase 3: Ship overlay -- */
     #build-ship {
       background: linear-gradient(180deg,
         rgba(254,249,244,0.50) 0%,
@@ -2350,7 +2350,7 @@
     }
     .ship-log-success .sll-arrow { color: #F0635A; }
 
-    /* ── Right rail: telemetry ── */
+    /* -- Right rail: telemetry -- */
     #build-telemetry {
       display: flex; flex-direction: column; gap: 12px;
       align-self: center;
@@ -2423,7 +2423,7 @@
       width: 100%; height: 30px; display: block;
     }
 
-    /* ── Caption below frame ── */
+    /* -- Caption below frame -- */
     #build-caption {
       position: absolute;
       left: 50%;
@@ -2479,9 +2479,9 @@
       .bc-title { font-size: 9px; letter-spacing: 1.4px; }
     }
 
-    /* ══════════════════════════════════════
+    /* --------------------------------------
        NEW ASSEMBLY SYSTEM — Iron Man build
-       ══════════════════════════════════════ */
+       -------------------------------------- */
 
     /* Build layers — default hidden, fade in via .bl-show */
     .build-layer { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity 0.55s ease; }
@@ -2535,7 +2535,7 @@
     .bsym.bsym-accent { color: rgba(240,99,90,0.8); }
     .bsym.bsym-warm   { color: rgba(143,95,47,0.82); }
 
-    /* ── PAINT-IN system: each piece is clipped and revealed top-to-bottom ── */
+    /* -- PAINT-IN system: each piece is clipped and revealed top-to-bottom -- */
     .bs-piece {
       position: relative;
       /* Start fully clipped (invisible) */
@@ -2580,7 +2580,7 @@
       100% { opacity: 0; transform: scaleX(1.1); }
     }
 
-    /* ── Site nav ── */
+    /* -- Site nav -- */
     .bs-nav {
       display: flex; align-items: center; justify-content: space-between;
       padding: 15px 20px 14px;
@@ -2611,7 +2611,7 @@
     }
     .bs-nav-link:hover { opacity: 1; color: #8f5f2f; }
 
-    /* ── Hero ── */
+    /* -- Hero -- */
     .bs-hero {
       position: relative;
       height: 292px;
@@ -2717,7 +2717,7 @@
       background: rgba(217,176,111,0.7);
     }
 
-    /* ── Sub block: lead + CTA ── */
+    /* -- Sub block: lead + CTA -- */
     .bs-sub-block {
       padding: 24px 22px 20px;
       background:
@@ -2755,7 +2755,7 @@
     }
     .build-site.bs-cta-hovered .bs-cta-arrow { transform: translateX(4px); }
 
-    /* ── Project cards ── */
+    /* -- Project cards -- */
     .bs-cards {
       display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
       padding: 4px 18px 22px;
@@ -2812,7 +2812,7 @@
       color: rgba(33,27,22,0.62);
     }
 
-    /* ── Stats strip ── */
+    /* -- Stats strip -- */
     .bs-stats {
       display: grid; grid-template-columns: repeat(3, 1fr);
       padding: 18px 22px;
@@ -2838,7 +2838,7 @@
       color: rgba(33,27,22,0.6);
     }
 
-    /* ── Footer ── */
+    /* -- Footer -- */
     .bs-foot {
       display: flex; justify-content: space-between;
       padding: 14px 22px 22px;
@@ -3107,7 +3107,7 @@
       font-weight: 900;
     }
 
-    /* ══ Blueprint SVG layer (construction lines drawing in) ══ */
+    /* -- Blueprint SVG layer (construction lines drawing in) -- */
     .build-svg {
       position: absolute; inset: 0;
       width: 100%; height: 100%;
@@ -3142,7 +3142,7 @@
       to { stroke-dashoffset: 0; }
     }
 
-    /* ══ Assembly orbs — glowing dots that fly to deliver each piece ══ */
+    /* -- Assembly orbs — glowing dots that fly to deliver each piece -- */
     .build-orbs {
       position: absolute; inset: 0;
       pointer-events: none;
@@ -3210,7 +3210,7 @@
       background: radial-gradient(circle, rgba(240,99,90,0.22), transparent 70%);
     }
 
-    /* ══ Code overlay — appears mid-build, smaller window in upper region ══ */
+    /* -- Code overlay — appears mid-build, smaller window in upper region -- */
     .build-code-overlay {
       position: absolute;
       left: 8%; right: 8%;
@@ -3314,7 +3314,7 @@
     .build-code-overlay.bl-show #code-cursor { display: block; }
     @keyframes codeCursorBlink { 0%,100% { opacity: 1; } 50% { opacity: 0.15; } }
 
-    /* ══ HUD ring — Iron Man feel, wraps the screen edge ══ */
+    /* -- HUD ring — Iron Man feel, wraps the screen edge -- */
     .bf-hud {
       position: absolute;
       inset: -14px;
@@ -3336,7 +3336,7 @@
     @keyframes hudRotate    { to { transform: rotate(360deg); } }
     @keyframes hudRotateRev { to { transform: rotate(-360deg); } }
 
-    /* ══ Ship glow overlay — replaces old ship layer ══ */
+    /* -- Ship glow overlay — replaces old ship layer -- */
     .bf-ship-glow {
       position: absolute; inset: 0;
       pointer-events: none;
@@ -3358,9 +3358,9 @@
     }
     .bf-rail.bf-rail-shipped .bf-rail-text { color: #F0635A; }
 
-    /* ═══════════════════════════════════════════════
+    /* -----------------------------------------------
        LUSION-STYLE TEXT SPLITS & CLIP REVEALS
-       ═══════════════════════════════════════════════ */
+       ----------------------------------------------- */
     .gsap-reveal {
       opacity: 0;
       transform: translateY(60px);
@@ -3403,9 +3403,9 @@
       mix-blend-mode: multiply;
     }
 
-    /* ═══════════════════════════════════════════════
+    /* -----------------------------------------------
        MAGNETIC BUTTONS
-       ═══════════════════════════════════════════════ */
+       ----------------------------------------------- */
     .magnetic-btn {
       position: relative;
       display: inline-block;
@@ -3424,9 +3424,9 @@
       box-shadow: 0 8px 32px rgba(240,99,90,0.2);
     }
 
-    /* ═══════════════════════════════════════════════
+    /* -----------------------------------------------
        HORIZONTAL SCROLL SHOWCASE (services)
-       ═══════════════════════════════════════════════ */
+       ----------------------------------------------- */
     .h-scroll-wrapper { overflow: hidden; padding: 80px 0; }
     .h-scroll-track { display: flex; gap: 24px; width: max-content; padding: 0 80px; }
     .h-scroll-card {
@@ -3442,9 +3442,9 @@
     .h-scroll-card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
     .h-scroll-card .card-tag { display: inline-block; margin-top: 16px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); background: rgba(240,99,90,0.08); padding: 4px 12px; border-radius: 999px; }
 
-    /* ═══════════════════════════════════════════════
+    /* -----------------------------------------------
        IMAGE REVEAL with clip-path
-       ═══════════════════════════════════════════════ */
+       ----------------------------------------------- */
     .clip-reveal {
       overflow: hidden;
       border-radius: 16px;
@@ -3465,24 +3465,24 @@
       mix-blend-mode: multiply;
     }
 
-    /* ═══════════════════════════════════════════════
+    /* -----------------------------------------------
        SMOOTH SCROLL CONTAINER
-       ═══════════════════════════════════════════════ */
+       ----------------------------------------------- */
     html { scroll-behavior: smooth; }
     .smooth-wrapper {
       position: relative;
     }
 
-    /* ── FEATURE BAND ── */
+    /* -- FEATURE BAND -- */
     .feature-band { background: #F5EFE6; padding: 80px 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
     .feature-quote { font-family: var(--font-body); font-size: clamp(24px, 3vw, 40px); font-weight: 300; font-style: italic; color: #2B2547; line-height: 1.3; }
     .feature-list { list-style: none; display: flex; flex-direction: column; gap: 16px; }
     .feature-list li { color: rgba(43,37,71,0.7); font-size: 15px; padding-left: 24px; position: relative; }
-    .feature-list li::before { content: '→'; position: absolute; left: 0; color: #F4A261; }
+    .feature-list li::before { content: '✓'; position: absolute; left: 0; color: #F4A261; }
     @media (max-width: 900px) { .feature-band { grid-template-columns: 1fr; padding: 60px 24px; gap: 40px; } }
 
 
-    /* ── SECTIONS ── */
+    /* -- SECTIONS -- */
     section { padding: 0; max-width: none; margin: 0; position: relative; }
     .section-inner { padding: 100px 80px; max-width: 1400px; margin: 0 auto; }
     @media (max-width: 900px) { .section-inner { padding: 64px 24px; } }
@@ -3491,7 +3491,7 @@
     .section-title em { font-style: normal; color: var(--accent); font-weight: 400; }
     .divider { height: 1px; background: rgba(136,136,128,0.15); }
 
-    /* ── WHAT YOU GET ── */
+    /* -- WHAT YOU GET -- */
     .what-item { display: grid; grid-template-columns: 100px 1px 200px 1fr auto; gap: 0 48px; padding: 48px 0; border-bottom: 1px solid rgba(136,136,128,0.15); align-items: center; cursor: default; }
     .what-item:first-child { border-top: 1px solid rgba(136,136,128,0.15); }
     .what-item-num { font-family: var(--font-body); font-weight: 900; font-size: 100px; line-height: 1; color: rgba(136,136,128,0.07); transition: color 0.3s; user-select: none; }
@@ -3502,7 +3502,7 @@
     .what-tag { font-family: var(--font-mono); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; background: #F4A261; color: white; border-radius: 999px; padding: 6px 14px; white-space: nowrap; flex-shrink: 0; }
     @media (max-width: 900px) { .what-item { display: block; padding: 32px 0; } .what-item-divider { display: none; } .what-item-num { font-size: 48px; margin-bottom: 8px; } .what-item h3 { margin-bottom: 6px; } .what-item p { margin-bottom: 12px; } }
 
-    /* ── PRICING ── */
+    /* -- PRICING -- */
     .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
     @media (max-width: 900px) { .pricing-grid { grid-template-columns: 1fr; } }
     .price-card { background: #f0ebe0; border: 1px solid rgba(136,136,128,0.15); border-radius: 20px; padding: 40px; display: flex; flex-direction: column; transition: transform 0.3s, box-shadow 0.3s; }
@@ -3525,16 +3525,16 @@
     .price-features { list-style: none; flex: 1; margin-bottom: 28px; }
     .price-features li { padding: 11px 0; font-size: 14px; color: var(--muted); display: flex; align-items: flex-start; gap: 10px; border-top: 1px solid rgba(136,136,128,0.12); }
     .price-features li:first-child { border-top: none; }
-    .price-features li::before { content: '→'; color: #F4A261; flex-shrink: 0; font-size: 12px; margin-top: 2px; }
+    .price-features li::before { content: '✓'; color: #F4A261; flex-shrink: 0; font-size: 12px; margin-top: 2px; }
     .price-card .btn { width: 100%; justify-content: center; }
 
-    /* ── SERVICES ── */
+    /* -- SERVICES -- */
     .services-chips { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 48px; }
     .service-chip { border: 1px solid rgba(136,136,128,0.2); border-radius: 999px; padding: 10px 20px; font-family: var(--font-body); font-size: 13px; font-weight: 500; color: var(--ink); cursor: pointer; transition: background 0.2s, color 0.2s, border-color 0.2s; display: inline-flex; align-items: center; }
     .service-chip:hover { background: #F0635A; color: white; border-color: #F0635A; }
     @media (max-width: 900px) { .service-chip { cursor: pointer; } }
 
-    /* ── PROCESS ── */
+    /* -- PROCESS -- */
     .process-track { padding: 0; max-width: 1400px; margin: 0 auto; }
     .process-steps { display: flex; align-items: flex-start; padding: 0 0 60px; }
     .process-step { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 16px; }
@@ -3546,7 +3546,7 @@
     .process-step p { font-size: 13px; color: var(--muted); line-height: 1.6; max-width: 200px; }
     @media (max-width: 900px) { .process-steps { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding-bottom: 40px; } .process-connector { display: none; } .process-step { padding: 0; } }
 
-    /* ── CTA ── */
+    /* -- CTA -- */
     .cta { padding: 140px 80px; max-width: 1400px; margin: 0 auto; text-align: center; }
     @media (max-width: 900px) { .cta { padding: 80px 24px; } }
     .cta h2 { font-family: var(--font-body); font-size: clamp(40px, 8vw, 110px); font-weight: 900; letter-spacing: -3px; line-height: 0.9; color: var(--ink); margin-bottom: 48px; }
@@ -3554,7 +3554,7 @@
     .cta-email { font-family: var(--font-body); font-size: 16px; font-weight: 500; color: var(--ink); border-bottom: 1px solid rgba(136,136,128,0.3); padding-bottom: 4px; transition: color 0.2s, border-color 0.2s; }
     .cta-email:hover { color: #F0635A; border-color: #F0635A; }
 
-    /* ── FOOTER ── */
+    /* -- FOOTER -- */
     footer { padding: 24px 60px; border-top: 1px solid rgba(136,136,128,0.15); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
     .footer-copy { font-family: var(--font-mono); font-size: 10px; color: #5A547A; letter-spacing: 1px; text-transform: uppercase; }
     .footer-tagline { font-family: var(--font-body); font-size: 12px; color: #5A547A; font-weight: 400; }
@@ -3562,18 +3562,18 @@
     .footer-email:hover { color: #F0635A; }
     @media (max-width: 900px) { footer { padding: 24px; flex-direction: column; gap: 8px; align-items: flex-start; } }
 
-    /* ── SCROLL REVEAL ── */
+    /* -- SCROLL REVEAL -- */
     .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    /* ── MOBILE HERO ── */
+    /* -- MOBILE HERO -- */
     @media (max-width: 768px) {
       .hero-content { padding: 112px 24px 70px; }
       .hero-system { min-height: 330px; }
       .hero-ink-blob { width: 100vw; height: 250px; }
     }
 
-    /* ══ BELOW-FOLD THEME ZONE ══
+    /* -- BELOW-FOLD THEME ZONE --
        Matches the hero's rose / parchment / plum palette.
        Warm, editorial, cohesive — not pink-overload. */
 
@@ -3595,9 +3595,9 @@
     .what-item:hover .what-item-num { color: rgba(240,99,90,0.15) !important; }
     section:not(#hero) .what-item p { color: #5A547A !important; }
 
-    /* ══════════════════════════════════
+    /* ----------------------------------
        PRICING — warm ink, unique, readable
-       ══════════════════════════════════ */
+       ---------------------------------- */
 
     #pricing {
       background: #FEF9F4;
@@ -3656,7 +3656,7 @@
     }
     @media (max-width: 900px) { #pricing .pricing-inner { padding: 80px 24px 180px; } }
 
-    /* ── Header ── */
+    /* -- Header -- */
     #pricing .pricing-header { margin-bottom: 80px; }
 
     #pricing .pricing-eyebrow {
@@ -3737,7 +3737,7 @@
       50%      { box-shadow: 0 0 0 8px rgba(223,109,94,0.04); }
     }
 
-    /* ── GRID ── */
+    /* -- GRID -- */
     .pricing-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -3910,7 +3910,7 @@
     }
     .price-card.featured .price-features li::before { color: #df6d5e !important; }
 
-    /* ── Buttons — responsive, clean, readable ── */
+    /* -- Buttons — responsive, clean, readable -- */
     .price-card .btn {
       width: 100%;
       justify-content: center;
@@ -4064,7 +4064,7 @@
 
     /* Feature band */
 
-    /* ── GRAIN / NOISE texture — gives light sections physicality ── */
+    /* -- GRAIN / NOISE texture — gives light sections physicality -- */
     @keyframes grainShift {
       0%,100% { transform: translate(0,0); }
       25%      { transform: translate(-1%,-1%); }
@@ -4082,7 +4082,7 @@
       mix-blend-mode: overlay;
     }
 
-    /* ── VISUAL RHYMING — shared decorative line motif ── */
+    /* -- VISUAL RHYMING — shared decorative line motif -- */
     .section-rule {
       display: flex; align-items: center; gap: 12px;
       margin-bottom: 20px;
@@ -4095,7 +4095,7 @@
       flex-shrink: 0;
     }
 
-    /* ── HERO: interactive markup field ── */
+    /* -- HERO: interactive markup field -- */
     .hero {
       --hero-ink: #0d1110;
       --hero-ink-2: #111715;
@@ -5308,10 +5308,10 @@
 </head>
 <body>
 
-  <!-- ══ GRAIN TEXTURE OVERLAY — subtle physicality ══ -->
+  <!-- -- GRAIN TEXTURE OVERLAY — subtle physicality -- -->
   <div class="grain-overlay" aria-hidden="true"></div>
 
-  <!-- ══ AMBIENT MORPHING BLOBS (fixed behind everything) ══ -->
+  <!-- -- AMBIENT MORPHING BLOBS (fixed behind everything) -- -->
   <div id="ambient-blobs">
     <svg id="ab1" width="600" height="600" viewBox="0 0 600 600" style="top:-100px;left:-200px;opacity:0.18">
       <path id="ab1-path" fill="url(#abg1)"/>
@@ -5336,7 +5336,7 @@
     </svg>
   </div>
 
-  <!-- ══ WHIRLPOOL OVERLAY — Code-symbol vortex that disperses on scroll ══ -->
+  <!-- -- WHIRLPOOL OVERLAY — Code-symbol vortex that disperses on scroll -- -->
   <div id="whirlpool-container">
     <canvas id="vortex-canvas"></canvas>
     <!-- symbols are injected by JS -->
@@ -5346,7 +5346,7 @@
     </div>
   </div>
 
-  <!-- ══ FLOATING ORBS (organic background) ══ -->
+  <!-- -- FLOATING ORBS (organic background) -- -->
   <div class="orb orb-1" id="orb1">
     <div class="orb-inner" style="background:radial-gradient(circle at 40% 40%, rgba(240,99,90,0.2), rgba(244,162,97,0.05));"></div>
   </div>
@@ -5365,7 +5365,6 @@
     <div class="nav-links">
       <a href="#what" class="hide-mobile">Work</a>
       <a href="#pricing" onclick="jumpToPricing(event)" class="hide-mobile">Pricing</a>
-      <a href="#process" class="hide-mobile">Process</a>
       <a href="#contact" onclick="jumpToContact(event)" class="nav-cta">Start a project →</a>
     </div>
   </nav>
@@ -5395,7 +5394,6 @@
 
         <div class="hero-actions" id="hero-actions">
           <a href="#contact" onclick="jumpToContact(event)" class="btn btn-primary magnetic-btn">Start a project →</a>
-          <a href="#process" class="btn btn-secondary">See the process</a>
         </div>
 
         <div class="hero-stats" id="hero-stats">
@@ -5486,7 +5484,7 @@
                     <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=170&fit=crop&q=80" alt="Law office" loading="lazy">
                     <div class="t1-hero-overlay"></div>
                     <div class="t1-hero-content">
-                      <div class="t1-badge">⚖ Est. 1998 · St. Johns, FL</div>
+                      <div class="t1-badge">&#9878; Est. 1998 &middot; St. Johns, FL</div>
                       <h2 class="t1-headline">Trusted counsel<br>when it matters<br>most.</h2>
                       <div class="t1-sub">Protecting families and businesses across Northeast Florida.</div>
                       <button class="t1-btn">Free Consultation</button>
@@ -5495,24 +5493,24 @@
                   <div class="t1-trust-bar">
                     <div class="t1-trust-item"><div class="t1-trust-num">26yr</div><div class="t1-trust-label">Experience</div></div>
                     <div class="t1-trust-item"><div class="t1-trust-num">2,400+</div><div class="t1-trust-label">Cases Won</div></div>
-                    <div class="t1-trust-item"><div class="t1-trust-num">4.9★</div><div class="t1-trust-label">Google</div></div>
+                    <div class="t1-trust-item"><div class="t1-trust-num">4.9&#9733;</div><div class="t1-trust-label">Google</div></div>
                   </div>
                   <div class="t1-practices">
                     <div class="t1-practices-label">Practice Areas</div>
                     <div class="t1-practice">
-                      <div class="t1-practice-icon">🏠</div>
+                      <div class="t1-practice-icon">&#127968;</div>
                       <div><div class="t1-practice-name">Real Estate Law</div><div class="t1-practice-desc">Closings, disputes, title issues</div></div>
                     </div>
                     <div class="t1-practice">
-                      <div class="t1-practice-icon">📋</div>
+                      <div class="t1-practice-icon">&#128203;</div>
                       <div><div class="t1-practice-name">Estate Planning</div><div class="t1-practice-desc">Wills, trusts, probate</div></div>
                     </div>
                     <div class="t1-practice">
-                      <div class="t1-practice-icon">⚖️</div>
+                      <div class="t1-practice-icon">&#9878;</div>
                       <div><div class="t1-practice-name">Business Law</div><div class="t1-practice-desc">Contracts, formation, disputes</div></div>
                     </div>
                     <div class="t1-practice">
-                      <div class="t1-practice-icon">👨‍👩‍👧</div>
+                      <div class="t1-practice-icon">&#128106;</div>
                       <div><div class="t1-practice-name">Family Law</div><div class="t1-practice-desc">Divorce, custody, adoption</div></div>
                     </div>
                   </div>
@@ -5634,7 +5632,7 @@
                   </div>
                   <div class="t3-search">
                     <div class="t3-search-bar">
-                      <span class="t3-search-icon">🔍</span>
+                      <span class="t3-search-icon">&#128269;</span>
                       <span class="t3-search-text">St. Johns, FL · Any price</span>
                       <span class="t3-search-filter">Filters</span>
                     </div>
@@ -5643,26 +5641,26 @@
                     <img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&h=180&fit=crop&q=80" alt="Property">
                     <div class="t3-hero-overlay"></div>
                     <span class="t3-listing-badge">New Listing</span>
-                    <button class="t3-save-btn">♡</button>
+                    <button class="t3-save-btn">&#9829;</button>
                     <div class="t3-listing-info">
                       <div class="t3-price">$624,900</div>
                       <div class="t3-address">214 Harbour Pointe Dr, St. Johns, FL 32259</div>
                     </div>
                   </div>
                   <div class="t3-chips">
-                    <div class="t3-chip">🛏 4 beds</div>
-                    <div class="t3-chip">🛁 3 baths</div>
-                    <div class="t3-chip">📐 2,840 sqft</div>
+                    <div class="t3-chip">&#128719; 4 beds</div>
+                    <div class="t3-chip">&#128705; 3 baths</div>
+                    <div class="t3-chip">&#128207; 2,840 sqft</div>
                     <div class="t3-chip t3-open-house">Open Sun 1–4</div>
                   </div>
                   <div class="t3-details">
                     <div class="t3-details-label">About This Home</div>
                     <div class="t3-desc">Stunning pool home in Durbin Crossing. Open concept living, chef's kitchen with quartz countertops, and a resort-style backyard. A-rated schools.</div>
                     <div class="t3-features">
-                      <div class="t3-feature"><span class="t3-feature-icon">🏊</span><div class="t3-feature-text">Pool &amp; Spa</div></div>
-                      <div class="t3-feature"><span class="t3-feature-icon">🚗</span><div class="t3-feature-text">3-Car Garage</div></div>
-                      <div class="t3-feature"><span class="t3-feature-icon">🏫</span><div class="t3-feature-text">A-Rated Schools</div></div>
-                      <div class="t3-feature"><span class="t3-feature-icon">🌳</span><div class="t3-feature-text">0.28 Acre Lot</div></div>
+                      <div class="t3-feature"><span class="t3-feature-icon">&#127946;</span><div class="t3-feature-text">Pool &amp; Spa</div></div>
+                      <div class="t3-feature"><span class="t3-feature-icon">&#128663;</span><div class="t3-feature-text">3-Car Garage</div></div>
+                      <div class="t3-feature"><span class="t3-feature-icon">&#127979;</span><div class="t3-feature-text">A-Rated Schools</div></div>
+                      <div class="t3-feature"><span class="t3-feature-icon">&#127795;</span><div class="t3-feature-text">0.28 Acre Lot</div></div>
                     </div>
                   </div>
                   <div class="t3-agent">
@@ -5670,11 +5668,11 @@
                     <div>
                       <div class="t3-agent-name">Lauren Whitfield</div>
                       <div class="t3-agent-title">Listing Agent · Coastal Properties</div>
-                      <div class="t3-agent-rating">⭐⭐⭐⭐⭐ 48 reviews</div>
+                      <div class="t3-agent-rating">&#9733;&#9733;&#9733;&#9733;&#9733; 48 reviews</div>
                     </div>
                     <div class="t3-agent-btns">
-                      <button class="t3-agent-call">📞 Call</button>
-                      <button class="t3-agent-text">💬 Text</button>
+                      <button class="t3-agent-call">&#9742; Call</button>
+                      <button class="t3-agent-text">SMS Text</button>
                     </div>
                   </div>
                   <div class="t3-market">
@@ -5750,7 +5748,7 @@
                     </div>
                   </div>
                   <div class="t4-loyalty">
-                    <span class="t4-loyalty-icon">☕</span>
+                    <span class="t4-loyalty-icon">&#9733;</span>
                     <div class="t4-loyalty-info">
                       <div class="t4-loyalty-title">Loyalty Rewards · 68/100 pts</div>
                       <div class="t4-loyalty-bar-track"><div class="t4-loyalty-bar-fill"></div></div>
@@ -5785,407 +5783,6 @@
     <canvas id="sym-fall-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:20;"></canvas>
     <div id="sc-bottom-pad"></div>
   </section>
-
-  <!-- ══ SCROLL-PINNED DIVE REVEAL ══ -->
-  <div id="video-reveal">
-    <div id="video-sticky">
-      <!-- Background grid + ambient layer -->
-      <div id="video-inner-3d">
-        <canvas id="video-canvas-fallback"></canvas>
-      </div>
-      <canvas id="tunnel-canvas"></canvas>
-      <canvas id="speed-canvas"></canvas>
-      <div id="dive-portal-glow"></div>
-      <div id="dive-edge-vignette"></div>
-      <div id="dive-scanlines"></div>
-      <canvas id="shockwave-canvas"></canvas>
-      <div id="dive-chroma"></div>
-      <div id="video-clip-mask"></div>
-      <div id="dive-letterbox-top"></div>
-      <div id="dive-letterbox-bottom"></div>
-
-      <!-- ── BUILD STAGE — the centerpiece ── -->
-      <div id="build-stage">
-        <!-- Atmospheric backdrop: blueprint grid + spotlight -->
-        <div id="build-backdrop">
-          <div id="build-cosmos"></div>
-          <div id="build-aurora"></div>
-          <div id="build-starfield"></div>
-          <div id="build-sigil-grid"></div>
-          <canvas id="build-atmosphere"></canvas>
-          <div id="build-spotlight"></div>
-          <div id="build-blueprint"></div>
-          <div id="build-energy">
-            <span class="be-beam be-beam-1"></span>
-            <span class="be-beam be-beam-2"></span>
-            <span class="be-beam be-beam-3"></span>
-            <span class="be-ring be-ring-1"></span>
-            <span class="be-ring be-ring-2"></span>
-          </div>
-        </div>
-
-        <!-- Phase track: vertical progress -->
-        <div id="build-phase-track">
-          <div class="bp-header">
-            <span class="bp-h-num">04</span>
-            <span class="bp-h-label">PHASES</span>
-          </div>
-          <div class="bp-row" data-phase="0">
-            <span class="bp-marker"></span>
-            <div class="bp-text">
-              <span class="bp-num">01</span>
-              <span class="bp-name">Blueprint</span>
-              <span class="bp-meta">intent before polish</span>
-            </div>
-            <span class="bp-check">✓</span>
-          </div>
-          <div class="bp-row" data-phase="1">
-            <span class="bp-marker"></span>
-            <div class="bp-text">
-              <span class="bp-num">02</span>
-              <span class="bp-name">Assemble</span>
-              <span class="bp-meta">pieces lock under load</span>
-            </div>
-            <span class="bp-check">✓</span>
-          </div>
-          <div class="bp-row" data-phase="2">
-            <span class="bp-marker"></span>
-            <div class="bp-text">
-              <span class="bp-num">03</span>
-              <span class="bp-name">Code</span>
-              <span class="bp-meta">signal comes alive</span>
-            </div>
-            <span class="bp-check">✓</span>
-          </div>
-          <div class="bp-row" data-phase="3">
-            <span class="bp-marker"></span>
-            <div class="bp-text">
-              <span class="bp-num">04</span>
-              <span class="bp-name">Ship</span>
-              <span class="bp-meta">live in days, not months</span>
-            </div>
-            <span class="bp-check">✓</span>
-          </div>
-        </div>
-
-        <!-- Center stage: phone-shaped frame that morphs through phases -->
-        <div id="build-frame-wrap">
-          <div class="bf-halo bf-halo-back"></div>
-          <div id="build-frame">
-            <!-- Notch / status bar — sells the device feel -->
-            <div class="bf-statusbar">
-              <span class="bf-time">9:41</span>
-              <span class="bf-notch"></span>
-              <span class="bf-icons">
-                <span class="bf-sig"></span>
-                <span class="bf-bat"></span>
-              </span>
-            </div>
-
-            <!-- Layered build viewport — site builds piece-by-piece in place -->
-            <div class="bf-screen">
-              <!-- BASE: the "real" rendered site, parts hidden until they assemble -->
-              <div class="build-site" id="build-site">
-                <div class="build-symbol-layer" id="build-symbol-layer"></div>
-                <!-- NAV — assembles from off-screen left -->
-                <div class="bs-piece" data-piece="nav" data-piece-tag="nav.module" data-from="left">
-                  <div class="bs-nav">
-                    <a class="bs-logo" href="#bs-home" data-phone-target="bs-home">North<span>&amp;</span>Needle</a>
-                    <div class="bs-nav-right">
-                      <a class="bs-nav-link" href="#bs-services" data-phone-target="bs-services">Services</a>
-                      <a class="bs-nav-link" href="#bs-process" data-phone-target="bs-process">Fit</a>
-                      <a class="bs-nav-link" href="#bs-booking" data-phone-target="bs-booking">Book</a>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- HERO video with overlay — drops from above -->
-                <div class="bs-piece bs-piece-hero" data-piece="hero-img" data-piece-tag="hero.frame" data-from="top">
-                  <div class="bs-hero" id="bs-home">
-                    <video class="bs-hero-video" autoplay muted loop playsinline>
-                      <source src="images/sewing 2.mp4" type="video/mp4">
-                    </video>
-                    <div class="bs-hero-grain"></div>
-                    <div class="bs-hero-overlay"></div>
-                    <div class="bs-hero-content">
-                      <span class="bs-eyebrow">Alterations and custom suiting</span>
-                      <h1 class="bs-title">Clothes that fit<br><em>the room.</em></h1>
-                    </div>
-                    <div class="bs-hero-meta">
-                      <span class="bs-meta-k">SCROLL</span>
-                      <span class="bs-meta-line"></span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Sub block: tagline + CTA -->
-                <div class="bs-piece" data-piece="sub" data-piece-tag="cta.block" data-from="left">
-                  <div class="bs-sub-block">
-                    <p class="bs-lead">Precise alterations, event suiting, and repairs handled by appointment in Jacksonville.</p>
-                    <a class="bs-cta" href="#bs-booking" data-phone-target="bs-booking">Reserve a fitting<span class="bs-cta-arrow">→</span></a>
-                  </div>
-                </div>
-
-                <!-- Service cards row -->
-                <div class="bs-piece" data-piece="cards" data-piece-tag="grid.services" data-from="bottom">
-                  <div class="bs-cards" id="bs-services">
-                    <div class="bs-card">
-                      <div class="bs-card-img bs-card-img-1"></div>
-                      <div class="bs-card-body">
-                        <div class="bs-card-tag">Occasion tailoring</div>
-                        <div class="bs-card-name">Wedding and event fits</div>
-                      </div>
-                      <p>Suiting, dresses, and formalwear adjusted on a clear timeline.</p>
-                    </div>
-                    <div class="bs-card">
-                      <div class="bs-card-img bs-card-img-2"></div>
-                      <div class="bs-card-body">
-                        <div class="bs-card-tag">Everyday repair</div>
-                        <div class="bs-card-name">Clean, durable fixes</div>
-                      </div>
-                      <p>Hems, tapers, buttons, linings, and careful garment recovery.</p>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Process and proof -->
-                <div class="bs-piece" data-piece="stats" data-piece-tag="proof.stack" data-from="right">
-                  <div class="bs-stats">
-                    <div class="bs-stat"><b>8y</b><span>in practice</span></div>
-                    <div class="bs-stat"><b>400+</b><span>garments fit</span></div>
-                    <div class="bs-stat"><b>48h</b><span>rush options</span></div>
-                  </div>
-                  <div class="bs-section" id="bs-process">
-                    <div class="bs-section-label">The appointment</div>
-                    <div class="bs-section-title">Measured, marked, scheduled.</div>
-                    <p class="bs-section-copy">The page makes the next step feel low-friction before the client ever calls.</p>
-                    <div class="bs-process-list">
-                      <div class="bs-process-row"><b>01</b><div><strong>Pin and measure</strong><span>Adjustments are marked while the garment is on you.</span></div></div>
-                      <div class="bs-process-row"><b>02</b><div><strong>Stitch and press</strong><span>Finished with matched thread and clean seams.</span></div></div>
-                      <div class="bs-process-row"><b>03</b><div><strong>Final check</strong><span>Try it on before pickup so the fit lands right.</span></div></div>
-                    </div>
-                  </div>
-                  <div class="bs-proof-strip">
-                    <div class="bs-proof"><strong>12 min</strong><span>average booking time saved</span></div>
-                    <div class="bs-proof"><strong>4.9</strong><span>client review signal</span></div>
-                  </div>
-                  <div class="bs-quote">
-                    <p>"They saved my wedding suit with two days to spare."</p>
-                    <span>Marcus L. / verified client</span>
-                  </div>
-                  <div class="bs-info-grid">
-                    <div class="bs-info-card">
-                      <b>Studio</b>
-                      <span>San Marco by appointment. Easy parking, private fitting room.</span>
-                    </div>
-                    <div class="bs-info-card">
-                      <b>Hours</b>
-                      <span>Tue-Fri 10-6<br>Sat 9-2</span>
-                    </div>
-                    <div class="bs-info-card">
-                      <b>Turnaround</b>
-                      <span>Most alterations in 5-7 days. Rush work quoted up front.</span>
-                    </div>
-                    <div class="bs-info-card">
-                      <b>Guarantee</b>
-                      <span>Final try-on before pickup. Small adjustments included.</span>
-                    </div>
-                  </div>
-                  <div class="bs-mini-cta">
-                    <strong>Have a deadline?</strong>
-                    <p>Send the event date with your request and the studio will confirm what is realistic.</p>
-                    <a href="#bs-booking" data-phone-target="bs-booking">Check availability</a>
-                  </div>
-                </div>
-
-                <!-- Booking -->
-                <div class="bs-piece" data-piece="foot" data-piece-tag="form.launch" data-from="bottom">
-                  <div class="bs-section dark" id="bs-booking">
-                    <div class="bs-section-label">Appointments</div>
-                    <div class="bs-section-title">Reserve a fitting.</div>
-                    <p class="bs-section-copy">Send the garment details and get a same-day confirmation from the studio.</p>
-                    <form class="bs-book-form">
-                      <input name="name" autocomplete="name" placeholder="Name" required>
-                      <input name="email" type="email" autocomplete="email" placeholder="Email" required>
-                      <select name="service" required>
-                        <option value="">Service</option>
-                        <option>Alterations</option>
-                        <option>Event tailoring</option>
-                        <option>Repair</option>
-                      </select>
-                      <textarea name="notes" placeholder="What needs to fit better?"></textarea>
-                      <button type="submit">Request fitting</button>
-                      <div class="bs-form-note" aria-live="polite"></div>
-                    </form>
-                  </div>
-                  <div class="bs-foot">
-                    <span>© 2026 North &amp; Needle</span>
-                    <span>northandneedle.com</span>
-                  </div>
-                  <div class="bs-live-toast">
-                    <span>Site shipped. Booking flow is live.</span>
-                    <a href="#bs-booking" data-phone-target="bs-booking">Book now</a>
-                  </div>
-                </div>
-
-                <!-- Demo cursor for render phase -->
-                <div class="bld-fakecursor"></div>
-                <div class="bld-tapring"></div>
-              </div>
-
-              <!-- BLUEPRINT: SVG construction layer that draws over each piece as it lands -->
-              <svg class="build-svg" id="build-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 620" preserveAspectRatio="none">
-                <defs>
-                  <linearGradient id="bs-line-grad" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0" stop-color="#F0635A" stop-opacity="0"/>
-                    <stop offset="0.5" stop-color="#F0635A" stop-opacity="1"/>
-                    <stop offset="1" stop-color="#F0635A" stop-opacity="0"/>
-                  </linearGradient>
-                </defs>
-                <!-- Construction lines drawn in for each piece — 6 pieces -->
-                <g class="bs-bp" data-for="nav"      stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
-                  <rect x="14" y="14" width="332" height="40" rx="2" stroke-dasharray="4 3"/>
-                  <line x1="0" y1="14" x2="360" y2="14"/>
-                  <line x1="0" y1="54" x2="360" y2="54"/>
-                </g>
-                <g class="bs-bp" data-for="hero-img" stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
-                  <rect x="14" y="64" width="332" height="180" rx="2" stroke-dasharray="4 3"/>
-                  <line x1="14" y1="64" x2="346" y2="244"/>
-                  <line x1="346" y1="64" x2="14" y2="244"/>
-                  <circle cx="180" cy="154" r="6"/>
-                </g>
-                <g class="bs-bp" data-for="sub"      stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
-                  <rect x="14" y="252" width="332" height="76" rx="2" stroke-dasharray="4 3"/>
-                </g>
-                <g class="bs-bp" data-for="cards"    stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
-                  <rect x="14" y="338" width="160" height="130" rx="2" stroke-dasharray="4 3"/>
-                  <rect x="186" y="338" width="160" height="130" rx="2" stroke-dasharray="4 3"/>
-                </g>
-                <g class="bs-bp" data-for="stats"    stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
-                  <rect x="14" y="478" width="332" height="60" rx="2" stroke-dasharray="4 3"/>
-                  <line x1="120" y1="478" x2="120" y2="538"/>
-                  <line x1="240" y1="478" x2="240" y2="538"/>
-                </g>
-                <g class="bs-bp" data-for="foot"     stroke="#F0635A" stroke-width="0.8"  fill="none" opacity="0">
-                  <rect x="14" y="546" width="332" height="42" rx="2" stroke-dasharray="4 3"/>
-                </g>
-              </svg>
-
-              <!-- ASSEMBLY ORBS: glowing dots that fly in to "deliver" each piece -->
-              <div class="build-orbs" id="build-orbs"></div>
-
-              <!-- Code overlay — appears mid-assembly, types out, then dissolves into the site -->
-              <div class="build-code-overlay" id="build-code">
-                <div class="ct-tabbar">
-                  <span class="ct-tab ct-tab-active">index.html</span>
-                  <span class="ct-tab">style.css</span>
-                  <span class="ct-tab-status">● compile</span>
-                </div>
-                <pre id="code-stream"><span class="ct-line"><span class="ct-num">01</span><span class="ct-content"><span class="ct-tag">&lt;section</span> <span class="ct-attr">class</span>=<span class="ct-str">"hero"</span><span class="ct-tag">&gt;</span></span></span>
-<span class="ct-line"><span class="ct-num">02</span><span class="ct-content">  <span class="ct-tag">&lt;video</span> <span class="ct-attr">autoplay</span> <span class="ct-attr">muted</span> <span class="ct-attr">loop</span><span class="ct-tag">&gt;</span></span></span>
-<span class="ct-line"><span class="ct-num">03</span><span class="ct-content">    <span class="ct-tag">&lt;source</span> <span class="ct-attr">src</span>=<span class="ct-str">"studio-loop.mp4"</span><span class="ct-tag">/&gt;</span></span></span>
-<span class="ct-line"><span class="ct-num">04</span><span class="ct-content">  <span class="ct-tag">&lt;/video&gt;</span></span></span>
-<span class="ct-line"><span class="ct-num">05</span><span class="ct-content">  <span class="ct-tag">&lt;h1&gt;</span><span class="ct-text">Clothes that fit the room.</span><span class="ct-tag">&lt;/h1&gt;</span></span></span>
-<span class="ct-line"><span class="ct-num">06</span><span class="ct-content"><span class="ct-tag">&lt;/section&gt;</span></span></span>
-<span class="ct-line"><span class="ct-num">07</span><span class="ct-content"></span></span>
-<span class="ct-line"><span class="ct-num">08</span><span class="ct-content"><span class="ct-sel">.hero video</span> {</span></span>
-<span class="ct-line"><span class="ct-num">09</span><span class="ct-content">  <span class="ct-prop">position</span>: <span class="ct-val">absolute</span>;</span></span>
-<span class="ct-line"><span class="ct-num">10</span><span class="ct-content">  <span class="ct-prop">inset</span>: <span class="ct-val">0</span>;</span></span>
-<span class="ct-line"><span class="ct-num">11</span><span class="ct-content">  <span class="ct-prop">object-fit</span>: <span class="ct-val">cover</span>;</span></span>
-<span class="ct-line"><span class="ct-num">12</span><span class="ct-content">}</span></span>
-<span class="ct-line"><span class="ct-num">13</span><span class="ct-content"></span></span>
-<span class="ct-line"><span class="ct-num">14</span><span class="ct-content"><span class="ct-sel">.booking-flow</span> {</span></span>
-<span class="ct-line"><span class="ct-num">15</span><span class="ct-content">  <span class="ct-prop">background</span>: <span class="ct-val">#F0635A</span>;</span></span>
-<span class="ct-line"><span class="ct-num">16</span><span class="ct-content">  <span class="ct-prop">border-radius</span>: <span class="ct-val">999px</span>;</span></span></pre>
-                <div id="code-cursor"></div>
-              </div>
-
-              <!-- HUD ring overlay (Iron Man feel) -->
-              <svg class="bf-hud" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="50" cy="50" r="48" fill="none" stroke="#F0635A" stroke-width="0.25" stroke-dasharray="2 4" opacity="0.45" class="bf-hud-ring bf-hud-ring-1"/>
-                <circle cx="50" cy="50" r="44" fill="none" stroke="#F0635A" stroke-width="0.20" stroke-dasharray="1 6" opacity="0.30" class="bf-hud-ring bf-hud-ring-2"/>
-                <g class="bf-hud-ticks" stroke="#F0635A" stroke-width="0.3" opacity="0.5">
-                  <line x1="50" y1="2"  x2="50" y2="6"/>
-                  <line x1="50" y1="94" x2="50" y2="98"/>
-                  <line x1="2"  y1="50" x2="6"  y2="50"/>
-                  <line x1="94" y1="50" x2="98" y2="50"/>
-                </g>
-              </svg>
-
-              <!-- Sweep transition layer -->
-              <div class="bf-sweep"></div>
-              <div class="bf-glitch"></div>
-
-              <!-- Ship glow overlay — replaces the old ship layer -->
-              <div class="bf-ship-glow"></div>
-            </div>
-
-            <!-- Frame chrome corners -->
-            <div class="bf-chrome bf-tl"></div>
-            <div class="bf-chrome bf-tr"></div>
-            <div class="bf-chrome bf-bl"></div>
-            <div class="bf-chrome bf-br"></div>
-          </div>
-          <div class="bf-prism"></div>
-          <div class="bf-halo bf-halo-front"></div>
-
-          <!-- Bottom rail with build label (outside frame so it never clips) -->
-          <div class="bf-rail">
-            <span class="bf-rail-dot"></span>
-            <span class="bf-rail-text" id="bf-rail-text">build · sketch</span>
-            <span class="bf-rail-time" id="bf-rail-time">00:00</span>
-          </div>
-
-          <!-- Floating particles around frame on ship -->
-          <div id="ship-particles"></div>
-        </div>
-
-        <!-- Side rails: live build telemetry -->
-        <div id="build-telemetry">
-          <div class="bt-header">
-            <span class="bt-h-dot"></span>
-            <span class="bt-h-label">LIVE BUILD</span>
-          </div>
-          <div class="bt-row"><span class="bt-k">PHASE</span><span class="bt-v" id="bt-phase">SKETCH</span></div>
-          <div class="bt-row"><span class="bt-k">LINES</span><span class="bt-v" id="bt-lines">000</span></div>
-          <div class="bt-row"><span class="bt-k">RENDER</span><span class="bt-v" id="bt-render">— %</span></div>
-          <div class="bt-row"><span class="bt-k">DEPLOY</span><span class="bt-v" id="bt-deploy">PENDING</span></div>
-          <div class="bt-row bt-row-mini"><span class="bt-k">CPU</span><span class="bt-v bt-tiny" id="bt-cpu">— %</span></div>
-          <div class="bt-row bt-row-mini"><span class="bt-k">SIZE</span><span class="bt-v bt-tiny" id="bt-size">— kb</span></div>
-          <!-- Mini sparkline -->
-          <div class="bt-graph">
-            <svg viewBox="0 0 100 30" preserveAspectRatio="none">
-              <polyline id="bt-spark" fill="none" stroke="#F0635A" stroke-width="1.2" points=""/>
-            </svg>
-          </div>
-        </div>
-
-        <!-- Caption that updates per-phase -->
-        <div id="build-caption">
-          <div class="bc-eyebrow" id="bc-eyebrow">PHASE 01 / 04</div>
-          <div class="bc-title" id="bc-title">Every site starts as a sketch.</div>
-          <div class="bc-body" id="bc-body">Layout. Hierarchy. The bones before the fabric.</div>
-        </div>
-      </div>
-
-      <!-- Hidden — kept for legacy JS refs; the build IS the punchline now -->
-      <div id="video-text-overlay" style="display:none;">
-        <div class="video-eyebrow" id="video-eyebrow"></div>
-        <h2 class="video-headline" id="video-headline"></h2>
-      </div>
-
-      <!-- Depth HUD repurposed as scrub indicator -->
-      <div id="dive-depth-hud">
-        <div class="hud-label">build</div>
-        <div class="hud-value" id="dive-depth-val">000</div>
-      </div>
-      <div id="video-progress-bar">
-        <div id="video-progress-track"><div id="video-progress-fill"></div></div>
-        <span id="video-progress-label">000%</span>
-      </div>
-    </div>
-  </div>
-
   <div id="light-zone"></div><!-- preserved for JS refs -->
 
   <!-- PRICING -->
@@ -6331,11 +5928,11 @@
   </footer>
 
   <script>
-  /* ════════════════════════════════════════════════════════
+  /* --------------------------------------------------------
      MEDIOCRE MARKUP — FULL ANIMATION SYSTEM
-     ════════════════════════════════════════════════════════ */
+     -------------------------------------------------------- */
 
-  /* ── 1. HERO MARKUP SANDBOX ── */
+  /* -- 1. HERO MARKUP SANDBOX -- */
   {
     class MarkupSandbox {
       constructor(field, stage, hero) {
@@ -7050,9 +6647,9 @@
     }
   }
 
-  /* ── 3. BOKEH SPAWNER — disabled, symbols are the only floating elements ── */
+  /* -- 3. BOKEH SPAWNER — disabled, symbols are the only floating elements -- */
 
-  /* ── 4. AMBIENT MORPHING BLOBS ── */
+  /* -- 4. AMBIENT MORPHING BLOBS -- */
   {
     // Spline interpolation for smooth organic blob paths
     function blobPath(cx, cy, r, pts, seed) {
@@ -7093,7 +6690,7 @@
     animBlobs();
   }
 
-  /* ── 5. WHIRLPOOL — Symbol vortex → fall → phone reassembly ── */
+  /* -- 5. WHIRLPOOL — Symbol vortex ? fall ? phone reassembly -- */
   {
     const container = document.getElementById('whirlpool-container');
     const vCanvas   = document.getElementById('vortex-canvas');
@@ -7134,9 +6731,9 @@
       trail: [],
     }));
 
-    // ── STATES: orbit → fall → land ──
-    // dispProgress 0→0.6: pure orbit
-    // dispProgress 0.6→1.0: symbols break orbit, fall downward with gravity
+    // -- STATES: orbit ? fall ? land --
+    // dispProgress 0?0.6: pure orbit
+    // dispProgress 0.6?1.0: symbols break orbit, fall downward with gravity
     // After all landed: whirlpool hides, phone reveal triggers
     let wpDone      = false;
     let fallStarted = false;
@@ -7209,7 +6806,7 @@
       { x: 0.5,   y: 0.55 },  // screen center
     ];
 
-    // ── ORBIT + FALL ANIMATION — fully canvas-drawn, no DOM elements ──
+    // -- ORBIT + FALL ANIMATION — fully canvas-drawn, no DOM elements --
 
     function getPhoneRect() {
       const pw = document.getElementById('phone-wrapper');
@@ -7338,7 +6935,7 @@
 
       drawMotes();
 
-      // All done → fire flicker
+      // All done ? fire flicker
       if (!wpDone && syms.every(s => s.state === 'done')) {
         wpDone = true;
         container.style.transition = 'opacity 0.3s';
@@ -7351,7 +6948,7 @@
       requestAnimationFrame(animWhirlpool);
     }
 
-    // ── BOOT ──
+    // -- BOOT --
     setTimeout(() => {
       cta.style.opacity = '1';
       requestAnimationFrame(animWhirlpool);
@@ -7380,7 +6977,7 @@
     }, { passive: true });
   }
 
-  /* ── 6 & 7. SHOWCASE — immersive physics phone stage ── */
+  /* -- 6 & 7. SHOWCASE — immersive physics phone stage -- */
   {
     const showcase    = document.getElementById('showcase');
     const physCanvas  = document.getElementById('sc-physics-canvas');
@@ -7395,25 +6992,25 @@
     let gx = 0, gy = 0, tx = 0, ty = 0;
     let pauseScroll = false, scrollRaf = null;
 
-    /* ── Physics canvas: floating UI fragments ── */
+    /* -- Physics canvas: floating UI fragments -- */
     const pc = physCanvas ? physCanvas.getContext('2d') : null;
     const FRAGMENTS = [
-      { text: '⚖ Law · $500',     w: 98,  h: 26 },
+      { text: '? Law · $500',     w: 98,  h: 26 },
       { text: 'Mobile-first',      w: 88,  h: 24 },
       { text: '7-day delivery',    w: 100, h: 24 },
       { text: '</>',               w: 36,  h: 36 },
-      { text: '4.9 ★',            w: 58,  h: 26 },
+      { text: '4.9 ?',            w: 58,  h: 26 },
       { text: '$624,900',          w: 90,  h: 26 },
       { text: 'Free Consult',      w: 94,  h: 24 },
-      { text: '↗ +38% CTR',       w: 90,  h: 26 },
+      { text: '? +38% CTR',       w: 90,  h: 26 },
       { text: 'Est. 1998',         w: 72,  h: 24 },
       { text: 'Hand-coded',        w: 86,  h: 24 },
       { text: '{ }',               w: 34,  h: 34 },
       { text: '2,400+ cases',      w: 100, h: 24 },
       { text: 'Bloom & Co.',       w: 86,  h: 26 },
       { text: '<1s load',          w: 72,  h: 24 },
-      { text: '☕ On Tap',         w: 72,  h: 26 },
-      { text: '🌸 Weddings',       w: 90,  h: 26 },
+      { text: '? On Tap',         w: 72,  h: 26 },
+      { text: '?? Weddings',       w: 90,  h: 26 },
       { text: 'A-rated schools',   w: 106, h: 24 },
       { text: '0 px bug',          w: 70,  h: 24 },
     ];
@@ -7524,7 +7121,7 @@
       physCanvas.height = physCanvas.offsetHeight;
     });
 
-    /* ── Particle burst on template switch ── */
+    /* -- Particle burst on template switch -- */
     function fireBurst() {
       if (!burstCanvas) return;
       const bc = burstCanvas.getContext('2d');
@@ -7548,7 +7145,7 @@
       })();
     }
 
-    /* ── Phone template switcher ── */
+    /* -- Phone template switcher -- */
     function switchPhoneTpl(idx) {
       document.querySelectorAll('.phone-template').forEach((el, i) => {
         el.classList.toggle('active', i === idx);
@@ -7562,7 +7159,7 @@
       }
     }
 
-    /* ── 3D flip on template change ── */
+    /* -- 3D flip on template change -- */
     function flipTo(idx) {
       if (!phoneWrap) return;
       phoneWrap.style.transition = 'transform 0.32s cubic-bezier(0.4,0,1,1), opacity 0.2s';
@@ -7578,7 +7175,7 @@
       }, 320);
     }
 
-    /* ── Auto-scroll cycler ── */
+    /* -- Auto-scroll cycler -- */
     function startScrollCycle() {
       if (scrollRaf) cancelAnimationFrame(scrollRaf);
       let lastTime = null, atBottomSince = null, dwellSince = null;
@@ -7612,7 +7209,7 @@
       phoneScreen.addEventListener('wheel', e => e.stopPropagation(), { passive: true });
     }
 
-    /* ── Mouse tilt ── */
+    /* -- Mouse tilt -- */
     document.addEventListener('mousemove', e => {
       if (!tiltOn || !scVisible) return;
       const r = showcase.getBoundingClientRect();
@@ -7629,7 +7226,7 @@
       requestAnimationFrame(tiltLoop);
     })();
 
-    /* ── Phone flicker-to-life ── */
+    /* -- Phone flicker-to-life -- */
     let flickerDone = false;
     function flickerToLife() {
       if (flickerDone) return;
@@ -7640,7 +7237,7 @@
       if (!screenOff) return;
 
       // Slow, dramatic CRT boot — flickers spread over 1.4s so you can follow each one
-      // Pattern: dark → flash bright → dim → flicker rapidly → hold bright → sweep
+      // Pattern: dark ? flash bright ? dim ? flicker rapidly ? hold bright ? sweep
       const flickers = [
         { t:   0, op: '0.10', tr: '0.08s' },  // dim — starting to wake
         { t: 180, op: '0.92', tr: '0.06s' },  // first flash
@@ -7698,7 +7295,7 @@
       }, 1200);
     }
 
-    /* ── Entrance ── */
+    /* -- Entrance -- */
     function doShowcaseReveal() {
       if (landed) return;
       landed = true;
@@ -7719,7 +7316,7 @@
       }
     }
 
-    // Symbols done → trigger flicker
+    // Symbols done ? trigger flicker
     document.addEventListener('wp-symbols-done', () => {
       doShowcaseReveal();
       setTimeout(flickerToLife, 200);
@@ -7743,7 +7340,7 @@
     }, { threshold: 0.01 }).observe(showcase);
   }
 
-  /* ── 8a. NAV HIDE/SHOW ON HERO EXIT ── */
+  /* -- 8a. NAV HIDE/SHOW ON HERO EXIT -- */
   {
     const nav = document.querySelector('nav');
     const hero = document.getElementById('hero');
@@ -7761,9 +7358,12 @@
     updateNav();
   }
 
-  /* ── 8. SCROLL-PINNED DIVE REVEAL ── */
+  /* -- 8. SCROLL-PINNED DIVE REVEAL -- */
   {
     const revealSection = document.getElementById('video-reveal');
+    if (!revealSection) {
+      window._videoRevealUnlock = () => {};
+    } else {
     const mask          = document.getElementById('video-clip-mask');
     const progressFill  = document.getElementById('video-progress-fill');
     const progressLabel = document.getElementById('video-progress-label');
@@ -7780,7 +7380,7 @@
     const lbTop         = document.getElementById('dive-letterbox-top');
     const lbBottom      = document.getElementById('dive-letterbox-bottom');
 
-    // ── BUILD STAGE references ──
+    // -- BUILD STAGE references --
     const buildStage    = document.getElementById('build-stage');
     const buildFrame    = document.getElementById('build-frame');
     const buildSite     = document.getElementById('build-site');
@@ -7908,7 +7508,7 @@
       void bfSweep.offsetWidth;
       bfSweep.classList.add('bf-sweep-go');
     }
-    // Trigger glitch effect (used on code → render hand-off)
+    // Trigger glitch effect (used on code ? render hand-off)
     function fireGlitch() {
       if (!bfGlitch) return;
       bfGlitch.classList.remove('bf-glitch-go');
@@ -8002,8 +7602,8 @@
       tapRing.classList.add('tap-go');
     }
 
-    // ── ASSEMBLY: pieces fly in like Iron Man parts ──
-    // Each piece has a "landed" state. Blueprint draws → orb flies in → piece lands.
+    // -- ASSEMBLY: pieces fly in like Iron Man parts --
+    // Each piece has a "landed" state. Blueprint draws ? orb flies in ? piece lands.
     // pieceState declared below in paint-in system
     let activeOrbs = [];
     const BUILD_SYMBOLS = [
@@ -8167,7 +7767,7 @@
       spawnMarkupBurst(idx, 'preview');
     }
 
-    // ── PAINT-IN ASSEMBLY ──
+    // -- PAINT-IN ASSEMBLY --
     // Each piece paints in from top-to-bottom via clip-path as scroll progresses.
     // Mid-paint: a brush-line rides the reveal edge.
     // At full reveal: a seam flash fires.
@@ -8410,7 +8010,7 @@
       headline.appendChild(line);
     });
 
-    // ── SIZE CANVASES ──
+    // -- SIZE CANVASES --
     const sw   = document.getElementById('shockwave-canvas');
     const swCtx = sw.getContext('2d');
     const tc   = document.getElementById('tunnel-canvas');
@@ -8503,7 +8103,7 @@
     }
     requestAnimationFrame(drawAtmosphere);
 
-    // ── PERSPECTIVE GRID + FALLING CODE COLUMNS ──
+    // -- PERSPECTIVE GRID + FALLING CODE COLUMNS --
     // A vanishing-point grid floor/ceiling rushes toward the viewer as they scroll.
     // Columns of code glyphs fall through it — like rain through venetian blinds.
     // Grounded, cinematic, not trippy.
@@ -8561,7 +8161,7 @@
       const speed = 0.7 + diveRatio * 0.8;
       const vis = Math.min(1, diveRatio / 0.10);
 
-      // ── FALLING CODE COLUMNS ──
+      // -- FALLING CODE COLUMNS --
       cols.forEach((col, ci) => {
         col.y += col.speed * speed;
         const totalH = col.glyphs.length * col.spacing;
@@ -8606,14 +8206,14 @@
       fcRaf = requestAnimationFrame(drawFC);
     }
 
-    // ── TUNNEL CANVAS — unused in new design, kept for shockwave z-ordering ──
+    // -- TUNNEL CANVAS — unused in new design, kept for shockwave z-ordering --
     function drawTunnel() {
       tCtx.clearRect(0, 0, tc.width, tc.height);
       requestAnimationFrame(drawTunnel);
     }
     tCtx.clearRect(0, 0, tc.width, tc.height);
 
-    // ── SPEED STREAKS — horizontal blurs shoot across on impact ──
+    // -- SPEED STREAKS — horizontal blurs shoot across on impact --
     let streaks = [];
     let streakRaf = null;
     let streaksRunning = false;
@@ -8675,7 +8275,7 @@
       streakRaf = requestAnimationFrame(drawStreaks);
     }
 
-    // ── SHOCKWAVE RINGS — concentric ink circles on impact ──
+    // -- SHOCKWAVE RINGS — concentric ink circles on impact --
     let rings = [];
     let swRaf;
     let swRunning = false;
@@ -8727,7 +8327,7 @@
       swRaf = requestAnimationFrame(drawSW);
     }
 
-    // ── SHIP IMPACT — fires once when build hits phase 3 (SHIPPED)
+    // -- SHIP IMPACT — fires once when build hits phase 3 (SHIPPED)
     let textRevealed = false;
     function slamText() {
       if (textRevealed) return;
@@ -8758,7 +8358,7 @@
       setTimeout(fireShipParticles, 80);
     }
 
-    // ── SCROLL STATE ──
+    // -- SCROLL STATE --
     let currentRatio = 0;
     let rafPending   = false;
     let impactDone   = false;
@@ -8833,9 +8433,9 @@
       const phaseEnergy = Math.max(0, Math.min(1, (r - 0.05) / 0.88));
       const phaseBloom  = Math.sin(Math.min(1, r) * Math.PI);
 
-      // ── CAMERA: one clean arc, no oscillations ──
+      // -- CAMERA: one clean arc, no oscillations --
       // Entry: device drifts up and tilts toward viewer. Ship: levels out and scales up.
-      const tilt = Math.sin(Math.min(r, 0.85) * Math.PI);          // 0→peak→0
+      const tilt = Math.sin(Math.min(r, 0.85) * Math.PI);          // 0?peak?0
       targetCamera.shiftX = tilt * 8 * (r < 0.5 ? 1 : -0.5);      // gentle lateral sway
       targetCamera.shiftY = -r * 18 + Math.max(0, r - 0.78) * 30;  // rises then settles
       targetCamera.rotX   = tilt * -2.2;                             // leans into screen
@@ -8859,7 +8459,7 @@
       if (buildSigilGrid) buildSigilGrid.style.opacity = Math.max(0.04, phaseEnergy * 0.20).toFixed(3);
       if (buildCosmos)  buildCosmos.style.filter   = `saturate(${(1.05 + phaseEnergy * 0.90).toFixed(2)}) contrast(${(1.02 + phaseEnergy * 0.14).toFixed(2)})`;
 
-      // ── PHASE GATING ──
+      // -- PHASE GATING --
       // 0.04–0.18  BLUEPRINT  — device settles, wireframes ghost in
       // 0.18–0.72  ASSEMBLE   — site paints in section-by-section (the main show)
       // 0.72–0.86  CODE       — code overlay types, cursor walks
@@ -8871,11 +8471,11 @@
       else               p = 3;
       if (bsIn) setPhase(p);
 
-      // ── PAINT-IN: 0.14 → 0.74 drives the site building section-by-section ──
+      // -- PAINT-IN: 0.14 ? 0.74 drives the site building section-by-section --
       const assemT = Math.max(0, Math.min(1, (r - 0.14) / 0.60));
       setAssemblyProgress(assemT);
 
-      // ── CODE OVERLAY: 0.72 → 0.85 ──
+      // -- CODE OVERLAY: 0.72 ? 0.85 --
       if (p === 2) {
         const codeT = Math.max(0, Math.min(1, (r - 0.72) / 0.14));
         const visibleLines = Math.floor(codeT * codeLines.length);
@@ -8931,7 +8531,7 @@
       cursor.style.top  = (cRect.top   - codeRect.top  + 2) + 'px';
     }
 
-    // ── Compute ratio from real scroll position (used for nav jumps / fallback) ──
+    // -- Compute ratio from real scroll position (used for nav jumps / fallback) --
     function getRatioFromScroll() {
       if (!revealSection) return 0;
       const rect  = revealSection.getBoundingClientRect();
@@ -8944,7 +8544,7 @@
       if (!rafPending) { rafPending = true; requestAnimationFrame(applyReveal); }
     }
 
-    // ── Intercept wheel while animation is in progress ──
+    // -- Intercept wheel while animation is in progress --
     function onWheel(e) {
       if (window._navJumping || animDone) return;
 
@@ -8992,7 +8592,7 @@
       scheduleScrollTo(revealSection.offsetTop + virtualScrolled);
     }
 
-    // ── Touch support ──
+    // -- Touch support --
     function onTouchStart(e) {
       touchStartY = e.touches[0].clientY;
     }
@@ -9016,7 +8616,7 @@
       }
     }
 
-    // ── Fallback: real scroll events (keyboard, scrollbar, programmatic) ──
+    // -- Fallback: real scroll events (keyboard, scrollbar, programmatic) --
     function onScroll() {
       if (!revealSection || window._navJumping) return;
 
@@ -9090,6 +8690,7 @@
       currentRatio = 1;
       virtualScrolled = revealSection ? revealSection.offsetHeight - window.innerHeight : 0;
     };
+    }
   }
 
   function jumpToSection(targetId) {
@@ -9130,7 +8731,7 @@
     jumpToSection('contact');
   }
 
-  /* ── 9. PRICING — canvas + scroll reveals ── */
+  /* -- 9. PRICING — canvas + scroll reveals -- */
   {
     const pricingSection = document.getElementById('pricing');
 
@@ -9207,7 +8808,7 @@
     }
   }
 
-  /* ── 10. GSAP SECTION REVEALS (with GSAP + ScrollTrigger) ── */
+  /* -- 10. GSAP SECTION REVEALS (with GSAP + ScrollTrigger) -- */
   if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
 
@@ -9336,15 +8937,17 @@
       transformOrigin: '50% 50%',
     });
 
-    // Dive reveal — portal glow pulses on approach before section is pinned
-    gsap.fromTo('#dive-portal-glow', { opacity: 0 }, {
-      scrollTrigger: { trigger: '#video-reveal', start: 'top 85%', end: 'top 40%', scrub: 1.5 },
-      opacity: 0.35, ease: 'none',
-    });
+    const videoReveal = document.getElementById('video-reveal');
+    if (videoReveal) {
+      gsap.fromTo('#dive-portal-glow', { opacity: 0 }, {
+        scrollTrigger: { trigger: videoReveal, start: 'top 85%', end: 'top 40%', scrub: 1.5 },
+        opacity: 0.35, ease: 'none',
+      });
+    }
   }
 
 
-  /* ── 11. STANDARD SCROLL REVEAL (fallback for non-GSAP elements) ── */
+  /* -- 11. STANDARD SCROLL REVEAL (fallback for non-GSAP elements) -- */
   {
     document.querySelectorAll('.what-list, .pricing-grid').forEach(c =>
       Array.from(c.children).forEach((el, i) => { el.style.transitionDelay = (i * 0.08) + 's'; }));
@@ -9355,7 +8958,7 @@
     document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
   }
 
-  /* ── BOOT ── */
+  /* -- BOOT -- */
   {
     const phoneSite = document.getElementById('build-site');
     const buildStageEl = document.getElementById('build-stage');
