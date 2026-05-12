@@ -6302,7 +6302,7 @@
   </div>
   <nav>
     <div class="nav-left">
-      <a href="#"><img src="logo_transparent.png" height="48" alt="Mediocre Markup"></a>
+      <a href="#"><img src="images/logo_transparent.png" height="48" alt="Mediocre Markup"></a>
       <div class="nav-sep"></div>
       <span class="nav-tagline">Custom websites for local businesses</span>
     </div>
@@ -6348,26 +6348,435 @@
       </div>
 
       <div class="hero-system" aria-hidden="true">
-        <div class="markup-field" id="symbol-field" data-logo-state="idle">
-          <span class="field-code-label field-code-label-top">&lt;div class="markup"&gt;</span>
-          <span class="field-code-label field-code-label-bottom">&lt;/div&gt;</span>
-          <span class="field-code-label field-code-label-left">HTML</span>
-          <span class="field-code-label field-code-label-right">CSS</span>
-          <span class="field-sticker field-sticker-html">HTML</span>
-          <span class="field-sticker field-sticker-css">CSS</span>
-          <div class="symbol-stage" id="symbol-stage"></div>
+        <style>
+          .cine-frame {
+            position: relative;
+            width: min(calc(100% - clamp(72px, 5.5vw, 92px)), 620px);
+            height: clamp(430px, 50vw, 620px);
+            margin-left: auto;
+            margin-right: clamp(72px, 5.5vw, 92px);
+            border: 1px solid rgba(241,234,217,0.10);
+            background: radial-gradient(ellipse at 50% 40%, rgba(127,167,186,0.06), transparent 55%), rgba(8,11,10,0.6);
+            box-shadow: 0 38px 92px rgba(0,0,0,0.42), inset 0 0 0 1px rgba(241,234,217,0.04);
+            overflow: hidden;
+            isolation: isolate;
+            pointer-events: none;
+          }
+          .cine-frame canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+          .cine-base { z-index: 1; }
+          .cine-glow { z-index: 2; mix-blend-mode: screen; filter: blur(12px) saturate(120%); opacity: 0.9; }
+          .cine-fg   { z-index: 3; }
+          .cine-vignette {
+            position: absolute; inset: 0; z-index: 4; pointer-events: none;
+            background: radial-gradient(ellipse at 50% 48%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.55) 100%);
+          }
+          .cine-label {
+            position: absolute; left: 18px; bottom: 16px; z-index: 5; pointer-events: none;
+            font: 500 9px/1 var(--font-mono, 'JetBrains Mono', monospace);
+            letter-spacing: 0.32em; text-transform: uppercase;
+            color: rgba(241,234,217,0.32);
+          }
+          .cine-label span { color: rgba(241,234,217,0.78); margin-left: 12px; transition: opacity 0.6s ease; }
+          .cine-tick {
+            position: absolute; right: 18px; bottom: 16px; z-index: 5; pointer-events: none;
+            font: 500 9px/1 var(--font-mono, 'JetBrains Mono', monospace);
+            letter-spacing: 0.24em; color: rgba(241,234,217,0.28);
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .cine-frame canvas { animation: none; }
+          }
+        </style>
+        <div class="cine-frame" id="cine-frame">
+          <canvas class="cine-base" id="cine-base"></canvas>
+          <canvas class="cine-glow" id="cine-glow"></canvas>
+          <canvas class="cine-fg" id="cine-fg"></canvas>
+          <div class="cine-vignette"></div>
+          <div class="cine-label">SYSTEM<span id="cine-phase">dormant</span></div>
+          <div class="cine-tick" id="cine-tick">00:00</div>
         </div>
-        <div class="field-note">
-          <svg class="field-note-arrow" viewBox="0 0 120 82" aria-hidden="true" focusable="false">
-            <path d="M114 43 C92 35 75 34 59 41 C44 47 35 58 18 57" stroke-width="2.2" opacity=".82"></path>
-            <path d="M111 46 C91 38 72 38 57 44 C42 50 33 60 17 60" stroke-width="1.1" opacity=".36"></path>
-            <path d="M23 47 C19 52 15 56 9 59 C15 61 20 64 24 69" stroke-width="2.1" opacity=".82"></path>
-            <path d="M26 49 C21 54 18 57 13 60 C18 61 23 64 27 67" stroke-width="1" opacity=".38"></path>
-          </svg>
-          <b>INTERACT</b>
-          <span></span>
-          <span></span>
-        </div>
+        <script>
+        (() => {
+          'use strict';
+          const root = document.getElementById('cine-frame');
+          if (!root) return;
+          const baseC = document.getElementById('cine-base');
+          const glowC = document.getElementById('cine-glow');
+          const fgC   = document.getElementById('cine-fg');
+          const label = document.getElementById('cine-phase');
+          const tick  = document.getElementById('cine-tick');
+          const base = baseC.getContext('2d');
+          const glow = glowC.getContext('2d');
+          const fg   = fgC.getContext('2d');
+
+          const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          const cores = navigator.hardwareConcurrency || 8;
+          const LOW = cores <= 4;
+
+          let W = 0, H = 0, DPR = 1;
+          const GLOW_SCALE = 0.5;
+          const NODE_COUNT = LOW ? 140 : 240;
+          const nodes = [];
+          const PULSES = [];
+          const RIBBONS = [];
+          let MM_POINTS = [];
+
+          // Palette tuned to hero --hero-paper #f1ead9, --hero-blue #7fa7ba
+          const PAL = {
+            paper:   [241, 234, 217],
+            silver:  [210, 218, 228],
+            indigo:  [128, 140, 200],
+            blue:    [127, 167, 186],
+            green:   [143, 172, 132],
+            clay:    [214, 107, 69]
+          };
+          const rgba = (c, a) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+
+          function resize() {
+            const r = root.getBoundingClientRect();
+            W = r.width; H = r.height;
+            DPR = Math.min(window.devicePixelRatio || 1, LOW ? 1 : 1.6);
+            [baseC, fgC].forEach(c => { c.width = Math.floor(W * DPR); c.height = Math.floor(H * DPR); });
+            glowC.width = Math.floor(W * DPR * GLOW_SCALE);
+            glowC.height = Math.floor(H * DPR * GLOW_SCALE);
+            base.setTransform(DPR, 0, 0, DPR, 0, 0);
+            fg.setTransform(DPR, 0, 0, DPR, 0, 0);
+            glow.setTransform(DPR * GLOW_SCALE, 0, 0, DPR * GLOW_SCALE, 0, 0);
+            buildMM();
+          }
+
+          function buildMM() {
+            const off = document.createElement('canvas');
+            const ow = 1200, oh = 600;
+            off.width = ow; off.height = oh;
+            const c = off.getContext('2d');
+            c.fillStyle = '#fff';
+            c.font = `800 ${Math.floor(oh * 0.86)}px 'Inter', system-ui, sans-serif`;
+            c.textAlign = 'center';
+            c.textBaseline = 'middle';
+            c.fillText('MM', ow / 2, oh / 2);
+            const img = c.getImageData(0, 0, ow, oh).data;
+            const pts = [];
+            const step = 7;
+            for (let y = 0; y < oh; y += step) {
+              for (let x = 0; x < ow; x += step) {
+                if (img[(y * ow + x) * 4 + 3] > 128) pts.push([x / ow - 0.5, y / oh - 0.5]);
+              }
+            }
+            const scale = Math.min(W * 0.78, H * 0.78);
+            MM_POINTS = pts.map(([nx, ny]) => [W / 2 + nx * scale * 1.4, H / 2 + ny * scale * 0.7]);
+            for (let i = MM_POINTS.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [MM_POINTS[i], MM_POINTS[j]] = [MM_POINTS[j], MM_POINTS[i]];
+            }
+          }
+
+          function flow(x, y, t) {
+            const s = 0.0026;
+            const a = Math.sin(x * s + t * 0.06) + Math.cos(y * s * 1.27 - t * 0.08) + Math.sin((x + y) * s * 0.55 + t * 0.04);
+            const b = Math.cos(x * s * 0.83 - t * 0.05) + Math.sin(y * s * 1.11 + t * 0.07) + Math.cos((x - y) * s * 0.69 - t * 0.03);
+            return Math.atan2(b, a);
+          }
+
+          function makeNode(i) {
+            const role = i % 11 === 0 ? 'beacon' : (i % 4 === 0 ? 'glow' : 'dot');
+            const z = Math.random();
+            return {
+              x: Math.random() * (W || 600), y: Math.random() * (H || 500),
+              vx: 0, vy: 0, z,
+              size: 0.6 + z * (role === 'beacon' ? 2.4 : role === 'glow' ? 1.4 : 0.8),
+              hueMix: Math.random(), role,
+              seed: Math.random() * 1000,
+              tx: 0, ty: 0, hasTarget: 0, energy: 0
+            };
+          }
+
+          function makeRibbon() {
+            const segs = 28;
+            const r = {
+              pts: [], hue: Math.random() < 0.5 ? PAL.blue : (Math.random() < 0.7 ? PAL.indigo : PAL.green),
+              phase: Math.random() * Math.PI * 2,
+              speed: 0.025 + Math.random() * 0.04,
+              radius: 0, cx: 0, cy: 0,
+              wobble: 0.5 + Math.random() * 0.4,
+              alpha: 0, target: 0
+            };
+            for (let i = 0; i < segs; i++) r.pts.push({ x: 0, y: 0 });
+            return r;
+          }
+
+          for (let i = 0; i < NODE_COUNT; i++) nodes.push(makeNode(i));
+          for (let i = 0; i < 4; i++) RIBBONS.push(makeRibbon());
+
+          // Phases — slower jellyfish-show pacing
+          const PHASES = [
+            { key: 'dormant',    dur: 10 },
+            { key: 'signal',     dur: 12 },
+            { key: 'structural', dur: 15 },
+            { key: 'identity',   dur: 11 },
+            { key: 'recursive',  dur: 16 }
+          ];
+          const CYCLE = PHASES.reduce((s, p) => s + p.dur, 0);
+
+          function getPhase(t) {
+            const local = t % CYCLE;
+            let acc = 0;
+            for (let i = 0; i < PHASES.length; i++) {
+              const p = PHASES[i];
+              if (local < acc + p.dur) return { idx: i, key: p.key, u: (local - acc) / p.dur, local };
+              acc += p.dur;
+            }
+            return { idx: 4, key: 'recursive', u: 1, local };
+          }
+          const smoothstep = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+
+          // Spatial hash
+          const CELL = 70;
+          const grid = new Map();
+          function buildGrid() {
+            grid.clear();
+            for (let i = 0; i < nodes.length; i++) {
+              const n = nodes[i];
+              const cx = (n.x / CELL) | 0, cy = (n.y / CELL) | 0;
+              const k = cx * 100000 + cy;
+              let arr = grid.get(k);
+              if (!arr) { arr = []; grid.set(k, arr); }
+              arr.push(i);
+            }
+          }
+
+          let t0 = performance.now();
+          let lastPulse = 0;
+          let lastTime = t0;
+          let running = true;
+
+          const io = new IntersectionObserver(entries => {
+            entries.forEach(e => { running = e.isIntersecting; if (running) lastTime = performance.now(); });
+          }, { threshold: 0.01 });
+          io.observe(root);
+
+          window.addEventListener('resize', resize);
+          resize();
+
+          function loop(now) {
+            if (!running || document.hidden) { requestAnimationFrame(loop); lastTime = now; return; }
+            const dt = Math.min(0.05, (now - lastTime) / 1000);
+            lastTime = now;
+            const t = (now - t0) / 1000;
+            const ph = getPhase(t);
+            if (label.textContent !== ph.key) label.textContent = ph.key;
+            tick.textContent = `${String(Math.floor(t / 60)).padStart(2,'0')}:${String(Math.floor(t % 60)).padStart(2,'0')}`;
+
+            // phase coefficients — generous overlap for fluid transitions
+            const cDormant   = ph.idx === 0 ? 1 - smoothstep(0.75, 1, ph.u) : 0;
+            const cSignal    = ph.idx === 1 ? 1 : (ph.idx === 0 ? smoothstep(0.75, 1, ph.u) : (ph.idx === 2 ? 1 - smoothstep(0, 0.3, ph.u) : 0));
+            const cStruct    = ph.idx === 2 ? smoothstep(0, 0.3, ph.u) * (1 - smoothstep(0.78, 1, ph.u)) :
+                               (ph.idx === 1 ? smoothstep(0.85, 1, ph.u) : (ph.idx === 3 ? 1 - smoothstep(0, 0.22, ph.u) : 0));
+            const cIdentity  = ph.idx === 3 ? smoothstep(0, 0.22, ph.u) * (1 - smoothstep(0.80, 1, ph.u)) : 0;
+            const cRecursive = ph.idx === 4 ? smoothstep(0, 0.18, ph.u) : (ph.idx === 3 ? smoothstep(0.80, 1, ph.u) : 0);
+
+            // Trails — heavier trail for slower jellyfish-like persistence
+            base.globalCompositeOperation = 'source-over';
+            base.fillStyle = `rgba(8,11,10,${0.09 + cDormant * 0.06})`;
+            base.fillRect(0, 0, W, H);
+            fg.clearRect(0, 0, W, H);
+            glow.clearRect(0, 0, W, H);
+
+            // Pulses
+            if ((cSignal > 0.3 || cStruct > 0.3) && t - lastPulse > 2.0 - cStruct * 0.8) {
+              PULSES.push({
+                x: W * (0.2 + Math.random() * 0.6),
+                y: H * (0.2 + Math.random() * 0.6),
+                r: 0, maxR: Math.min(W, H) * (0.55 + Math.random() * 0.3),
+                life: 1, hue: Math.random() < 0.5 ? PAL.indigo : PAL.blue
+              });
+              lastPulse = t;
+            }
+            for (let i = PULSES.length - 1; i >= 0; i--) {
+              const p = PULSES[i];
+              p.r += dt * 50 * (0.7 + cStruct * 0.5);
+              p.life = 1 - p.r / p.maxR;
+              if (p.life <= 0) { PULSES.splice(i, 1); continue; }
+              const a = Math.pow(p.life, 1.6) * 0.5;
+              glow.strokeStyle = rgba(p.hue, a);
+              glow.lineWidth = 1.4;
+              glow.beginPath(); glow.arc(p.x, p.y, p.r, 0, Math.PI * 2); glow.stroke();
+            }
+
+            // Ribbons
+            RIBBONS.forEach((r, idx) => {
+              r.target = cStruct * 0.85 + cIdentity * 0.25 + cRecursive * 0.7;
+              r.alpha += (r.target - r.alpha) * 0.015;
+              r.phase += dt * r.speed * (0.6 + cStruct * 0.5 + cRecursive * 0.4);
+              r.radius = Math.min(W, H) * (0.22 + 0.16 * Math.sin(t * 0.05 + idx));
+              r.cx = W * 0.5 + Math.sin(t * 0.04 + idx * 1.7) * W * 0.12;
+              r.cy = H * 0.5 + Math.cos(t * 0.03 + idx * 1.3) * H * 0.10;
+              const segs = r.pts.length;
+              for (let i = 0; i < segs; i++) {
+                const u = i / (segs - 1);
+                const ang = r.phase + u * Math.PI * 2 * r.wobble;
+                const rad = r.radius * (0.55 + 0.45 * Math.sin(ang * 1.7 + t * 0.18));
+                r.pts[i].x = r.cx + Math.cos(ang) * rad;
+                r.pts[i].y = r.cy + Math.sin(ang) * rad * 0.62;
+              }
+              if (r.alpha > 0.01) {
+                base.globalCompositeOperation = 'lighter';
+                for (let pass = 0; pass < 2; pass++) {
+                  base.strokeStyle = rgba(r.hue, pass === 0 ? r.alpha * 0.45 : r.alpha * 0.10);
+                  base.lineWidth = pass === 0 ? 1.0 : 3.0;
+                  base.beginPath(); base.moveTo(r.pts[0].x, r.pts[0].y);
+                  for (let i = 1; i < segs - 1; i++) {
+                    const xc = (r.pts[i].x + r.pts[i + 1].x) / 2;
+                    const yc = (r.pts[i].y + r.pts[i + 1].y) / 2;
+                    base.quadraticCurveTo(r.pts[i].x, r.pts[i].y, xc, yc);
+                  }
+                  base.stroke();
+                }
+                base.globalCompositeOperation = 'source-over';
+              }
+            });
+
+            // MM target assignment
+            if (cIdentity > 0.02 && MM_POINTS.length) {
+              for (let i = 0; i < nodes.length; i++) {
+                const n = nodes[i];
+                if (!n.hasTarget) {
+                  const p = MM_POINTS[i % MM_POINTS.length];
+                  n.tx = p[0]; n.ty = p[1]; n.hasTarget = 1;
+                }
+              }
+            } else {
+              for (let i = 0; i < nodes.length; i++) nodes[i].hasTarget = 0;
+            }
+
+            // Node update — slow jellyfish pacing
+            const speedScale = 0.22 + cSignal * 0.35 + cStruct * 0.55 + cRecursive * 0.45 + cIdentity * 0.30;
+            const ffStrength = 0.06 + cSignal * 0.08 + cStruct * 0.18 + cRecursive * 0.14;
+
+            for (let i = 0; i < nodes.length; i++) {
+              const n = nodes[i];
+              const ang = flow(n.x, n.y, t + n.seed * 0.001);
+              const depthBoost = 0.4 + n.z * 0.8;
+              n.vx += Math.cos(ang) * ffStrength * depthBoost * dt * 6;
+              n.vy += Math.sin(ang) * ffStrength * depthBoost * dt * 6;
+
+              if (n.hasTarget) {
+                const dx = n.tx - n.x, dy = n.ty - n.y;
+                const k = 0.025 * cIdentity;
+                n.vx += dx * k; n.vy += dy * k;
+              }
+
+              if (cStruct > 0.1) {
+                const cx = W / 2, cy = H / 2;
+                const dx = cx - n.x, dy = cy - n.y;
+                const dist = Math.hypot(dx, dy) + 0.001;
+                const desired = Math.min(W, H) * (0.20 + 0.22 * ((n.seed * 0.37) % 1));
+                const radialErr = (dist - desired) / desired;
+                const tang = Math.atan2(dy, dx) + Math.PI / 2;
+                const orbital = 0.35 * cStruct;
+                n.vx += Math.cos(tang) * orbital * dt * 22;
+                n.vy += Math.sin(tang) * orbital * dt * 22;
+                n.vx += (dx / dist) * radialErr * 0.4 * cStruct;
+                n.vy += (dy / dist) * radialErr * 0.4 * cStruct;
+              }
+
+              n.vx *= 0.93; n.vy *= 0.93;
+              const maxV = 0.9 * speedScale * depthBoost;
+              const v = Math.hypot(n.vx, n.vy);
+              if (v > maxV) { n.vx = n.vx / v * maxV; n.vy = n.vy / v * maxV; }
+              n.x += n.vx; n.y += n.vy;
+
+              if (n.x < -20) n.x = W + 20; else if (n.x > W + 20) n.x = -20;
+              if (n.y < -20) n.y = H + 20; else if (n.y > H + 20) n.y = -20;
+
+              let pulseE = 0;
+              for (let p = 0; p < PULSES.length; p++) {
+                const pp = PULSES[p];
+                const d = Math.abs(Math.hypot(n.x - pp.x, n.y - pp.y) - pp.r);
+                if (d < 26) pulseE = Math.max(pulseE, (1 - d / 26) * pp.life);
+              }
+              n.energy += (pulseE - n.energy) * 0.15;
+            }
+
+            // Connections via spatial hash
+            buildGrid();
+            const linkRange = 70 + cStruct * 28 + cIdentity * 12;
+            const linkAlphaMul = 0.4 + cSignal * 0.4 + cStruct * 0.65 + cIdentity * 0.7 + cRecursive * 0.4;
+            base.globalCompositeOperation = 'lighter';
+            base.lineWidth = 0.6;
+            for (let i = 0; i < nodes.length; i++) {
+              const n = nodes[i];
+              const cx = (n.x / CELL) | 0, cy = (n.y / CELL) | 0;
+              for (let oy = -1; oy <= 1; oy++) {
+                for (let ox = -1; ox <= 1; ox++) {
+                  const arr = grid.get((cx + ox) * 100000 + (cy + oy));
+                  if (!arr) continue;
+                  for (let j = 0; j < arr.length; j++) {
+                    const idx = arr[j];
+                    if (idx <= i) continue;
+                    const m = nodes[idx];
+                    const dx = m.x - n.x, dy = m.y - n.y;
+                    const r = linkRange * (0.6 + (n.z + m.z) * 0.4);
+                    const d2 = dx * dx + dy * dy;
+                    if (d2 < r * r) {
+                      const d = Math.sqrt(d2);
+                      const a = (1 - d / r) * 0.17 * linkAlphaMul;
+                      const e = (n.energy + m.energy) * 0.5;
+                      const hue = e > 0.2 ? PAL.silver : (cIdentity > 0.4 ? PAL.paper : PAL.indigo);
+                      base.strokeStyle = rgba(hue, a);
+                      base.beginPath(); base.moveTo(n.x, n.y); base.lineTo(m.x, m.y); base.stroke();
+                    }
+                  }
+                }
+              }
+            }
+            base.globalCompositeOperation = 'source-over';
+
+            // Nodes
+            fg.globalCompositeOperation = 'lighter';
+            glow.globalCompositeOperation = 'lighter';
+            const energyAmb = 0.4 + cSignal * 0.3 + cStruct * 0.5 + cIdentity * 0.6 + cRecursive * 0.4;
+            for (let i = 0; i < nodes.length; i++) {
+              const n = nodes[i];
+              const depthAlpha = 0.4 + n.z * 0.6;
+              const baseAlpha = depthAlpha * (0.55 + energyAmb * 0.4);
+              const hue = n.role === 'beacon'
+                ? (n.hueMix < 0.5 ? PAL.blue : PAL.paper)
+                : (n.hueMix < 0.45 ? PAL.silver : (n.hueMix < 0.85 ? PAL.indigo : PAL.green));
+              const size = n.size * (1 + n.energy * 1.6) * (cIdentity > 0.3 ? 1.15 : 1);
+              fg.fillStyle = rgba(hue, Math.min(1, baseAlpha + n.energy * 0.4));
+              fg.beginPath(); fg.arc(n.x, n.y, size, 0, Math.PI * 2); fg.fill();
+              if (n.role !== 'dot' || n.energy > 0.05) {
+                const ga = (n.role === 'beacon' ? 0.40 : 0.14) * depthAlpha + n.energy * 0.45;
+                glow.fillStyle = rgba(hue, ga);
+                glow.beginPath(); glow.arc(n.x, n.y, size * 5, 0, Math.PI * 2); glow.fill();
+              }
+            }
+            fg.globalCompositeOperation = 'source-over';
+            glow.globalCompositeOperation = 'source-over';
+
+            // Subtle grid hint
+            if (cStruct > 0.1 || cRecursive > 0.1) {
+              const a = (cStruct * 0.05 + cRecursive * 0.03);
+              base.strokeStyle = `rgba(170,185,210,${a})`;
+              base.lineWidth = 1;
+              const step = 80;
+              const offset = (t * 5) % step;
+              base.beginPath();
+              for (let x = -offset; x < W; x += step) { base.moveTo(x, 0); base.lineTo(x, H); }
+              for (let y = -offset; y < H; y += step) { base.moveTo(0, y); base.lineTo(W, y); }
+              base.stroke();
+            }
+
+            requestAnimationFrame(loop);
+          }
+
+          if (!reduced) requestAnimationFrame(loop);
+          else {
+            // static frame
+            base.fillStyle = '#0b0f0e'; base.fillRect(0, 0, W, H);
+          }
+        })();
+        </script>
       </div>
     </div>
     <div class="scroll-tag" aria-hidden="true">&lt;scroll&gt;</div>
