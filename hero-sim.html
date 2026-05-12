@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hero Simulation</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #07090d; overflow: hidden; height: 100%; font-family: system-ui, sans-serif; color: #cfd4dc; }
+  .stage { position: fixed; inset: 0; }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  #base { z-index: 1; }
+  #glow { z-index: 2; mix-blend-mode: screen; filter: blur(14px) saturate(115%); opacity: 0.85; }
+  #fg   { z-index: 3; }
+  .vignette {
+    position: absolute; inset: 0; z-index: 4; pointer-events: none;
+    background:
+      radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.55) 100%),
+      linear-gradient(180deg, rgba(7,9,13,0.35), rgba(7,9,13,0) 25%, rgba(7,9,13,0) 70%, rgba(7,9,13,0.55));
+  }
+  .grain {
+    position: absolute; inset: 0; z-index: 5; pointer-events: none; opacity: 0.05;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    mix-blend-mode: overlay;
+  }
+  .phase {
+    position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%);
+    z-index: 6; font: 500 10px/1 'JetBrains Mono', ui-monospace, monospace;
+    letter-spacing: 0.32em; text-transform: uppercase; color: rgba(200,210,225,0.45);
+    pointer-events: none; user-select: none;
+  }
+  .phase span { color: rgba(200,210,225,0.8); margin-left: 14px; }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <canvas id="base"></canvas>
+    <canvas id="glow"></canvas>
+    <canvas id="fg"></canvas>
+    <div class="vignette"></div>
+    <div class="grain"></div>
+    <div class="phase">SYSTEM<span id="phase-name">dormant</span></div>
+  </div>
+
+<script>
+(() => {
+  'use strict';
+
+  // ---------- Setup ----------
+  const baseC = document.getElementById('base');
+  const glowC = document.getElementById('glow');
+  const fgC   = document.getElementById('fg');
+  const base  = baseC.getContext('2d');
+  const glow  = glowC.getContext('2d');
+  const fg    = fgC.getContext('2d');
+  const phaseLabel = document.getElementById('phase-name');
+
+  let W = 0, H = 0, DPR = 1, GLOW_SCALE = 0.5;
+  const lowQuality = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4;
+
+  function resize() {
+    DPR = Math.min(window.devicePixelRatio || 1, lowQuality ? 1 : 1.75);
+    W = window.innerWidth;
+    H = window.innerHeight;
+    [baseC, fgC].forEach(c => {
+      c.width = Math.floor(W * DPR);
+      c.height = Math.floor(H * DPR);
+    });
+    glowC.width = Math.floor(W * DPR * GLOW_SCALE);
+    glowC.height = Math.floor(H * DPR * GLOW_SCALE);
+    base.setTransform(DPR, 0, 0, DPR, 0, 0);
+    fg.setTransform(DPR, 0, 0, DPR, 0, 0);
+    glow.setTransform(DPR * GLOW_SCALE, 0, 0, DPR * GLOW_SCALE, 0, 0);
+    buildMMTargets();
+  }
+  window.addEventListener('resize', resize);
+
+  // ---------- Palette ----------
+  const PAL = {
+    bg:        '#07090d',
+    bgTrail:   'rgba(7,9,13,0.16)',
+    graphite:  '#1a1f28',
+    silver:    [200, 208, 222],
+    indigo:    [120, 132, 198],
+    blue:      [110, 158, 210],
+    emerald:   [120, 188, 160],
+    line:      'rgba(170,185,210,0.10)'
+  };
+
+  function rgba(rgb, a) { return `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${a})`; }
+
+  // ---------- Smooth pseudo-noise flow field ----------
+  // Cheap and continuous — better than random for premium feel.
+  function flow(x, y, t) {
+    const s = 0.0018;
+    const a = Math.sin(x * s + t * 0.10) +
+              Math.cos(y * s * 1.27 - t * 0.13) +
+              Math.sin((x + y) * s * 0.55 + t * 0.07);
+    const b = Math.cos(x * s * 0.83 - t * 0.09) +
+              Math.sin(y * s * 1.11 + t * 0.12) +
+              Math.cos((x - y) * s * 0.69 - t * 0.05);
+    return Math.atan2(b, a);
+  }
+
+  // ---------- MM monogram target points ----------
+  let MM_POINTS = [];
+  function buildMMTargets() {
+    const off = document.createElement('canvas');
+    const w = 1200, h = 600;
+    off.width = w; off.height = h;
+    const c = off.getContext('2d');
+    c.fillStyle = '#fff';
+    c.font = `900 ${Math.floor(h * 0.92)}px 'Inter', system-ui, sans-serif`;
+    c.textAlign = 'center';
+    c.textBaseline = 'middle';
+    c.fillText('MM', w / 2, h / 2);
+    const img = c.getImageData(0, 0, w, h).data;
+    const pts = [];
+    const step = 6;
+    for (let y = 0; y < h; y += step) {
+      for (let x = 0; x < w; x += step) {
+        const idx = (y * w + x) * 4 + 3;
+        if (img[idx] > 128) pts.push([x / w - 0.5, y / h - 0.5]);
+      }
+    }
+    // Map to screen
+    const scale = Math.min(W * 0.55, H * 0.55);
+    MM_POINTS = pts.map(([nx, ny]) => [
+      W / 2 + nx * scale * 2,
+      H / 2 + ny * scale
+    ]);
+    // Shuffle so assignments stay coherent
+    for (let i = MM_POINTS.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [MM_POINTS[i], MM_POINTS[j]] = [MM_POINTS[j], MM_POINTS[i]];
+    }
+  }
+
+  // ---------- Particle system ----------
+  const NODE_COUNT = lowQuality ? 200 : 360;
+  const nodes = [];
+
+  function makeNode(i) {
+    const role = i % 9 === 0 ? 'beacon' : (i % 3 === 0 ? 'glow' : 'dot');
+    const depth = Math.random();
+    return {
+      x: Math.random() * W,
+      y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.1,
+      vy: (Math.random() - 0.5) * 0.1,
+      z: depth,
+      size: 0.4 + depth * (role === 'beacon' ? 2.2 : role === 'glow' ? 1.4 : 0.9),
+      hueMix: Math.random(),
+      role,
+      seed: Math.random() * 1000,
+      tx: 0, ty: 0, hasTarget: 0,
+      energy: 0
+    };
+  }
+  for (let i = 0; i < NODE_COUNT; i++) nodes.push(makeNode(i));
+
+  // ---------- Ribbons / spline curves ----------
+  const RIBBONS = [];
+  function makeRibbon() {
+    const segs = 36;
+    const r = {
+      pts: [],
+      hue: Math.random() < 0.5 ? PAL.indigo : (Math.random() < 0.6 ? PAL.blue : PAL.emerald),
+      phase: Math.random() * Math.PI * 2,
+      speed: 0.05 + Math.random() * 0.08,
+      radius: Math.min(W, H) * (0.18 + Math.random() * 0.22),
+      cx: W * (0.25 + Math.random() * 0.5),
+      cy: H * (0.3 + Math.random() * 0.4),
+      wobble: 0.4 + Math.random() * 0.5,
+      alpha: 0,
+      target: 0
+    };
+    for (let i = 0; i < segs; i++) r.pts.push({ x: 0, y: 0 });
+    return r;
+  }
+  for (let i = 0; i < 5; i++) RIBBONS.push(makeRibbon());
+
+  // ---------- Pulses (signal propagation) ----------
+  const PULSES = [];
+  function spawnPulse() {
+    PULSES.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: 0,
+      maxR: Math.min(W, H) * (0.4 + Math.random() * 0.3),
+      life: 1,
+      hue: Math.random() < 0.5 ? PAL.indigo : PAL.blue
+    });
+  }
+
+  // ---------- Phase orchestration ----------
+  const PHASES = [
+    { key: 'dormant',    dur:  9 },
+    { key: 'signal',     dur: 11 },
+    { key: 'structural', dur: 14 },
+    { key: 'identity',   dur:  9 },
+    { key: 'recursive',  dur: 17 }
+  ];
+  const CYCLE = PHASES.reduce((s, p) => s + p.dur, 0);
+
+  function getPhase(t) {
+    const local = t % CYCLE;
+    let acc = 0;
+    for (let i = 0; i < PHASES.length; i++) {
+      const p = PHASES[i];
+      if (local < acc + p.dur) {
+        const u = (local - acc) / p.dur;
+        return { idx: i, key: p.key, u, local };
+      }
+      acc += p.dur;
+    }
+    return { idx: PHASES.length - 1, key: 'recursive', u: 1, local };
+  }
+
+  function smoothstep(a, b, x) {
+    const t = Math.max(0, Math.min(1, (x - a) / (b - a)));
+    return t * t * (3 - 2 * t);
+  }
+
+  // ---------- Spatial hash for connections ----------
+  const CELL = 80;
+  const grid = new Map();
+  function gridKey(cx, cy) { return cx * 100000 + cy; }
+  function buildGrid() {
+    grid.clear();
+    for (let i = 0; i < nodes.length; i++) {
+      const n = nodes[i];
+      const cx = (n.x / CELL) | 0;
+      const cy = (n.y / CELL) | 0;
+      const k = gridKey(cx, cy);
+      let arr = grid.get(k);
+      if (!arr) { arr = []; grid.set(k, arr); }
+      arr.push(i);
+    }
+  }
+
+  // ---------- Initial paint ----------
+  function paintBg(ctx, alpha) {
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = `rgba(7,9,13,${alpha})`;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  base.fillStyle = PAL.bg;
+  base.fillRect(0, 0, W, H);
+
+  // ---------- Main loop ----------
+  let t0 = performance.now();
+  let lastPulse = 0;
+  let frame = 0;
+  let lastTime = t0;
+
+  function loop(now) {
+    const t = (now - t0) / 1000;
+    const dt = Math.min(0.05, (now - lastTime) / 1000);
+    lastTime = now;
+    frame++;
+
+    const ph = getPhase(t);
+    phaseLabel.textContent = ph.key;
+
+    // Phase coefficients (smooth blends near boundaries)
+    const cDormant    = ph.idx === 0 ? 1 - smoothstep(0.7, 1, ph.u) : 0;
+    const cSignal     = ph.idx === 1 ? 1 : (ph.idx === 0 ? smoothstep(0.7, 1, ph.u) : (ph.idx === 2 ? 1 - smoothstep(0, 0.25, ph.u) : 0));
+    const cStruct     = ph.idx === 2 ? Math.min(1, smoothstep(0, 0.25, ph.u)) * (1 - smoothstep(0.8, 1, ph.u)) :
+                        (ph.idx === 1 ? smoothstep(0.85, 1, ph.u) :
+                        (ph.idx === 3 ? 1 - smoothstep(0, 0.2, ph.u) : 0));
+    const cIdentity   = ph.idx === 3 ? smoothstep(0, 0.25, ph.u) * (1 - smoothstep(0.78, 1, ph.u)) : 0;
+    const cRecursive  = ph.idx === 4 ? smoothstep(0, 0.15, ph.u) : (ph.idx === 3 ? smoothstep(0.78, 1, ph.u) : 0);
+
+    const energy = 0.12 + cSignal * 0.4 + cStruct * 0.7 + cIdentity * 0.8 + cRecursive * 0.55;
+
+    // Trails — clear with semi-transparent fill so motion leaves ghosting
+    base.globalCompositeOperation = 'source-over';
+    base.fillStyle = `rgba(7,9,13,${0.10 + cDormant * 0.08})`;
+    base.fillRect(0, 0, W, H);
+
+    // Clear foreground fully (sharp lines)
+    fg.clearRect(0, 0, W, H);
+    glow.clearRect(0, 0, W, H);
+
+    // Spawn pulses during signal/structural
+    if ((cSignal > 0.4 || cStruct > 0.3) && t - lastPulse > 1.4 - cStruct * 0.8) {
+      spawnPulse();
+      lastPulse = t;
+    }
+
+    // ---- Update pulses ----
+    for (let i = PULSES.length - 1; i >= 0; i--) {
+      const p = PULSES[i];
+      p.r += dt * 90 * (0.7 + cStruct * 0.6);
+      p.life = 1 - p.r / p.maxR;
+      if (p.life <= 0) { PULSES.splice(i, 1); continue; }
+      // Draw pulse ring on glow layer
+      const a = Math.pow(p.life, 1.7) * 0.45;
+      glow.strokeStyle = rgba(p.hue, a);
+      glow.lineWidth = 1.4;
+      glow.beginPath();
+      glow.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      glow.stroke();
+    }
+
+    // ---- Update ribbons ----
+    RIBBONS.forEach((r, idx) => {
+      r.target = cStruct * 0.8 + cIdentity * 0.4 + cRecursive * 0.5;
+      r.alpha += (r.target - r.alpha) * 0.02;
+      r.phase += dt * r.speed * (0.5 + cStruct);
+      // Drift center slowly
+      r.cx += Math.sin(t * 0.05 + idx) * 0.15;
+      r.cy += Math.cos(t * 0.04 + idx * 1.3) * 0.12;
+
+      const segs = r.pts.length;
+      for (let i = 0; i < segs; i++) {
+        const u = i / (segs - 1);
+        const ang = r.phase + u * Math.PI * 2 * r.wobble;
+        const rad = r.radius * (0.6 + 0.4 * Math.sin(ang * 1.7 + t * 0.3));
+        r.pts[i].x = r.cx + Math.cos(ang) * rad;
+        r.pts[i].y = r.cy + Math.sin(ang) * rad * 0.55;
+      }
+
+      if (r.alpha > 0.01) {
+        // Layered stroke for depth
+        base.globalCompositeOperation = 'lighter';
+        for (let pass = 0; pass < 2; pass++) {
+          const w = pass === 0 ? 1.2 : 3.0;
+          const a = pass === 0 ? r.alpha * 0.55 : r.alpha * 0.12;
+          base.strokeStyle = rgba(r.hue, a);
+          base.lineWidth = w;
+          base.beginPath();
+          base.moveTo(r.pts[0].x, r.pts[0].y);
+          for (let i = 1; i < segs - 1; i++) {
+            const xc = (r.pts[i].x + r.pts[i + 1].x) / 2;
+            const yc = (r.pts[i].y + r.pts[i + 1].y) / 2;
+            base.quadraticCurveTo(r.pts[i].x, r.pts[i].y, xc, yc);
+          }
+          base.stroke();
+        }
+        base.globalCompositeOperation = 'source-over';
+      }
+    });
+
+    // ---- Target assignment for MM during identity phase ----
+    const wantMM = cIdentity > 0.02;
+    if (wantMM && MM_POINTS.length) {
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i];
+        if (!n.hasTarget) {
+          const idx = i % MM_POINTS.length;
+          n.tx = MM_POINTS[idx][0];
+          n.ty = MM_POINTS[idx][1];
+          n.hasTarget = 1;
+        }
+      }
+    } else {
+      for (let i = 0; i < nodes.length; i++) nodes[i].hasTarget = 0;
+    }
+
+    // ---- Update nodes ----
+    const speedScale = 0.4 + cSignal * 0.8 + cStruct * 1.2 + cRecursive * 0.9 + cIdentity * 0.4;
+    const ffStrength = 0.10 + cSignal * 0.15 + cStruct * 0.30 + cRecursive * 0.22;
+
+    for (let i = 0; i < nodes.length; i++) {
+      const n = nodes[i];
+
+      // Flow field force
+      const ang = flow(n.x, n.y, t + n.seed * 0.001);
+      const depthBoost = 0.4 + n.z * 0.8;
+      n.vx += Math.cos(ang) * ffStrength * depthBoost * dt * 6;
+      n.vy += Math.sin(ang) * ffStrength * depthBoost * dt * 6;
+
+      // MM target attraction
+      if (n.hasTarget) {
+        const dx = n.tx - n.x;
+        const dy = n.ty - n.y;
+        const k = 0.012 * cIdentity;
+        n.vx += dx * k;
+        n.vy += dy * k;
+      }
+
+      // Orbital structural attraction — pull mid-screen during structural phase
+      if (cStruct > 0.1) {
+        const cx = W / 2, cy = H / 2;
+        const dx = cx - n.x, dy = cy - n.y;
+        const dist = Math.hypot(dx, dy) + 0.001;
+        const desired = Math.min(W, H) * (0.18 + 0.20 * (n.seed % 1));
+        const radialErr = (dist - desired) / desired;
+        const tang = Math.atan2(dy, dx) + Math.PI / 2;
+        const orbital = 0.6 * cStruct;
+        n.vx += Math.cos(tang) * orbital * dt * 30;
+        n.vy += Math.sin(tang) * orbital * dt * 30;
+        n.vx += (dx / dist) * radialErr * 0.6 * cStruct;
+        n.vy += (dy / dist) * radialErr * 0.6 * cStruct;
+      }
+
+      // Damping — gives that "expensive" feel
+      const damp = 0.94 - cIdentity * 0.04;
+      n.vx *= damp;
+      n.vy *= damp;
+
+      // Velocity clamp
+      const maxV = 1.4 * speedScale * depthBoost;
+      const v = Math.hypot(n.vx, n.vy);
+      if (v > maxV) { n.vx = n.vx / v * maxV; n.vy = n.vy / v * maxV; }
+
+      n.x += n.vx;
+      n.y += n.vy;
+
+      // Wrap edges softly
+      if (n.x < -20) n.x = W + 20;
+      else if (n.x > W + 20) n.x = -20;
+      if (n.y < -20) n.y = H + 20;
+      else if (n.y > H + 20) n.y = -20;
+
+      // Energy from nearby pulses → brief brightening
+      let pulseE = 0;
+      for (let p = 0; p < PULSES.length; p++) {
+        const pp = PULSES[p];
+        const d = Math.abs(Math.hypot(n.x - pp.x, n.y - pp.y) - pp.r);
+        if (d < 30) pulseE = Math.max(pulseE, (1 - d / 30) * pp.life);
+      }
+      n.energy += (pulseE - n.energy) * 0.18;
+    }
+
+    // ---- Draw connections (spatial hash) ----
+    buildGrid();
+    const linkRange = 90 + cStruct * 30 + cIdentity * 10;
+    const linkAlphaMul = 0.5 + cSignal * 0.4 + cStruct * 0.6 + cIdentity * 0.7 + cRecursive * 0.4;
+    base.globalCompositeOperation = 'lighter';
+    base.lineWidth = 0.6;
+
+    const cellsTouched = new Set();
+    for (let i = 0; i < nodes.length; i++) {
+      const n = nodes[i];
+      const cx = (n.x / CELL) | 0;
+      const cy = (n.y / CELL) | 0;
+      for (let oy = -1; oy <= 1; oy++) {
+        for (let ox = -1; ox <= 1; ox++) {
+          const k = gridKey(cx + ox, cy + oy);
+          const arr = grid.get(k);
+          if (!arr) continue;
+          for (let j = 0; j < arr.length; j++) {
+            const idx = arr[j];
+            if (idx <= i) continue;
+            const m = nodes[idx];
+            const dx = m.x - n.x, dy = m.y - n.y;
+            const d2 = dx * dx + dy * dy;
+            const r = linkRange * (0.6 + (n.z + m.z) * 0.4);
+            if (d2 < r * r) {
+              const d = Math.sqrt(d2);
+              const a = (1 - d / r) * 0.16 * linkAlphaMul;
+              // hue blend: indigo by default, brighter blue when pulses energize
+              const e = (n.energy + m.energy) * 0.5;
+              const hue = e > 0.2 ? PAL.silver : PAL.indigo;
+              base.strokeStyle = rgba(hue, a);
+              base.beginPath();
+              base.moveTo(n.x, n.y);
+              base.lineTo(m.x, m.y);
+              base.stroke();
+            }
+          }
+        }
+      }
+    }
+    base.globalCompositeOperation = 'source-over';
+
+    // ---- Draw nodes ----
+    fg.globalCompositeOperation = 'lighter';
+    glow.globalCompositeOperation = 'lighter';
+
+    for (let i = 0; i < nodes.length; i++) {
+      const n = nodes[i];
+      const depthAlpha = 0.35 + n.z * 0.65;
+      const baseAlpha = depthAlpha * (0.55 + energy * 0.4);
+      const hue = n.role === 'beacon'
+        ? (n.hueMix < 0.5 ? PAL.indigo : PAL.silver)
+        : (n.hueMix < 0.5 ? PAL.silver : (n.hueMix < 0.85 ? PAL.indigo : PAL.emerald));
+      const size = n.size * (1 + n.energy * 1.6);
+
+      // Core dot
+      fg.fillStyle = rgba(hue, Math.min(1, baseAlpha + n.energy * 0.4));
+      fg.beginPath();
+      fg.arc(n.x, n.y, size, 0, Math.PI * 2);
+      fg.fill();
+
+      // Glow halo for beacons & energized
+      if (n.role !== 'dot' || n.energy > 0.05) {
+        const ga = (n.role === 'beacon' ? 0.35 : 0.12) * depthAlpha + n.energy * 0.4;
+        glow.fillStyle = rgba(hue, ga);
+        glow.beginPath();
+        glow.arc(n.x, n.y, size * 4.5, 0, Math.PI * 2);
+        glow.fill();
+      }
+    }
+    fg.globalCompositeOperation = 'source-over';
+    glow.globalCompositeOperation = 'source-over';
+
+    // ---- Structural grid hint during structural phase ----
+    if (cStruct > 0.1 || cRecursive > 0.1) {
+      const a = (cStruct * 0.06 + cRecursive * 0.04);
+      base.strokeStyle = `rgba(140,160,200,${a})`;
+      base.lineWidth = 1;
+      const step = 120;
+      const offset = (t * 8) % step;
+      base.beginPath();
+      for (let x = -offset; x < W; x += step) {
+        base.moveTo(x, 0); base.lineTo(x, H);
+      }
+      for (let y = -offset; y < H; y += step) {
+        base.moveTo(0, y); base.lineTo(W, y);
+      }
+      base.stroke();
+    }
+
+    requestAnimationFrame(loop);
+  }
+
+  // Boot
+  resize();
+  // pre-warm trails
+  base.fillStyle = PAL.bg;
+  base.fillRect(0, 0, W, H);
+  requestAnimationFrame(loop);
+
+  // Pause when tab hidden — saves battery
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      t0 = performance.now() - 0;
+      lastTime = performance.now();
+    }
+  });
+})();
+</script>
+</body>
+</html>
