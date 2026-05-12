@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -6313,878 +6313,874 @@
     </div>
   </nav>
 
-  <section class="story-hero" id="hero" aria-label="From raw markup to crafted identity">
-    <style>
-      /* === STORY HERO — scroll-driven 6-scene cinematic sequence === */
-      .story-hero {
-        position: relative;
-        height: 600vh;
-        background: #0e0b14;
-        color: #ece4d3;
-        isolation: isolate;
-      }
-      .story-stage {
-        position: sticky;
-        top: 0;
-        height: 100vh;
-        width: 100%;
-        overflow: hidden;
-        background:
-          radial-gradient(ellipse at 22% 28%, rgba(212, 165, 92, 0.08), transparent 55%),
-          radial-gradient(ellipse at 78% 72%, rgba(132, 108, 178, 0.08), transparent 55%),
-          radial-gradient(ellipse at 50% 108%, rgba(82, 134, 116, 0.06), transparent 60%),
-          linear-gradient(170deg, #14101c 0%, #0c0913 60%, #06040a 100%);
-      }
-      .story-canvas {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        display: block;
-        pointer-events: none;
-        z-index: 1;
-      }
-      .story-grain {
-        position: absolute; inset: 0;
-        pointer-events: none;
-        mix-blend-mode: overlay;
-        opacity: 0.14;
-        z-index: 2;
-        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>");
-      }
-      .story-vignette {
-        position: absolute; inset: 0;
-        pointer-events: none;
-        z-index: 3;
-        background:
-          radial-gradient(ellipse at 50% 55%, rgba(0,0,0,0) 48%, rgba(0,0,0,0.55) 100%),
-          linear-gradient(180deg, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0) 12%, rgba(0,0,0,0) 86%, rgba(0,0,0,0.40) 100%);
-      }
-
-      /* Scene narration layer */
-      .story-scenes {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        z-index: 4;
-      }
-      .story-scene {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transform: translateY(24px);
-        transition: opacity 0.7s cubic-bezier(.22,.61,.36,1), transform 0.7s cubic-bezier(.22,.61,.36,1);
-        padding: clamp(40px, 6vw, 96px);
-      }
-      .story-scene.is-active {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      .scene-copy {
-        max-width: 760px;
-        text-align: center;
-      }
-      .scene-eyebrow {
-        font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
-        font-size: 11px;
-        letter-spacing: 0.28em;
-        text-transform: uppercase;
-        color: rgba(212, 165, 92, 0.78);
-        margin-bottom: 22px;
-        font-weight: 400;
-      }
-      .scene-title {
-        font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
-        font-size: clamp(36px, 5.6vw, 76px);
-        font-weight: 400;
-        letter-spacing: -0.014em;
-        line-height: 1.04;
-        color: #ece4d3;
-      }
-      .scene-title em {
-        font-style: italic;
-        color: #d4a55c;
-      }
-      .scene-sub {
-        margin-top: 20px;
-        font-family: 'Inter', system-ui, sans-serif;
-        font-size: clamp(14px, 1.18vw, 16px);
-        line-height: 1.65;
-        color: rgba(236, 228, 211, 0.62);
-        letter-spacing: 0.005em;
-        max-width: 580px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      /* Scene 6 — final crafted state */
-      .scene-final {
-        flex-direction: column;
-        gap: clamp(18px, 2.2vw, 30px);
-      }
-      .final-eyebrow {
-        font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
-        font-size: 11px;
-        letter-spacing: 0.32em;
-        text-transform: uppercase;
-        color: rgba(212, 165, 92, 0.85);
-      }
-      .final-headline {
-        font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
-        font-size: clamp(38px, 6.2vw, 84px);
-        font-weight: 400;
-        letter-spacing: -0.02em;
-        line-height: 1.0;
-        color: #ece4d3;
-        text-align: center;
-        max-width: 980px;
-      }
-      .final-headline em {
-        font-style: italic;
-        color: #d4a55c;
-      }
-      .final-sub {
-        font-family: 'Inter', system-ui, sans-serif;
-        font-size: clamp(14px, 1.15vw, 16px);
-        color: rgba(236, 228, 211, 0.58);
-        text-align: center;
-        max-width: 560px;
-        line-height: 1.65;
-        margin: 0;
-      }
-      .final-actions {
-        display: flex;
-        align-items: center;
-        gap: 18px;
-        pointer-events: auto;
-      }
-      .final-cta {
-        display: inline-flex;
-        align-items: center;
-        gap: 12px;
-        padding: 15px 28px;
-        background: #d4a55c;
-        color: #14101c;
-        font-family: 'Inter', system-ui, sans-serif;
-        font-weight: 600;
-        font-size: 14px;
-        letter-spacing: 0.015em;
-        border-radius: 2px;
-        text-decoration: none;
-        box-shadow: 0 20px 58px rgba(212, 165, 92, 0.28), inset 0 1px 0 rgba(255,255,255,0.22);
-        transition: transform 0.28s ease, box-shadow 0.28s ease, background 0.28s ease;
-      }
-      .final-cta:hover {
-        transform: translateY(-2px);
-        background: #dcb069;
-        box-shadow: 0 24px 64px rgba(212, 165, 92, 0.36);
-      }
-      .final-cta .arrow {
-        transition: transform 0.28s ease;
-      }
-      .final-cta:hover .arrow {
-        transform: translateX(3px);
-      }
-      .final-meta {
-        font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
-        font-size: 11px;
-        letter-spacing: 0.22em;
-        text-transform: uppercase;
-        color: rgba(236, 228, 211, 0.4);
-      }
-
-      /* Chapter progress */
-      .story-progress {
-        position: absolute;
-        left: clamp(22px, 3vw, 44px);
-        bottom: clamp(22px, 3vw, 44px);
-        display: flex;
-        gap: 7px;
-        z-index: 5;
-        pointer-events: none;
-      }
-      .story-progress span {
-        display: block;
-        width: 30px;
-        height: 2px;
-        background: rgba(236, 228, 211, 0.14);
-        transition: background 0.5s ease;
-      }
-      .story-progress span.on {
-        background: rgba(212, 165, 92, 0.85);
-      }
-
-      .story-hint {
-        position: absolute;
-        right: clamp(22px, 3vw, 44px);
-        bottom: clamp(22px, 3vw, 44px);
-        font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
-        font-size: 10px;
-        letter-spacing: 0.28em;
-        text-transform: uppercase;
-        color: rgba(236, 228, 211, 0.38);
-        z-index: 5;
-        transition: opacity 0.5s ease, transform 0.5s ease;
-        pointer-events: none;
-      }
-      .story-hint::before {
-        content: '';
-        display: inline-block;
-        width: 18px;
-        height: 1px;
-        background: rgba(236, 228, 211, 0.38);
-        margin-right: 10px;
-        vertical-align: middle;
-      }
-      .story-hint.is-faded {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-
-      .story-chapter {
-        position: absolute;
-        left: clamp(22px, 3vw, 44px);
-        top: clamp(22px, 3vw, 44px);
-        font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
-        font-size: 10px;
-        letter-spacing: 0.28em;
-        text-transform: uppercase;
-        color: rgba(236, 228, 211, 0.42);
-        z-index: 5;
-        pointer-events: none;
-      }
-      .story-chapter b {
-        font-weight: 500;
-        color: rgba(212, 165, 92, 0.85);
-      }
-
-      @media (max-width: 720px) {
-        .scene-title { font-size: clamp(28px, 8vw, 44px); }
-        .final-headline { font-size: clamp(30px, 9vw, 48px); }
-        .story-chapter, .story-hint, .story-progress { font-size: 9px; }
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        .story-hero { height: 100vh; }
-        .story-scene { transition: none; }
-        .story-stage { position: relative; }
-      }
-    </style>
-
-    <div class="story-stage">
-      <canvas class="story-canvas" id="story-canvas"></canvas>
-      <div class="story-grain"></div>
-      <div class="story-vignette"></div>
-
-      <div class="story-chapter" aria-hidden="true">CH. <b id="story-chapter-n">01</b> / 06</div>
-
-      <div class="story-scenes" id="story-scenes">
-
-        <div class="story-scene" data-scene="0">
-          <div class="scene-copy">
-            <div class="scene-eyebrow">&lt;chapter 01 — raw structure&gt;</div>
-            <h1 class="scene-title">Most websites begin as <em>chaos</em>.</h1>
-            <p class="scene-sub">Brackets. Divs. Half-closed tags. Fragments scattered across a workshop floor — full of possibility, none of it resolved.</p>
-          </div>
-        </div>
-
-        <div class="story-scene" data-scene="1">
-          <div class="scene-copy">
-            <div class="scene-eyebrow">&lt;chapter 02 — order&gt;</div>
-            <h1 class="scene-title">Then <em>order</em> finds them.</h1>
-            <p class="scene-sub">Spacing aligns. Brackets pair. Loose pieces snap into rhythm. The noise begins to breathe.</p>
-          </div>
-        </div>
-
-        <div class="story-scene" data-scene="2">
-          <div class="scene-copy">
-            <div class="scene-eyebrow">&lt;chapter 03 — architecture&gt;</div>
-            <h1 class="scene-title">Markup becomes <em>architecture</em>.</h1>
-            <p class="scene-sub">Tags fold into navigation. Containers become cards. The shape of a real business website emerges from raw syntax.</p>
-          </div>
-        </div>
-
-        <div class="story-scene" data-scene="3">
-          <div class="scene-copy">
-            <div class="scene-eyebrow">&lt;chapter 04 — craft&gt;</div>
-            <h1 class="scene-title">Architecture becomes <em>craft</em>.</h1>
-            <p class="scene-sub">Typography finds hierarchy. Light finds depth. Spacing finds restraint. The business begins to look the way it deserves to.</p>
-          </div>
-        </div>
-
-        <div class="story-scene" data-scene="4">
-          <div class="scene-copy">
-            <div class="scene-eyebrow">&lt;chapter 05 — identity&gt;</div>
-            <h1 class="scene-title">Craft becomes <em>identity</em>.</h1>
-            <p class="scene-sub">Everything we built quietly aligns into a single, signed mark.</p>
-          </div>
-        </div>
-
-        <div class="story-scene scene-final" data-scene="5">
-          <div class="scene-copy">
-            <div class="final-eyebrow">Mediocre Markup</div>
-            <h1 class="final-headline">We turn raw structure into websites <em>real businesses</em> are proud to share.</h1>
-          </div>
-          <p class="final-sub">Custom-built, hand-finished, and made to earn the trust your work has already earned offline.</p>
-          <div class="final-actions">
-            <a href="#contact" onclick="jumpToContact(event)" class="final-cta">Start a project <span class="arrow">→</span></a>
-            <span class="final-meta">$500 · 7 days · custom code</span>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="story-progress" id="story-progress" aria-hidden="true">
-        <span></span><span></span><span></span><span></span><span></span><span></span>
-      </div>
-      <div class="story-hint" id="story-hint">Scroll to begin</div>
+  <section class="hero" id="hero">
+    <div class="hero-bg-scraps" aria-hidden="true">
+      <span class="markup-float">&lt;section&gt;</span>
+      <span class="markup-float">/* visible again */</span>
+      <span class="markup-float">&lt;/div&gt;</span>
     </div>
 
-    <script>
-    (() => {
-      'use strict';
-      const section = document.getElementById('hero');
-      const stage = section && section.querySelector('.story-stage');
-      const canvas = document.getElementById('story-canvas');
-      if (!section || !stage || !canvas) return;
-      const ctx = canvas.getContext('2d');
+    <div class="hero-content" id="hero-content">
+      <div class="hero-left" id="hero-left">
+        <div class="hero-eyebrow" id="hero-eyebrow">&lt;!-- digital presence check --&gt;</div>
+        <h1 class="hero-headline" id="hero-headline">
+          <span class="line hl-dim">If you&rsquo;re invisible</span>
+          <span class="line hl-accent">online, you&rsquo;re</span>
+          <span class="line hl-outlined">invisible to</span>
+          <span class="line hl-outlined">customers.</span>
+        </h1>
+        <p class="hero-sub">Too many great businesses lose opportunities online because their digital presence fails to reflect the quality of their work.</p>
+        <div class="hero-actions">
+          <a href="#contact" onclick="jumpToContact(event)" class="btn btn-primary magnetic-btn">Start a project &rarr;</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><span class="stat-num">$500</span><span class="stat-label">single-page launch</span></div>
+          <div class="stat"><span class="stat-num">7 days</span><span class="stat-label">typical first pass</span></div>
+          <div class="stat"><span class="stat-num">Custom code</span><span class="stat-label">no page builders</span></div>
+        </div>
+      </div>
 
-      const reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-      const cores = navigator.hardwareConcurrency || 8;
-      const LOW = cores <= 4 || window.innerWidth < 720;
-
-      /* ---------- palette ---------- */
-      const PAL = {
-        ivory:   [236, 228, 211],
-        ivoryD:  [196, 184, 162],
-        gold:    [212, 165, 92],
-        violet:  [156, 128, 198],
-        teal:    [110, 154, 144],
-        emerald: [120, 170, 140],
-        rose:    [200, 148, 138],
-        mute:    [122, 112, 134],
-        ink:     [50, 44, 60]
-      };
-      const rgba = (c, a) => `rgba(${c[0]|0},${c[1]|0},${c[2]|0},${a})`;
-      const lerp = (a, b, t) => a + (b - a) * t;
-      const lerpV = (a, b, t) => [lerp(a[0],b[0],t),lerp(a[1],b[1],t),lerp(a[2],b[2],t)];
-      const clamp01 = x => x < 0 ? 0 : x > 1 ? 1 : x;
-      const smooth = x => { x = clamp01(x); return x*x*(3-2*x); };
-      const easeOutCubic = x => 1 - Math.pow(1 - clamp01(x), 3);
-
-      /* ---------- deterministic RNG so layout is stable across resizes ---------- */
-      function mkRand(seed) {
-        let s = seed >>> 0;
-        return () => {
-          s = (s * 1664525 + 1013904223) >>> 0;
-          return s / 4294967295;
-        };
-      }
-      const seeded = mkRand(8421);
-      const R = (a, b) => a + seeded() * (b - a);
-      const pickR = arr => arr[(seeded() * arr.length) | 0];
-
-      /* ---------- token bank ---------- */
-      const TAGS  = ['<div>','</div>','<section>','</section>','<nav>','<a>','</a>','<h1>','</h1>','<p>','</p>','<img/>','<header>','<main>','<button>','<li>','<figure>','<article>'];
-      const PROPS = ['padding:','margin:','flex','grid','gap:','24px','1fr','color:','radius','class=""','width:','height:','font','rgba(','--bg','inline','block','hover'];
-      const PUNC  = ['{','}','/*','*/','//','...','=>','&&',':',';','+'];
-
-      /* ---------- sizing ---------- */
-      let W = 0, H = 0, DPR = 1;
-      function resize() {
-        const r = stage.getBoundingClientRect();
-        DPR = Math.min(window.devicePixelRatio || 1, 2);
-        W = Math.max(1, Math.round(r.width));
-        H = Math.max(1, Math.round(r.height));
-        canvas.width  = Math.round(W * DPR);
-        canvas.height = Math.round(H * DPR);
-        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-        layout();
-      }
-
-      /* ---------- entities ---------- */
-      const N_TOKENS = reduced ? 30 : (LOW ? 56 : 96);
-      const tokens = [];
-      const rngEnt = mkRand(31337);
-      for (let i = 0; i < N_TOKENS; i++) {
-        const r = rngEnt();
-        let txt, fam, color;
-        if (r < 0.55) {
-          txt = TAGS[(rngEnt()*TAGS.length)|0]; fam = 'tag';
-          const opts = [PAL.ivory, PAL.ivoryD, PAL.violet, PAL.teal];
-          color = opts[(rngEnt()*opts.length)|0];
-        } else if (r < 0.86) {
-          txt = PROPS[(rngEnt()*PROPS.length)|0]; fam = 'prop';
-          const opts = [PAL.gold, PAL.emerald, PAL.ivoryD, PAL.mute];
-          color = opts[(rngEnt()*opts.length)|0];
-        } else {
-          txt = PUNC[(rngEnt()*PUNC.length)|0]; fam = 'punc';
-          const opts = [PAL.mute, PAL.rose, PAL.ivoryD];
-          color = opts[(rngEnt()*opts.length)|0];
-        }
-        tokens.push({
-          txt, fam, color,
-          size: fam==='punc' ? 11 + rngEnt()*3 : 11.5 + rngEnt()*3.5,
-          weight: fam==='tag' ? 500 : 400,
-          seed: rngEnt() * 1000,
-          waveX: 0.4 + rngEnt() * 1.4,
-          waveY: 0.35 + rngEnt() * 1.4,
-          pos: [null, null, null, null, null, null], // [x, y, rot] per scene
-          vis: [0, 0, 0, 0, 0, 0],
-          survive4: rngEnt() < 0.42,
-          mmIdx: -1,
-          inFinal: false
-        });
-      }
-
-      /* ---------- panels (UI components that assemble in scene 3-4, refine, and form final composition) ---------- */
-      const panelSpecs = [
-        { role: 'nav',     kx: 0.50, ky: 0.16, kw: 0.78, kh: 0.046, rad: 2 },
-        { role: 'logo',    kx: 0.13, ky: 0.16, kw: 0.046,kh: 0.046, rad: 999 },
-        { role: 'link1',   kx: 0.78, ky: 0.16, kw: 0.042,kh: 0.011, rad: 1 },
-        { role: 'link2',   kx: 0.83, ky: 0.16, kw: 0.042,kh: 0.011, rad: 1 },
-        { role: 'link3',   kx: 0.88, ky: 0.16, kw: 0.06, kh: 0.026, rad: 2 }, // CTA pill in nav
-        { role: 'h-line1', kx: 0.36, ky: 0.40, kw: 0.46, kh: 0.038, rad: 2 }, // headline line 1
-        { role: 'h-line2', kx: 0.32, ky: 0.46, kw: 0.36, kh: 0.038, rad: 2 }, // headline line 2
-        { role: 'h-sub',   kx: 0.38, ky: 0.535, kw: 0.50, kh: 0.012, rad: 1 }, // subtitle thin line
-        { role: 'h-cta',   kx: 0.30, ky: 0.605, kw: 0.13, kh: 0.040, rad: 999 }, // primary CTA
-        { role: 'card1',   kx: 0.30, ky: 0.79, kw: 0.20, kh: 0.16,  rad: 3 },
-        { role: 'card2',   kx: 0.50, ky: 0.79, kw: 0.20, kh: 0.16,  rad: 3 },
-        { role: 'card3',   kx: 0.70, ky: 0.79, kw: 0.20, kh: 0.16,  rad: 3 }
-      ];
-      const FINAL_ROLES = new Set(['nav','logo','link1','link2','link3','h-line1','h-line2','h-sub','h-cta']);
-      const panels = panelSpecs.map(s => ({ ...s, x:0, y:0, w:0, h:0 }));
-
-      /* ---------- alignment guides ---------- */
-      const guides = [];
-      for (let i = 0; i < 5; i++) guides.push({ kind:'h', k: 0.22 + i*0.13 });
-      for (let i = 0; i < 5; i++) guides.push({ kind:'v', k: 0.18 + i*0.16 });
-
-      /* ---------- MM monogram anchors ---------- */
-      function mmAnchors() {
-        const cx = W * 0.50, cy = H * 0.48;
-        const letterW = Math.min(W * 0.16, H * 0.34);
-        const letterH = letterW * 1.05;
-        const gap = letterW * 0.18;
-        const totalW = letterW * 2 + gap;
-        const xL = cx - totalW/2;
-        const xR = xL + letterW + gap;
-        const top = cy - letterH/2;
-        const bot = cy + letterH/2;
-        function M(x) {
-          return [
-            [x, bot],
-            [x, top],
-            [x + letterW * 0.50, top + letterH * 0.58],
-            [x + letterW, top],
-            [x + letterW, bot]
-          ];
-        }
-        return [...M(xL), ...M(xR)];
-      }
-
-      function layout() {
-        // pixel positions for panels
-        for (const p of panels) {
-          p.x = p.kx * W;
-          p.y = p.ky * H;
-          p.w = p.kw * W;
-          p.h = p.kh * H;
-        }
-
-        // Re-seed RNG for layout so positions are stable
-        const layRng = mkRand(99172);
-        const rr = (a, b) => a + layRng() * (b - a);
-
-        for (let i = 0; i < tokens.length; i++) {
-          const t = tokens[i];
-
-          // SCENE 0: raw chaos — wide scatter, full visibility
-          t.pos[0] = [rr(W*0.05, W*0.95), rr(H*0.12, H*0.92), rr(-0.45, 0.45)];
-          t.vis[0] = 0.78 + layRng()*0.22;
-
-          // SCENE 1: organization — snap to loose grid
-          const col = i % 10, row = Math.floor(i / 10) % 7;
-          t.pos[1] = [
-            W*0.10 + col * W*0.089 + rr(-W*0.008, W*0.008),
-            H*0.20 + row * H*0.105 + rr(-H*0.008, H*0.008),
-            rr(-0.05, 0.05)
-          ];
-          t.vis[1] = 0.78 + layRng()*0.20;
-
-          // SCENE 2: structure emerges — most tokens assigned to a panel zone
-          const panelIdx = i % panels.length;
-          const p = panels[panelIdx];
-          const inPanel = i < panels.length * 6;
-          if (inPanel) {
-            t.pos[2] = [
-              p.x + rr(-p.w*0.38, p.w*0.38),
-              p.y + rr(-p.h*0.35, p.h*0.35),
-              rr(-0.03, 0.03)
-            ];
-            t.vis[2] = 0.55 + layRng()*0.30;
-          } else {
-            // outliers drift to perimeter, dimmer
-            t.pos[2] = [rr(W*0.03, W*0.97), rr(H*0.04, H*0.96), rr(-0.15, 0.15)];
-            t.vis[2] = 0.18 + layRng()*0.18;
+      <div class="hero-system" aria-hidden="true">
+        <style>
+          /* === SANDBOX: scroll-reactive handcrafted simulation === */
+          .sandbox-frame {
+            position: relative;
+            width: min(calc(100% - clamp(72px, 5.5vw, 92px)), 620px);
+            height: clamp(440px, 51vw, 620px);
+            margin-left: auto;
+            margin-right: clamp(72px, 5.5vw, 92px);
+            border: 1px solid rgba(241,234,217,0.10);
+            background:
+              radial-gradient(ellipse at 28% 32%, rgba(213,168,92,0.07), transparent 58%),
+              radial-gradient(ellipse at 78% 76%, rgba(143,118,178,0.06), transparent 62%),
+              radial-gradient(ellipse at 50% 110%, rgba(120,160,138,0.05), transparent 62%),
+              linear-gradient(168deg, #15110d 0%, #100d10 52%, #0a0809 100%);
+            box-shadow:
+              0 38px 92px rgba(0,0,0,0.46),
+              inset 0 0 0 1px rgba(241,234,217,0.04),
+              inset 0 60px 120px rgba(0,0,0,0.35);
+            overflow: hidden;
+            isolation: isolate;
+            touch-action: manipulation;
+            cursor: crosshair;
           }
-
-          // SCENE 3: refined craft — most fade, "survivors" remain as soft decoration
-          if (t.survive4) {
-            t.pos[3] = [t.pos[2][0] + rr(-W*0.01, W*0.01), t.pos[2][1] + rr(-H*0.01, H*0.01), t.pos[2][2]];
-            t.vis[3] = 0.22 + layRng()*0.18;
-          } else {
-            t.pos[3] = [t.pos[2][0] + rr(-W*0.05, W*0.05), t.pos[2][1] + H*0.06 + rr(0, H*0.10), 0];
-            t.vis[3] = 0.0;
+          .sandbox-frame canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
           }
-
-          // SCENE 4: MM monogram — most fade, assigned tokens converge to MM
-          // (mmIdx assignment happens below)
-          t.pos[4] = [W * 0.5 + rr(-W*0.04, W*0.04), H * 0.5 + rr(-H*0.04, H*0.04), 0];
-          t.vis[4] = 0.0;
-
-          // SCENE 5: final crafted state — all tokens nearly gone
-          t.pos[5] = [rr(W*0.04, W*0.96), rr(H*0.04, H*0.96), rr(-0.18, 0.18)];
-          t.vis[5] = 0.0;
-        }
-
-        // Assign MM monogram positions
-        const anchors = mmAnchors();
-        const segments = [
-          [0,1],[1,2],[2,3],[3,4],
-          [5,6],[6,7],[7,8],[8,9]
-        ];
-        const perSeg = Math.max(4, Math.min(8, Math.floor(tokens.length * 0.55 / segments.length)));
-        let mmCount = 0;
-        for (let s = 0; s < segments.length; s++) {
-          const [a, b] = segments[s];
-          const A = anchors[a], B = anchors[b];
-          for (let k = 0; k < perSeg; k++) {
-            const idx = (s * perSeg + k);
-            if (idx >= tokens.length) break;
-            const tk = tokens[idx];
-            const tt = (k + 0.5) / perSeg;
-            tk.pos[4] = [
-              lerp(A[0], B[0], tt) + (layRng() - 0.5) * 2.5,
-              lerp(A[1], B[1], tt) + (layRng() - 0.5) * 2.5,
-              (layRng() - 0.5) * 0.08
-            ];
-            tk.vis[4] = 0.80 + layRng() * 0.18;
-            tk.mmIdx = s * perSeg + k;
-            mmCount++;
+          .sandbox-grain {
+            position: absolute; inset: 0;
+            pointer-events: none;
+            mix-blend-mode: overlay;
+            opacity: 0.13;
+            z-index: 3;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>");
           }
-        }
-      }
-
-      /* ---------- drawing primitives ---------- */
-      function drawToken(t, x, y, rot, alpha) {
-        if (alpha <= 0.006) return;
-        ctx.save();
-        ctx.translate(x, y);
-        if (rot) ctx.rotate(rot);
-        ctx.font = `${t.weight} ${t.size}px 'JetBrains Mono', 'SF Mono', ui-monospace, monospace`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillStyle = rgba(t.color, alpha);
-        ctx.fillText(t.txt, 0, 0);
-        ctx.restore();
-      }
-
-      function drawRoundedRect(x, y, w, h, r) {
-        const rr = Math.min(r, Math.abs(w)/2, Math.abs(h)/2);
-        ctx.beginPath();
-        ctx.moveTo(x + rr, y);
-        ctx.lineTo(x + w - rr, y);
-        ctx.quadraticCurveTo(x + w, y, x + w, y + rr);
-        ctx.lineTo(x + w, y + h - rr);
-        ctx.quadraticCurveTo(x + w, y + h, x + w - rr, y + h);
-        ctx.lineTo(x + rr, y + h);
-        ctx.quadraticCurveTo(x, y + h, x, y + h - rr);
-        ctx.lineTo(x, y + rr);
-        ctx.quadraticCurveTo(x, y, x + rr, y);
-        ctx.closePath();
-      }
-
-      function drawPanel(p, alpha, fillColor, strokeColor, glow) {
-        if (alpha <= 0.006) return;
-        const w = p.w, h = p.h;
-        const x = p.x - w/2, y = p.y - h/2;
-        ctx.save();
-        if (glow > 0.01) {
-          ctx.shadowColor = rgba(PAL.gold, 0.35 * glow);
-          ctx.shadowBlur = 30 * glow;
-        }
-        drawRoundedRect(x, y, w, h, p.rad);
-        ctx.fillStyle = rgba(fillColor, alpha);
-        ctx.fill();
-        ctx.shadowBlur = 0;
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = rgba(strokeColor, alpha * 0.4);
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      function drawGuide(g, alpha) {
-        if (alpha <= 0.006) return;
-        ctx.save();
-        ctx.strokeStyle = rgba(PAL.ivoryD, alpha * 0.20);
-        ctx.lineWidth = 1;
-        ctx.setLineDash([3, 6]);
-        ctx.beginPath();
-        if (g.kind === 'h') {
-          ctx.moveTo(W*0.06, g.k * H);
-          ctx.lineTo(W*0.94, g.k * H);
-        } else {
-          ctx.moveTo(g.k * W, H*0.08);
-          ctx.lineTo(g.k * W, H*0.92);
-        }
-        ctx.stroke();
-        ctx.setLineDash([]);
-        ctx.restore();
-      }
-
-      function drawFog(t) {
-        const off1x = Math.sin(t * 0.16) * 24;
-        const off1y = Math.cos(t * 0.13) * 18;
-        let g = ctx.createRadialGradient(W*0.28 + off1x, H*0.36 + off1y, 30, W*0.28, H*0.36, W*0.72);
-        g.addColorStop(0, rgba(PAL.gold, 0.06));
-        g.addColorStop(1, rgba(PAL.gold, 0));
-        ctx.fillStyle = g;
-        ctx.fillRect(0, 0, W, H);
-
-        const off2x = Math.cos(t * 0.18) * 22;
-        const off2y = Math.sin(t * 0.14) * 20;
-        g = ctx.createRadialGradient(W*0.74 + off2x, H*0.68 + off2y, 30, W*0.74, H*0.68, W*0.66);
-        g.addColorStop(0, rgba(PAL.violet, 0.07));
-        g.addColorStop(1, rgba(PAL.violet, 0));
-        ctx.fillStyle = g;
-        ctx.fillRect(0, 0, W, H);
-
-        g = ctx.createRadialGradient(W*0.5, H*1.05, 30, W*0.5, H*1.05, H*0.85);
-        g.addColorStop(0, rgba(PAL.teal, 0.05));
-        g.addColorStop(1, rgba(PAL.teal, 0));
-        ctx.fillStyle = g;
-        ctx.fillRect(0, 0, W, H);
-      }
-
-      function drawMMOutline(alpha) {
-        if (alpha <= 0.006) return;
-        const anchors = mmAnchors();
-        const segs = [[0,1],[1,2],[2,3],[3,4],[5,6],[6,7],[7,8],[8,9]];
-        ctx.save();
-        ctx.strokeStyle = rgba(PAL.gold, alpha * 0.55);
-        ctx.lineWidth = 1.2;
-        ctx.lineCap = 'round';
-        ctx.shadowColor = rgba(PAL.gold, alpha * 0.5);
-        ctx.shadowBlur = 14;
-        ctx.beginPath();
-        for (const [a, b] of segs) {
-          ctx.moveTo(anchors[a][0], anchors[a][1]);
-          ctx.lineTo(anchors[b][0], anchors[b][1]);
-        }
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      /* ---------- scroll progress ---------- */
-      let scrollP = 0;
-      function updateScroll() {
-        const rect = section.getBoundingClientRect();
-        const total = section.offsetHeight - window.innerHeight;
-        if (total <= 0) { scrollP = 0; return; }
-        scrollP = clamp01(-rect.top / total);
-      }
-
-      /* Story phase 0..5 — holds the current keyframe for ~55% of each scene,
-         then smoothly transitions to the next during the tail. Keeps the canvas
-         visual aligned with the text narration in each scene. */
-      function storyPhase(p) {
-        const SCENES = 6;
-        const sceneLen = 1 / SCENES;
-        const i = Math.min(SCENES - 1, Math.floor(p / sceneLen));
-        const within = (p - i * sceneLen) / sceneLen;
-        const holdEnd = 0.55;
-        if (i === SCENES - 1 || within < holdEnd) return i;
-        return i + smooth((within - holdEnd) / (1 - holdEnd));
-      }
-
-      /* ---------- scene UI ---------- */
-      const sceneEls = Array.from(document.querySelectorAll('#story-scenes .story-scene'));
-      const progressEls = Array.from(document.querySelectorAll('#story-progress span'));
-      const hintEl = document.getElementById('story-hint');
-      const chapterEl = document.getElementById('story-chapter-n');
-      let lastSceneIdx = -1;
-
-      function activeSceneIdx(p) {
-        // 6 equal scenes, but bias so each scene's text holds with breathing room
-        const step = 1 / 6;
-        if (p < step * 1) return 0;
-        if (p < step * 2) return 1;
-        if (p < step * 3) return 2;
-        if (p < step * 4) return 3;
-        if (p < step * 5) return 4;
-        return 5;
-      }
-
-      function updateSceneUI() {
-        const idx = activeSceneIdx(scrollP);
-        if (idx !== lastSceneIdx) {
-          sceneEls.forEach((el, i) => el.classList.toggle('is-active', i === idx));
-          progressEls.forEach((el, i) => el.classList.toggle('on', i <= idx));
-          if (chapterEl) chapterEl.textContent = String(idx + 1).padStart(2, '0');
-          lastSceneIdx = idx;
-        }
-        if (hintEl) {
-          hintEl.classList.toggle('is-faded', scrollP > 0.025);
-        }
-      }
-
-      /* ---------- main loop ---------- */
-      let t0 = performance.now();
-      let rafId = 0;
-
-      function frame() {
-        const now = performance.now();
-        const t = (now - t0) / 1000;
-
-        updateScroll();
-        updateSceneUI();
-
-        const p = scrollP;
-
-        // Story phase 0..5 — held per-scene with smooth tail transitions
-        const phase = storyPhase(p);
-        const baseIdx = Math.min(4, Math.floor(phase));
-        const local = phase - baseIdx;
-
-        ctx.clearRect(0, 0, W, H);
-
-        // background fog
-        drawFog(t);
-
-        // alignment guides — fade in late scene 0, peak through scene 1, fade by mid scene 2
-        let guideA = 0;
-        if (phase >= 0.75 && phase < 1.55) guideA = smooth((phase - 0.75) / 0.80);
-        else if (phase >= 1.55 && phase < 2.40) guideA = 1 - smooth((phase - 1.55) / 0.85);
-        for (const g of guides) drawGuide(g, guideA * 0.9);
-
-        // panels — emerge late scene 1, hold through scene 2, refine in scene 3,
-        // dissolve into MM in scene 4, then DOM takes over in scene 5 (no canvas panels)
-        for (let i = 0; i < panels.length; i++) {
-          const pp = panels[i];
-          let alpha = 0, fill = PAL.ivoryD, stroke = PAL.gold, glow = 0;
-
-          if (phase < 1.55) {
-            alpha = 0;
-          } else if (phase < 2.0) {
-            // Emerge during scene 1 → 2 transition: soft placeholders
-            alpha = smooth((phase - 1.55) / 0.45) * 0.60;
-            fill = PAL.ivoryD;
-            stroke = PAL.ivoryD;
-            glow = 0;
-          } else if (phase < 2.55) {
-            // Hold through scene 2 (architecture text)
-            alpha = 0.62;
-            fill = PAL.ivoryD;
-            stroke = lerpV(PAL.ivoryD, PAL.gold, (phase - 2.0) / 0.55);
-            glow = 0;
-          } else if (phase < 3.0) {
-            // Refine during scene 2 → 3 transition
-            const tt = smooth((phase - 2.55) / 0.45);
-            alpha = lerp(0.62, 0.92, tt);
-            fill = lerpV(PAL.ivoryD, PAL.ivory, tt);
-            stroke = PAL.gold;
-            glow = tt * 0.55;
-            if (pp.role === 'h-cta' || pp.role === 'link3') {
-              fill = lerpV(PAL.ivoryD, PAL.gold, tt);
-              glow = tt * 0.85;
+          .sandbox-vignette {
+            position: absolute; inset: 0;
+            pointer-events: none;
+            z-index: 4;
+            background:
+              radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 48%, rgba(0,0,0,0.45) 100%),
+              linear-gradient(180deg, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0) 14%, rgba(0,0,0,0) 84%, rgba(0,0,0,0.28) 100%);
+          }
+          .sandbox-label {
+            position: absolute;
+            left: 18px;
+            bottom: 14px;
+            z-index: 5;
+            pointer-events: none;
+            font: 500 9px/1 var(--font-mono, 'JetBrains Mono', monospace);
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+            color: rgba(241,234,217,0.30);
+          }
+          .sandbox-label span {
+            color: rgba(213,168,92,0.85);
+            margin-left: 12px;
+            transition: opacity 0.6s ease;
+          }
+          .sandbox-tick {
+            position: absolute;
+            right: 18px;
+            bottom: 14px;
+            z-index: 5;
+            pointer-events: none;
+            font: 500 9px/1 var(--font-mono, 'JetBrains Mono', monospace);
+            letter-spacing: 0.24em;
+            color: rgba(241,234,217,0.24);
+          }
+          @media (max-width: 860px) {
+            .sandbox-frame {
+              margin-right: auto;
+              width: min(100%, 560px);
             }
-          } else if (phase < 3.55) {
-            // Hold refined through scene 3 (craft text)
-            alpha = 0.92;
-            fill = PAL.ivory;
-            stroke = PAL.gold;
-            glow = 0.55;
-            if (pp.role === 'h-cta' || pp.role === 'link3') {
-              fill = PAL.gold;
-              glow = 0.85;
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .sandbox-frame canvas { animation: none; }
+          }
+        </style>
+
+        <div class="sandbox-frame" id="sandbox-frame">
+          <canvas id="sandbox-canvas"></canvas>
+          <div class="sandbox-grain"></div>
+          <div class="sandbox-vignette"></div>
+          <div class="sandbox-label">SANDBOX<span id="sandbox-phase">raw markup</span></div>
+          <div class="sandbox-tick" id="sandbox-tick">00:00</div>
+        </div>
+
+        <script>
+        (() => {
+          'use strict';
+          const frame = document.getElementById('sandbox-frame');
+          const canvas = document.getElementById('sandbox-canvas');
+          const phaseLabel = document.getElementById('sandbox-phase');
+          const tickLabel = document.getElementById('sandbox-tick');
+          if (!frame || !canvas) return;
+          const ctx = canvas.getContext('2d', { alpha: true });
+
+          const reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+          const cores = navigator.hardwareConcurrency || 8;
+          const LOW = cores <= 4 || window.innerWidth < 720;
+
+          /* ---------- palette (charcoal, ivory, amber, emerald, violet) ---------- */
+          const PAL = {
+            paper:    [241, 234, 217],
+            paperDim: [188, 180, 162],
+            amber:    [213, 168,  92],
+            amberDeep:[188, 132,  68],
+            emerald:  [120, 160, 138],
+            violet:   [146, 124, 174],
+            rose:     [194, 128, 110],
+            ink:      [ 22,  18,  14]
+          };
+          const rgba  = (c, a) => 'rgba(' + (c[0]|0) + ',' + (c[1]|0) + ',' + (c[2]|0) + ',' + a + ')';
+          const lerp  = (a, b, t) => a + (b - a) * t;
+          const clamp01 = x => x < 0 ? 0 : x > 1 ? 1 : x;
+          const smooth  = x => { x = clamp01(x); return x * x * (3 - 2 * x); };
+          const easeIO  = x => { x = clamp01(x); return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2; };
+          const fade    = (u, a, b) => smooth((u - a) / (b - a));
+          const band    = (u, a, b, c, d) => smooth((u - a) / (b - a)) * (1 - smooth((u - c) / (d - c)));
+
+          /* ---------- deterministic RNG ---------- */
+          function mkRand(seed) {
+            let s = seed >>> 0;
+            return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967295; };
+          }
+          const rnd = mkRand(20260512);
+          const R = (a, b) => a + rnd() * (b - a);
+
+          /* ---------- token bank ---------- */
+          const TAGS  = ['<div>', '</div>', '<section>', '</section>', '<nav>', '<a>', '</a>', '<h1>', '<p>', '</p>', '<img/>', '<header>', '<main>', '<button>', '<li>', '<figure>'];
+          const PROPS = ['padding: 24px', 'margin: 0 auto', 'display: flex', 'gap: 16px', 'border-radius: 4px', 'color: #f1ead9', 'background: ink', 'font: 14px/1.5', '--accent: amber', 'grid-template-columns: 1fr 1fr', 'letter-spacing: -0.02em'];
+          const PUNC  = ['{', '}', '/*', '*/', '//', '...', '=>', '&&', ':', ';'];
+
+          /* ---------- sizing ---------- */
+          let W = 0, H = 0, DPR = 1;
+          function resize() {
+            const r = frame.getBoundingClientRect();
+            DPR = Math.min(window.devicePixelRatio || 1, 2);
+            W = Math.max(1, Math.round(r.width));
+            H = Math.max(1, Math.round(r.height));
+            canvas.width  = Math.round(W * DPR);
+            canvas.height = Math.round(H * DPR);
+            ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+            layout();
+          }
+
+          /* ---------- entities ---------- */
+          // tokens: drifting markup fragments
+          // structureSlots: positions on the page-architecture grid
+          //   slot kinds: nav, card, button, image, footer
+          // mmAnchors: MM monogram points (percentages of W,H)
+          const N = reduced ? 32 : (LOW ? 56 : 88);
+          const tokens = [];
+          const tokenRand = mkRand(99173);
+          function makeTokenText(i) {
+            const r = tokenRand();
+            if (r < 0.55) return { text: TAGS[(tokenRand() * TAGS.length) | 0], kind: 'tag' };
+            if (r < 0.85) return { text: PROPS[(tokenRand() * PROPS.length) | 0], kind: 'prop' };
+            return { text: PUNC[(tokenRand() * PUNC.length) | 0], kind: 'punc' };
+          }
+          for (let i = 0; i < N; i++) {
+            const t = makeTokenText(i);
+            tokens.push({
+              text: t.text,
+              kind: t.kind,
+              chaosX: 0, chaosY: 0,         // anchor in chaos field (percent space)
+              x: 0, y: 0,                   // current position
+              orderX: 0, orderY: 0,         // target in organized row (percent)
+              structX: 0, structY: 0,       // structure target (px relative to frame)
+              structKind: '',
+              mmX: 0, mmY: 0,
+              rot: R(-0.32, 0.32),
+              fontSize: 10 + Math.floor(tokenRand() * 5),
+              alpha: 0,
+              color: pickColor(t.kind, tokenRand),
+              seed: tokenRand() * 1000,
+              wobAmp: R(2.2, 5.4),
+              wobSpd: R(0.18, 0.42),
+              dropOut: tokenRand() < 0.32,  // duplicates that fade during organization
+              role: 'token',
+              localOffsetX: 0, localOffsetY: 0
+            });
+          }
+          function pickColor(kind, rfn) {
+            if (kind === 'punc') return rfn() < 0.5 ? PAL.amber : PAL.paperDim;
+            if (kind === 'prop') return rfn() < 0.5 ? PAL.emerald : PAL.paper;
+            // tag
+            const r = rfn();
+            if (r < 0.16) return PAL.amber;
+            if (r < 0.32) return PAL.violet;
+            if (r < 0.46) return PAL.emerald;
+            return PAL.paper;
+          }
+
+          /* ---------- layout (run on resize) ---------- */
+          // Three rows for organization phase
+          // Architecture slots: nav strip (top), 2 cards (mid), CTA (below cards), image strip (right)
+          const slots = [];            // structure target slots
+          const mmPts = [];            // MM monogram anchor points (percent space)
+          function layout() {
+            // 1) chaos anchors — distribute non-uniformly in percent space
+            const chRand = mkRand(411);
+            for (let i = 0; i < tokens.length; i++) {
+              const t = tokens[i];
+              // bias toward edges and clusters
+              const cx = 0.20 + chRand() * 0.60;
+              const cy = 0.18 + chRand() * 0.68;
+              // add a few cluster centers
+              t.chaosX = cx;
+              t.chaosY = cy;
+              t.orderRow = i % 3;
+              t.orderCol = (i / 3) | 0;
             }
-          } else if (phase < 4.0) {
-            // Dissolve during scene 3 → 4 as MM forms
-            const tt = smooth((phase - 3.55) / 0.45);
-            alpha = lerp(0.92, 0.0, tt);
-            fill = PAL.ivory;
-            stroke = PAL.gold;
-            glow = (1 - tt) * 0.35;
-            if (pp.role === 'h-cta' || pp.role === 'link3') fill = PAL.gold;
-          } else {
-            // Scene 4 hold + scene 4→5 transition + scene 5 — DOM final scene handles composition
-            alpha = 0;
+            // 2) organized rows — fill in horizontal bands
+            const rowsY = [0.30, 0.50, 0.70];
+            const colsPerRow = Math.ceil(tokens.length / 3);
+            for (let i = 0; i < tokens.length; i++) {
+              const t = tokens[i];
+              const col = (i / 3) | 0;
+              const row = i % 3;
+              const span = 0.78;
+              const x0 = 0.11;
+              t.orderX = x0 + (col / Math.max(1, colsPerRow - 1)) * span;
+              t.orderY = rowsY[row] + R(-0.012, 0.012);
+            }
+            // 3) build structure slots
+            slots.length = 0;
+            // Nav (8 small dots/pieces in top strip)
+            const navY = 0.18, navX0 = 0.10, navX1 = 0.90;
+            for (let i = 0; i < 8; i++) {
+              slots.push({
+                kind: 'nav',
+                x: lerp(navX0, navX1, i / 7) * W,
+                y: navY * H,
+                w: 32, h: 8, idx: i, count: 8
+              });
+            }
+            // Two cards
+            const cardsTop = 0.32, cardsBottom = 0.62;
+            const cardW = (W * 0.78) / 2 - 8;
+            const cardH = (cardsBottom - cardsTop) * H;
+            const cardsX0 = 0.11 * W;
+            const cardGap = 16;
+            const cards = [
+              { x: cardsX0,                    y: cardsTop * H, w: cardW, h: cardH, idx: 0 },
+              { x: cardsX0 + cardW + cardGap,  y: cardsTop * H, w: cardW, h: cardH, idx: 1 }
+            ];
+            // Each card gets ~14 particles forming its outline + title bar + image placeholder
+            cards.forEach(c => {
+              const corners = 14;
+              for (let i = 0; i < corners; i++) {
+                const u = i / (corners - 1);
+                // distribute around card perimeter
+                let px, py;
+                if (i < 4) { px = c.x + u * 4 * c.w; py = c.y; }
+                else if (i < 8) { px = c.x + c.w; py = c.y + ((i - 4) / 3) * c.h; }
+                else if (i < 12) { px = c.x + c.w - ((i - 8) / 3) * c.w; py = c.y + c.h; }
+                else { px = c.x; py = c.y + c.h - ((i - 12) / 1) * c.h; }
+                slots.push({ kind: 'card', x: px, y: py, parent: c, idx: i, count: corners });
+              }
+            });
+            // CTA button (small rectangle below cards)
+            const btnY = 0.74 * H;
+            const btnX0 = 0.34 * W, btnW = 0.32 * W, btnH = 36;
+            for (let i = 0; i < 8; i++) {
+              const u = i / 7;
+              slots.push({
+                kind: 'btn',
+                x: lerp(btnX0, btnX0 + btnW, u),
+                y: btnY,
+                w: btnW, h: btnH, idx: i, count: 8
+              });
+            }
+            // Image strip (right top - decorative micro-cards)
+            const imgY = 0.86 * H;
+            for (let i = 0; i < 6; i++) {
+              slots.push({
+                kind: 'img',
+                x: 0.14 * W + (i / 5) * 0.72 * W,
+                y: imgY,
+                w: 26, h: 16, idx: i, count: 6
+              });
+            }
+            // Assign each token to nearest slot (in normalized space) — greedy by index, stable
+            for (let i = 0; i < tokens.length; i++) {
+              const s = slots[i % slots.length];
+              tokens[i].structX = s.x;
+              tokens[i].structY = s.y;
+              tokens[i].structKind = s.kind;
+              tokens[i].structSlot = s;
+            }
+            // 4) MM monogram anchor points
+            mmPts.length = 0;
+            const addLine = (x1, y1, x2, y2, n) => {
+              for (let i = 0; i < n; i++) {
+                const t = n > 1 ? i / (n - 1) : 0.5;
+                mmPts.push({ x: (x1 + (x2 - x1) * t) * W, y: (y1 + (y2 - y1) * t) * H });
+              }
+            };
+            const y0 = 0.30, y1 = 0.74, yM = 0.50;
+            // Left M
+            addLine(0.18, y0, 0.18, y1, 7);
+            addLine(0.18, y0, 0.30, yM, 5);
+            addLine(0.30, yM, 0.42, y0, 5);
+            addLine(0.42, y0, 0.42, y1, 7);
+            // Right M
+            addLine(0.50, y0, 0.50, y1, 7);
+            addLine(0.50, y0, 0.62, yM, 5);
+            addLine(0.62, yM, 0.74, y0, 5);
+            addLine(0.74, y0, 0.74, y1, 7);
+            // Assign each token an MM target (cycle through points)
+            for (let i = 0; i < tokens.length; i++) {
+              const p = mmPts[i % mmPts.length];
+              tokens[i].mmX = p.x;
+              tokens[i].mmY = p.y;
+            }
           }
-          drawPanel(pp, alpha, fill, stroke, glow);
-        }
 
-        // MM monogram outline — forms in scene 3→4 transition, holds in scene 4,
-        // fades during scene 4→5 transition.
-        let mmOutlineA = 0;
-        if (phase >= 3.55 && phase < 4.0)      mmOutlineA = smooth((phase - 3.55) / 0.45);
-        else if (phase >= 4.0 && phase < 4.55) mmOutlineA = 1;
-        else if (phase >= 4.55 && phase < 5.0) mmOutlineA = 1 - smooth((phase - 4.55) / 0.45);
-        drawMMOutline(mmOutlineA);
-
-        // tokens
-        for (let i = 0; i < tokens.length; i++) {
-          const tk = tokens[i];
-          const a = tk.pos[baseIdx];
-          const b = tk.pos[baseIdx + 1] || tk.pos[baseIdx];
-          if (!a) continue;
-
-          const wob = Math.sin(t * 0.45 + tk.seed) * tk.waveX * (baseIdx < 1 ? 2.4 : 0.9);
-          const wob2 = Math.cos(t * 0.38 + tk.seed * 1.27) * tk.waveY * (baseIdx < 1 ? 2.4 : 0.9);
-
-          const x = lerp(a[0], b[0], local) + wob;
-          const y = lerp(a[1], b[1], local) + wob2;
-          const rot = lerp(a[2], b[2], local);
-
-          let alpha = lerp(tk.vis[baseIdx], tk.vis[baseIdx + 1] || 0, local);
-          drawToken(tk, x, y, rot, alpha);
-        }
-
-        rafId = requestAnimationFrame(frame);
-      }
-
-      /* ---------- init ---------- */
-      let resizeTimer = 0;
-      function onResize() {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(resize, 80);
-      }
-      resize();
-      window.addEventListener('resize', onResize);
-      window.addEventListener('scroll', updateScroll, { passive: true });
-      updateScroll();
-      updateSceneUI();
-      // make scene 0 visible immediately
-      if (sceneEls[0]) sceneEls[0].classList.add('is-active');
-      if (progressEls[0]) progressEls[0].classList.add('on');
-
-      // Pause when offscreen to save battery
-      const io = ('IntersectionObserver' in window) ? new IntersectionObserver((entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) {
-            if (!rafId) { t0 = performance.now(); rafId = requestAnimationFrame(frame); }
-          } else {
-            if (rafId) { cancelAnimationFrame(rafId); rafId = 0; }
+          /* ---------- scroll progress (page scroll, normalized) ---------- */
+          let progress = 0; // 0..1
+          const heroEl = frame.closest('.hero');
+          function updateProgress() {
+            if (!heroEl) return;
+            const heroRect = heroEl.getBoundingClientRect();
+            // start at top of hero (rect.top = 0), end after scrolling 1.4 viewport heights
+            const start = 0;
+            const end = -window.innerHeight * 1.4;
+            const u = (heroRect.top - start) / (end - start);
+            progress = clamp01(u);
           }
-        }
-      }, { threshold: 0 }) : null;
-      if (io) io.observe(section);
-      else rafId = requestAnimationFrame(frame);
-    })();
-    </script>
+
+          /* ---------- mouse / touch ---------- */
+          const cursor = { x: -9999, y: -9999, inside: false, lastX: -9999, lastY: -9999, vx: 0, vy: 0 };
+          const blooms = [];
+          frame.addEventListener('pointerenter', e => { cursor.inside = true; });
+          frame.addEventListener('pointermove', e => {
+            const r = frame.getBoundingClientRect();
+            cursor.lastX = cursor.x; cursor.lastY = cursor.y;
+            cursor.x = e.clientX - r.left;
+            cursor.y = e.clientY - r.top;
+            cursor.vx = cursor.x - cursor.lastX;
+            cursor.vy = cursor.y - cursor.lastY;
+            cursor.inside = true;
+          }, { passive: true });
+          frame.addEventListener('pointerleave', () => { cursor.inside = false; cursor.x = -9999; cursor.y = -9999; });
+          frame.addEventListener('pointerdown', e => {
+            const r = frame.getBoundingClientRect();
+            const bx = e.clientX - r.left;
+            const by = e.clientY - r.top;
+            spawnBloom(bx, by);
+          });
+          function spawnBloom(x, y) {
+            // Random bloom kind result
+            const kinds = ['btn', 'card', 'nav', 'pill', 'tag'];
+            const kind = kinds[(Math.random() * kinds.length) | 0];
+            blooms.push({
+              x, y,
+              t: 0,
+              dur: 1600 + Math.random() * 400,
+              kind,
+              radius: 88 + Math.random() * 36
+            });
+            if (blooms.length > 4) blooms.shift();
+          }
+
+          /* ---------- handcrafted line helper ---------- */
+          // Draws a wobbled line between two points to simulate hand-drawing
+          function handLine(x1, y1, x2, y2, color, width, seed, alpha, dashOn) {
+            const dx = x2 - x1, dy = y2 - y1;
+            const len = Math.hypot(dx, dy);
+            if (len < 1) return;
+            const steps = Math.max(2, Math.floor(len / 18));
+            const nx = -dy / len, ny = dx / len;
+            ctx.beginPath();
+            for (let i = 0; i <= steps; i++) {
+              const u = i / steps;
+              const sx = x1 + dx * u;
+              const sy = y1 + dy * u;
+              const w = Math.sin((seed + u) * 9.2) * Math.sin((seed * 0.6 + u) * 17.1);
+              const ox = nx * w * 0.9;
+              const oy = ny * w * 0.9;
+              if (i === 0) ctx.moveTo(sx + ox, sy + oy);
+              else ctx.quadraticCurveTo(sx + ox * 0.5, sy + oy * 0.5, sx + ox, sy + oy);
+            }
+            ctx.strokeStyle = rgba(color, alpha);
+            ctx.lineWidth = width;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            if (dashOn) { ctx.setLineDash([4, 6]); } else { ctx.setLineDash([]); }
+            ctx.stroke();
+            ctx.setLineDash([]);
+          }
+
+          /* ---------- main loop ---------- */
+          let rafId = 0, t0 = 0;
+          function frameTick(now) {
+            if (!t0) t0 = now;
+            const t = (now - t0) / 1000;
+            updateProgress();
+
+            const u = progress;
+            // phase masks (overlapping)
+            const m1 = 1 - smooth((u - 0.10) / 0.18);                          // chaos
+            const m2 = band(u, 0.08, 0.26, 0.40, 0.52);                        // organization
+            const m3 = band(u, 0.30, 0.52, 0.78, 0.90);                        // architecture / structure
+            const m4 = band(u, 0.50, 0.72, 0.96, 1.02);                        // craft
+            const m5 = band(u, 0.70, 0.84, 0.93, 1.00);                        // MM moment
+            const mFinal = smooth((u - 0.82) / 0.18);                          // final crafted feel
+
+            // Background atmospheric breathing
+            paintAtmosphere(t, u);
+
+            // Painterly base gradients
+            paintGradients(t, u);
+
+            // Hand-drawn alignment guides (during organize/architecture)
+            paintGuides(t, u, m2, m3);
+
+            // Structures (cards, nav, button) drawn faintly behind tokens
+            paintStructures(t, u, m3, m4);
+
+            // Tokens & particles
+            paintTokens(t, u, m1, m2, m3, m4, m5);
+
+            // MM monogram strokes (subtle)
+            paintMM(t, u, m5);
+
+            // Final craft refinements (typography rhythm, ornaments)
+            paintCraftOrnaments(t, u, m4);
+
+            // Blooms
+            paintBlooms(now);
+
+            // soft bloom pass (extra glow on amber)
+            paintBloomPass(t, u);
+
+            // Update HUD labels
+            updateLabels(t, u);
+
+            rafId = requestAnimationFrame(frameTick);
+          }
+
+          function paintAtmosphere(t, u) {
+            ctx.clearRect(0, 0, W, H);
+            // Two slow-drifting radial gradients
+            const a1 = 0.10 + 0.04 * Math.sin(t * 0.18);
+            const g1 = ctx.createRadialGradient(W * (0.22 + 0.04 * Math.sin(t * 0.10)), H * (0.30 + 0.03 * Math.cos(t * 0.12)), 0, W * 0.22, H * 0.30, Math.max(W, H) * 0.6);
+            g1.addColorStop(0, rgba(PAL.amber, a1));
+            g1.addColorStop(1, rgba(PAL.amber, 0));
+            ctx.fillStyle = g1;
+            ctx.fillRect(0, 0, W, H);
+            const g2 = ctx.createRadialGradient(W * (0.78 + 0.04 * Math.cos(t * 0.13)), H * (0.74 + 0.03 * Math.sin(t * 0.11)), 0, W * 0.78, H * 0.74, Math.max(W, H) * 0.6);
+            g2.addColorStop(0, rgba(PAL.violet, 0.07));
+            g2.addColorStop(1, rgba(PAL.violet, 0));
+            ctx.fillStyle = g2;
+            ctx.fillRect(0, 0, W, H);
+            // Lower emerald wash brightens during craft phase
+            const eA = 0.04 + 0.08 * smooth(u);
+            const g3 = ctx.createRadialGradient(W * 0.50, H * 1.05, 0, W * 0.50, H * 1.05, Math.max(W, H) * 0.85);
+            g3.addColorStop(0, rgba(PAL.emerald, eA));
+            g3.addColorStop(1, rgba(PAL.emerald, 0));
+            ctx.fillStyle = g3;
+            ctx.fillRect(0, 0, W, H);
+          }
+
+          function paintGradients(t, u) {
+            // Subtle painterly wash that brightens as page resolves
+            const k = smooth(u);
+            ctx.save();
+            ctx.globalCompositeOperation = 'screen';
+            ctx.fillStyle = rgba(PAL.paper, 0.012 + 0.022 * k);
+            ctx.fillRect(0, 0, W, H);
+            ctx.restore();
+          }
+
+          function paintGuides(t, u, m2, m3) {
+            const a = Math.max(m2, m3 * 0.6);
+            if (a < 0.02) return;
+            // Horizontal alignment guides (the three rows)
+            const rowsY = [0.30, 0.50, 0.70];
+            for (let i = 0; i < rowsY.length; i++) {
+              const y = rowsY[i] * H;
+              handLine(W * 0.08, y, W * 0.92, y, PAL.paper, 0.8, 17 + i, 0.10 * a, true);
+            }
+            // Vertical column markers fade in with m3
+            if (m3 > 0.05) {
+              const colsX = [0.11, 0.50, 0.89];
+              for (let i = 0; i < colsX.length; i++) {
+                const x = colsX[i] * W;
+                handLine(x, H * 0.16, x, H * 0.84, PAL.paper, 0.7, 41 + i, 0.07 * m3, true);
+              }
+            }
+          }
+
+          function paintStructures(t, u, m3, m4) {
+            const a = Math.max(m3, m4);
+            if (a < 0.04) return;
+            // Nav strip
+            const navY = 0.18 * H;
+            handLine(W * 0.10, navY, W * 0.90, navY, PAL.paperDim, 0.9, 5, 0.14 * a, false);
+            // Logo dot
+            ctx.fillStyle = rgba(PAL.amber, 0.42 * a);
+            ctx.beginPath(); ctx.arc(W * 0.12, navY, 3.2, 0, Math.PI * 2); ctx.fill();
+
+            // Two cards
+            const cardsTop = 0.32, cardsBottom = 0.62;
+            const cardH = (cardsBottom - cardsTop) * H;
+            const cardW = (W * 0.78) / 2 - 8;
+            const cardsX0 = 0.11 * W;
+            const cardGap = 16;
+            const cards = [
+              { x: cardsX0, y: cardsTop * H, w: cardW, h: cardH },
+              { x: cardsX0 + cardW + cardGap, y: cardsTop * H, w: cardW, h: cardH }
+            ];
+            cards.forEach((c, i) => {
+              // Fill (very subtle)
+              ctx.fillStyle = rgba(PAL.paper, 0.018 * a);
+              ctx.fillRect(c.x, c.y, c.w, c.h);
+              // Outline (handcrafted)
+              handLine(c.x, c.y, c.x + c.w, c.y, PAL.paper, 1.0, 70 + i * 4, 0.22 * a, false);
+              handLine(c.x + c.w, c.y, c.x + c.w, c.y + c.h, PAL.paper, 1.0, 71 + i * 4, 0.22 * a, false);
+              handLine(c.x + c.w, c.y + c.h, c.x, c.y + c.h, PAL.paper, 1.0, 72 + i * 4, 0.22 * a, false);
+              handLine(c.x, c.y + c.h, c.x, c.y, PAL.paper, 1.0, 73 + i * 4, 0.22 * a, false);
+              // Image placeholder bar at top
+              ctx.fillStyle = rgba(PAL.amber, 0.16 * a);
+              ctx.fillRect(c.x + 8, c.y + 8, c.w - 16, Math.min(38, c.h * 0.42));
+              // Title bar
+              ctx.fillStyle = rgba(PAL.paper, 0.36 * a);
+              ctx.fillRect(c.x + 8, c.y + Math.min(56, c.h * 0.55), c.w * 0.5, 6);
+              // Body lines
+              for (let li = 0; li < 3; li++) {
+                ctx.fillStyle = rgba(PAL.paperDim, (0.20 - li * 0.04) * a);
+                ctx.fillRect(c.x + 8, c.y + Math.min(72 + li * 10, c.h * 0.66 + li * 10), c.w - 22 - li * 16, 3);
+              }
+              // Hand-drawn shadow stripe under card (craft phase)
+              if (m4 > 0.05) {
+                ctx.fillStyle = rgba(PAL.ink, 0.22 * m4);
+                ctx.fillRect(c.x + 4, c.y + c.h + 2, c.w, 6);
+              }
+            });
+
+            // CTA button
+            const btnY = 0.74 * H;
+            const btnX0 = 0.34 * W, btnW = 0.32 * W, btnH = 30;
+            // Button fill
+            const btnA = 0.42 * a + 0.30 * m4;
+            ctx.fillStyle = rgba(PAL.amber, btnA);
+            ctx.fillRect(btnX0, btnY, btnW, btnH);
+            // Button highlight
+            ctx.fillStyle = rgba(PAL.paper, 0.16 * a);
+            ctx.fillRect(btnX0, btnY, btnW, 1);
+            // Button outline (subtle)
+            handLine(btnX0, btnY, btnX0 + btnW, btnY, PAL.amber, 0.9, 88, 0.40 * a, false);
+            handLine(btnX0 + btnW, btnY, btnX0 + btnW, btnY + btnH, PAL.amber, 0.9, 89, 0.40 * a, false);
+            handLine(btnX0 + btnW, btnY + btnH, btnX0, btnY + btnH, PAL.amber, 0.9, 90, 0.40 * a, false);
+            handLine(btnX0, btnY + btnH, btnX0, btnY, PAL.amber, 0.9, 91, 0.40 * a, false);
+
+            // Image strip (decorative micro-frames) - emerald
+            const imgY = 0.86 * H;
+            for (let i = 0; i < 6; i++) {
+              const x = 0.14 * W + (i / 5) * 0.72 * W;
+              ctx.fillStyle = rgba(PAL.emerald, (0.18 + 0.06 * Math.sin(t + i)) * a);
+              ctx.fillRect(x - 12, imgY - 6, 22, 12);
+            }
+          }
+
+          function paintTokens(t, u, m1, m2, m3, m4, m5) {
+            ctx.save();
+            ctx.font = '500 11px ' + "'JetBrains Mono', 'SF Mono', ui-monospace, monospace";
+            ctx.textBaseline = 'middle';
+            for (let i = 0; i < tokens.length; i++) {
+              const tk = tokens[i];
+              // Determine target position by blending phases
+              // Chaos: drift around chaos anchor
+              const wob = Math.sin(t * tk.wobSpd + tk.seed) * tk.wobAmp;
+              const wob2 = Math.cos(t * tk.wobSpd * 1.3 + tk.seed * 0.7) * tk.wobAmp * 0.7;
+              const chaosX = tk.chaosX * W + wob;
+              const chaosY = tk.chaosY * H + wob2;
+              // Order: organized rows
+              const orderX = tk.orderX * W;
+              const orderY = tk.orderY * H;
+              // Structure: assigned slot
+              const structX = tk.structX;
+              const structY = tk.structY;
+              // MM
+              const mmX = tk.mmX;
+              const mmY = tk.mmY;
+
+              // Phase weights driven by progress u
+              const wChaos  = 1 - smooth((u - 0.05) / 0.20);
+              const wOrder  = band(u, 0.08, 0.24, 0.32, 0.46);
+              const wStruct = band(u, 0.32, 0.48, 0.82, 0.94);
+              const wMM     = band(u, 0.74, 0.86, 0.94, 1.00);
+              const wDissolve = smooth((u - 0.96) / 0.04);
+
+              const wSum = wChaos + wOrder + wStruct + wMM + 0.0001;
+              const cX = (chaosX * wChaos + orderX * wOrder + structX * wStruct + mmX * wMM) / wSum;
+              const cY = (chaosY * wChaos + orderY * wOrder + structY * wStruct + mmY * wMM) / wSum;
+
+              // Smooth lerp toward target
+              tk.x = lerp(tk.x || cX, cX, 0.085);
+              tk.y = lerp(tk.y || cY, cY, 0.085);
+
+              // Cursor magnetism (subtle)
+              if (cursor.inside) {
+                const dx = cursor.x - tk.x;
+                const dy = cursor.y - tk.y;
+                const d2 = dx * dx + dy * dy;
+                const radius = 140;
+                if (d2 < radius * radius) {
+                  const k = (1 - Math.sqrt(d2) / radius) * 0.18;
+                  tk.localOffsetX = lerp(tk.localOffsetX, dx * k, 0.18);
+                  tk.localOffsetY = lerp(tk.localOffsetY, dy * k, 0.18);
+                } else {
+                  tk.localOffsetX = lerp(tk.localOffsetX, 0, 0.10);
+                  tk.localOffsetY = lerp(tk.localOffsetY, 0, 0.10);
+                }
+              } else {
+                tk.localOffsetX = lerp(tk.localOffsetX, 0, 0.08);
+                tk.localOffsetY = lerp(tk.localOffsetY, 0, 0.08);
+              }
+
+              // Bloom: pull toward bloom centers
+              for (let bi = 0; bi < blooms.length; bi++) {
+                const b = blooms[bi];
+                const bdx = b.x - tk.x;
+                const bdy = b.y - tk.y;
+                const bd = Math.hypot(bdx, bdy);
+                if (bd < b.radius * 1.4) {
+                  const bp = clamp01(b.t / b.dur);
+                  const inward = (1 - Math.abs(bp - 0.5) * 2) * (1 - bd / (b.radius * 1.4));
+                  tk.localOffsetX += bdx * 0.22 * inward;
+                  tk.localOffsetY += bdy * 0.22 * inward;
+                }
+              }
+
+              // Alpha by phase
+              let alpha = 0.78;
+              if (tk.dropOut) {
+                // duplicates fade during organization
+                alpha *= (1 - smooth((u - 0.18) / 0.20));
+              }
+              // During structure/MM, prop tokens fade more than tag tokens
+              if (tk.kind === 'prop') alpha *= lerp(1, 0.36, smooth((u - 0.40) / 0.30));
+              if (tk.kind === 'punc') alpha *= lerp(1, 0.28, smooth((u - 0.42) / 0.28));
+              // Final fade as everything resolves
+              alpha *= lerp(1, 0.18, wDissolve);
+
+              tk.alpha = lerp(tk.alpha, alpha, 0.10);
+
+              // Color shift: tags become more amber during architecture
+              const baseC = tk.color;
+              const archShift = smooth((u - 0.42) / 0.30);
+              const shiftedC = [
+                lerp(baseC[0], PAL.amber[0], archShift * 0.35),
+                lerp(baseC[1], PAL.amber[1], archShift * 0.35),
+                lerp(baseC[2], PAL.amber[2], archShift * 0.35)
+              ];
+
+              // Draw
+              ctx.save();
+              const drawX = tk.x + tk.localOffsetX;
+              const drawY = tk.y + tk.localOffsetY;
+              ctx.translate(drawX, drawY);
+              // Rotation calms down as structure emerges
+              const rot = tk.rot * (1 - smooth((u - 0.30) / 0.30));
+              ctx.rotate(rot);
+              ctx.fillStyle = rgba(shiftedC, tk.alpha);
+              ctx.font = '500 ' + tk.fontSize + 'px ' + "'JetBrains Mono', 'SF Mono', ui-monospace, monospace";
+              ctx.fillText(tk.text, 0, 0);
+              ctx.restore();
+            }
+            ctx.restore();
+          }
+
+          function paintMM(t, u, m5) {
+            if (m5 < 0.04) return;
+            ctx.save();
+            ctx.globalCompositeOperation = 'lighter';
+            // draw very faint MM strokes connecting points (hand-drawn feel)
+            const groups = [
+              [0, 7], [7, 12], [12, 17], [17, 24],         // Left M
+              [24, 31], [31, 36], [36, 41], [41, 48]       // Right M
+            ];
+            for (let g = 0; g < groups.length; g++) {
+              const [a, b] = groups[g];
+              if (mmPts[a] && mmPts[b - 1]) {
+                handLine(mmPts[a].x, mmPts[a].y, mmPts[b - 1].x, mmPts[b - 1].y, PAL.amber, 1.2, 200 + g, 0.18 * m5, false);
+              }
+            }
+            ctx.restore();
+          }
+
+          function paintCraftOrnaments(t, u, m4) {
+            if (m4 < 0.04) return;
+            // Soft floor line — like a horizon
+            ctx.save();
+            ctx.strokeStyle = rgba(PAL.paper, 0.08 * m4);
+            ctx.lineWidth = 0.6;
+            ctx.beginPath();
+            ctx.moveTo(W * 0.08, H * 0.92);
+            ctx.lineTo(W * 0.92, H * 0.92);
+            ctx.stroke();
+            // Page label "01" at corner
+            ctx.fillStyle = rgba(PAL.amber, 0.36 * m4);
+            ctx.font = '500 9px ' + "'JetBrains Mono', monospace";
+            ctx.fillText('01 — INDEX', W * 0.09, H * 0.10);
+            ctx.fillStyle = rgba(PAL.paperDim, 0.36 * m4);
+            ctx.fillText('MM /', W * 0.85, H * 0.10);
+            ctx.restore();
+          }
+
+          function paintBlooms(now) {
+            for (let i = blooms.length - 1; i >= 0; i--) {
+              const b = blooms[i];
+              b.t += 16;
+              const p = clamp01(b.t / b.dur);
+              const easeP = easeIO(p);
+              const fadeP = 1 - smooth((p - 0.5) / 0.5);
+              const r = b.radius * easeP;
+              // glow rim
+              ctx.save();
+              ctx.globalCompositeOperation = 'lighter';
+              const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, r * 1.2);
+              g.addColorStop(0, rgba(PAL.amber, 0.36 * fadeP));
+              g.addColorStop(0.5, rgba(PAL.amber, 0.10 * fadeP));
+              g.addColorStop(1, rgba(PAL.amber, 0));
+              ctx.fillStyle = g;
+              ctx.beginPath();
+              ctx.arc(b.x, b.y, r * 1.2, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.restore();
+              // crafted shape forming at midpoint
+              if (p > 0.30 && p < 0.85) {
+                const shapeP = smooth((p - 0.30) / 0.30) * (1 - smooth((p - 0.65) / 0.20));
+                if (b.kind === 'btn') {
+                  ctx.fillStyle = rgba(PAL.amber, 0.72 * shapeP);
+                  const bw = 72, bh = 22;
+                  ctx.fillRect(b.x - bw / 2, b.y - bh / 2, bw, bh);
+                } else if (b.kind === 'card') {
+                  ctx.fillStyle = rgba(PAL.paper, 0.10 * shapeP);
+                  ctx.fillRect(b.x - 48, b.y - 30, 96, 60);
+                  ctx.strokeStyle = rgba(PAL.paper, 0.55 * shapeP);
+                  ctx.lineWidth = 0.9;
+                  ctx.strokeRect(b.x - 48, b.y - 30, 96, 60);
+                } else if (b.kind === 'nav') {
+                  ctx.strokeStyle = rgba(PAL.paper, 0.55 * shapeP);
+                  ctx.lineWidth = 0.9;
+                  ctx.beginPath();
+                  ctx.moveTo(b.x - 60, b.y);
+                  ctx.lineTo(b.x + 60, b.y);
+                  ctx.stroke();
+                  for (let k = 0; k < 4; k++) {
+                    ctx.fillStyle = rgba(PAL.amber, 0.55 * shapeP);
+                    ctx.fillRect(b.x - 50 + k * 30, b.y - 3, 16, 5);
+                  }
+                } else if (b.kind === 'pill') {
+                  ctx.fillStyle = rgba(PAL.emerald, 0.55 * shapeP);
+                  const pw = 60, ph = 16;
+                  ctx.beginPath();
+                  ctx.arc(b.x - pw / 2 + ph / 2, b.y, ph / 2, Math.PI / 2, -Math.PI / 2);
+                  ctx.lineTo(b.x + pw / 2 - ph / 2, b.y - ph / 2);
+                  ctx.arc(b.x + pw / 2 - ph / 2, b.y, ph / 2, -Math.PI / 2, Math.PI / 2);
+                  ctx.lineTo(b.x - pw / 2 + ph / 2, b.y + ph / 2);
+                  ctx.fill();
+                } else {
+                  ctx.fillStyle = rgba(PAL.violet, 0.55 * shapeP);
+                  ctx.font = '600 16px ' + "'JetBrains Mono', monospace";
+                  ctx.textAlign = 'center';
+                  ctx.fillText('<MM/>', b.x, b.y + 5);
+                  ctx.textAlign = 'left';
+                }
+              }
+              if (p >= 1) blooms.splice(i, 1);
+            }
+          }
+
+          function paintBloomPass(t, u) {
+            // Add a soft amber bloom in the lower button area as craft progresses
+            const k = smooth((u - 0.55) / 0.30);
+            if (k < 0.04) return;
+            const cx = 0.50 * W, cy = 0.755 * H;
+            ctx.save();
+            ctx.globalCompositeOperation = 'lighter';
+            const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, 140);
+            g.addColorStop(0, rgba(PAL.amber, 0.20 * k));
+            g.addColorStop(1, rgba(PAL.amber, 0));
+            ctx.fillStyle = g;
+            ctx.fillRect(0, 0, W, H);
+            ctx.restore();
+          }
+
+          function updateLabels(t, u) {
+            const phaseName =
+              u < 0.20 ? 'raw markup' :
+              u < 0.42 ? 'finding order' :
+              u < 0.68 ? 'architecture' :
+              u < 0.86 ? 'crafted' :
+                         'signed';
+            if (phaseLabel && phaseLabel.textContent !== phaseName) phaseLabel.textContent = phaseName;
+            if (tickLabel) {
+              const mins = Math.floor(t / 60);
+              const secs = Math.floor(t % 60);
+              const newT = (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
+              if (tickLabel.textContent !== newT) tickLabel.textContent = newT;
+            }
+          }
+
+          /* ---------- lifecycle ---------- */
+          window.addEventListener('resize', () => { resize(); }, { passive: true });
+          window.addEventListener('scroll', updateProgress, { passive: true });
+          resize();
+          updateProgress();
+
+          if (reduced) {
+            // For reduced motion: paint a static near-resolved state
+            progress = 0.78;
+            rafId = requestAnimationFrame(frameTick);
+          } else {
+            // Pause rendering when offscreen
+            const io = ('IntersectionObserver' in window) ? new IntersectionObserver(entries => {
+              for (const e of entries) {
+                if (e.isIntersecting) {
+                  if (!rafId) { t0 = performance.now(); rafId = requestAnimationFrame(frameTick); }
+                } else {
+                  if (rafId) { cancelAnimationFrame(rafId); rafId = 0; }
+                }
+              }
+            }, { threshold: 0 }) : null;
+            if (io) io.observe(frame);
+            else rafId = requestAnimationFrame(frameTick);
+          }
+        })();
+        </script>
+      </div>
+    </div>
   </section>
 
 
