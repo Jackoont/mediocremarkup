@@ -5,7 +5,10 @@
       "Bash(Select-Object -ExpandProperty FullName)",
       "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\jacko\\\\OneDrive\\\\Documents\\\\mediocremarkup\" -Recurse -File -Exclude \".git\" | Where-Object { $_.FullName -notmatch \"\\\\.git\" } | Select-Object -ExpandProperty FullName | Sort-Object)",
       "PowerShell(\\(Get-Content \"C:\\\\Users\\\\jacko\\\\OneDrive\\\\Documents\\\\mediocremarkup\\\\index.html\" | Measure-Object -Line\\).Lines)",
-      "Bash(powershell -Command \"\\(Get-Content 'c:\\\\Users\\\\jacko\\\\OneDrive\\\\Documents\\\\mediocremarkup\\\\index.html'\\).Count\")"
+      "Bash(powershell -Command \"\\(Get-Content 'c:\\\\Users\\\\jacko\\\\OneDrive\\\\Documents\\\\mediocremarkup\\\\index.html'\\).Count\")",
+      "Bash(awk 'NR==1{ } *)",
+      "Bash(mv index.html.new index.html)",
+      "Bash(rm _new_hero_sim.html)"
     ]
   }
 }
