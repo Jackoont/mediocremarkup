@@ -6313,969 +6313,880 @@
     </div>
   </nav>
 
-  <section class="hero" id="hero">
-    <div class="hero-bg-scraps" aria-hidden="true">
-      <span class="markup-float">&lt;section&gt;</span>
-      <span class="markup-float">/* visible again */</span>
-      <span class="markup-float">&lt;/div&gt;</span>
-    </div>
+  <section class="story-hero" id="hero" aria-label="From raw markup to crafted identity">
+    <style>
+      /* === STORY HERO — scroll-driven 6-scene cinematic sequence === */
+      .story-hero {
+        position: relative;
+        height: 600vh;
+        background: #0e0b14;
+        color: #ece4d3;
+        isolation: isolate;
+      }
+      .story-stage {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        width: 100%;
+        overflow: hidden;
+        background:
+          radial-gradient(ellipse at 22% 28%, rgba(212, 165, 92, 0.08), transparent 55%),
+          radial-gradient(ellipse at 78% 72%, rgba(132, 108, 178, 0.08), transparent 55%),
+          radial-gradient(ellipse at 50% 108%, rgba(82, 134, 116, 0.06), transparent 60%),
+          linear-gradient(170deg, #14101c 0%, #0c0913 60%, #06040a 100%);
+      }
+      .story-canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+        pointer-events: none;
+        z-index: 1;
+      }
+      .story-grain {
+        position: absolute; inset: 0;
+        pointer-events: none;
+        mix-blend-mode: overlay;
+        opacity: 0.14;
+        z-index: 2;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>");
+      }
+      .story-vignette {
+        position: absolute; inset: 0;
+        pointer-events: none;
+        z-index: 3;
+        background:
+          radial-gradient(ellipse at 50% 55%, rgba(0,0,0,0) 48%, rgba(0,0,0,0.55) 100%),
+          linear-gradient(180deg, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0) 12%, rgba(0,0,0,0) 86%, rgba(0,0,0,0.40) 100%);
+      }
 
-    <!-- MAIN CONTENT GRID -->
-    <div class="hero-content" id="hero-content">
+      /* Scene narration layer */
+      .story-scenes {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 4;
+      }
+      .story-scene {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.7s cubic-bezier(.22,.61,.36,1), transform 0.7s cubic-bezier(.22,.61,.36,1);
+        padding: clamp(40px, 6vw, 96px);
+      }
+      .story-scene.is-active {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .scene-copy {
+        max-width: 760px;
+        text-align: center;
+      }
+      .scene-eyebrow {
+        font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+        font-size: 11px;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: rgba(212, 165, 92, 0.78);
+        margin-bottom: 22px;
+        font-weight: 400;
+      }
+      .scene-title {
+        font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+        font-size: clamp(36px, 5.6vw, 76px);
+        font-weight: 400;
+        letter-spacing: -0.014em;
+        line-height: 1.04;
+        color: #ece4d3;
+      }
+      .scene-title em {
+        font-style: italic;
+        color: #d4a55c;
+      }
+      .scene-sub {
+        margin-top: 20px;
+        font-family: 'Inter', system-ui, sans-serif;
+        font-size: clamp(14px, 1.18vw, 16px);
+        line-height: 1.65;
+        color: rgba(236, 228, 211, 0.62);
+        letter-spacing: 0.005em;
+        max-width: 580px;
+        margin-left: auto;
+        margin-right: auto;
+      }
 
-      <!-- LEFT — headline + CTA -->
-      <div class="hero-left" id="hero-left">
-        <div class="hero-eyebrow" id="hero-eyebrow">&lt;!-- digital presence check --&gt;</div>
+      /* Scene 6 — final crafted state */
+      .scene-final {
+        flex-direction: column;
+        gap: clamp(18px, 2.2vw, 30px);
+      }
+      .final-eyebrow {
+        font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+        font-size: 11px;
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+        color: rgba(212, 165, 92, 0.85);
+      }
+      .final-headline {
+        font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+        font-size: clamp(38px, 6.2vw, 84px);
+        font-weight: 400;
+        letter-spacing: -0.02em;
+        line-height: 1.0;
+        color: #ece4d3;
+        text-align: center;
+        max-width: 980px;
+      }
+      .final-headline em {
+        font-style: italic;
+        color: #d4a55c;
+      }
+      .final-sub {
+        font-family: 'Inter', system-ui, sans-serif;
+        font-size: clamp(14px, 1.15vw, 16px);
+        color: rgba(236, 228, 211, 0.58);
+        text-align: center;
+        max-width: 560px;
+        line-height: 1.65;
+        margin: 0;
+      }
+      .final-actions {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        pointer-events: auto;
+      }
+      .final-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 15px 28px;
+        background: #d4a55c;
+        color: #14101c;
+        font-family: 'Inter', system-ui, sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+        letter-spacing: 0.015em;
+        border-radius: 2px;
+        text-decoration: none;
+        box-shadow: 0 20px 58px rgba(212, 165, 92, 0.28), inset 0 1px 0 rgba(255,255,255,0.22);
+        transition: transform 0.28s ease, box-shadow 0.28s ease, background 0.28s ease;
+      }
+      .final-cta:hover {
+        transform: translateY(-2px);
+        background: #dcb069;
+        box-shadow: 0 24px 64px rgba(212, 165, 92, 0.36);
+      }
+      .final-cta .arrow {
+        transition: transform 0.28s ease;
+      }
+      .final-cta:hover .arrow {
+        transform: translateX(3px);
+      }
+      .final-meta {
+        font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: rgba(236, 228, 211, 0.4);
+      }
 
-        <h1 class="hero-headline" id="hero-headline">
-          <span class="line hl-dim" id="hl1">If you’re invisible</span>
-          <span class="line hl-accent" id="hl2">online, you’re</span>
-          <span class="line hl-outlined clarity-word" id="hl3">invisible to</span>
-          <span class="line hl-outlined">customers.</span>
-        </h1>
+      /* Chapter progress */
+      .story-progress {
+        position: absolute;
+        left: clamp(22px, 3vw, 44px);
+        bottom: clamp(22px, 3vw, 44px);
+        display: flex;
+        gap: 7px;
+        z-index: 5;
+        pointer-events: none;
+      }
+      .story-progress span {
+        display: block;
+        width: 30px;
+        height: 2px;
+        background: rgba(236, 228, 211, 0.14);
+        transition: background 0.5s ease;
+      }
+      .story-progress span.on {
+        background: rgba(212, 165, 92, 0.85);
+      }
 
-        <p class="hero-sub" id="hero-sub">Too many great businesses lose opportunities online because their digital presence fails to reflect the quality of their work.</p>
+      .story-hint {
+        position: absolute;
+        right: clamp(22px, 3vw, 44px);
+        bottom: clamp(22px, 3vw, 44px);
+        font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+        font-size: 10px;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: rgba(236, 228, 211, 0.38);
+        z-index: 5;
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        pointer-events: none;
+      }
+      .story-hint::before {
+        content: '';
+        display: inline-block;
+        width: 18px;
+        height: 1px;
+        background: rgba(236, 228, 211, 0.38);
+        margin-right: 10px;
+        vertical-align: middle;
+      }
+      .story-hint.is-faded {
+        opacity: 0;
+        transform: translateY(8px);
+      }
 
-        <div class="hero-actions" id="hero-actions">
-          <a href="#contact" onclick="jumpToContact(event)" class="btn btn-primary magnetic-btn">Start a project →</a>
+      .story-chapter {
+        position: absolute;
+        left: clamp(22px, 3vw, 44px);
+        top: clamp(22px, 3vw, 44px);
+        font-family: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+        font-size: 10px;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: rgba(236, 228, 211, 0.42);
+        z-index: 5;
+        pointer-events: none;
+      }
+      .story-chapter b {
+        font-weight: 500;
+        color: rgba(212, 165, 92, 0.85);
+      }
+
+      @media (max-width: 720px) {
+        .scene-title { font-size: clamp(28px, 8vw, 44px); }
+        .final-headline { font-size: clamp(30px, 9vw, 48px); }
+        .story-chapter, .story-hint, .story-progress { font-size: 9px; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .story-hero { height: 100vh; }
+        .story-scene { transition: none; }
+        .story-stage { position: relative; }
+      }
+    </style>
+
+    <div class="story-stage">
+      <canvas class="story-canvas" id="story-canvas"></canvas>
+      <div class="story-grain"></div>
+      <div class="story-vignette"></div>
+
+      <div class="story-chapter" aria-hidden="true">CH. <b id="story-chapter-n">01</b> / 06</div>
+
+      <div class="story-scenes" id="story-scenes">
+
+        <div class="story-scene" data-scene="0">
+          <div class="scene-copy">
+            <div class="scene-eyebrow">&lt;chapter 01 — raw structure&gt;</div>
+            <h1 class="scene-title">Most websites begin as <em>chaos</em>.</h1>
+            <p class="scene-sub">Brackets. Divs. Half-closed tags. Fragments scattered across a workshop floor — full of possibility, none of it resolved.</p>
+          </div>
         </div>
 
-        <div class="hero-stats" id="hero-stats">
-          <div class="stat"><span class="stat-num">$500</span><span class="stat-label">single-page launch</span></div>
-          <div class="stat"><span class="stat-num">7 days</span><span class="stat-label">typical first pass</span></div>
-          <div class="stat"><span class="stat-num">Custom code</span><span class="stat-label">no page builders</span></div>
+        <div class="story-scene" data-scene="1">
+          <div class="scene-copy">
+            <div class="scene-eyebrow">&lt;chapter 02 — order&gt;</div>
+            <h1 class="scene-title">Then <em>order</em> finds them.</h1>
+            <p class="scene-sub">Spacing aligns. Brackets pair. Loose pieces snap into rhythm. The noise begins to breathe.</p>
+          </div>
         </div>
+
+        <div class="story-scene" data-scene="2">
+          <div class="scene-copy">
+            <div class="scene-eyebrow">&lt;chapter 03 — architecture&gt;</div>
+            <h1 class="scene-title">Markup becomes <em>architecture</em>.</h1>
+            <p class="scene-sub">Tags fold into navigation. Containers become cards. The shape of a real business website emerges from raw syntax.</p>
+          </div>
+        </div>
+
+        <div class="story-scene" data-scene="3">
+          <div class="scene-copy">
+            <div class="scene-eyebrow">&lt;chapter 04 — craft&gt;</div>
+            <h1 class="scene-title">Architecture becomes <em>craft</em>.</h1>
+            <p class="scene-sub">Typography finds hierarchy. Light finds depth. Spacing finds restraint. The business begins to look the way it deserves to.</p>
+          </div>
+        </div>
+
+        <div class="story-scene" data-scene="4">
+          <div class="scene-copy">
+            <div class="scene-eyebrow">&lt;chapter 05 — identity&gt;</div>
+            <h1 class="scene-title">Craft becomes <em>identity</em>.</h1>
+            <p class="scene-sub">Everything we built quietly aligns into a single, signed mark.</p>
+          </div>
+        </div>
+
+        <div class="story-scene scene-final" data-scene="5">
+          <div class="scene-copy">
+            <div class="final-eyebrow">Mediocre Markup</div>
+            <h1 class="final-headline">We turn raw structure into websites <em>real businesses</em> are proud to share.</h1>
+          </div>
+          <p class="final-sub">Custom-built, hand-finished, and made to earn the trust your work has already earned offline.</p>
+          <div class="final-actions">
+            <a href="#contact" onclick="jumpToContact(event)" class="final-cta">Start a project <span class="arrow">→</span></a>
+            <span class="final-meta">$500 · 7 days · custom code</span>
+          </div>
+        </div>
+
       </div>
 
-      <div class="hero-system" aria-hidden="true">
-        <style>
-          .garden-frame {
-            position: relative;
-            width: min(calc(100% - clamp(72px, 5.5vw, 92px)), 620px);
-            height: clamp(430px, 50vw, 620px);
-            margin-left: auto;
-            margin-right: clamp(72px, 5.5vw, 92px);
-            border-radius: 4px;
-            overflow: hidden;
-            isolation: isolate;
-            cursor: crosshair;
-            background:
-              radial-gradient(ellipse at 22% 18%, rgba(218,170,98,0.08), transparent 55%),
-              radial-gradient(ellipse at 82% 78%, rgba(156,128,198,0.08), transparent 55%),
-              radial-gradient(ellipse at 52% 102%, rgba(80,144,154,0.07), transparent 60%),
-              linear-gradient(168deg, #181420 0%, #110d18 60%, #0a070f 100%);
-            box-shadow:
-              0 38px 100px rgba(0,0,0,0.55),
-              inset 0 0 0 1px rgba(218,200,170,0.05),
-              inset 0 -120px 160px rgba(0,0,0,0.35);
-            touch-action: pan-y;
-          }
-          .garden-frame canvas {
-            position: absolute; inset: 0;
-            width: 100%; height: 100%;
-            display: block;
-            pointer-events: none;
-          }
-          .garden-grain {
-            position: absolute; inset: 0;
-            pointer-events: none;
-            mix-blend-mode: overlay;
-            opacity: 0.14;
-            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>");
-          }
-          .garden-vignette {
-            position: absolute; inset: 0;
-            pointer-events: none;
-            background:
-              radial-gradient(ellipse at 50% 55%, rgba(0,0,0,0) 56%, rgba(0,0,0,0.55) 100%),
-              linear-gradient(180deg, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0) 12%, rgba(0,0,0,0) 86%, rgba(0,0,0,0.28) 100%);
-          }
-          @media (max-width: 980px) {
-            .garden-frame {
-              margin-right: 0;
-              margin-left: 0;
-              width: 100%;
-              height: clamp(360px, 76vw, 440px);
-            }
-          }
-          @media (prefers-reduced-motion: reduce) {
-            .garden-frame { cursor: default; }
-          }
-        </style>
-        <div class="garden-frame" id="garden-frame">
-          <canvas id="garden-bg"></canvas>
-          <canvas id="garden-fg"></canvas>
-          <div class="garden-grain"></div>
-          <div class="garden-vignette"></div>
-        </div>
-        <script>
-        (() => {
-          'use strict';
-          const root = document.getElementById('garden-frame');
-          if (!root) return;
-          const bgC = document.getElementById('garden-bg');
-          const fgC = document.getElementById('garden-fg');
-          if (!bgC || !fgC) return;
-          const bg = bgC.getContext('2d');
-          const fg = fgC.getContext('2d');
+      <div class="story-progress" id="story-progress" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="story-hint" id="story-hint">Scroll to begin</div>
+    </div>
 
-          const reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-          const fine = !!(window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches);
-          const cores = navigator.hardwareConcurrency || 8;
-          const LOW = cores <= 4 || window.innerWidth < 720;
+    <script>
+    (() => {
+      'use strict';
+      const section = document.getElementById('hero');
+      const stage = section && section.querySelector('.story-stage');
+      const canvas = document.getElementById('story-canvas');
+      if (!section || !stage || !canvas) return;
+      const ctx = canvas.getContext('2d');
 
-          // ---------- palette ----------
-          const PAL = {
-            ivory:   [238, 230, 216],
-            ivoryD:  [200, 188, 170],
-            gold:    [218, 170, 98],
-            violet:  [156, 128, 198],
-            teal:    [80, 144, 154],
-            emerald: [110, 172, 138],
-            rose:    [208, 148, 138],
-            mute:    [126, 116, 138],
-            ink:     [60, 56, 70]
-          };
-          const rgba = (c, a) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
-          const lerp = (a, b, t) => a + (b - a) * t;
-          const clamp01 = x => x < 0 ? 0 : x > 1 ? 1 : x;
-          const smooth = x => { x = clamp01(x); return x * x * (3 - 2 * x); };
-          const easeInOut = x => { x = clamp01(x); return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2; };
-          const easeOutCubic = x => 1 - Math.pow(1 - clamp01(x), 3);
-          const easeOutBack = x => {
-            x = clamp01(x);
-            const c1 = 1.35, c3 = c1 + 1;
-            return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
-          };
-          const rand = (a, b) => a + Math.random() * (b - a);
+      const reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+      const cores = navigator.hardwareConcurrency || 8;
+      const LOW = cores <= 4 || window.innerWidth < 720;
 
-          // ---------- token bank ----------
-          const TAGS = ['<div>','</div>','<section>','</section>','<header>','</header>','<nav>','</nav>','<button>','</button>','<a>','</a>','<h1>','</h1>','<p>','</p>','<span>','</span>','<img/>','<main>','<figure>','</figure>','<article>','</article>','<ul>','</ul>','<li>','</li>','<form>','<label>'];
-          const PROPS = ['class=""','padding:','margin:','flex','grid','gap:','1fr','24px','auto','color:','font','rgba(','--bg','rounded','shadow','12px','radius','inline','block','hover','aria-','href=','width:','height:'];
-          const PUNC  = ['{','}','/*','*/','//','::','-->','<!--',':',';','+','~','...','=>','&&'];
+      /* ---------- palette ---------- */
+      const PAL = {
+        ivory:   [236, 228, 211],
+        ivoryD:  [196, 184, 162],
+        gold:    [212, 165, 92],
+        violet:  [156, 128, 198],
+        teal:    [110, 154, 144],
+        emerald: [120, 170, 140],
+        rose:    [200, 148, 138],
+        mute:    [122, 112, 134],
+        ink:     [50, 44, 60]
+      };
+      const rgba = (c, a) => `rgba(${c[0]|0},${c[1]|0},${c[2]|0},${a})`;
+      const lerp = (a, b, t) => a + (b - a) * t;
+      const lerpV = (a, b, t) => [lerp(a[0],b[0],t),lerp(a[1],b[1],t),lerp(a[2],b[2],t)];
+      const clamp01 = x => x < 0 ? 0 : x > 1 ? 1 : x;
+      const smooth = x => { x = clamp01(x); return x*x*(3-2*x); };
+      const easeOutCubic = x => 1 - Math.pow(1 - clamp01(x), 3);
 
-          const pick = arr => arr[(Math.random() * arr.length) | 0];
+      /* ---------- deterministic RNG so layout is stable across resizes ---------- */
+      function mkRand(seed) {
+        let s = seed >>> 0;
+        return () => {
+          s = (s * 1664525 + 1013904223) >>> 0;
+          return s / 4294967295;
+        };
+      }
+      const seeded = mkRand(8421);
+      const R = (a, b) => a + seeded() * (b - a);
+      const pickR = arr => arr[(seeded() * arr.length) | 0];
 
-          // ---------- sizing ----------
-          let W = 0, H = 0, DPR = 1;
-          function resize() {
-            const r = root.getBoundingClientRect();
-            DPR = Math.min(window.devicePixelRatio || 1, 2);
-            W = Math.max(1, Math.round(r.width));
-            H = Math.max(1, Math.round(r.height));
-            for (const c of [bgC, fgC]) {
-              c.width  = Math.max(1, Math.round(W * DPR));
-              c.height = Math.max(1, Math.round(H * DPR));
-              c.getContext('2d').setTransform(DPR, 0, 0, DPR, 0, 0);
-            }
-            initEntityPositions();
-            drawBg();
-          }
+      /* ---------- token bank ---------- */
+      const TAGS  = ['<div>','</div>','<section>','</section>','<nav>','<a>','</a>','<h1>','</h1>','<p>','</p>','<img/>','<header>','<main>','<button>','<li>','<figure>','<article>'];
+      const PROPS = ['padding:','margin:','flex','grid','gap:','24px','1fr','color:','radius','class=""','width:','height:','font','rgba(','--bg','inline','block','hover'];
+      const PUNC  = ['{','}','/*','*/','//','...','=>','&&',':',';','+'];
 
-          // ---------- entities ----------
-          const N_GLYPHS = reduced ? 36 : (LOW ? 58 : 92);
-          const glyphs = [];
-          for (let i = 0; i < N_GLYPHS; i++) {
-            const r = Math.random();
-            let txt, fam, color;
-            if (r < 0.52) {
-              txt = pick(TAGS); fam = 'tag';
-              color = [PAL.ivory, PAL.ivoryD, PAL.violet, PAL.teal][(Math.random() * 4) | 0];
-            } else if (r < 0.86) {
-              txt = pick(PROPS); fam = 'prop';
-              color = [PAL.gold, PAL.emerald, PAL.ivoryD, PAL.mute][(Math.random() * 4) | 0];
-            } else {
-              txt = pick(PUNC); fam = 'punc';
-              color = [PAL.mute, PAL.rose, PAL.ivoryD][(Math.random() * 3) | 0];
-            }
-            glyphs.push({
-              txt, fam, color,
-              size: fam === 'punc' ? rand(10, 13) : rand(11, 14.5),
-              weight: fam === 'tag' ? 500 : 400,
-              x: 0, y: 0, rot: 0, alpha: 0, scale: 1,
-              tx: 0, ty: 0, trot: 0, talpha: 0, tscale: 1,
-              wx: 0.05 + Math.random() * 0.90,
-              wy: 0.05 + Math.random() * 0.90,
-              wrot: rand(-0.20, 0.20),
-              seed: Math.random() * 1000,
-              survive: Math.random() < 0.62,
-              keepInBloom: Math.random() < 0.42,
-              keepInMM: Math.random() < 0.12,
-              cursorOx: 0, cursorOy: 0
-            });
-          }
+      /* ---------- sizing ---------- */
+      let W = 0, H = 0, DPR = 1;
+      function resize() {
+        const r = stage.getBoundingClientRect();
+        DPR = Math.min(window.devicePixelRatio || 1, 2);
+        W = Math.max(1, Math.round(r.width));
+        H = Math.max(1, Math.round(r.height));
+        canvas.width  = Math.round(W * DPR);
+        canvas.height = Math.round(H * DPR);
+        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+        layout();
+      }
 
-          const PANEL_SPECS = [
-            { role: 'nav',    kx: 0.50, ky: 0.135, kw: 0.74, kh: 0.050, radius: 3   },
-            { role: 'image',  kx: 0.66, ky: 0.46,  kw: 0.40, kh: 0.30,  radius: 4   },
-            { role: 'button', kx: 0.24, ky: 0.56,  kw: 0.20, kh: 0.072, radius: 999 },
-            { role: 'title',  kx: 0.27, ky: 0.32,  kw: 0.34, kh: 0.18,  radius: 3   },
-            { role: 'card',   kx: 0.25, ky: 0.79,  kw: 0.28, kh: 0.10,  radius: 4   },
-            { role: 'tile',   kx: 0.66, ky: 0.83,  kw: 0.22, kh: 0.072, radius: 4   },
-            { role: 'strip',  kx: 0.105,ky: 0.30,  kw: 0.04, kh: 0.44,  radius: 2   },
-            { role: 'dot',    kx: 0.86, ky: 0.20,  kw: 0.060, kh: 0.060,radius: 999 }
+      /* ---------- entities ---------- */
+      const N_TOKENS = reduced ? 30 : (LOW ? 56 : 96);
+      const tokens = [];
+      const rngEnt = mkRand(31337);
+      for (let i = 0; i < N_TOKENS; i++) {
+        const r = rngEnt();
+        let txt, fam, color;
+        if (r < 0.55) {
+          txt = TAGS[(rngEnt()*TAGS.length)|0]; fam = 'tag';
+          const opts = [PAL.ivory, PAL.ivoryD, PAL.violet, PAL.teal];
+          color = opts[(rngEnt()*opts.length)|0];
+        } else if (r < 0.86) {
+          txt = PROPS[(rngEnt()*PROPS.length)|0]; fam = 'prop';
+          const opts = [PAL.gold, PAL.emerald, PAL.ivoryD, PAL.mute];
+          color = opts[(rngEnt()*opts.length)|0];
+        } else {
+          txt = PUNC[(rngEnt()*PUNC.length)|0]; fam = 'punc';
+          const opts = [PAL.mute, PAL.rose, PAL.ivoryD];
+          color = opts[(rngEnt()*opts.length)|0];
+        }
+        tokens.push({
+          txt, fam, color,
+          size: fam==='punc' ? 11 + rngEnt()*3 : 11.5 + rngEnt()*3.5,
+          weight: fam==='tag' ? 500 : 400,
+          seed: rngEnt() * 1000,
+          waveX: 0.4 + rngEnt() * 1.4,
+          waveY: 0.35 + rngEnt() * 1.4,
+          pos: [null, null, null, null, null, null], // [x, y, rot] per scene
+          vis: [0, 0, 0, 0, 0, 0],
+          survive4: rngEnt() < 0.42,
+          mmIdx: -1,
+          inFinal: false
+        });
+      }
+
+      /* ---------- panels (UI components that assemble in scene 3-4, refine, and form final composition) ---------- */
+      const panelSpecs = [
+        { role: 'nav',     kx: 0.50, ky: 0.16, kw: 0.78, kh: 0.046, rad: 2 },
+        { role: 'logo',    kx: 0.13, ky: 0.16, kw: 0.046,kh: 0.046, rad: 999 },
+        { role: 'link1',   kx: 0.78, ky: 0.16, kw: 0.042,kh: 0.011, rad: 1 },
+        { role: 'link2',   kx: 0.83, ky: 0.16, kw: 0.042,kh: 0.011, rad: 1 },
+        { role: 'link3',   kx: 0.88, ky: 0.16, kw: 0.06, kh: 0.026, rad: 2 }, // CTA pill in nav
+        { role: 'h-line1', kx: 0.36, ky: 0.40, kw: 0.46, kh: 0.038, rad: 2 }, // headline line 1
+        { role: 'h-line2', kx: 0.32, ky: 0.46, kw: 0.36, kh: 0.038, rad: 2 }, // headline line 2
+        { role: 'h-sub',   kx: 0.38, ky: 0.535, kw: 0.50, kh: 0.012, rad: 1 }, // subtitle thin line
+        { role: 'h-cta',   kx: 0.30, ky: 0.605, kw: 0.13, kh: 0.040, rad: 999 }, // primary CTA
+        { role: 'card1',   kx: 0.30, ky: 0.79, kw: 0.20, kh: 0.16,  rad: 3 },
+        { role: 'card2',   kx: 0.50, ky: 0.79, kw: 0.20, kh: 0.16,  rad: 3 },
+        { role: 'card3',   kx: 0.70, ky: 0.79, kw: 0.20, kh: 0.16,  rad: 3 }
+      ];
+      const FINAL_ROLES = new Set(['nav','logo','link1','link2','link3','h-line1','h-line2','h-sub','h-cta']);
+      const panels = panelSpecs.map(s => ({ ...s, x:0, y:0, w:0, h:0 }));
+
+      /* ---------- alignment guides ---------- */
+      const guides = [];
+      for (let i = 0; i < 5; i++) guides.push({ kind:'h', k: 0.22 + i*0.13 });
+      for (let i = 0; i < 5; i++) guides.push({ kind:'v', k: 0.18 + i*0.16 });
+
+      /* ---------- MM monogram anchors ---------- */
+      function mmAnchors() {
+        const cx = W * 0.50, cy = H * 0.48;
+        const letterW = Math.min(W * 0.16, H * 0.34);
+        const letterH = letterW * 1.05;
+        const gap = letterW * 0.18;
+        const totalW = letterW * 2 + gap;
+        const xL = cx - totalW/2;
+        const xR = xL + letterW + gap;
+        const top = cy - letterH/2;
+        const bot = cy + letterH/2;
+        function M(x) {
+          return [
+            [x, bot],
+            [x, top],
+            [x + letterW * 0.50, top + letterH * 0.58],
+            [x + letterW, top],
+            [x + letterW, bot]
           ];
-          const N_PANELS = PANEL_SPECS.length;
-          function panelColor(role) {
-            return ({
-              nav: PAL.ivory, image: PAL.violet, button: PAL.gold, title: PAL.ivoryD,
-              card: PAL.teal, tile: PAL.emerald, strip: PAL.gold, dot: PAL.rose
-            })[role] || PAL.ivory;
-          }
-          const panels = PANEL_SPECS.map((s, i) => ({
-            spec: s, color: panelColor(s.role),
-            x: 0, y: 0, w: 0, h: 0, alpha: 0, fill: 0, glow: 0, radius: s.radius,
-            tx: 0, ty: 0, tw: 0, th: 0, talpha: 0, tfill: 0, tglow: 0,
-            morphsToMM: i < 4,
-            seed: Math.random() * 1000
-          }));
+        }
+        return [...M(xL), ...M(xR)];
+      }
 
-          // strokes: hand-drawn alignment guides + MM diagonals
-          const N_STROKES = 8;
-          const strokes = [];
-          for (let i = 0; i < N_STROKES; i++) {
-            strokes.push({
-              x0: 0, y0: 0, x1: 0, y1: 0,
-              tx0: 0, ty0: 0, tx1: 0, ty1: 0,
-              alpha: 0, talpha: 0, width: 0.6, twidth: 0.6,
-              color: [PAL.ivoryD, PAL.gold, PAL.violet, PAL.teal][i % 4],
-              seed: Math.random() * 1000,
-              mmRole: i < 4 ? i : -1
-            });
-          }
+      function layout() {
+        // pixel positions for panels
+        for (const p of panels) {
+          p.x = p.kx * W;
+          p.y = p.ky * H;
+          p.w = p.kw * W;
+          p.h = p.kh * H;
+        }
 
-          // soft warm glow blobs
-          const blobCols = [PAL.gold, PAL.violet, PAL.teal, PAL.emerald, PAL.rose];
-          const blobPos = [
-            { kx: 0.24, ky: 0.56, kr: 0.22 },
-            { kx: 0.66, ky: 0.46, kr: 0.30 },
-            { kx: 0.50, ky: 0.13, kr: 0.20 },
-            { kx: 0.65, ky: 0.83, kr: 0.18 },
-            { kx: 0.86, ky: 0.20, kr: 0.16 }
+        // Re-seed RNG for layout so positions are stable
+        const layRng = mkRand(99172);
+        const rr = (a, b) => a + layRng() * (b - a);
+
+        for (let i = 0; i < tokens.length; i++) {
+          const t = tokens[i];
+
+          // SCENE 0: raw chaos — wide scatter, full visibility
+          t.pos[0] = [rr(W*0.05, W*0.95), rr(H*0.12, H*0.92), rr(-0.45, 0.45)];
+          t.vis[0] = 0.78 + layRng()*0.22;
+
+          // SCENE 1: organization — snap to loose grid
+          const col = i % 10, row = Math.floor(i / 10) % 7;
+          t.pos[1] = [
+            W*0.10 + col * W*0.089 + rr(-W*0.008, W*0.008),
+            H*0.20 + row * H*0.105 + rr(-H*0.008, H*0.008),
+            rr(-0.05, 0.05)
           ];
-          const N_BLOBS = blobPos.length;
-          const blobs = blobPos.map((p, i) => ({
-            x: 0, y: 0, r: 0, alpha: 0,
-            tx: 0, ty: 0, tr: 0, talpha: 0,
-            color: blobCols[i], spec: p
-          }));
+          t.vis[1] = 0.78 + layRng()*0.20;
 
-          // ---------- MM monogram geometry ----------
-          function mmGeom(cx) {
-            const cy = 0.50, mw = 0.16, mh = 0.30;
-            const barW = 0.022, barH = mh;
-            return {
-              lbar: { kx: cx - mw / 2 + barW / 2, ky: cy, kw: barW, kh: barH },
-              rbar: { kx: cx + mw / 2 - barW / 2, ky: cy, kw: barW, kh: barH },
-              apex: { x: cx, y: cy + mh * 0.06 },
-              topL: { x: cx - mw / 2 + barW * 0.8, y: cy - mh / 2 + barW * 0.4 },
-              topR: { x: cx + mw / 2 - barW * 0.8, y: cy - mh / 2 + barW * 0.4 }
-            };
-          }
-          const MM_L = mmGeom(0.34);
-          const MM_R = mmGeom(0.66);
-          function panelMMTarget(i) {
-            if (i === 0) return MM_L.lbar;
-            if (i === 1) return MM_L.rbar;
-            if (i === 2) return MM_R.lbar;
-            if (i === 3) return MM_R.rbar;
-            return null;
-          }
-          function strokeMMTarget(i) {
-            if (i === 0) return { x0: MM_L.topL.x, y0: MM_L.topL.y, x1: MM_L.apex.x, y1: MM_L.apex.y };
-            if (i === 1) return { x0: MM_L.apex.x, y0: MM_L.apex.y, x1: MM_L.topR.x, y1: MM_L.topR.y };
-            if (i === 2) return { x0: MM_R.topL.x, y0: MM_R.topL.y, x1: MM_R.apex.x, y1: MM_R.apex.y };
-            if (i === 3) return { x0: MM_R.apex.x, y0: MM_R.apex.y, x1: MM_R.topR.x, y1: MM_R.topR.y };
-            return null;
-          }
-
-          // ---------- phases ----------
-          const T_LOOP = 28000;
-          const P = {
-            wall:  [0,     4000],
-            sort:  [4000,  9000],
-            struc: [9000, 15000],
-            bloom: [15000, 22000],
-            mm:    [22000, 27000],
-            retn:  [27000, 28000]
-          };
-          function phaseAt(t) {
-            for (const k of ['wall','sort','struc','bloom','mm','retn']) {
-              const [a, b] = P[k];
-              if (t >= a && t < b) return [k, (t - a) / (b - a)];
-            }
-            return ['retn', 1];
-          }
-
-          // sorted column positions per glyph index
-          function sortPos(i) {
-            const cols = 5;
-            const col = i % cols;
-            const rowsPerCol = Math.ceil(N_GLYPHS / cols);
-            const row = (i / cols) | 0;
-            return {
-              x: 0.12 + col * 0.19,
-              y: 0.10 + (rowsPerCol > 1 ? row / (rowsPerCol - 1) : 0.5) * 0.80
-            };
-          }
-          // structural label position per glyph
-          function strucPos(g, i) {
-            if (g.keepInBloom) {
-              const p = PANEL_SPECS[i % N_PANELS];
-              const ox = Math.sin(g.seed * 1.7) * 0.07;
-              const oy = Math.cos(g.seed * 2.1) * 0.04;
-              return { x: clamp01(p.kx + ox), y: clamp01(p.ky + oy) };
-            }
-            return { x: g.wx, y: g.wy };
-          }
-
-          // ---------- pointer state ----------
-          const pointer = { x: -9999, y: -9999, lastX: 0, lastY: 0, active: false };
-          let trail = [];
-          let blooms = [];
-          if (fine && !reduced) {
-            root.addEventListener('pointermove', (e) => {
-              const r = root.getBoundingClientRect();
-              pointer.lastX = pointer.x;
-              pointer.lastY = pointer.y;
-              pointer.x = e.clientX - r.left;
-              pointer.y = e.clientY - r.top;
-              pointer.active = true;
-              trail.push({ x: pointer.x, y: pointer.y, t: performance.now() });
-              if (trail.length > 22) trail.shift();
-            });
-            root.addEventListener('pointerleave', () => {
-              pointer.active = false;
-              pointer.x = -9999; pointer.y = -9999;
-            });
-            root.addEventListener('pointerdown', (e) => {
-              const r = root.getBoundingClientRect();
-              blooms.push({
-                x: e.clientX - r.left,
-                y: e.clientY - r.top,
-                t0: performance.now(),
-                life: 1100,
-                r: 80 + Math.random() * 30
-              });
-              if (blooms.length > 4) blooms.shift();
-            });
-          }
-
-          // ---------- init positions ----------
-          function initEntityPositions() {
-            for (const g of glyphs) {
-              g.x = g.wx * W;
-              g.y = g.wy * H;
-              g.rot = g.wrot;
-              g.alpha = 0;
-              g.scale = 1;
-            }
-            for (const p of panels) {
-              p.x = p.spec.kx * W;
-              p.y = p.spec.ky * H;
-              p.w = 0; p.h = 0;
-              p.alpha = 0; p.fill = 0; p.glow = 0;
-            }
-            for (const st of strokes) {
-              st.x0 = st.x1 = W / 2;
-              st.y0 = st.y1 = H / 2;
-              st.alpha = 0;
-            }
-            for (const b of blobs) {
-              b.x = b.spec.kx * W;
-              b.y = b.spec.ky * H;
-              b.r = b.spec.kr * Math.min(W, H);
-              b.alpha = 0;
-            }
-          }
-
-          // ---------- background paint ----------
-          function drawSoftGlow(ctx, x, y, r, color, a) {
-            const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-            g.addColorStop(0, rgba(color, a));
-            g.addColorStop(0.5, rgba(color, a * 0.35));
-            g.addColorStop(1, rgba(color, 0));
-            ctx.fillStyle = g;
-            ctx.fillRect(x - r, y - r, r * 2, r * 2);
-          }
-          function drawBg() {
-            bg.clearRect(0, 0, W, H);
-            const grad = bg.createLinearGradient(0, 0, W * 0.7, H);
-            grad.addColorStop(0, '#181420');
-            grad.addColorStop(0.6, '#100C18');
-            grad.addColorStop(1, '#08060C');
-            bg.fillStyle = grad;
-            bg.fillRect(0, 0, W, H);
-
-            drawSoftGlow(bg, W * 0.18, H * 0.20, Math.min(W, H) * 0.90, PAL.gold, 0.07);
-            drawSoftGlow(bg, W * 0.86, H * 0.78, Math.min(W, H) * 0.90, PAL.violet, 0.06);
-            drawSoftGlow(bg, W * 0.50, H * 1.06, Math.min(W, H) * 0.95, PAL.teal, 0.05);
-
-            // soft painterly horizontal striations
-            bg.save();
-            bg.fillStyle = rgba(PAL.ivory, 1);
-            for (let y = 0; y < H; y += 3) {
-              const a = (Math.sin(y * 0.013) + 1) * 0.5;
-              bg.globalAlpha = 0.010 + a * 0.014;
-              bg.fillRect(0, y, W, 1);
-            }
-            bg.restore();
-          }
-
-          // ---------- assign targets ----------
-          function assignTargets(t) {
-            const [phase, sub] = phaseAt(t);
-
-            for (let i = 0; i < N_GLYPHS; i++) {
-              const g = glyphs[i];
-              let tx, ty, trot, talpha, tscale;
-
-              if (phase === 'wall') {
-                tx = g.wx;
-                ty = g.wy;
-                trot = g.wrot + Math.sin(t / 2200 + g.seed) * 0.04;
-                talpha = 0.30 + 0.55 * smooth(sub * 1.4);
-                tscale = 1;
-              } else if (phase === 'sort') {
-                const e = easeInOut(sub);
-                const sp = sortPos(i);
-                tx = lerp(g.wx, sp.x, e);
-                ty = lerp(g.wy, sp.y, e);
-                trot = lerp(g.wrot, 0, e);
-                if (g.survive) talpha = 0.85;
-                else talpha = Math.max(0, 0.85 * (1 - e * 1.25));
-                tscale = 1;
-              } else if (phase === 'struc') {
-                const e = easeInOut(sub);
-                const sp = sortPos(i);
-                const stp = strucPos(g, i);
-                tx = lerp(sp.x, stp.x, e);
-                ty = lerp(sp.y, stp.y, e);
-                trot = 0;
-                if (!g.survive) talpha = 0;
-                else if (g.keepInBloom) talpha = lerp(0.85, 0.62, e);
-                else talpha = lerp(0.85, 0.20, e);
-                tscale = lerp(1, g.keepInBloom ? 1.02 : 0.88, e);
-              } else if (phase === 'bloom') {
-                const stp = strucPos(g, i);
-                const drift = 0.004;
-                tx = stp.x + Math.sin(t / 3400 + g.seed) * drift;
-                ty = stp.y + Math.cos(t / 2900 + g.seed) * drift;
-                trot = Math.sin(t / 4200 + g.seed) * 0.02;
-                if (g.keepInBloom) talpha = 0.66;
-                else if (g.survive) talpha = 0.20;
-                else talpha = 0;
-                tscale = g.keepInBloom ? 1.05 : 0.88;
-              } else if (phase === 'mm') {
-                const e = easeInOut(sub);
-                const stp = strucPos(g, i);
-                const nearLeft = (i % 2 === 0);
-                const corner = {
-                  x: nearLeft ? 0.18 : 0.82,
-                  y: 0.50 + Math.cos(g.seed) * 0.18
-                };
-                tx = lerp(stp.x, corner.x + Math.sin(g.seed) * 0.05, e);
-                ty = lerp(stp.y, corner.y, e);
-                trot = 0;
-                const baseA = g.keepInBloom ? 0.66 : (g.survive ? 0.20 : 0);
-                talpha = lerp(baseA, g.keepInMM ? 0.30 : 0, e);
-                tscale = lerp(g.keepInBloom ? 1.05 : 0.88, 0.7, e);
-              } else { // retn
-                const e = easeInOut(sub);
-                tx = lerp(g.wx, g.wx, e);
-                ty = lerp(g.wy, g.wy, e);
-                trot = lerp(0, g.wrot, e);
-                talpha = lerp(g.keepInMM ? 0.30 : 0, 0.30, e);
-                tscale = lerp(0.7, 1, e);
-              }
-
-              g.tx = tx * W;
-              g.ty = ty * H;
-              g.trot = trot;
-              g.talpha = clamp01(talpha);
-              g.tscale = tscale;
-            }
-
-            for (let i = 0; i < N_PANELS; i++) {
-              const p = panels[i];
-              const s = p.spec;
-              let kx, ky, kw, kh, talpha, tfill, tglow;
-
-              if (phase === 'wall' || phase === 'sort') {
-                kx = s.kx; ky = s.ky;
-                kw = s.kw * 0.35; kh = s.kh * 0.35;
-                talpha = 0; tfill = 0; tglow = 0;
-              } else if (phase === 'struc') {
-                const e = easeOutBack(sub);
-                kx = s.kx; ky = s.ky;
-                kw = lerp(s.kw * 0.30, s.kw, e);
-                kh = lerp(s.kh * 0.30, s.kh, e);
-                talpha = smooth(sub * 1.5) * 0.90;
-                tfill = 0; tglow = 0;
-              } else if (phase === 'bloom') {
-                kx = s.kx; ky = s.ky;
-                kw = s.kw; kh = s.kh;
-                talpha = 0.92;
-                const f = smooth(sub * 1.25);
-                const role = s.role;
-                tfill = f * (role === 'image' ? 0.88 : role === 'button' ? 0.78 : role === 'strip' ? 0.55 : role === 'dot' ? 0.85 : role === 'card' ? 0.22 : role === 'tile' ? 0.22 : 0.10);
-                tglow = f * (role === 'button' || role === 'image' ? 0.80 : role === 'dot' ? 0.70 : 0.30);
-              } else if (phase === 'mm') {
-                const e = easeInOut(sub);
-                if (p.morphsToMM) {
-                  const mm = panelMMTarget(i);
-                  kx = lerp(s.kx, mm.kx, e);
-                  ky = lerp(s.ky, mm.ky, e);
-                  kw = lerp(s.kw, mm.kw, e);
-                  kh = lerp(s.kh, mm.kh, e);
-                  talpha = 0.95;
-                  tfill = lerp(0.30, 0.92, e);
-                  tglow = lerp(0.30, 0.60, e);
-                } else {
-                  kx = s.kx; ky = s.ky;
-                  kw = s.kw; kh = s.kh;
-                  talpha = lerp(0.92, 0, e);
-                  tfill = lerp(0.5, 0, e);
-                  tglow = 0;
-                }
-              } else { // retn
-                const e = easeInOut(sub);
-                if (p.morphsToMM) {
-                  const mm = panelMMTarget(i);
-                  kx = mm.kx; ky = mm.ky;
-                  kw = mm.kw; kh = mm.kh;
-                  talpha = lerp(0.95, 0, e);
-                  tfill = lerp(0.92, 0, e);
-                  tglow = lerp(0.60, 0, e);
-                } else {
-                  kx = s.kx; ky = s.ky;
-                  kw = s.kw * 0.35; kh = s.kh * 0.35;
-                  talpha = 0; tfill = 0; tglow = 0;
-                }
-              }
-
-              p.tx = kx * W;
-              p.ty = ky * H;
-              p.tw = kw * W;
-              p.th = kh * H;
-              p.talpha = talpha;
-              p.tfill = tfill;
-              p.tglow = tglow;
-            }
-
-            for (let i = 0; i < N_STROKES; i++) {
-              const st = strokes[i];
-              const isVert = (i % 2 === 0);
-              const colX = 0.12 + ((i / 2) | 0) * 0.19;
-              const rowY = 0.22 + ((i / 2) | 0) * 0.18;
-              let kx0, ky0, kx1, ky1, talpha, twidth, color = st.color;
-
-              if (phase === 'wall') {
-                kx0 = isVert ? colX : 0.5;
-                ky0 = isVert ? 0.5 : rowY;
-                kx1 = kx0; ky1 = ky0;
-                talpha = 0; twidth = 0.6;
-              } else if (phase === 'sort') {
-                const e = easeOutCubic(sub);
-                kx0 = isVert ? colX : 0.07;
-                ky0 = isVert ? 0.08 : rowY;
-                kx1 = isVert ? colX : 0.93;
-                ky1 = isVert ? 0.92 : rowY;
-                talpha = e * 0.24; twidth = 0.6;
-              } else if (phase === 'struc') {
-                kx0 = isVert ? colX : 0.07;
-                ky0 = isVert ? 0.08 : rowY;
-                kx1 = isVert ? colX : 0.93;
-                ky1 = isVert ? 0.92 : rowY;
-                talpha = lerp(0.24, 0.14, sub); twidth = 0.6;
-              } else if (phase === 'bloom') {
-                kx0 = isVert ? colX : 0.07;
-                ky0 = isVert ? 0.08 : rowY;
-                kx1 = isVert ? colX : 0.93;
-                ky1 = isVert ? 0.92 : rowY;
-                talpha = lerp(0.14, 0.07, sub); twidth = 0.6;
-              } else if (phase === 'mm') {
-                const e = easeOutCubic(sub);
-                if (st.mmRole >= 0) {
-                  const tgt = strokeMMTarget(i);
-                  kx0 = lerp(colX, tgt.x0, e);
-                  ky0 = lerp(0.08, tgt.y0, e);
-                  kx1 = lerp(colX, tgt.x1, e);
-                  ky1 = lerp(0.92, tgt.y1, e);
-                  talpha = lerp(0.07, 0.92, e);
-                  twidth = lerp(0.6, 1.8, e);
-                  color = PAL.ivory;
-                } else {
-                  kx0 = isVert ? colX : 0.07;
-                  ky0 = isVert ? 0.08 : rowY;
-                  kx1 = isVert ? colX : 0.93;
-                  ky1 = isVert ? 0.92 : rowY;
-                  talpha = lerp(0.07, 0, e); twidth = 0.6;
-                }
-              } else { // retn
-                const e = easeInOut(sub);
-                if (st.mmRole >= 0) {
-                  const tgt = strokeMMTarget(i);
-                  kx0 = tgt.x0; ky0 = tgt.y0;
-                  kx1 = tgt.x1; ky1 = tgt.y1;
-                  talpha = lerp(0.92, 0, e);
-                  twidth = lerp(1.8, 0.6, e);
-                  color = PAL.ivory;
-                } else {
-                  kx0 = colX; ky0 = 0.5;
-                  kx1 = colX; ky1 = 0.5;
-                  talpha = 0; twidth = 0.6;
-                }
-              }
-
-              st.tx0 = kx0 * W; st.ty0 = ky0 * H;
-              st.tx1 = kx1 * W; st.ty1 = ky1 * H;
-              st.talpha = talpha;
-              st.twidth = twidth;
-              st.color = color;
-            }
-
-            for (let i = 0; i < N_BLOBS; i++) {
-              const b = blobs[i];
-              const sp = b.spec;
-              if (phase === 'wall' || phase === 'sort') {
-                b.tx = sp.kx * W; b.ty = sp.ky * H;
-                b.tr = sp.kr * Math.min(W, H);
-                b.talpha = 0;
-              } else if (phase === 'struc') {
-                b.tx = sp.kx * W; b.ty = sp.ky * H;
-                b.tr = sp.kr * Math.min(W, H);
-                b.talpha = smooth(sub) * 0.28;
-              } else if (phase === 'bloom') {
-                b.tx = sp.kx * W; b.ty = sp.ky * H;
-                b.tr = sp.kr * Math.min(W, H) * lerp(1, 1.22, smooth(sub));
-                b.talpha = lerp(0.28, 0.55, smooth(sub));
-              } else if (phase === 'mm') {
-                const e = easeInOut(sub);
-                const mmCenter = [
-                  { kx: 0.34, ky: 0.50 }, { kx: 0.66, ky: 0.50 },
-                  { kx: 0.50, ky: 0.50 }, { kx: 0.34, ky: 0.50 },
-                  { kx: 0.66, ky: 0.50 }
-                ][i];
-                b.tx = lerp(sp.kx, mmCenter.kx, e) * W;
-                b.ty = lerp(sp.ky, mmCenter.ky, e) * H;
-                b.tr = lerp(sp.kr, 0.22, e) * Math.min(W, H);
-                b.talpha = lerp(0.55, 0.34, e);
-              } else { // retn
-                const e = easeInOut(sub);
-                b.tx = sp.kx * W; b.ty = sp.ky * H;
-                b.tr = sp.kr * Math.min(W, H);
-                b.talpha = lerp(0.34, 0, e);
-              }
-            }
-          }
-
-          // ---------- cursor magnetism ----------
-          function applyCursor(dt) {
-            if (!fine || !pointer.active) return;
-            const RAD = 130;
-            const RAD2 = RAD * RAD;
-            for (const g of glyphs) {
-              const dx = pointer.x - g.x;
-              const dy = pointer.y - g.y;
-              const d2 = dx * dx + dy * dy;
-              if (d2 < RAD2) {
-                const d = Math.sqrt(d2) || 1;
-                const f = 1 - d / RAD;
-                const strength = f * f * 14;
-                g.cursorOx += (dx / d) * strength * 0.08;
-                g.cursorOy += (dy / d) * strength * 0.08;
-              }
-            }
-          }
-
-          // ---------- step springs ----------
-          function stepAll(dt) {
-            const k  = 1 - Math.exp(-dt / 90);
-            const ka = 1 - Math.exp(-dt / 140);
-            const kc = 1 - Math.exp(-dt / 220);
-
-            for (const g of glyphs) {
-              g.x = lerp(g.x, g.tx + g.cursorOx, k);
-              g.y = lerp(g.y, g.ty + g.cursorOy, k);
-              g.rot = lerp(g.rot, g.trot, k);
-              g.alpha = lerp(g.alpha, g.talpha, ka);
-              g.scale = lerp(g.scale, g.tscale, k);
-              g.cursorOx = lerp(g.cursorOx, 0, kc);
-              g.cursorOy = lerp(g.cursorOy, 0, kc);
-            }
-            for (const p of panels) {
-              p.x = lerp(p.x, p.tx, k);
-              p.y = lerp(p.y, p.ty, k);
-              p.w = lerp(p.w, p.tw, k);
-              p.h = lerp(p.h, p.th, k);
-              p.alpha = lerp(p.alpha, p.talpha, ka);
-              p.fill = lerp(p.fill, p.tfill, ka);
-              p.glow = lerp(p.glow, p.tglow, ka);
-            }
-            for (const st of strokes) {
-              st.x0 = lerp(st.x0, st.tx0, k);
-              st.y0 = lerp(st.y0, st.ty0, k);
-              st.x1 = lerp(st.x1, st.tx1, k);
-              st.y1 = lerp(st.y1, st.ty1, k);
-              st.alpha = lerp(st.alpha, st.talpha, ka);
-              st.width = lerp(st.width, st.twidth, k);
-            }
-            for (const b of blobs) {
-              b.x = lerp(b.x, b.tx, k);
-              b.y = lerp(b.y, b.ty, k);
-              b.r = lerp(b.r, b.tr, k);
-              b.alpha = lerp(b.alpha, b.talpha, ka);
-            }
-          }
-
-          // ---------- drawing helpers ----------
-          function roundRectPath(ctx, x, y, w, h, r) {
-            r = Math.min(r, Math.min(w, h) / 2);
-            ctx.beginPath();
-            ctx.moveTo(x + r, y);
-            ctx.lineTo(x + w - r, y);
-            ctx.arcTo(x + w, y, x + w, y + r, r);
-            ctx.lineTo(x + w, y + h - r);
-            ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
-            ctx.lineTo(x + r, y + h);
-            ctx.arcTo(x, y + h, x, y + h - r, r);
-            ctx.lineTo(x, y + r);
-            ctx.arcTo(x, y, x + r, y, r);
-            ctx.closePath();
-          }
-
-          function drawBlob(ctx, b) {
-            if (b.alpha <= 0.01 || b.r <= 1) return;
-            const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
-            g.addColorStop(0, rgba(b.color, b.alpha * 0.95));
-            g.addColorStop(0.45, rgba(b.color, b.alpha * 0.35));
-            g.addColorStop(1, rgba(b.color, 0));
-            ctx.fillStyle = g;
-            ctx.fillRect(b.x - b.r, b.y - b.r, b.r * 2, b.r * 2);
-          }
-
-          function drawStroke(ctx, st) {
-            if (st.alpha <= 0.01) return;
-            const dx = st.x1 - st.x0, dy = st.y1 - st.y0;
-            const len = Math.hypot(dx, dy);
-            if (len < 1) return;
-            const seg = Math.max(2, (len / 38) | 0);
-            const nx = -dy / len, ny = dx / len;
-            ctx.save();
-            ctx.strokeStyle = rgba(st.color, st.alpha);
-            ctx.lineWidth = st.width;
-            ctx.lineCap = 'round';
-            ctx.beginPath();
-            ctx.moveTo(st.x0, st.y0);
-            for (let s = 1; s <= seg; s++) {
-              const u = s / seg;
-              const j = Math.sin(u * 5.3 + st.seed) * 0.6 + Math.sin(u * 11.7 + st.seed * 1.7) * 0.32;
-              const off = j * Math.max(0.6, st.width * 0.6);
-              ctx.lineTo(st.x0 + dx * u + nx * off, st.y0 + dy * u + ny * off);
-            }
-            ctx.stroke();
-            ctx.restore();
-          }
-
-          function drawPanel(ctx, p) {
-            if (p.alpha <= 0.01 || p.w < 1 || p.h < 1) return;
-            const w = p.w, h = p.h;
-            const r = Math.min(p.radius, Math.min(w, h) * 0.45);
-            ctx.save();
-            ctx.translate(p.x, p.y);
-
-            // soft halo
-            if (p.glow > 0.02) {
-              const halo = ctx.createRadialGradient(0, 0, 0, 0, 0, Math.max(w, h) * 1.3);
-              halo.addColorStop(0, rgba(p.color, p.glow * 0.32));
-              halo.addColorStop(0.5, rgba(p.color, p.glow * 0.12));
-              halo.addColorStop(1, rgba(p.color, 0));
-              ctx.fillStyle = halo;
-              ctx.fillRect(-w * 1.6, -h * 1.6, w * 3.2, h * 3.2);
-            }
-
-            // fill
-            if (p.fill > 0.02) {
-              roundRectPath(ctx, -w / 2, -h / 2, w, h, r);
-              const role = p.spec.role;
-              if (role === 'image') {
-                const gr = ctx.createLinearGradient(-w / 2, -h / 2, w / 2, h / 2);
-                gr.addColorStop(0,   rgba(PAL.violet, p.fill * 0.95));
-                gr.addColorStop(0.55, rgba(PAL.rose,  p.fill * 0.78));
-                gr.addColorStop(1,   rgba(PAL.gold,  p.fill * 0.78));
-                ctx.fillStyle = gr;
-              } else if (role === 'button') {
-                const gr = ctx.createLinearGradient(0, -h / 2, 0, h / 2);
-                gr.addColorStop(0, rgba(PAL.gold, p.fill * 0.96));
-                gr.addColorStop(1, rgba(PAL.rose, p.fill * 0.72));
-                ctx.fillStyle = gr;
-              } else if (role === 'strip') {
-                ctx.fillStyle = rgba(PAL.gold, p.fill * 0.82);
-              } else if (role === 'dot') {
-                const gr = ctx.createRadialGradient(0, 0, 0, 0, 0, Math.max(w, h) / 2);
-                gr.addColorStop(0, rgba(PAL.rose, p.fill));
-                gr.addColorStop(1, rgba(PAL.rose, p.fill * 0.25));
-                ctx.fillStyle = gr;
-              } else if (role === 'card' || role === 'tile') {
-                ctx.fillStyle = rgba(p.color, p.fill * 0.45);
-              } else if (role === 'title' || role === 'nav') {
-                ctx.fillStyle = rgba(p.color, p.fill * 0.18);
-              } else {
-                ctx.fillStyle = rgba(p.color, p.fill * 0.45);
-              }
-              ctx.fill();
-            }
-
-            // outline
-            roundRectPath(ctx, -w / 2, -h / 2, w, h, r);
-            ctx.lineWidth = 1;
-            ctx.strokeStyle = rgba(p.color, p.alpha * 0.55);
-            ctx.stroke();
-
-            // interior details for image / nav / card / button (only when fill is high)
-            const role = p.spec.role;
-            if (role === 'image' && p.fill > 0.4) {
-              // small horizon line in image frame
-              ctx.strokeStyle = rgba(PAL.ivory, p.alpha * 0.18);
-              ctx.beginPath();
-              ctx.moveTo(-w / 2 + 8, h / 6);
-              ctx.lineTo(w / 2 - 8, h / 6);
-              ctx.stroke();
-            } else if (role === 'nav' && p.alpha > 0.5) {
-              ctx.fillStyle = rgba(PAL.ivory, p.alpha * 0.35);
-              const dotR = Math.min(2, h * 0.18);
-              ctx.beginPath(); ctx.arc(-w / 2 + 10, 0, dotR, 0, Math.PI * 2); ctx.fill();
-              ctx.fillStyle = rgba(PAL.ivoryD, p.alpha * 0.25);
-              const lw = Math.min(28, w * 0.13);
-              ctx.fillRect(w / 2 - lw - 6, -1, lw, 2);
-              ctx.fillRect(w / 2 - lw - 6 - lw - 8, -1, lw, 2);
-            } else if (role === 'card' && p.alpha > 0.5) {
-              ctx.fillStyle = rgba(PAL.ivory, p.alpha * 0.32);
-              ctx.fillRect(-w / 2 + 10, -h / 2 + 12, Math.min(56, w * 0.55), 2);
-              ctx.fillStyle = rgba(PAL.ivoryD, p.alpha * 0.22);
-              ctx.fillRect(-w / 2 + 10, -h / 2 + 22, Math.min(40, w * 0.4), 1.5);
-              ctx.fillRect(-w / 2 + 10, -h / 2 + 30, Math.min(46, w * 0.46), 1.5);
-            }
-
-            ctx.restore();
-          }
-
-          function drawGlyph(ctx, g) {
-            if (g.alpha <= 0.015) return;
-            ctx.save();
-            ctx.translate(g.x, g.y);
-            if (g.rot) ctx.rotate(g.rot);
-            if (g.scale !== 1) ctx.scale(g.scale, g.scale);
-            ctx.font = `${g.weight} ${g.size.toFixed(1)}px "JetBrains Mono", ui-monospace, monospace`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillStyle = rgba(g.color, g.alpha);
-            ctx.fillText(g.txt, 0, 0);
-            ctx.restore();
-          }
-
-          function drawTrail(ctx) {
-            if (trail.length < 2) return;
-            const now = performance.now();
-            ctx.save();
-            ctx.lineCap = 'round';
-            ctx.lineWidth = 1.2;
-            for (let i = 1; i < trail.length; i++) {
-              const a = trail[i - 1], b = trail[i];
-              const age = (now - b.t) / 700;
-              if (age >= 1) continue;
-              ctx.globalAlpha = (1 - age) * 0.32;
-              ctx.strokeStyle = rgba(PAL.gold, 1);
-              ctx.beginPath();
-              ctx.moveTo(a.x, a.y);
-              ctx.lineTo(b.x, b.y);
-              ctx.stroke();
-            }
-            ctx.restore();
-          }
-
-          function drawBloomEvent(ctx, b, now) {
-            const u = (now - b.t0) / b.life;
-            if (u >= 1) return false;
-            const eOut = 1 - Math.pow(1 - u, 3);
-            const r = b.r * eOut;
-            const a = (1 - u) * (1 - u);
-            // soft halo
-            const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, r);
-            g.addColorStop(0, rgba(PAL.gold, a * 0.55));
-            g.addColorStop(0.5, rgba(PAL.gold, a * 0.18));
-            g.addColorStop(1, rgba(PAL.gold, 0));
-            ctx.fillStyle = g;
-            ctx.fillRect(b.x - r, b.y - r, r * 2, r * 2);
-            // mini card outline
-            const cw = 58 * eOut, ch = 32 * eOut;
-            ctx.save();
-            ctx.translate(b.x, b.y);
-            ctx.strokeStyle = rgba(PAL.ivory, a * 0.9);
-            ctx.lineWidth = 1.1;
-            roundRectPath(ctx, -cw / 2, -ch / 2, cw, ch, 4);
-            ctx.stroke();
-            ctx.fillStyle = rgba(PAL.gold, a);
-            ctx.fillRect(-cw / 2 + 6, -ch / 2 + 6, 8, 2);
-            ctx.fillStyle = rgba(PAL.ivory, a * 0.55);
-            ctx.fillRect(-cw / 2 + 6, -ch / 2 + 12, 26, 1.5);
-            ctx.fillRect(-cw / 2 + 6, -ch / 2 + 17, 18, 1.5);
-            ctx.restore();
-            return true;
-          }
-
-          // ---------- render loop ----------
-          let lastT = performance.now();
-          const startT = performance.now();
-          function frame(now) {
-            const dt = Math.min(60, now - lastT) || 16;
-            lastT = now;
-            const elapsed = ((now - startT) % T_LOOP + T_LOOP) % T_LOOP;
-
-            assignTargets(elapsed);
-            applyCursor(dt);
-            stepAll(dt);
-
-            fg.clearRect(0, 0, W, H);
-            for (const b of blobs) drawBlob(fg, b);
-            for (const st of strokes) drawStroke(fg, st);
-            for (const p of panels) drawPanel(fg, p);
-            for (const g of glyphs) drawGlyph(fg, g);
-            drawTrail(fg);
-            blooms = blooms.filter(b => drawBloomEvent(fg, b, now));
-
-            requestAnimationFrame(frame);
-          }
-
-          // ---------- boot ----------
-          resize();
-          try { new ResizeObserver(resize).observe(root); } catch (_) {}
-          window.addEventListener('resize', resize, { passive: true });
-
-          if (reduced) {
-            // single elegant static frame at bloom peak
-            const t = P.bloom[0] + (P.bloom[1] - P.bloom[0]) * 0.75;
-            assignTargets(t);
-            for (const g of glyphs) { g.x = g.tx; g.y = g.ty; g.rot = g.trot; g.alpha = g.talpha; g.scale = g.tscale; }
-            for (const p of panels) { p.x = p.tx; p.y = p.ty; p.w = p.tw; p.h = p.th; p.alpha = p.talpha; p.fill = p.tfill; p.glow = p.tglow; }
-            for (const st of strokes) { st.x0 = st.tx0; st.y0 = st.ty0; st.x1 = st.tx1; st.y1 = st.ty1; st.alpha = st.talpha; st.width = st.twidth; }
-            for (const b of blobs) { b.x = b.tx; b.y = b.ty; b.r = b.tr; b.alpha = b.talpha; }
-            fg.clearRect(0, 0, W, H);
-            for (const b of blobs) drawBlob(fg, b);
-            for (const st of strokes) drawStroke(fg, st);
-            for (const p of panels) drawPanel(fg, p);
-            for (const g of glyphs) drawGlyph(fg, g);
+          // SCENE 2: structure emerges — most tokens assigned to a panel zone
+          const panelIdx = i % panels.length;
+          const p = panels[panelIdx];
+          const inPanel = i < panels.length * 6;
+          if (inPanel) {
+            t.pos[2] = [
+              p.x + rr(-p.w*0.38, p.w*0.38),
+              p.y + rr(-p.h*0.35, p.h*0.35),
+              rr(-0.03, 0.03)
+            ];
+            t.vis[2] = 0.55 + layRng()*0.30;
           } else {
-            requestAnimationFrame(frame);
+            // outliers drift to perimeter, dimmer
+            t.pos[2] = [rr(W*0.03, W*0.97), rr(H*0.04, H*0.96), rr(-0.15, 0.15)];
+            t.vis[2] = 0.18 + layRng()*0.18;
           }
-        })();
-        </script>
 
-      </div>
-    </div>
-    <div class="scroll-tag" aria-hidden="true">&lt;scroll&gt;</div>
+          // SCENE 3: refined craft — most fade, "survivors" remain as soft decoration
+          if (t.survive4) {
+            t.pos[3] = [t.pos[2][0] + rr(-W*0.01, W*0.01), t.pos[2][1] + rr(-H*0.01, H*0.01), t.pos[2][2]];
+            t.vis[3] = 0.22 + layRng()*0.18;
+          } else {
+            t.pos[3] = [t.pos[2][0] + rr(-W*0.05, W*0.05), t.pos[2][1] + H*0.06 + rr(0, H*0.10), 0];
+            t.vis[3] = 0.0;
+          }
+
+          // SCENE 4: MM monogram — most fade, assigned tokens converge to MM
+          // (mmIdx assignment happens below)
+          t.pos[4] = [W * 0.5 + rr(-W*0.04, W*0.04), H * 0.5 + rr(-H*0.04, H*0.04), 0];
+          t.vis[4] = 0.0;
+
+          // SCENE 5: final crafted state — all tokens nearly gone
+          t.pos[5] = [rr(W*0.04, W*0.96), rr(H*0.04, H*0.96), rr(-0.18, 0.18)];
+          t.vis[5] = 0.0;
+        }
+
+        // Assign MM monogram positions
+        const anchors = mmAnchors();
+        const segments = [
+          [0,1],[1,2],[2,3],[3,4],
+          [5,6],[6,7],[7,8],[8,9]
+        ];
+        const perSeg = Math.max(4, Math.min(8, Math.floor(tokens.length * 0.55 / segments.length)));
+        let mmCount = 0;
+        for (let s = 0; s < segments.length; s++) {
+          const [a, b] = segments[s];
+          const A = anchors[a], B = anchors[b];
+          for (let k = 0; k < perSeg; k++) {
+            const idx = (s * perSeg + k);
+            if (idx >= tokens.length) break;
+            const tk = tokens[idx];
+            const tt = (k + 0.5) / perSeg;
+            tk.pos[4] = [
+              lerp(A[0], B[0], tt) + (layRng() - 0.5) * 2.5,
+              lerp(A[1], B[1], tt) + (layRng() - 0.5) * 2.5,
+              (layRng() - 0.5) * 0.08
+            ];
+            tk.vis[4] = 0.80 + layRng() * 0.18;
+            tk.mmIdx = s * perSeg + k;
+            mmCount++;
+          }
+        }
+      }
+
+      /* ---------- drawing primitives ---------- */
+      function drawToken(t, x, y, rot, alpha) {
+        if (alpha <= 0.006) return;
+        ctx.save();
+        ctx.translate(x, y);
+        if (rot) ctx.rotate(rot);
+        ctx.font = `${t.weight} ${t.size}px 'JetBrains Mono', 'SF Mono', ui-monospace, monospace`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = rgba(t.color, alpha);
+        ctx.fillText(t.txt, 0, 0);
+        ctx.restore();
+      }
+
+      function drawRoundedRect(x, y, w, h, r) {
+        const rr = Math.min(r, Math.abs(w)/2, Math.abs(h)/2);
+        ctx.beginPath();
+        ctx.moveTo(x + rr, y);
+        ctx.lineTo(x + w - rr, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + rr);
+        ctx.lineTo(x + w, y + h - rr);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - rr, y + h);
+        ctx.lineTo(x + rr, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - rr);
+        ctx.lineTo(x, y + rr);
+        ctx.quadraticCurveTo(x, y, x + rr, y);
+        ctx.closePath();
+      }
+
+      function drawPanel(p, alpha, fillColor, strokeColor, glow) {
+        if (alpha <= 0.006) return;
+        const w = p.w, h = p.h;
+        const x = p.x - w/2, y = p.y - h/2;
+        ctx.save();
+        if (glow > 0.01) {
+          ctx.shadowColor = rgba(PAL.gold, 0.35 * glow);
+          ctx.shadowBlur = 30 * glow;
+        }
+        drawRoundedRect(x, y, w, h, p.rad);
+        ctx.fillStyle = rgba(fillColor, alpha);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = rgba(strokeColor, alpha * 0.4);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function drawGuide(g, alpha) {
+        if (alpha <= 0.006) return;
+        ctx.save();
+        ctx.strokeStyle = rgba(PAL.ivoryD, alpha * 0.20);
+        ctx.lineWidth = 1;
+        ctx.setLineDash([3, 6]);
+        ctx.beginPath();
+        if (g.kind === 'h') {
+          ctx.moveTo(W*0.06, g.k * H);
+          ctx.lineTo(W*0.94, g.k * H);
+        } else {
+          ctx.moveTo(g.k * W, H*0.08);
+          ctx.lineTo(g.k * W, H*0.92);
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.restore();
+      }
+
+      function drawFog(t) {
+        const off1x = Math.sin(t * 0.16) * 24;
+        const off1y = Math.cos(t * 0.13) * 18;
+        let g = ctx.createRadialGradient(W*0.28 + off1x, H*0.36 + off1y, 30, W*0.28, H*0.36, W*0.72);
+        g.addColorStop(0, rgba(PAL.gold, 0.06));
+        g.addColorStop(1, rgba(PAL.gold, 0));
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
+
+        const off2x = Math.cos(t * 0.18) * 22;
+        const off2y = Math.sin(t * 0.14) * 20;
+        g = ctx.createRadialGradient(W*0.74 + off2x, H*0.68 + off2y, 30, W*0.74, H*0.68, W*0.66);
+        g.addColorStop(0, rgba(PAL.violet, 0.07));
+        g.addColorStop(1, rgba(PAL.violet, 0));
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
+
+        g = ctx.createRadialGradient(W*0.5, H*1.05, 30, W*0.5, H*1.05, H*0.85);
+        g.addColorStop(0, rgba(PAL.teal, 0.05));
+        g.addColorStop(1, rgba(PAL.teal, 0));
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
+      }
+
+      function drawMMOutline(alpha) {
+        if (alpha <= 0.006) return;
+        const anchors = mmAnchors();
+        const segs = [[0,1],[1,2],[2,3],[3,4],[5,6],[6,7],[7,8],[8,9]];
+        ctx.save();
+        ctx.strokeStyle = rgba(PAL.gold, alpha * 0.55);
+        ctx.lineWidth = 1.2;
+        ctx.lineCap = 'round';
+        ctx.shadowColor = rgba(PAL.gold, alpha * 0.5);
+        ctx.shadowBlur = 14;
+        ctx.beginPath();
+        for (const [a, b] of segs) {
+          ctx.moveTo(anchors[a][0], anchors[a][1]);
+          ctx.lineTo(anchors[b][0], anchors[b][1]);
+        }
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      /* ---------- scroll progress ---------- */
+      let scrollP = 0;
+      function updateScroll() {
+        const rect = section.getBoundingClientRect();
+        const total = section.offsetHeight - window.innerHeight;
+        if (total <= 0) { scrollP = 0; return; }
+        scrollP = clamp01(-rect.top / total);
+      }
+
+      /* Story phase 0..5 — holds the current keyframe for ~55% of each scene,
+         then smoothly transitions to the next during the tail. Keeps the canvas
+         visual aligned with the text narration in each scene. */
+      function storyPhase(p) {
+        const SCENES = 6;
+        const sceneLen = 1 / SCENES;
+        const i = Math.min(SCENES - 1, Math.floor(p / sceneLen));
+        const within = (p - i * sceneLen) / sceneLen;
+        const holdEnd = 0.55;
+        if (i === SCENES - 1 || within < holdEnd) return i;
+        return i + smooth((within - holdEnd) / (1 - holdEnd));
+      }
+
+      /* ---------- scene UI ---------- */
+      const sceneEls = Array.from(document.querySelectorAll('#story-scenes .story-scene'));
+      const progressEls = Array.from(document.querySelectorAll('#story-progress span'));
+      const hintEl = document.getElementById('story-hint');
+      const chapterEl = document.getElementById('story-chapter-n');
+      let lastSceneIdx = -1;
+
+      function activeSceneIdx(p) {
+        // 6 equal scenes, but bias so each scene's text holds with breathing room
+        const step = 1 / 6;
+        if (p < step * 1) return 0;
+        if (p < step * 2) return 1;
+        if (p < step * 3) return 2;
+        if (p < step * 4) return 3;
+        if (p < step * 5) return 4;
+        return 5;
+      }
+
+      function updateSceneUI() {
+        const idx = activeSceneIdx(scrollP);
+        if (idx !== lastSceneIdx) {
+          sceneEls.forEach((el, i) => el.classList.toggle('is-active', i === idx));
+          progressEls.forEach((el, i) => el.classList.toggle('on', i <= idx));
+          if (chapterEl) chapterEl.textContent = String(idx + 1).padStart(2, '0');
+          lastSceneIdx = idx;
+        }
+        if (hintEl) {
+          hintEl.classList.toggle('is-faded', scrollP > 0.025);
+        }
+      }
+
+      /* ---------- main loop ---------- */
+      let t0 = performance.now();
+      let rafId = 0;
+
+      function frame() {
+        const now = performance.now();
+        const t = (now - t0) / 1000;
+
+        updateScroll();
+        updateSceneUI();
+
+        const p = scrollP;
+
+        // Story phase 0..5 — held per-scene with smooth tail transitions
+        const phase = storyPhase(p);
+        const baseIdx = Math.min(4, Math.floor(phase));
+        const local = phase - baseIdx;
+
+        ctx.clearRect(0, 0, W, H);
+
+        // background fog
+        drawFog(t);
+
+        // alignment guides — fade in late scene 0, peak through scene 1, fade by mid scene 2
+        let guideA = 0;
+        if (phase >= 0.75 && phase < 1.55) guideA = smooth((phase - 0.75) / 0.80);
+        else if (phase >= 1.55 && phase < 2.40) guideA = 1 - smooth((phase - 1.55) / 0.85);
+        for (const g of guides) drawGuide(g, guideA * 0.9);
+
+        // panels — emerge late scene 1, hold through scene 2, refine in scene 3,
+        // dissolve into MM in scene 4, then DOM takes over in scene 5 (no canvas panels)
+        for (let i = 0; i < panels.length; i++) {
+          const pp = panels[i];
+          let alpha = 0, fill = PAL.ivoryD, stroke = PAL.gold, glow = 0;
+
+          if (phase < 1.55) {
+            alpha = 0;
+          } else if (phase < 2.0) {
+            // Emerge during scene 1 → 2 transition: soft placeholders
+            alpha = smooth((phase - 1.55) / 0.45) * 0.60;
+            fill = PAL.ivoryD;
+            stroke = PAL.ivoryD;
+            glow = 0;
+          } else if (phase < 2.55) {
+            // Hold through scene 2 (architecture text)
+            alpha = 0.62;
+            fill = PAL.ivoryD;
+            stroke = lerpV(PAL.ivoryD, PAL.gold, (phase - 2.0) / 0.55);
+            glow = 0;
+          } else if (phase < 3.0) {
+            // Refine during scene 2 → 3 transition
+            const tt = smooth((phase - 2.55) / 0.45);
+            alpha = lerp(0.62, 0.92, tt);
+            fill = lerpV(PAL.ivoryD, PAL.ivory, tt);
+            stroke = PAL.gold;
+            glow = tt * 0.55;
+            if (pp.role === 'h-cta' || pp.role === 'link3') {
+              fill = lerpV(PAL.ivoryD, PAL.gold, tt);
+              glow = tt * 0.85;
+            }
+          } else if (phase < 3.55) {
+            // Hold refined through scene 3 (craft text)
+            alpha = 0.92;
+            fill = PAL.ivory;
+            stroke = PAL.gold;
+            glow = 0.55;
+            if (pp.role === 'h-cta' || pp.role === 'link3') {
+              fill = PAL.gold;
+              glow = 0.85;
+            }
+          } else if (phase < 4.0) {
+            // Dissolve during scene 3 → 4 as MM forms
+            const tt = smooth((phase - 3.55) / 0.45);
+            alpha = lerp(0.92, 0.0, tt);
+            fill = PAL.ivory;
+            stroke = PAL.gold;
+            glow = (1 - tt) * 0.35;
+            if (pp.role === 'h-cta' || pp.role === 'link3') fill = PAL.gold;
+          } else {
+            // Scene 4 hold + scene 4→5 transition + scene 5 — DOM final scene handles composition
+            alpha = 0;
+          }
+          drawPanel(pp, alpha, fill, stroke, glow);
+        }
+
+        // MM monogram outline — forms in scene 3→4 transition, holds in scene 4,
+        // fades during scene 4→5 transition.
+        let mmOutlineA = 0;
+        if (phase >= 3.55 && phase < 4.0)      mmOutlineA = smooth((phase - 3.55) / 0.45);
+        else if (phase >= 4.0 && phase < 4.55) mmOutlineA = 1;
+        else if (phase >= 4.55 && phase < 5.0) mmOutlineA = 1 - smooth((phase - 4.55) / 0.45);
+        drawMMOutline(mmOutlineA);
+
+        // tokens
+        for (let i = 0; i < tokens.length; i++) {
+          const tk = tokens[i];
+          const a = tk.pos[baseIdx];
+          const b = tk.pos[baseIdx + 1] || tk.pos[baseIdx];
+          if (!a) continue;
+
+          const wob = Math.sin(t * 0.45 + tk.seed) * tk.waveX * (baseIdx < 1 ? 2.4 : 0.9);
+          const wob2 = Math.cos(t * 0.38 + tk.seed * 1.27) * tk.waveY * (baseIdx < 1 ? 2.4 : 0.9);
+
+          const x = lerp(a[0], b[0], local) + wob;
+          const y = lerp(a[1], b[1], local) + wob2;
+          const rot = lerp(a[2], b[2], local);
+
+          let alpha = lerp(tk.vis[baseIdx], tk.vis[baseIdx + 1] || 0, local);
+          drawToken(tk, x, y, rot, alpha);
+        }
+
+        rafId = requestAnimationFrame(frame);
+      }
+
+      /* ---------- init ---------- */
+      let resizeTimer = 0;
+      function onResize() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(resize, 80);
+      }
+      resize();
+      window.addEventListener('resize', onResize);
+      window.addEventListener('scroll', updateScroll, { passive: true });
+      updateScroll();
+      updateSceneUI();
+      // make scene 0 visible immediately
+      if (sceneEls[0]) sceneEls[0].classList.add('is-active');
+      if (progressEls[0]) progressEls[0].classList.add('on');
+
+      // Pause when offscreen to save battery
+      const io = ('IntersectionObserver' in window) ? new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            if (!rafId) { t0 = performance.now(); rafId = requestAnimationFrame(frame); }
+          } else {
+            if (rafId) { cancelAnimationFrame(rafId); rafId = 0; }
+          }
+        }
+      }, { threshold: 0 }) : null;
+      if (io) io.observe(section);
+      else rafId = requestAnimationFrame(frame);
+    })();
+    </script>
   </section>
+
 
   <section id="showcase">
     <div id="sc-glow-bg"></div>
@@ -10569,26 +10480,6 @@
     gsap.to('#ab2', { scrollTrigger: { scrub: 3 }, y:  150, x: -60 });
     gsap.to('#ab3', { scrollTrigger: { scrub: 2 }, y: -100 });
 
-    // Hero exit — copy fades first while the markup field keeps animating into its scroll state
-    gsap.to('#hero-left', {
-      scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.2 },
-      y: -72,
-      opacity: 0,
-      ease: 'none',
-    });
-    gsap.to('.markup-field', {
-      scrollTrigger: { trigger: '#hero', start: '25% top', end: 'bottom top', scrub: 1.2 },
-      y: -18,
-      opacity: 1,
-      ease: 'none',
-    });
-    // Hero tokens parallax slower — linger as content leaves
-    gsap.to('.hero-token', {
-      scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.8 },
-      y: -40,
-      opacity: 0,
-      ease: 'none',
-    });
     // Showcase phone rises into view — no section-level opacity, so there's never a black void
     gsap.fromTo('#sc-phone-col', { y: 50 }, {
       scrollTrigger: { trigger: '#showcase', start: 'top 70%', end: 'top 10%', scrub: 1.5 },
