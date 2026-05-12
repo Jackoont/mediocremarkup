@@ -6349,935 +6349,925 @@
 
       <div class="hero-system" aria-hidden="true">
         <style>
-          .fant-frame {
+          .garden-frame {
             position: relative;
             width: min(calc(100% - clamp(72px, 5.5vw, 92px)), 620px);
             height: clamp(430px, 50vw, 620px);
             margin-left: auto;
             margin-right: clamp(72px, 5.5vw, 92px);
-            border: 1px solid rgba(190,200,230,0.07);
-            background:
-              radial-gradient(ellipse at 50% 28%, rgba(108,128,232,0.10), transparent 58%),
-              radial-gradient(ellipse at 18% 88%, rgba(95,200,165,0.06), transparent 55%),
-              radial-gradient(ellipse at 88% 72%, rgba(176,143,255,0.06), transparent 60%),
-              linear-gradient(165deg, #0e1019 0%, #0a0b13 55%, #07080d 100%);
-            box-shadow: 0 38px 100px rgba(0,0,0,0.55), inset 0 0 0 1px rgba(190,200,230,0.04);
+            border-radius: 4px;
             overflow: hidden;
             isolation: isolate;
-            pointer-events: none;
-            border-radius: 3px;
-          }
-          .fant-frame canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-          .fant-base { z-index: 1; }
-          .fant-glow { z-index: 2; mix-blend-mode: screen; filter: blur(18px) saturate(140%); opacity: 0.85; }
-          .fant-fg   { z-index: 3; }
-          .fant-vignette {
-            position: absolute; inset: 0; z-index: 4; pointer-events: none;
+            cursor: crosshair;
             background:
-              radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.55) 100%),
-              linear-gradient(180deg, rgba(0,0,0,0.22) 0%, rgba(0,0,0,0) 14%, rgba(0,0,0,0) 84%, rgba(0,0,0,0.28) 100%);
+              radial-gradient(ellipse at 22% 18%, rgba(218,170,98,0.08), transparent 55%),
+              radial-gradient(ellipse at 82% 78%, rgba(156,128,198,0.08), transparent 55%),
+              radial-gradient(ellipse at 52% 102%, rgba(80,144,154,0.07), transparent 60%),
+              linear-gradient(168deg, #181420 0%, #110d18 60%, #0a070f 100%);
+            box-shadow:
+              0 38px 100px rgba(0,0,0,0.55),
+              inset 0 0 0 1px rgba(218,200,170,0.05),
+              inset 0 -120px 160px rgba(0,0,0,0.35);
+            touch-action: pan-y;
           }
-          @media (prefers-reduced-motion: reduce) { .fant-frame canvas { animation: none; } }
+          .garden-frame canvas {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%;
+            display: block;
+            pointer-events: none;
+          }
+          .garden-grain {
+            position: absolute; inset: 0;
+            pointer-events: none;
+            mix-blend-mode: overlay;
+            opacity: 0.14;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>");
+          }
+          .garden-vignette {
+            position: absolute; inset: 0;
+            pointer-events: none;
+            background:
+              radial-gradient(ellipse at 50% 55%, rgba(0,0,0,0) 56%, rgba(0,0,0,0.55) 100%),
+              linear-gradient(180deg, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0) 12%, rgba(0,0,0,0) 86%, rgba(0,0,0,0.28) 100%);
+          }
+          @media (max-width: 980px) {
+            .garden-frame {
+              margin-right: 0;
+              margin-left: 0;
+              width: 100%;
+              height: clamp(360px, 76vw, 440px);
+            }
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .garden-frame { cursor: default; }
+          }
         </style>
-        <div class="fant-frame" id="fant-frame">
-          <canvas class="fant-base" id="fant-base"></canvas>
-          <canvas class="fant-glow" id="fant-glow"></canvas>
-          <canvas class="fant-fg" id="fant-fg"></canvas>
-          <div class="fant-vignette"></div>
+        <div class="garden-frame" id="garden-frame">
+          <canvas id="garden-bg"></canvas>
+          <canvas id="garden-fg"></canvas>
+          <div class="garden-grain"></div>
+          <div class="garden-vignette"></div>
         </div>
         <script>
         (() => {
           'use strict';
-          const root = document.getElementById('fant-frame');
+          const root = document.getElementById('garden-frame');
           if (!root) return;
-          const baseC = document.getElementById('fant-base');
-          const glowC = document.getElementById('fant-glow');
-          const fgC   = document.getElementById('fant-fg');
-          const base = baseC.getContext('2d');
-          const glow = glowC.getContext('2d');
-          const fg   = fgC.getContext('2d');
+          const bgC = document.getElementById('garden-bg');
+          const fgC = document.getElementById('garden-fg');
+          if (!bgC || !fgC) return;
+          const bg = bgC.getContext('2d');
+          const fg = fgC.getContext('2d');
 
-          const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          const reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+          const fine = !!(window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches);
           const cores = navigator.hardwareConcurrency || 8;
-          const LOW = cores <= 4;
+          const LOW = cores <= 4 || window.innerWidth < 720;
 
-          let W = 0, H = 0, DPR = 1;
-          const GLOW_SCALE = 0.5;
-
+          // ---------- palette ----------
           const PAL = {
-            indigo:   [126, 144, 255],
-            indigoDk: [ 88, 104, 220],
-            emerald:  [102, 206, 168],
-            paleBlue: [168, 200, 240],
-            gold:     [232, 198, 122],
-            violet:   [184, 152, 255],
-            silver:   [222, 230, 244],
-            ink:      [200, 210, 230],
-            dim:      [120, 130, 158],
-            rose:     [230, 158, 178]
+            ivory:   [238, 230, 216],
+            ivoryD:  [200, 188, 170],
+            gold:    [218, 170, 98],
+            violet:  [156, 128, 198],
+            teal:    [80, 144, 154],
+            emerald: [110, 172, 138],
+            rose:    [208, 148, 138],
+            mute:    [126, 116, 138],
+            ink:     [60, 56, 70]
           };
           const rgba = (c, a) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
           const lerp = (a, b, t) => a + (b - a) * t;
-          const clamp01 = x => x < 0 ? 0 : (x > 1 ? 1 : x);
-          const smooth = x => { x = clamp01(x); return x*x*(3 - 2*x); };
+          const clamp01 = x => x < 0 ? 0 : x > 1 ? 1 : x;
+          const smooth = x => { x = clamp01(x); return x * x * (3 - 2 * x); };
+          const easeInOut = x => { x = clamp01(x); return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2; };
           const easeOutCubic = x => 1 - Math.pow(1 - clamp01(x), 3);
-          const easeInOutCubic = x => { x = clamp01(x); return x < 0.5 ? 4*x*x*x : 1 - Math.pow(-2*x+2,3)/2; };
-          const easeOutBack = x => { x = clamp01(x); const c1 = 1.5, c3 = c1 + 1; return 1 + c3*Math.pow(x-1,3) + c1*Math.pow(x-1,2); };
-          const easeOutElastic = x => {
+          const easeOutBack = x => {
             x = clamp01(x);
-            if (x === 0 || x === 1) return x;
-            const c = (2 * Math.PI) / 0.6;
-            return Math.pow(2, -9*x) * Math.sin((x*10 - 0.75) * c) + 1;
+            const c1 = 1.35, c3 = c1 + 1;
+            return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
           };
-          const fade = (u, a, b) => smooth((u - a) / (b - a));
-          const rand = (a,b) => a + Math.random()*(b-a);
+          const rand = (a, b) => a + Math.random() * (b - a);
+
+          // ---------- token bank ----------
+          const TAGS = ['<div>','</div>','<section>','</section>','<header>','</header>','<nav>','</nav>','<button>','</button>','<a>','</a>','<h1>','</h1>','<p>','</p>','<span>','</span>','<img/>','<main>','<figure>','</figure>','<article>','</article>','<ul>','</ul>','<li>','</li>','<form>','<label>'];
+          const PROPS = ['class=""','padding:','margin:','flex','grid','gap:','1fr','24px','auto','color:','font','rgba(','--bg','rounded','shadow','12px','radius','inline','block','hover','aria-','href=','width:','height:'];
+          const PUNC  = ['{','}','/*','*/','//','::','-->','<!--',':',';','+','~','...','=>','&&'];
+
+          const pick = arr => arr[(Math.random() * arr.length) | 0];
 
           // ---------- sizing ----------
+          let W = 0, H = 0, DPR = 1;
           function resize() {
             const r = root.getBoundingClientRect();
             DPR = Math.min(window.devicePixelRatio || 1, 2);
             W = Math.max(1, Math.round(r.width));
             H = Math.max(1, Math.round(r.height));
-            for (const c of [baseC, fgC]) {
+            for (const c of [bgC, fgC]) {
               c.width  = Math.max(1, Math.round(W * DPR));
               c.height = Math.max(1, Math.round(H * DPR));
               c.getContext('2d').setTransform(DPR, 0, 0, DPR, 0, 0);
             }
-            glowC.width  = Math.max(1, Math.round(W * GLOW_SCALE));
-            glowC.height = Math.max(1, Math.round(H * GLOW_SCALE));
-            glow.setTransform(GLOW_SCALE, 0, 0, GLOW_SCALE, 0, 0);
+            initEntityPositions();
+            drawBg();
           }
-          resize();
-          try { new ResizeObserver(resize).observe(root); } catch(_) {}
 
           // ---------- entities ----------
-          // glyphs: small markup fragments (text)
-          const CHARS_OPEN  = ['<','<div','<span','<a','<img','<section','<button','<nav','<ul','<li','<header','<h2','<p','<main','<aside','<figure'];
-          const CHARS_CLOSE = ['/>','</','</div>','</a>','</span>','</p>','</li>','>','</section>'];
-          const CHARS_MISC  = ['{','}','/*','*/','//','--','px','rem','%','1fr','flex','grid','auto',':',';','.','#','::'];
-
-          const COLORKEYS_BRIGHT = ['indigo','paleBlue','silver','emerald','gold','violet'];
-
-          function pickColor(keys) { return PAL[keys[(Math.random()*keys.length)|0]]; }
-
-          const N_GLYPHS = LOW ? 78 : 116;
+          const N_GLYPHS = reduced ? 36 : (LOW ? 58 : 92);
           const glyphs = [];
           for (let i = 0; i < N_GLYPHS; i++) {
             const r = Math.random();
-            let char, color, family;
-            if (r < 0.42) {
-              char = CHARS_OPEN[(Math.random()*CHARS_OPEN.length)|0];
-              color = pickColor(['indigo','paleBlue','silver','silver']);
-              family = 'open';
-            } else if (r < 0.72) {
-              char = CHARS_CLOSE[(Math.random()*CHARS_CLOSE.length)|0];
-              color = pickColor(['emerald','indigo','silver']);
-              family = 'close';
+            let txt, fam, color;
+            if (r < 0.52) {
+              txt = pick(TAGS); fam = 'tag';
+              color = [PAL.ivory, PAL.ivoryD, PAL.violet, PAL.teal][(Math.random() * 4) | 0];
+            } else if (r < 0.86) {
+              txt = pick(PROPS); fam = 'prop';
+              color = [PAL.gold, PAL.emerald, PAL.ivoryD, PAL.mute][(Math.random() * 4) | 0];
             } else {
-              char = CHARS_MISC[(Math.random()*CHARS_MISC.length)|0];
-              color = pickColor(['gold','violet','dim','silver','rose']);
-              family = 'misc';
+              txt = pick(PUNC); fam = 'punc';
+              color = [PAL.mute, PAL.rose, PAL.ivoryD][(Math.random() * 3) | 0];
             }
             glyphs.push({
-              char, color, family,
-              size: rand(10, 17),
-              weight: 400 + ((Math.random()*3)|0)*100,
-              x: rand(0,1)*W, y: rand(0,1)*H,
-              vx: 0, vy: 0,
-              tx: 0, ty: 0,
-              rot: rand(-0.4, 0.4),
-              trot: 0,
-              scale: 1, tscale: 1,
-              alpha: 0, talpha: 0,
-              layer: Math.random(),         // 0 (back) - 1 (front)
-              seed: Math.random()*1000,
-              spin: rand(-0.3, 0.3)
+              txt, fam, color,
+              size: fam === 'punc' ? rand(10, 13) : rand(11, 14.5),
+              weight: fam === 'tag' ? 500 : 400,
+              x: 0, y: 0, rot: 0, alpha: 0, scale: 1,
+              tx: 0, ty: 0, trot: 0, talpha: 0, tscale: 1,
+              wx: 0.05 + Math.random() * 0.90,
+              wy: 0.05 + Math.random() * 0.90,
+              wrot: rand(-0.20, 0.20),
+              seed: Math.random() * 1000,
+              survive: Math.random() < 0.62,
+              keepInBloom: Math.random() < 0.42,
+              keepInMM: Math.random() < 0.12,
+              cursorOx: 0, cursorOy: 0
             });
           }
 
-          // panels: rounded outline frames (cards, image frames, buttons, nav strips)
-          const N_PANELS = 10;
-          const panels = [];
-          for (let i = 0; i < N_PANELS; i++) {
-            panels.push({
-              x: W/2, y: H/2, w: 60, h: 30,
-              tx: W/2, ty: H/2, tw: 60, th: 30,
-              rot: 0, trot: 0,
-              alpha: 0, talpha: 0,
-              color: pickColor(['indigo','paleBlue','silver','emerald','violet']),
-              fill: 0, tfill: 0,
-              radius: 6,
-              corners: Math.random() < 0.6,
-              seed: Math.random()*1000,
-              layer: Math.random()
-            });
-          }
-
-          // ribbons: bezier paths that travel
-          const N_RIBBONS = 5;
-          const ribbons = [];
-          for (let i = 0; i < N_RIBBONS; i++) {
-            ribbons.push({
-              p0: {x:0,y:0}, p1: {x:0,y:0}, p2: {x:0,y:0}, p3: {x:0,y:0},
-              tp0: {x:0,y:0}, tp1: {x:0,y:0}, tp2: {x:0,y:0}, tp3: {x:0,y:0},
-              color: pickColor(['indigo','emerald','violet','gold','paleBlue']),
-              alpha: 0, talpha: 0,
-              width: rand(1.2, 2.4),
-              dash: rand(0,1),
-              phase: Math.random()*Math.PI*2,
-              speed: rand(0.4, 1.0)
-            });
-          }
-
-          // orbit nodes: small glowing dots
-          const N_NODES = LOW ? 24 : 36;
-          const nodes = [];
-          for (let i = 0; i < N_NODES; i++) {
-            nodes.push({
-              x: W/2, y: H/2,
-              tx: W/2, ty: H/2,
-              alpha: 0, talpha: 0,
-              size: rand(1.2, 2.6),
-              color: pickColor(['paleBlue','silver','gold','violet','emerald']),
-              layer: Math.random(),
-              seed: Math.random()*1000,
-              vx: 0, vy: 0
-            });
-          }
-
-          // ---------- scene helpers ----------
-          // sample a position on the outline of a rounded rect, parameterized t in [0,1)
-          function rectOutline(cx, cy, w, h, t) {
-            const r = Math.min(8, w*0.2, h*0.2);
-            const innerW = w - 2*r, innerH = h - 2*r;
-            const perim = 2*(innerW + innerH) + 2*Math.PI*r;
-            let d = (t % 1) * perim;
-            // top edge
-            if (d < innerW) return { x: cx - w/2 + r + d, y: cy - h/2 };
-            d -= innerW;
-            // top-right arc (skipped flat for compactness)
-            if (d < (Math.PI*r)/2) return { x: cx + w/2 - r + r*Math.sin(d/r), y: cy - h/2 + r - r*Math.cos(d/r) };
-            d -= (Math.PI*r)/2;
-            if (d < innerH) return { x: cx + w/2, y: cy - h/2 + r + d };
-            d -= innerH;
-            if (d < (Math.PI*r)/2) return { x: cx + w/2 - r + r*Math.cos(d/r), y: cy + h/2 - r + r*Math.sin(d/r) };
-            d -= (Math.PI*r)/2;
-            if (d < innerW) return { x: cx + w/2 - r - d, y: cy + h/2 };
-            d -= innerW;
-            if (d < (Math.PI*r)/2) return { x: cx - w/2 + r - r*Math.sin(d/r), y: cy + h/2 - r + r*Math.cos(d/r) };
-            d -= (Math.PI*r)/2;
-            if (d < innerH) return { x: cx - w/2, y: cy + h/2 - r - d };
-            d -= innerH;
-            return { x: cx - w/2 + r - r*Math.cos(d/r), y: cy - h/2 + r - r*Math.sin(d/r) };
-          }
-
-          // MM letter stroke points (polyline). Each M: 5 vertices, 4 segments.
-          function makeMStrokes(cx, cy, w, h) {
-            const x0 = cx - w/2, x1 = cx + w/2, y0 = cy - h/2, y1 = cy + h/2;
-            return [
-              {x:x0, y:y1}, {x:x0, y:y0}, {x:cx, y:y0 + h*0.55}, {x:x1, y:y0}, {x:x1, y:y1}
-            ];
-          }
-          // sample t in [0,1] along a polyline of vertices
-          function polyPoint(verts, t) {
-            let total = 0;
-            const segs = [];
-            for (let i = 0; i < verts.length-1; i++) {
-              const dx = verts[i+1].x - verts[i].x, dy = verts[i+1].y - verts[i].y;
-              const L = Math.hypot(dx, dy); segs.push(L); total += L;
-            }
-            let d = t * total;
-            for (let i = 0; i < segs.length; i++) {
-              if (d <= segs[i]) {
-                const k = d / segs[i];
-                return { x: lerp(verts[i].x, verts[i+1].x, k), y: lerp(verts[i].y, verts[i+1].y, k) };
-              }
-              d -= segs[i];
-            }
-            return verts[verts.length-1];
-          }
-
-          // ---------- scenes ----------
-          // Each scene assigns targets for glyphs, panels, ribbons, nodes for a given local-progress u (0..1)
-          const SCENES = [
-            { name: 'burst',    dur: 3.0 },
-            { name: 'assemble', dur: 5.5 },
-            { name: 'abstract', dur: 6.0 },
-            { name: 'peak',     dur: 5.5 },
-            { name: 'mm',       dur: 6.0 },
-            { name: 'dissolve', dur: 4.0 }
+          const PANEL_SPECS = [
+            { role: 'nav',    kx: 0.50, ky: 0.135, kw: 0.74, kh: 0.050, radius: 3   },
+            { role: 'image',  kx: 0.66, ky: 0.46,  kw: 0.40, kh: 0.30,  radius: 4   },
+            { role: 'button', kx: 0.24, ky: 0.56,  kw: 0.20, kh: 0.072, radius: 999 },
+            { role: 'title',  kx: 0.27, ky: 0.32,  kw: 0.34, kh: 0.18,  radius: 3   },
+            { role: 'card',   kx: 0.25, ky: 0.79,  kw: 0.28, kh: 0.10,  radius: 4   },
+            { role: 'tile',   kx: 0.66, ky: 0.83,  kw: 0.22, kh: 0.072, radius: 4   },
+            { role: 'strip',  kx: 0.105,ky: 0.30,  kw: 0.04, kh: 0.44,  radius: 2   },
+            { role: 'dot',    kx: 0.86, ky: 0.20,  kw: 0.060, kh: 0.060,radius: 999 }
           ];
-          let TOTAL = 0;
-          for (const s of SCENES) { s.t0 = TOTAL; TOTAL += s.dur; s.t1 = TOTAL; }
-          // total ≈ 30s
+          const N_PANELS = PANEL_SPECS.length;
+          function panelColor(role) {
+            return ({
+              nav: PAL.ivory, image: PAL.violet, button: PAL.gold, title: PAL.ivoryD,
+              card: PAL.teal, tile: PAL.emerald, strip: PAL.gold, dot: PAL.rose
+            })[role] || PAL.ivory;
+          }
+          const panels = PANEL_SPECS.map((s, i) => ({
+            spec: s, color: panelColor(s.role),
+            x: 0, y: 0, w: 0, h: 0, alpha: 0, fill: 0, glow: 0, radius: s.radius,
+            tx: 0, ty: 0, tw: 0, th: 0, talpha: 0, tfill: 0, tglow: 0,
+            morphsToMM: i < 4,
+            seed: Math.random() * 1000
+          }));
 
-          function sceneAt(t) {
-            t = ((t % TOTAL) + TOTAL) % TOTAL;
-            for (let i = 0; i < SCENES.length; i++) {
-              if (t < SCENES[i].t1) {
-                const s = SCENES[i];
-                return { idx: i, name: s.name, u: (t - s.t0) / s.dur, dur: s.dur, local: t - s.t0 };
-              }
-            }
-            const s = SCENES[SCENES.length-1];
-            return { idx: SCENES.length-1, name: s.name, u: 1, dur: s.dur, local: s.dur };
+          // strokes: hand-drawn alignment guides + MM diagonals
+          const N_STROKES = 8;
+          const strokes = [];
+          for (let i = 0; i < N_STROKES; i++) {
+            strokes.push({
+              x0: 0, y0: 0, x1: 0, y1: 0,
+              tx0: 0, ty0: 0, tx1: 0, ty1: 0,
+              alpha: 0, talpha: 0, width: 0.6, twidth: 0.6,
+              color: [PAL.ivoryD, PAL.gold, PAL.violet, PAL.teal][i % 4],
+              seed: Math.random() * 1000,
+              mmRole: i < 4 ? i : -1
+            });
           }
 
-          // --- target assigners ---
-          function assignBurst(u) {
-            // 0-3s: fragments sweep in from edges along curved trails, settling into a loose central swarm
-            const cx = W*0.5, cy = H*0.52;
-            const radius = Math.min(W,H) * 0.36;
-            for (let i = 0; i < glyphs.length; i++) {
-              const g = glyphs[i];
-              // staggered reveal across first 1.5s of scene, finish settling by end
-              const stagger = i / glyphs.length;
-              const reveal = clamp01((u - stagger*0.5) / 0.6);
-              const a = (i / glyphs.length) * Math.PI * 2 + g.seed*0.01;
-              const r = radius * (0.6 + 0.4*Math.sin(g.seed*0.7 + a*1.3));
-              g.tx = cx + Math.cos(a) * r;
-              g.ty = cy + Math.sin(a) * r * 0.78;
-              g.trot = Math.sin(g.seed + u*2) * 0.18;
-              g.tscale = 0.9 + 0.15*Math.sin(g.seed*1.2);
-              g.talpha = easeOutCubic(reveal) * (0.5 + 0.5*g.layer);
-            }
-            for (const p of panels) { p.talpha = 0; p.tfill = 0; }
-            for (const rb of ribbons) { rb.talpha = u > 0.6 ? 0.08 * fade(u,0.6,1) : 0; }
-            for (let i = 0; i < nodes.length; i++) {
-              const n = nodes[i];
-              const stagger = i / nodes.length;
-              const reveal = clamp01((u - stagger*0.4) / 0.7);
-              const a = (i / nodes.length) * Math.PI * 2 + n.seed*0.02;
-              const r = radius * (0.95 + 0.25*Math.sin(n.seed));
-              n.tx = cx + Math.cos(a) * r * 0.6;
-              n.ty = cy + Math.sin(a) * r * 0.5;
-              n.talpha = easeOutCubic(reveal) * 0.85;
-            }
+          // soft warm glow blobs
+          const blobCols = [PAL.gold, PAL.violet, PAL.teal, PAL.emerald, PAL.rose];
+          const blobPos = [
+            { kx: 0.24, ky: 0.56, kr: 0.22 },
+            { kx: 0.66, ky: 0.46, kr: 0.30 },
+            { kx: 0.50, ky: 0.13, kr: 0.20 },
+            { kx: 0.65, ky: 0.83, kr: 0.18 },
+            { kx: 0.86, ky: 0.20, kr: 0.16 }
+          ];
+          const N_BLOBS = blobPos.length;
+          const blobs = blobPos.map((p, i) => ({
+            x: 0, y: 0, r: 0, alpha: 0,
+            tx: 0, ty: 0, tr: 0, talpha: 0,
+            color: blobCols[i], spec: p
+          }));
+
+          // ---------- MM monogram geometry ----------
+          function mmGeom(cx) {
+            const cy = 0.50, mw = 0.16, mh = 0.30;
+            const barW = 0.022, barH = mh;
+            return {
+              lbar: { kx: cx - mw / 2 + barW / 2, ky: cy, kw: barW, kh: barH },
+              rbar: { kx: cx + mw / 2 - barW / 2, ky: cy, kw: barW, kh: barH },
+              apex: { x: cx, y: cy + mh * 0.06 },
+              topL: { x: cx - mw / 2 + barW * 0.8, y: cy - mh / 2 + barW * 0.4 },
+              topR: { x: cx + mw / 2 - barW * 0.8, y: cy - mh / 2 + barW * 0.4 }
+            };
+          }
+          const MM_L = mmGeom(0.34);
+          const MM_R = mmGeom(0.66);
+          function panelMMTarget(i) {
+            if (i === 0) return MM_L.lbar;
+            if (i === 1) return MM_L.rbar;
+            if (i === 2) return MM_R.lbar;
+            if (i === 3) return MM_R.rbar;
+            return null;
+          }
+          function strokeMMTarget(i) {
+            if (i === 0) return { x0: MM_L.topL.x, y0: MM_L.topL.y, x1: MM_L.apex.x, y1: MM_L.apex.y };
+            if (i === 1) return { x0: MM_L.apex.x, y0: MM_L.apex.y, x1: MM_L.topR.x, y1: MM_L.topR.y };
+            if (i === 2) return { x0: MM_R.topL.x, y0: MM_R.topL.y, x1: MM_R.apex.x, y1: MM_R.apex.y };
+            if (i === 3) return { x0: MM_R.apex.x, y0: MM_R.apex.y, x1: MM_R.topR.x, y1: MM_R.topR.y };
+            return null;
           }
 
-          function assignAssemble(u) {
-            // 3-8.5s: interface composition — big card, image frame, button row, nav strip
-            const cx = W*0.5, cy = H*0.5;
-            // panels layout
-            const layout = [
-              // big card frame
-              { x: cx,           y: cy - H*0.07, w: W*0.62, h: H*0.46, fill: 0.06, color: PAL.silver, corners: true, radius: 8 },
-              // image frame inside (top)
-              { x: cx - W*0.06,  y: cy - H*0.18, w: W*0.34, h: H*0.16, fill: 0.10, color: PAL.indigo, corners: false, radius: 4 },
-              // small icon block
-              { x: cx + W*0.18,  y: cy - H*0.18, w: W*0.10, h: H*0.10, fill: 0.10, color: PAL.violet, corners: false, radius: 4 },
-              // line block (text bar 1)
-              { x: cx - W*0.10,  y: cy - H*0.03, w: W*0.30, h: H*0.012, fill: 0.5, color: PAL.silver, corners: false, radius: 2 },
-              // line block 2
-              { x: cx - W*0.15,  y: cy + H*0.00, w: W*0.20, h: H*0.012, fill: 0.5, color: PAL.silver, corners: false, radius: 2 },
-              // button
-              { x: cx - W*0.16,  y: cy + H*0.05, w: W*0.12, h: H*0.04, fill: 0.4, color: PAL.emerald, corners: false, radius: 6 },
-              // ghost button
-              { x: cx - W*0.02,  y: cy + H*0.05, w: W*0.08, h: H*0.04, fill: 0.0, color: PAL.silver, corners: false, radius: 6 },
-              // nav strip (top)
-              { x: cx,           y: cy - H*0.34, w: W*0.58, h: H*0.028, fill: 0.04, color: PAL.paleBlue, corners: false, radius: 3 },
-              // nested small card 1 (right column)
-              { x: cx + W*0.20,  y: cy + H*0.02, w: W*0.16, h: H*0.20, fill: 0.05, color: PAL.gold, corners: true, radius: 5 },
-              // bottom info strip
-              { x: cx,           y: cy + H*0.18, w: W*0.50, h: H*0.018, fill: 0.30, color: PAL.dim, corners: false, radius: 2 }
-            ];
-            for (let i = 0; i < panels.length; i++) {
-              const p = panels[i], L = layout[i];
-              p.tx = L.x; p.ty = L.y; p.tw = L.w; p.th = L.h;
-              p.color = L.color; p.corners = L.corners; p.radius = L.radius;
-              const stagger = i / panels.length;
-              const reveal = clamp01((u - stagger*0.35) / 0.5);
-              p.talpha = easeOutCubic(reveal) * 0.95;
-              p.tfill = L.fill;
-              p.trot = 0;
+          // ---------- phases ----------
+          const T_LOOP = 28000;
+          const P = {
+            wall:  [0,     4000],
+            sort:  [4000,  9000],
+            struc: [9000, 15000],
+            bloom: [15000, 22000],
+            mm:    [22000, 27000],
+            retn:  [27000, 28000]
+          };
+          function phaseAt(t) {
+            for (const k of ['wall','sort','struc','bloom','mm','retn']) {
+              const [a, b] = P[k];
+              if (t >= a && t < b) return [k, (t - a) / (b - a)];
             }
-            // glyphs: arrange around+inside the composition (some line bars, some scattered)
-            for (let i = 0; i < glyphs.length; i++) {
-              const g = glyphs[i];
-              const which = i % 8;
-              let tx, ty;
-              if (which < 3) {
-                // outside-left as code column
-                tx = W*0.10 + ((i*7) % 6) * (W*0.04);
-                ty = H*0.18 + ((i*11) % 14) * (H*0.04);
-              } else if (which < 5) {
-                // along nav strip
-                const k = (i % 14) / 14;
-                tx = cx - W*0.27 + k * W*0.54;
-                ty = cy - H*0.34;
-              } else if (which < 6) {
-                // around big card top-left bracket
-                tx = cx - W*0.30 + (i % 5)*(W*0.012);
-                ty = cy - H*0.30 + ((i*3) % 4)*(H*0.014);
-              } else {
-                // scattered halo around composition
-                const a = (i / glyphs.length) * Math.PI * 2;
-                const r = Math.min(W,H) * (0.36 + 0.05*Math.sin(g.seed));
-                tx = cx + Math.cos(a) * r * 1.05;
-                ty = cy + Math.sin(a) * r * 0.7;
-              }
-              g.tx = tx; g.ty = ty;
-              g.trot = (Math.random()-0.5)*0.05;
-              g.tscale = 1;
-              const stagger = i / glyphs.length;
-              const reveal = clamp01((u - stagger*0.4) / 0.55);
-              g.talpha = easeOutCubic(reveal) * (0.55 + 0.45*g.layer);
-            }
-            // light ribbons just hinting in the background
-            for (let i = 0; i < ribbons.length; i++) {
-              const rb = ribbons[i];
-              const k = i / ribbons.length;
-              rb.tp0 = { x: -W*0.1, y: H*(0.15 + k*0.18) };
-              rb.tp1 = { x: W*0.35, y: H*(0.10 + k*0.18) };
-              rb.tp2 = { x: W*0.65, y: H*(0.20 + k*0.18) };
-              rb.tp3 = { x: W*1.1,  y: H*(0.15 + k*0.18) };
-              rb.talpha = 0.10 * fade(u,0,0.4);
-            }
-            // nodes settle near the composition edges
-            for (let i = 0; i < nodes.length; i++) {
-              const n = nodes[i];
-              const a = (i / nodes.length) * Math.PI * 2 + 0.3;
-              const r = Math.min(W,H) * (0.30 + 0.08*Math.sin(n.seed));
-              n.tx = cx + Math.cos(a) * r;
-              n.ty = cy + Math.sin(a) * r * 0.75;
-              n.talpha = 0.6;
-            }
+            return ['retn', 1];
           }
 
-          function assignAbstract(u) {
-            // 8.5-14.5s: composition dissolves -> ribbons, orbits, folding panels, flowing css particles
-            const cx = W*0.5, cy = H*0.5;
-            const t = u; // 0..1
-            const orbitR = Math.min(W,H) * 0.34;
-
-            // panels fold / spread into floating tilted frames
-            for (let i = 0; i < panels.length; i++) {
-              const p = panels[i];
-              const a = (i / panels.length) * Math.PI * 2 + t*0.6;
-              const r = orbitR * (0.7 + 0.4*Math.sin(p.seed + t*1.4));
-              p.tx = cx + Math.cos(a) * r * 0.95;
-              p.ty = cy + Math.sin(a) * r * 0.62;
-              const baseSize = Math.min(W,H) * 0.08;
-              p.tw = baseSize * (1 + 0.6*Math.sin(p.seed*1.3 + t*2));
-              p.th = baseSize * (0.5 + 0.6*Math.cos(p.seed*0.9 + t*2));
-              p.trot = Math.sin(p.seed + t*1.6) * 0.5;
-              p.tfill = 0.02 + 0.04*Math.sin(p.seed*2);
-              p.talpha = 0.55 + 0.3*Math.sin(p.seed*1.5 + t*1.2);
-              p.corners = (i % 2) === 0;
-              p.radius = 4 + (i%3)*2;
+          // sorted column positions per glyph index
+          function sortPos(i) {
+            const cols = 5;
+            const col = i % cols;
+            const rowsPerCol = Math.ceil(N_GLYPHS / cols);
+            const row = (i / cols) | 0;
+            return {
+              x: 0.12 + col * 0.19,
+              y: 0.10 + (rowsPerCol > 1 ? row / (rowsPerCol - 1) : 0.5) * 0.80
+            };
+          }
+          // structural label position per glyph
+          function strucPos(g, i) {
+            if (g.keepInBloom) {
+              const p = PANEL_SPECS[i % N_PANELS];
+              const ox = Math.sin(g.seed * 1.7) * 0.07;
+              const oy = Math.cos(g.seed * 2.1) * 0.04;
+              return { x: clamp01(p.kx + ox), y: clamp01(p.ky + oy) };
             }
-            // glyphs flow along curved paths, some orbit
-            for (let i = 0; i < glyphs.length; i++) {
-              const g = glyphs[i];
-              const group = i % 3;
-              if (group === 0) {
-                // orbit ring
-                const a = (i / glyphs.length) * Math.PI * 4 + t*Math.PI*0.7;
-                const r = orbitR * (0.85 + 0.15*Math.sin(g.seed + t*2));
-                g.tx = cx + Math.cos(a) * r;
-                g.ty = cy + Math.sin(a) * r * 0.65;
-                g.trot = a + Math.PI/2;
-              } else if (group === 1) {
-                // flowing horizontal currents
-                const lane = (i % 5) / 5;
-                const yLane = H*(0.22 + lane*0.56);
-                const phase = (g.seed*0.01 + t*0.6) % 1;
-                g.tx = W * phase * 1.2 - W*0.1;
-                g.ty = yLane + Math.sin(g.seed + t*3 + lane*5)*H*0.06;
-                g.trot = Math.sin(g.seed + t*2)*0.1;
-              } else {
-                // inner constellation
-                const a = (i / glyphs.length) * Math.PI * 2 + t*1.1;
-                const r = orbitR * 0.45 * (0.7 + 0.5*Math.sin(g.seed*0.8 + t*1.7));
-                g.tx = cx + Math.cos(a) * r;
-                g.ty = cy + Math.sin(a) * r * 0.85;
-                g.trot = -a;
-              }
-              g.tscale = 1 + 0.15*Math.sin(g.seed + t*3);
-              g.talpha = 0.5 + 0.4*g.layer;
-            }
-            // ribbons bloom — multiple flowing s-curves crossing
-            for (let i = 0; i < ribbons.length; i++) {
-              const rb = ribbons[i];
-              const k = i / ribbons.length;
-              const phase = t*2 + k*Math.PI;
-              rb.tp0 = { x: -W*0.15,                              y: H*(0.20 + k*0.16) + Math.sin(phase)*H*0.05 };
-              rb.tp1 = { x: W*0.30 + Math.sin(phase*1.1)*W*0.06,  y: H*(0.08 + k*0.18) + Math.cos(phase*0.7)*H*0.08 };
-              rb.tp2 = { x: W*0.70 + Math.cos(phase*0.9)*W*0.06,  y: H*(0.30 + k*0.16) + Math.sin(phase*1.2)*H*0.08 };
-              rb.tp3 = { x: W*1.15,                               y: H*(0.18 + k*0.18) + Math.cos(phase)*H*0.05 };
-              rb.talpha = 0.55 + 0.25*Math.sin(t*Math.PI + k*2);
-            }
-            // nodes orbit slowly
-            for (let i = 0; i < nodes.length; i++) {
-              const n = nodes[i];
-              const a = (i / nodes.length) * Math.PI * 2 + t*0.8;
-              const r = orbitR * (0.5 + 0.5*((i%3)/3) + 0.08*Math.sin(n.seed + t*3));
-              n.tx = cx + Math.cos(a) * r;
-              n.ty = cy + Math.sin(a) * r * 0.7;
-              n.talpha = 0.7 + 0.25*Math.sin(n.seed + t*4);
-            }
+            return { x: g.wx, y: g.wy };
           }
 
-          function assignPeak(u) {
-            // 14.5-20s: visual peak — layered depth, cinematic dance
-            const cx = W*0.5, cy = H*0.5;
-            const t = u;
-            const orbitR = Math.min(W,H) * 0.38;
-
-            // panels: large overlapping translucent frames at varied depths
-            for (let i = 0; i < panels.length; i++) {
-              const p = panels[i];
-              const k = i / panels.length;
-              const slowPhase = t*Math.PI + i*0.6;
-              const depth = 0.4 + 0.6*((i%4)/3);
-              const r = orbitR * (0.4 + 0.6*((i%3)/2));
-              p.tx = cx + Math.cos(slowPhase*0.7) * r * 0.95;
-              p.ty = cy + Math.sin(slowPhase*0.7) * r * 0.55;
-              const baseSize = Math.min(W,H) * (0.10 + 0.07*depth);
-              p.tw = baseSize * (1.2 + 0.5*Math.sin(p.seed + t*1.5));
-              p.th = baseSize * (0.6 + 0.5*Math.cos(p.seed*1.3 + t*1.5));
-              p.trot = Math.sin(p.seed*0.8 + t*1.3) * 0.7;
-              p.tfill = 0.03 + 0.05*((i%2));
-              p.talpha = 0.45 + 0.3*Math.sin(p.seed + t*2);
-              p.corners = (i%2) === 0;
-              p.radius = 5 + (i%4)*2;
-            }
-            // glyphs: dancing constellations + radial sweeps
-            for (let i = 0; i < glyphs.length; i++) {
-              const g = glyphs[i];
-              const group = i % 4;
-              const phase = t*Math.PI*2;
-              if (group === 0) {
-                const a = (i / glyphs.length) * Math.PI*2 + phase*0.3;
-                const r = orbitR * (0.95 + 0.1*Math.sin(g.seed + t*2));
-                g.tx = cx + Math.cos(a) * r;
-                g.ty = cy + Math.sin(a) * r * 0.65;
-                g.trot = a + Math.PI/2 + Math.sin(t*3+g.seed)*0.1;
-              } else if (group === 1) {
-                const a = (i / glyphs.length) * Math.PI*2 - phase*0.4;
-                const r = orbitR * 0.6;
-                g.tx = cx + Math.cos(a) * r;
-                g.ty = cy + Math.sin(a) * r * 0.75;
-                g.trot = -a;
-              } else if (group === 2) {
-                // figure-8 path
-                const a = (i / glyphs.length) * Math.PI*2 + phase*0.35;
-                g.tx = cx + Math.sin(a*2) * orbitR * 0.55;
-                g.ty = cy + Math.sin(a) * orbitR * 0.4;
-                g.trot = a*0.3;
-              } else {
-                // drift constellation
-                const a = g.seed + t*0.8;
-                const r = orbitR * (0.3 + 0.4*Math.sin(g.seed*0.7));
-                g.tx = cx + Math.cos(a) * r;
-                g.ty = cy + Math.sin(a*1.3) * r * 0.7;
-                g.trot = Math.sin(t*2+g.seed)*0.2;
-              }
-              g.tscale = 1 + 0.2*Math.sin(g.seed + t*4);
-              g.talpha = 0.55 + 0.4*g.layer;
-            }
-            // ribbons cross with high intensity
-            for (let i = 0; i < ribbons.length; i++) {
-              const rb = ribbons[i];
-              const k = i / ribbons.length;
-              const phase = t*2.5 + k*Math.PI*0.8;
-              rb.tp0 = { x: -W*0.15,                                 y: H*(0.15 + k*0.18) + Math.sin(phase)*H*0.10 };
-              rb.tp1 = { x: W*0.28 + Math.sin(phase*1.3)*W*0.10,     y: H*(0.05 + k*0.18) + Math.cos(phase*0.9)*H*0.12 };
-              rb.tp2 = { x: W*0.72 + Math.cos(phase*1.1)*W*0.10,     y: H*(0.30 + k*0.18) + Math.sin(phase*1.4)*H*0.12 };
-              rb.tp3 = { x: W*1.15,                                  y: H*(0.20 + k*0.18) + Math.cos(phase)*H*0.10 };
-              rb.talpha = 0.85;
-            }
-            // nodes weave at multiple radii
-            for (let i = 0; i < nodes.length; i++) {
-              const n = nodes[i];
-              const ring = i % 3;
-              const a = (i / nodes.length) * Math.PI*2 + t*(0.6 + ring*0.3) * (ring%2?-1:1);
-              const r = orbitR * (0.35 + ring*0.22 + 0.05*Math.sin(n.seed + t*3));
-              n.tx = cx + Math.cos(a) * r;
-              n.ty = cy + Math.sin(a) * r * 0.7;
-              n.talpha = 0.85;
-            }
+          // ---------- pointer state ----------
+          const pointer = { x: -9999, y: -9999, lastX: 0, lastY: 0, active: false };
+          let trail = [];
+          let blooms = [];
+          if (fine && !reduced) {
+            root.addEventListener('pointermove', (e) => {
+              const r = root.getBoundingClientRect();
+              pointer.lastX = pointer.x;
+              pointer.lastY = pointer.y;
+              pointer.x = e.clientX - r.left;
+              pointer.y = e.clientY - r.top;
+              pointer.active = true;
+              trail.push({ x: pointer.x, y: pointer.y, t: performance.now() });
+              if (trail.length > 22) trail.shift();
+            });
+            root.addEventListener('pointerleave', () => {
+              pointer.active = false;
+              pointer.x = -9999; pointer.y = -9999;
+            });
+            root.addEventListener('pointerdown', (e) => {
+              const r = root.getBoundingClientRect();
+              blooms.push({
+                x: e.clientX - r.left,
+                y: e.clientY - r.top,
+                t0: performance.now(),
+                life: 1100,
+                r: 80 + Math.random() * 30
+              });
+              if (blooms.length > 4) blooms.shift();
+            });
           }
 
-          function assignMM(u) {
-            // 20-26s: MM formation
-            const cx = W*0.5, cy = H*0.55;
-            const letterW = Math.min(W*0.20, H*0.32);
-            const letterH = Math.min(H*0.45, W*0.28);
-            const gap = letterW * 0.45;
-            const M1 = makeMStrokes(cx - letterW/2 - gap/2, cy, letterW, letterH);
-            const M2 = makeMStrokes(cx + letterW/2 + gap/2, cy, letterW, letterH);
-
-            const reveal = easeOutCubic(clamp01(u / 0.5));
-            const settle = easeOutBack(clamp01((u - 0.2) / 0.5));
-            const breathe = 1 + 0.015*Math.sin(u*Math.PI*4);
-
-            // glyphs distributed along M strokes
-            for (let i = 0; i < glyphs.length; i++) {
-              const g = glyphs[i];
-              const half = i < glyphs.length/2;
-              const verts = half ? M1 : M2;
-              const idx = half ? i : (i - (glyphs.length/2|0));
-              const total = glyphs.length/2;
-              const t = (idx + 0.5) / total;
-              const p = polyPoint(verts, t);
-              const jitter = (g.seed % 1) * 4 - 2;
-              g.tx = (p.x + jitter) * breathe + cx*(1-breathe);
-              g.ty = (p.y + jitter*0.5) * breathe + cy*(1-breathe);
-              g.trot = 0;
-              g.tscale = 0.9 + 0.1*Math.sin(g.seed + u*3);
-              const stagger = (i % 20) / 20;
-              const r = clamp01((u - stagger*0.15) / 0.5);
-              g.talpha = easeOutCubic(r) * (0.7 + 0.3*g.layer);
-            }
-            // panels fade to background haze (a couple form letter-block shadows behind Ms)
-            for (let i = 0; i < panels.length; i++) {
-              const p = panels[i];
-              if (i < 2) {
-                const center = i === 0 ? M1 : M2;
-                p.tx = (center[0].x + center[4].x)/2;
-                p.ty = cy;
-                p.tw = letterW*1.05;
-                p.th = letterH*1.1;
-                p.trot = 0;
-                p.tfill = 0.03;
-                p.talpha = 0.35 * reveal;
-                p.corners = false;
-                p.radius = 8;
-                p.color = i === 0 ? PAL.indigo : PAL.violet;
-              } else {
-                // recede
-                const a = (i / panels.length) * Math.PI*2;
-                const r = Math.min(W,H) * 0.45;
-                p.tx = cx + Math.cos(a) * r;
-                p.ty = cy + Math.sin(a) * r * 0.6;
-                p.tw = 30; p.th = 18;
-                p.trot = Math.sin(p.seed + u*1)*0.4;
-                p.tfill = 0;
-                p.talpha = 0.15;
-              }
-            }
-            // ribbons calm down, two arc behind Ms
-            for (let i = 0; i < ribbons.length; i++) {
-              const rb = ribbons[i];
-              const k = i / ribbons.length;
-              rb.tp0 = { x: -W*0.1, y: cy + (k-0.5)*H*0.5 };
-              rb.tp1 = { x: cx - letterW*1.0, y: cy + (k-0.5)*H*0.7 };
-              rb.tp2 = { x: cx + letterW*1.0, y: cy + (k-0.5)*H*0.7 };
-              rb.tp3 = { x: W*1.1, y: cy + (k-0.5)*H*0.5 };
-              rb.talpha = 0.25 + 0.15*Math.sin(u*Math.PI*2 + k*3);
-            }
-            // nodes accent the M corners
-            const cornerPoints = [...M1, ...M2];
-            for (let i = 0; i < nodes.length; i++) {
-              const n = nodes[i];
-              const p = cornerPoints[i % cornerPoints.length];
-              const jx = ((n.seed*7) % 10) - 5;
-              const jy = ((n.seed*11) % 10) - 5;
-              n.tx = p.x + jx;
-              n.ty = p.y + jy;
-              n.talpha = 0.7 * reveal;
-            }
-            // light pulse around M as it settles
-            void settle;
-          }
-
-          function assignDissolve(u) {
-            // 26-30s: dissolve back into motion, prep loop
-            const cx = W*0.5, cy = H*0.52;
-            const orbitR = Math.min(W,H) * 0.45;
-            const fadeOut = 1 - easeInOutCubic(u);
-            for (let i = 0; i < glyphs.length; i++) {
-              const g = glyphs[i];
-              const a = (i / glyphs.length) * Math.PI*2 + u*Math.PI;
-              const r = orbitR * (0.6 + u*0.8);
-              g.tx = cx + Math.cos(a) * r;
-              g.ty = cy + Math.sin(a) * r * 0.7;
-              g.trot = Math.sin(g.seed + u*2)*0.3;
-              g.tscale = 1 - u*0.2;
-              g.talpha = fadeOut * (0.5 + 0.5*g.layer);
+          // ---------- init positions ----------
+          function initEntityPositions() {
+            for (const g of glyphs) {
+              g.x = g.wx * W;
+              g.y = g.wy * H;
+              g.rot = g.wrot;
+              g.alpha = 0;
+              g.scale = 1;
             }
             for (const p of panels) {
-              p.talpha = p.talpha * 0.9 * fadeOut;
-              p.trot += 0.001;
+              p.x = p.spec.kx * W;
+              p.y = p.spec.ky * H;
+              p.w = 0; p.h = 0;
+              p.alpha = 0; p.fill = 0; p.glow = 0;
             }
-            for (const rb of ribbons) { rb.talpha = 0.2 * fadeOut; }
-            for (let i = 0; i < nodes.length; i++) {
-              const n = nodes[i];
-              const a = (i / nodes.length) * Math.PI*2 - u*Math.PI;
-              const r = orbitR * (0.5 + u*0.9);
-              n.tx = cx + Math.cos(a) * r;
-              n.ty = cy + Math.sin(a) * r * 0.7;
-              n.talpha = fadeOut * 0.7;
+            for (const st of strokes) {
+              st.x0 = st.x1 = W / 2;
+              st.y0 = st.y1 = H / 2;
+              st.alpha = 0;
+            }
+            for (const b of blobs) {
+              b.x = b.spec.kx * W;
+              b.y = b.spec.ky * H;
+              b.r = b.spec.kr * Math.min(W, H);
+              b.alpha = 0;
             }
           }
 
+          // ---------- background paint ----------
+          function drawSoftGlow(ctx, x, y, r, color, a) {
+            const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+            g.addColorStop(0, rgba(color, a));
+            g.addColorStop(0.5, rgba(color, a * 0.35));
+            g.addColorStop(1, rgba(color, 0));
+            ctx.fillStyle = g;
+            ctx.fillRect(x - r, y - r, r * 2, r * 2);
+          }
+          function drawBg() {
+            bg.clearRect(0, 0, W, H);
+            const grad = bg.createLinearGradient(0, 0, W * 0.7, H);
+            grad.addColorStop(0, '#181420');
+            grad.addColorStop(0.6, '#100C18');
+            grad.addColorStop(1, '#08060C');
+            bg.fillStyle = grad;
+            bg.fillRect(0, 0, W, H);
+
+            drawSoftGlow(bg, W * 0.18, H * 0.20, Math.min(W, H) * 0.90, PAL.gold, 0.07);
+            drawSoftGlow(bg, W * 0.86, H * 0.78, Math.min(W, H) * 0.90, PAL.violet, 0.06);
+            drawSoftGlow(bg, W * 0.50, H * 1.06, Math.min(W, H) * 0.95, PAL.teal, 0.05);
+
+            // soft painterly horizontal striations
+            bg.save();
+            bg.fillStyle = rgba(PAL.ivory, 1);
+            for (let y = 0; y < H; y += 3) {
+              const a = (Math.sin(y * 0.013) + 1) * 0.5;
+              bg.globalAlpha = 0.010 + a * 0.014;
+              bg.fillRect(0, y, W, 1);
+            }
+            bg.restore();
+          }
+
+          // ---------- assign targets ----------
           function assignTargets(t) {
-            const s = sceneAt(t);
-            const eu = s.u;
-            switch (s.name) {
-              case 'burst':    assignBurst(eu);    break;
-              case 'assemble': assignAssemble(eu); break;
-              case 'abstract': assignAbstract(eu); break;
-              case 'peak':     assignPeak(eu);     break;
-              case 'mm':       assignMM(eu);       break;
-              case 'dissolve': assignDissolve(eu); break;
+            const [phase, sub] = phaseAt(t);
+
+            for (let i = 0; i < N_GLYPHS; i++) {
+              const g = glyphs[i];
+              let tx, ty, trot, talpha, tscale;
+
+              if (phase === 'wall') {
+                tx = g.wx;
+                ty = g.wy;
+                trot = g.wrot + Math.sin(t / 2200 + g.seed) * 0.04;
+                talpha = 0.30 + 0.55 * smooth(sub * 1.4);
+                tscale = 1;
+              } else if (phase === 'sort') {
+                const e = easeInOut(sub);
+                const sp = sortPos(i);
+                tx = lerp(g.wx, sp.x, e);
+                ty = lerp(g.wy, sp.y, e);
+                trot = lerp(g.wrot, 0, e);
+                if (g.survive) talpha = 0.85;
+                else talpha = Math.max(0, 0.85 * (1 - e * 1.25));
+                tscale = 1;
+              } else if (phase === 'struc') {
+                const e = easeInOut(sub);
+                const sp = sortPos(i);
+                const stp = strucPos(g, i);
+                tx = lerp(sp.x, stp.x, e);
+                ty = lerp(sp.y, stp.y, e);
+                trot = 0;
+                if (!g.survive) talpha = 0;
+                else if (g.keepInBloom) talpha = lerp(0.85, 0.62, e);
+                else talpha = lerp(0.85, 0.20, e);
+                tscale = lerp(1, g.keepInBloom ? 1.02 : 0.88, e);
+              } else if (phase === 'bloom') {
+                const stp = strucPos(g, i);
+                const drift = 0.004;
+                tx = stp.x + Math.sin(t / 3400 + g.seed) * drift;
+                ty = stp.y + Math.cos(t / 2900 + g.seed) * drift;
+                trot = Math.sin(t / 4200 + g.seed) * 0.02;
+                if (g.keepInBloom) talpha = 0.66;
+                else if (g.survive) talpha = 0.20;
+                else talpha = 0;
+                tscale = g.keepInBloom ? 1.05 : 0.88;
+              } else if (phase === 'mm') {
+                const e = easeInOut(sub);
+                const stp = strucPos(g, i);
+                const nearLeft = (i % 2 === 0);
+                const corner = {
+                  x: nearLeft ? 0.18 : 0.82,
+                  y: 0.50 + Math.cos(g.seed) * 0.18
+                };
+                tx = lerp(stp.x, corner.x + Math.sin(g.seed) * 0.05, e);
+                ty = lerp(stp.y, corner.y, e);
+                trot = 0;
+                const baseA = g.keepInBloom ? 0.66 : (g.survive ? 0.20 : 0);
+                talpha = lerp(baseA, g.keepInMM ? 0.30 : 0, e);
+                tscale = lerp(g.keepInBloom ? 1.05 : 0.88, 0.7, e);
+              } else { // retn
+                const e = easeInOut(sub);
+                tx = lerp(g.wx, g.wx, e);
+                ty = lerp(g.wy, g.wy, e);
+                trot = lerp(0, g.wrot, e);
+                talpha = lerp(g.keepInMM ? 0.30 : 0, 0.30, e);
+                tscale = lerp(0.7, 1, e);
+              }
+
+              g.tx = tx * W;
+              g.ty = ty * H;
+              g.trot = trot;
+              g.talpha = clamp01(talpha);
+              g.tscale = tscale;
             }
-            return s;
+
+            for (let i = 0; i < N_PANELS; i++) {
+              const p = panels[i];
+              const s = p.spec;
+              let kx, ky, kw, kh, talpha, tfill, tglow;
+
+              if (phase === 'wall' || phase === 'sort') {
+                kx = s.kx; ky = s.ky;
+                kw = s.kw * 0.35; kh = s.kh * 0.35;
+                talpha = 0; tfill = 0; tglow = 0;
+              } else if (phase === 'struc') {
+                const e = easeOutBack(sub);
+                kx = s.kx; ky = s.ky;
+                kw = lerp(s.kw * 0.30, s.kw, e);
+                kh = lerp(s.kh * 0.30, s.kh, e);
+                talpha = smooth(sub * 1.5) * 0.90;
+                tfill = 0; tglow = 0;
+              } else if (phase === 'bloom') {
+                kx = s.kx; ky = s.ky;
+                kw = s.kw; kh = s.kh;
+                talpha = 0.92;
+                const f = smooth(sub * 1.25);
+                const role = s.role;
+                tfill = f * (role === 'image' ? 0.88 : role === 'button' ? 0.78 : role === 'strip' ? 0.55 : role === 'dot' ? 0.85 : role === 'card' ? 0.22 : role === 'tile' ? 0.22 : 0.10);
+                tglow = f * (role === 'button' || role === 'image' ? 0.80 : role === 'dot' ? 0.70 : 0.30);
+              } else if (phase === 'mm') {
+                const e = easeInOut(sub);
+                if (p.morphsToMM) {
+                  const mm = panelMMTarget(i);
+                  kx = lerp(s.kx, mm.kx, e);
+                  ky = lerp(s.ky, mm.ky, e);
+                  kw = lerp(s.kw, mm.kw, e);
+                  kh = lerp(s.kh, mm.kh, e);
+                  talpha = 0.95;
+                  tfill = lerp(0.30, 0.92, e);
+                  tglow = lerp(0.30, 0.60, e);
+                } else {
+                  kx = s.kx; ky = s.ky;
+                  kw = s.kw; kh = s.kh;
+                  talpha = lerp(0.92, 0, e);
+                  tfill = lerp(0.5, 0, e);
+                  tglow = 0;
+                }
+              } else { // retn
+                const e = easeInOut(sub);
+                if (p.morphsToMM) {
+                  const mm = panelMMTarget(i);
+                  kx = mm.kx; ky = mm.ky;
+                  kw = mm.kw; kh = mm.kh;
+                  talpha = lerp(0.95, 0, e);
+                  tfill = lerp(0.92, 0, e);
+                  tglow = lerp(0.60, 0, e);
+                } else {
+                  kx = s.kx; ky = s.ky;
+                  kw = s.kw * 0.35; kh = s.kh * 0.35;
+                  talpha = 0; tfill = 0; tglow = 0;
+                }
+              }
+
+              p.tx = kx * W;
+              p.ty = ky * H;
+              p.tw = kw * W;
+              p.th = kh * H;
+              p.talpha = talpha;
+              p.tfill = tfill;
+              p.tglow = tglow;
+            }
+
+            for (let i = 0; i < N_STROKES; i++) {
+              const st = strokes[i];
+              const isVert = (i % 2 === 0);
+              const colX = 0.12 + ((i / 2) | 0) * 0.19;
+              const rowY = 0.22 + ((i / 2) | 0) * 0.18;
+              let kx0, ky0, kx1, ky1, talpha, twidth, color = st.color;
+
+              if (phase === 'wall') {
+                kx0 = isVert ? colX : 0.5;
+                ky0 = isVert ? 0.5 : rowY;
+                kx1 = kx0; ky1 = ky0;
+                talpha = 0; twidth = 0.6;
+              } else if (phase === 'sort') {
+                const e = easeOutCubic(sub);
+                kx0 = isVert ? colX : 0.07;
+                ky0 = isVert ? 0.08 : rowY;
+                kx1 = isVert ? colX : 0.93;
+                ky1 = isVert ? 0.92 : rowY;
+                talpha = e * 0.24; twidth = 0.6;
+              } else if (phase === 'struc') {
+                kx0 = isVert ? colX : 0.07;
+                ky0 = isVert ? 0.08 : rowY;
+                kx1 = isVert ? colX : 0.93;
+                ky1 = isVert ? 0.92 : rowY;
+                talpha = lerp(0.24, 0.14, sub); twidth = 0.6;
+              } else if (phase === 'bloom') {
+                kx0 = isVert ? colX : 0.07;
+                ky0 = isVert ? 0.08 : rowY;
+                kx1 = isVert ? colX : 0.93;
+                ky1 = isVert ? 0.92 : rowY;
+                talpha = lerp(0.14, 0.07, sub); twidth = 0.6;
+              } else if (phase === 'mm') {
+                const e = easeOutCubic(sub);
+                if (st.mmRole >= 0) {
+                  const tgt = strokeMMTarget(i);
+                  kx0 = lerp(colX, tgt.x0, e);
+                  ky0 = lerp(0.08, tgt.y0, e);
+                  kx1 = lerp(colX, tgt.x1, e);
+                  ky1 = lerp(0.92, tgt.y1, e);
+                  talpha = lerp(0.07, 0.92, e);
+                  twidth = lerp(0.6, 1.8, e);
+                  color = PAL.ivory;
+                } else {
+                  kx0 = isVert ? colX : 0.07;
+                  ky0 = isVert ? 0.08 : rowY;
+                  kx1 = isVert ? colX : 0.93;
+                  ky1 = isVert ? 0.92 : rowY;
+                  talpha = lerp(0.07, 0, e); twidth = 0.6;
+                }
+              } else { // retn
+                const e = easeInOut(sub);
+                if (st.mmRole >= 0) {
+                  const tgt = strokeMMTarget(i);
+                  kx0 = tgt.x0; ky0 = tgt.y0;
+                  kx1 = tgt.x1; ky1 = tgt.y1;
+                  talpha = lerp(0.92, 0, e);
+                  twidth = lerp(1.8, 0.6, e);
+                  color = PAL.ivory;
+                } else {
+                  kx0 = colX; ky0 = 0.5;
+                  kx1 = colX; ky1 = 0.5;
+                  talpha = 0; twidth = 0.6;
+                }
+              }
+
+              st.tx0 = kx0 * W; st.ty0 = ky0 * H;
+              st.tx1 = kx1 * W; st.ty1 = ky1 * H;
+              st.talpha = talpha;
+              st.twidth = twidth;
+              st.color = color;
+            }
+
+            for (let i = 0; i < N_BLOBS; i++) {
+              const b = blobs[i];
+              const sp = b.spec;
+              if (phase === 'wall' || phase === 'sort') {
+                b.tx = sp.kx * W; b.ty = sp.ky * H;
+                b.tr = sp.kr * Math.min(W, H);
+                b.talpha = 0;
+              } else if (phase === 'struc') {
+                b.tx = sp.kx * W; b.ty = sp.ky * H;
+                b.tr = sp.kr * Math.min(W, H);
+                b.talpha = smooth(sub) * 0.28;
+              } else if (phase === 'bloom') {
+                b.tx = sp.kx * W; b.ty = sp.ky * H;
+                b.tr = sp.kr * Math.min(W, H) * lerp(1, 1.22, smooth(sub));
+                b.talpha = lerp(0.28, 0.55, smooth(sub));
+              } else if (phase === 'mm') {
+                const e = easeInOut(sub);
+                const mmCenter = [
+                  { kx: 0.34, ky: 0.50 }, { kx: 0.66, ky: 0.50 },
+                  { kx: 0.50, ky: 0.50 }, { kx: 0.34, ky: 0.50 },
+                  { kx: 0.66, ky: 0.50 }
+                ][i];
+                b.tx = lerp(sp.kx, mmCenter.kx, e) * W;
+                b.ty = lerp(sp.ky, mmCenter.ky, e) * H;
+                b.tr = lerp(sp.kr, 0.22, e) * Math.min(W, H);
+                b.talpha = lerp(0.55, 0.34, e);
+              } else { // retn
+                const e = easeInOut(sub);
+                b.tx = sp.kx * W; b.ty = sp.ky * H;
+                b.tr = sp.kr * Math.min(W, H);
+                b.talpha = lerp(0.34, 0, e);
+              }
+            }
           }
 
-          // ---------- drawing ----------
-          function drawGlyph(ctx, g, alphaMul) {
-            const a = g.alpha * alphaMul;
-            if (a <= 0.005) return;
+          // ---------- cursor magnetism ----------
+          function applyCursor(dt) {
+            if (!fine || !pointer.active) return;
+            const RAD = 130;
+            const RAD2 = RAD * RAD;
+            for (const g of glyphs) {
+              const dx = pointer.x - g.x;
+              const dy = pointer.y - g.y;
+              const d2 = dx * dx + dy * dy;
+              if (d2 < RAD2) {
+                const d = Math.sqrt(d2) || 1;
+                const f = 1 - d / RAD;
+                const strength = f * f * 14;
+                g.cursorOx += (dx / d) * strength * 0.08;
+                g.cursorOy += (dy / d) * strength * 0.08;
+              }
+            }
+          }
+
+          // ---------- step springs ----------
+          function stepAll(dt) {
+            const k  = 1 - Math.exp(-dt / 90);
+            const ka = 1 - Math.exp(-dt / 140);
+            const kc = 1 - Math.exp(-dt / 220);
+
+            for (const g of glyphs) {
+              g.x = lerp(g.x, g.tx + g.cursorOx, k);
+              g.y = lerp(g.y, g.ty + g.cursorOy, k);
+              g.rot = lerp(g.rot, g.trot, k);
+              g.alpha = lerp(g.alpha, g.talpha, ka);
+              g.scale = lerp(g.scale, g.tscale, k);
+              g.cursorOx = lerp(g.cursorOx, 0, kc);
+              g.cursorOy = lerp(g.cursorOy, 0, kc);
+            }
+            for (const p of panels) {
+              p.x = lerp(p.x, p.tx, k);
+              p.y = lerp(p.y, p.ty, k);
+              p.w = lerp(p.w, p.tw, k);
+              p.h = lerp(p.h, p.th, k);
+              p.alpha = lerp(p.alpha, p.talpha, ka);
+              p.fill = lerp(p.fill, p.tfill, ka);
+              p.glow = lerp(p.glow, p.tglow, ka);
+            }
+            for (const st of strokes) {
+              st.x0 = lerp(st.x0, st.tx0, k);
+              st.y0 = lerp(st.y0, st.ty0, k);
+              st.x1 = lerp(st.x1, st.tx1, k);
+              st.y1 = lerp(st.y1, st.ty1, k);
+              st.alpha = lerp(st.alpha, st.talpha, ka);
+              st.width = lerp(st.width, st.twidth, k);
+            }
+            for (const b of blobs) {
+              b.x = lerp(b.x, b.tx, k);
+              b.y = lerp(b.y, b.ty, k);
+              b.r = lerp(b.r, b.tr, k);
+              b.alpha = lerp(b.alpha, b.talpha, ka);
+            }
+          }
+
+          // ---------- drawing helpers ----------
+          function roundRectPath(ctx, x, y, w, h, r) {
+            r = Math.min(r, Math.min(w, h) / 2);
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + w - r, y);
+            ctx.arcTo(x + w, y, x + w, y + r, r);
+            ctx.lineTo(x + w, y + h - r);
+            ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+            ctx.lineTo(x + r, y + h);
+            ctx.arcTo(x, y + h, x, y + h - r, r);
+            ctx.lineTo(x, y + r);
+            ctx.arcTo(x, y, x + r, y, r);
+            ctx.closePath();
+          }
+
+          function drawBlob(ctx, b) {
+            if (b.alpha <= 0.01 || b.r <= 1) return;
+            const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
+            g.addColorStop(0, rgba(b.color, b.alpha * 0.95));
+            g.addColorStop(0.45, rgba(b.color, b.alpha * 0.35));
+            g.addColorStop(1, rgba(b.color, 0));
+            ctx.fillStyle = g;
+            ctx.fillRect(b.x - b.r, b.y - b.r, b.r * 2, b.r * 2);
+          }
+
+          function drawStroke(ctx, st) {
+            if (st.alpha <= 0.01) return;
+            const dx = st.x1 - st.x0, dy = st.y1 - st.y0;
+            const len = Math.hypot(dx, dy);
+            if (len < 1) return;
+            const seg = Math.max(2, (len / 38) | 0);
+            const nx = -dy / len, ny = dx / len;
             ctx.save();
-            ctx.translate(g.x, g.y);
-            ctx.rotate(g.rot);
-            ctx.scale(g.scale, g.scale);
-            ctx.font = `${g.weight} ${g.size}px "JetBrains Mono", "Fira Code", ui-monospace, monospace`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillStyle = rgba(g.color, a);
-            ctx.fillText(g.char, 0, 0);
+            ctx.strokeStyle = rgba(st.color, st.alpha);
+            ctx.lineWidth = st.width;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(st.x0, st.y0);
+            for (let s = 1; s <= seg; s++) {
+              const u = s / seg;
+              const j = Math.sin(u * 5.3 + st.seed) * 0.6 + Math.sin(u * 11.7 + st.seed * 1.7) * 0.32;
+              const off = j * Math.max(0.6, st.width * 0.6);
+              ctx.lineTo(st.x0 + dx * u + nx * off, st.y0 + dy * u + ny * off);
+            }
+            ctx.stroke();
             ctx.restore();
           }
 
-          function drawPanel(ctx, p, alphaMul) {
-            const a = p.alpha * alphaMul;
-            if (a <= 0.005) return;
+          function drawPanel(ctx, p) {
+            if (p.alpha <= 0.01 || p.w < 1 || p.h < 1) return;
+            const w = p.w, h = p.h;
+            const r = Math.min(p.radius, Math.min(w, h) * 0.45);
             ctx.save();
             ctx.translate(p.x, p.y);
-            ctx.rotate(p.rot);
-            const w = p.w, h = p.h, r = Math.min(p.radius, w*0.4, h*0.4);
-            // rounded rect path
-            ctx.beginPath();
-            ctx.moveTo(-w/2 + r, -h/2);
-            ctx.lineTo(w/2 - r, -h/2);
-            ctx.quadraticCurveTo(w/2, -h/2, w/2, -h/2 + r);
-            ctx.lineTo(w/2, h/2 - r);
-            ctx.quadraticCurveTo(w/2, h/2, w/2 - r, h/2);
-            ctx.lineTo(-w/2 + r, h/2);
-            ctx.quadraticCurveTo(-w/2, h/2, -w/2, h/2 - r);
-            ctx.lineTo(-w/2, -h/2 + r);
-            ctx.quadraticCurveTo(-w/2, -h/2, -w/2 + r, -h/2);
-            ctx.closePath();
-            if (p.fill > 0.005) {
-              ctx.fillStyle = rgba(p.color, p.fill * a);
+
+            // soft halo
+            if (p.glow > 0.02) {
+              const halo = ctx.createRadialGradient(0, 0, 0, 0, 0, Math.max(w, h) * 1.3);
+              halo.addColorStop(0, rgba(p.color, p.glow * 0.32));
+              halo.addColorStop(0.5, rgba(p.color, p.glow * 0.12));
+              halo.addColorStop(1, rgba(p.color, 0));
+              ctx.fillStyle = halo;
+              ctx.fillRect(-w * 1.6, -h * 1.6, w * 3.2, h * 3.2);
+            }
+
+            // fill
+            if (p.fill > 0.02) {
+              roundRectPath(ctx, -w / 2, -h / 2, w, h, r);
+              const role = p.spec.role;
+              if (role === 'image') {
+                const gr = ctx.createLinearGradient(-w / 2, -h / 2, w / 2, h / 2);
+                gr.addColorStop(0,   rgba(PAL.violet, p.fill * 0.95));
+                gr.addColorStop(0.55, rgba(PAL.rose,  p.fill * 0.78));
+                gr.addColorStop(1,   rgba(PAL.gold,  p.fill * 0.78));
+                ctx.fillStyle = gr;
+              } else if (role === 'button') {
+                const gr = ctx.createLinearGradient(0, -h / 2, 0, h / 2);
+                gr.addColorStop(0, rgba(PAL.gold, p.fill * 0.96));
+                gr.addColorStop(1, rgba(PAL.rose, p.fill * 0.72));
+                ctx.fillStyle = gr;
+              } else if (role === 'strip') {
+                ctx.fillStyle = rgba(PAL.gold, p.fill * 0.82);
+              } else if (role === 'dot') {
+                const gr = ctx.createRadialGradient(0, 0, 0, 0, 0, Math.max(w, h) / 2);
+                gr.addColorStop(0, rgba(PAL.rose, p.fill));
+                gr.addColorStop(1, rgba(PAL.rose, p.fill * 0.25));
+                ctx.fillStyle = gr;
+              } else if (role === 'card' || role === 'tile') {
+                ctx.fillStyle = rgba(p.color, p.fill * 0.45);
+              } else if (role === 'title' || role === 'nav') {
+                ctx.fillStyle = rgba(p.color, p.fill * 0.18);
+              } else {
+                ctx.fillStyle = rgba(p.color, p.fill * 0.45);
+              }
               ctx.fill();
             }
+
+            // outline
+            roundRectPath(ctx, -w / 2, -h / 2, w, h, r);
             ctx.lineWidth = 1;
-            ctx.strokeStyle = rgba(p.color, 0.55 * a);
+            ctx.strokeStyle = rgba(p.color, p.alpha * 0.55);
             ctx.stroke();
-            // corner ticks
-            if (p.corners) {
-              const t = Math.min(8, w*0.12, h*0.12);
-              ctx.strokeStyle = rgba(p.color, 0.85 * a);
-              ctx.lineWidth = 1.4;
+
+            // interior details for image / nav / card / button (only when fill is high)
+            const role = p.spec.role;
+            if (role === 'image' && p.fill > 0.4) {
+              // small horizon line in image frame
+              ctx.strokeStyle = rgba(PAL.ivory, p.alpha * 0.18);
               ctx.beginPath();
-              // TL
-              ctx.moveTo(-w/2, -h/2 + t); ctx.lineTo(-w/2, -h/2); ctx.lineTo(-w/2 + t, -h/2);
-              // TR
-              ctx.moveTo(w/2 - t, -h/2); ctx.lineTo(w/2, -h/2); ctx.lineTo(w/2, -h/2 + t);
-              // BR
-              ctx.moveTo(w/2, h/2 - t); ctx.lineTo(w/2, h/2); ctx.lineTo(w/2 - t, h/2);
-              // BL
-              ctx.moveTo(-w/2 + t, h/2); ctx.lineTo(-w/2, h/2); ctx.lineTo(-w/2, h/2 - t);
+              ctx.moveTo(-w / 2 + 8, h / 6);
+              ctx.lineTo(w / 2 - 8, h / 6);
+              ctx.stroke();
+            } else if (role === 'nav' && p.alpha > 0.5) {
+              ctx.fillStyle = rgba(PAL.ivory, p.alpha * 0.35);
+              const dotR = Math.min(2, h * 0.18);
+              ctx.beginPath(); ctx.arc(-w / 2 + 10, 0, dotR, 0, Math.PI * 2); ctx.fill();
+              ctx.fillStyle = rgba(PAL.ivoryD, p.alpha * 0.25);
+              const lw = Math.min(28, w * 0.13);
+              ctx.fillRect(w / 2 - lw - 6, -1, lw, 2);
+              ctx.fillRect(w / 2 - lw - 6 - lw - 8, -1, lw, 2);
+            } else if (role === 'card' && p.alpha > 0.5) {
+              ctx.fillStyle = rgba(PAL.ivory, p.alpha * 0.32);
+              ctx.fillRect(-w / 2 + 10, -h / 2 + 12, Math.min(56, w * 0.55), 2);
+              ctx.fillStyle = rgba(PAL.ivoryD, p.alpha * 0.22);
+              ctx.fillRect(-w / 2 + 10, -h / 2 + 22, Math.min(40, w * 0.4), 1.5);
+              ctx.fillRect(-w / 2 + 10, -h / 2 + 30, Math.min(46, w * 0.46), 1.5);
+            }
+
+            ctx.restore();
+          }
+
+          function drawGlyph(ctx, g) {
+            if (g.alpha <= 0.015) return;
+            ctx.save();
+            ctx.translate(g.x, g.y);
+            if (g.rot) ctx.rotate(g.rot);
+            if (g.scale !== 1) ctx.scale(g.scale, g.scale);
+            ctx.font = `${g.weight} ${g.size.toFixed(1)}px "JetBrains Mono", ui-monospace, monospace`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = rgba(g.color, g.alpha);
+            ctx.fillText(g.txt, 0, 0);
+            ctx.restore();
+          }
+
+          function drawTrail(ctx) {
+            if (trail.length < 2) return;
+            const now = performance.now();
+            ctx.save();
+            ctx.lineCap = 'round';
+            ctx.lineWidth = 1.2;
+            for (let i = 1; i < trail.length; i++) {
+              const a = trail[i - 1], b = trail[i];
+              const age = (now - b.t) / 700;
+              if (age >= 1) continue;
+              ctx.globalAlpha = (1 - age) * 0.32;
+              ctx.strokeStyle = rgba(PAL.gold, 1);
+              ctx.beginPath();
+              ctx.moveTo(a.x, a.y);
+              ctx.lineTo(b.x, b.y);
               ctx.stroke();
             }
             ctx.restore();
           }
 
-          function drawRibbon(ctx, rb, alphaMul, time) {
-            const a = rb.alpha * alphaMul;
-            if (a <= 0.005) return;
+          function drawBloomEvent(ctx, b, now) {
+            const u = (now - b.t0) / b.life;
+            if (u >= 1) return false;
+            const eOut = 1 - Math.pow(1 - u, 3);
+            const r = b.r * eOut;
+            const a = (1 - u) * (1 - u);
+            // soft halo
+            const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, r);
+            g.addColorStop(0, rgba(PAL.gold, a * 0.55));
+            g.addColorStop(0.5, rgba(PAL.gold, a * 0.18));
+            g.addColorStop(1, rgba(PAL.gold, 0));
+            ctx.fillStyle = g;
+            ctx.fillRect(b.x - r, b.y - r, r * 2, r * 2);
+            // mini card outline
+            const cw = 58 * eOut, ch = 32 * eOut;
             ctx.save();
-            ctx.lineWidth = rb.width;
-            ctx.lineCap = 'round';
-            ctx.beginPath();
-            ctx.moveTo(rb.p0.x, rb.p0.y);
-            ctx.bezierCurveTo(rb.p1.x, rb.p1.y, rb.p2.x, rb.p2.y, rb.p3.x, rb.p3.y);
-            ctx.strokeStyle = rgba(rb.color, 0.55 * a);
+            ctx.translate(b.x, b.y);
+            ctx.strokeStyle = rgba(PAL.ivory, a * 0.9);
+            ctx.lineWidth = 1.1;
+            roundRectPath(ctx, -cw / 2, -ch / 2, cw, ch, 4);
             ctx.stroke();
-            // a traveling brighter highlight along the curve
-            const steps = 36;
-            const head = (time * rb.speed * 0.3 + rb.phase / (Math.PI*2)) % 1;
-            for (let i = 0; i < 12; i++) {
-              const t = (head + i*0.012) % 1;
-              const x = cubic(rb.p0.x, rb.p1.x, rb.p2.x, rb.p3.x, t);
-              const y = cubic(rb.p0.y, rb.p1.y, rb.p2.y, rb.p3.y, t);
-              const inten = (1 - i/12);
-              ctx.beginPath();
-              ctx.arc(x, y, rb.width*0.9 + (1-i/12)*1.4, 0, Math.PI*2);
-              ctx.fillStyle = rgba(rb.color, 0.55 * a * inten);
-              ctx.fill();
-            }
+            ctx.fillStyle = rgba(PAL.gold, a);
+            ctx.fillRect(-cw / 2 + 6, -ch / 2 + 6, 8, 2);
+            ctx.fillStyle = rgba(PAL.ivory, a * 0.55);
+            ctx.fillRect(-cw / 2 + 6, -ch / 2 + 12, 26, 1.5);
+            ctx.fillRect(-cw / 2 + 6, -ch / 2 + 17, 18, 1.5);
             ctx.restore();
-          }
-          function cubic(a,b,c,d,t) {
-            const it = 1-t;
-            return it*it*it*a + 3*it*it*t*b + 3*it*t*t*c + t*t*t*d;
+            return true;
           }
 
-          function drawNode(ctx, n, alphaMul) {
-            const a = n.alpha * alphaMul;
-            if (a <= 0.005) return;
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(n.x, n.y, n.size, 0, Math.PI*2);
-            ctx.fillStyle = rgba(n.color, a);
-            ctx.fill();
-            ctx.restore();
-          }
+          // ---------- render loop ----------
+          let lastT = performance.now();
+          const startT = performance.now();
+          function frame(now) {
+            const dt = Math.min(60, now - lastT) || 16;
+            lastT = now;
+            const elapsed = ((now - startT) % T_LOOP + T_LOOP) % T_LOOP;
 
-          // ---------- physics ----------
-          function springStep(obj, dt, stiff, damp) {
-            const dx = obj.tx - obj.x;
-            const dy = obj.ty - obj.y;
-            obj.vx += dx * stiff * dt;
-            obj.vy += dy * stiff * dt;
-            obj.vx *= Math.pow(damp, dt*60);
-            obj.vy *= Math.pow(damp, dt*60);
-            obj.x += obj.vx * dt;
-            obj.y += obj.vy * dt;
-          }
-
-          function easeProp(obj, prop, tprop, dt, k) {
-            obj[prop] += (obj[tprop] - obj[prop]) * Math.min(1, k * dt);
-          }
-
-          // ---------- loop ----------
-          let last = performance.now();
-          let elapsed = 0;
-          let started = false;
-          const START_DELAY = 0.0;
-
-          function loop(now) {
-            const dt = Math.min(0.05, (now - last) / 1000);
-            last = now;
-            elapsed += dt;
-
-            // assign targets
-            const sceneInfo = assignTargets(elapsed);
-
-            // step physics
-            for (const g of glyphs) {
-              springStep(g, dt, 18, 0.84);
-              easeProp(g, 'rot', 'trot', dt, 4);
-              easeProp(g, 'scale', 'tscale', dt, 6);
-              easeProp(g, 'alpha', 'talpha', dt, 3.2);
-            }
-            for (const p of panels) {
-              springStep(p, dt, 16, 0.82);
-              easeProp(p, 'w', 'tw', dt, 6);
-              easeProp(p, 'h', 'th', dt, 6);
-              easeProp(p, 'rot', 'trot', dt, 4);
-              easeProp(p, 'fill', 'tfill', dt, 3);
-              easeProp(p, 'alpha', 'talpha', dt, 3);
-            }
-            for (const rb of ribbons) {
-              for (const k of ['p0','p1','p2','p3']) {
-                rb[k].x += (rb['t'+k].x - rb[k].x) * Math.min(1, 3.5*dt);
-                rb[k].y += (rb['t'+k].y - rb[k].y) * Math.min(1, 3.5*dt);
-              }
-              easeProp(rb, 'alpha', 'talpha', dt, 2.5);
-            }
-            for (const n of nodes) {
-              springStep(n, dt, 20, 0.82);
-              easeProp(n, 'alpha', 'talpha', dt, 3);
-            }
-
-            // clear
-            base.clearRect(0, 0, W, H);
-            fg.clearRect(0, 0, W, H);
-            glow.clearRect(0, 0, W/GLOW_SCALE, H/GLOW_SCALE);
-
-            // soft atmospheric tint that pulses with scene
-            const pulse = 0.04 + 0.04*Math.sin(elapsed*0.6);
-            base.fillStyle = `rgba(108,128,232,${pulse*0.18})`;
-            base.fillRect(0, 0, W, H);
-
-            // background: faint grid that breathes
-            const breath = 0.05 + 0.04*Math.sin(elapsed*0.5);
-            base.save();
-            base.strokeStyle = `rgba(180,190,230,${breath*0.3})`;
-            base.lineWidth = 1;
-            const grid = 48;
-            const ox = (elapsed * 6) % grid;
-            const oy = (elapsed * 3) % grid;
-            base.beginPath();
-            for (let x = -grid + ox; x < W + grid; x += grid) {
-              base.moveTo(x, 0); base.lineTo(x, H);
-            }
-            for (let y = -grid + oy; y < H + grid; y += grid) {
-              base.moveTo(0, y); base.lineTo(W, y);
-            }
-            base.stroke();
-            base.restore();
-
-            // ribbons go to glow layer + a faint fg overlay
-            for (const rb of ribbons) {
-              drawRibbon(glow, rb, 0.85, elapsed);
-              drawRibbon(fg, rb, 0.35, elapsed);
-            }
-
-            // sort glyphs by layer for depth
-            // (avoid per-frame sort allocations: sort once and re-sort if first phase)
-            // simpler: paint in original order but modulate alpha & size by layer (already done)
-
-            // panels first (background composition), then glyphs, then nodes
-            for (const p of panels) {
-              if (p.layer < 0.5) drawPanel(glow, p, 0.7);
-              drawPanel(fg, p, 1.0);
-            }
-
-            for (const g of glyphs) {
-              const back = g.layer < 0.35;
-              if (back) {
-                drawGlyph(glow, g, 0.55);
-                drawGlyph(fg, g, 0.6);
-              } else {
-                drawGlyph(glow, g, 0.65);
-                drawGlyph(fg, g, 1.0);
-              }
-            }
-
-            for (const n of nodes) {
-              drawNode(glow, n, 1.5);
-              drawNode(fg, n, 1.0);
-            }
-
-            // gentle scanning highlight during peak
-            if (sceneInfo.name === 'peak') {
-              const u = sceneInfo.u;
-              const yLine = H * (0.15 + u * 0.7);
-              const grad = fg.createLinearGradient(0, yLine-30, 0, yLine+30);
-              grad.addColorStop(0,    'rgba(168,200,240,0)');
-              grad.addColorStop(0.5,  'rgba(168,200,240,0.06)');
-              grad.addColorStop(1,    'rgba(168,200,240,0)');
-              fg.fillStyle = grad;
-              fg.fillRect(0, yLine-30, W, 60);
-            }
-
-            if (!reduced) requestAnimationFrame(loop);
-          }
-
-          if (!reduced) {
-            // seed initial alphas at 0 and let burst-phase eased reveal handle the entrance
-            requestAnimationFrame((t) => { last = t; requestAnimationFrame(loop); });
-          } else {
-            // static frame: render the peak composition once
-            elapsed = SCENES[3].t0 + SCENES[3].dur * 0.5;
             assignTargets(elapsed);
-            for (const g of glyphs) { g.x = g.tx; g.y = g.ty; g.rot = g.trot; g.scale = g.tscale; g.alpha = g.talpha; }
-            for (const p of panels) { p.x = p.tx; p.y = p.ty; p.w = p.tw; p.h = p.th; p.rot = p.trot; p.fill = p.tfill; p.alpha = p.talpha; }
-            for (const rb of ribbons) { for (const k of ['p0','p1','p2','p3']) { rb[k] = { x: rb['t'+k].x, y: rb['t'+k].y }; } rb.alpha = rb.talpha; }
-            for (const n of nodes) { n.x = n.tx; n.y = n.ty; n.alpha = n.talpha; }
-            // draw single frame
-            base.clearRect(0,0,W,H); fg.clearRect(0,0,W,H); glow.clearRect(0,0,W/GLOW_SCALE,H/GLOW_SCALE);
-            for (const rb of ribbons) { drawRibbon(glow, rb, 0.85, 0); drawRibbon(fg, rb, 0.35, 0); }
-            for (const p of panels) { drawPanel(glow, p, 0.7); drawPanel(fg, p, 1.0); }
-            for (const g of glyphs) { drawGlyph(glow, g, 0.65); drawGlyph(fg, g, 1.0); }
-            for (const n of nodes) { drawNode(glow, n, 1.5); drawNode(fg, n, 1.0); }
+            applyCursor(dt);
+            stepAll(dt);
+
+            fg.clearRect(0, 0, W, H);
+            for (const b of blobs) drawBlob(fg, b);
+            for (const st of strokes) drawStroke(fg, st);
+            for (const p of panels) drawPanel(fg, p);
+            for (const g of glyphs) drawGlyph(fg, g);
+            drawTrail(fg);
+            blooms = blooms.filter(b => drawBloomEvent(fg, b, now));
+
+            requestAnimationFrame(frame);
+          }
+
+          // ---------- boot ----------
+          resize();
+          try { new ResizeObserver(resize).observe(root); } catch (_) {}
+          window.addEventListener('resize', resize, { passive: true });
+
+          if (reduced) {
+            // single elegant static frame at bloom peak
+            const t = P.bloom[0] + (P.bloom[1] - P.bloom[0]) * 0.75;
+            assignTargets(t);
+            for (const g of glyphs) { g.x = g.tx; g.y = g.ty; g.rot = g.trot; g.alpha = g.talpha; g.scale = g.tscale; }
+            for (const p of panels) { p.x = p.tx; p.y = p.ty; p.w = p.tw; p.h = p.th; p.alpha = p.talpha; p.fill = p.tfill; p.glow = p.tglow; }
+            for (const st of strokes) { st.x0 = st.tx0; st.y0 = st.ty0; st.x1 = st.tx1; st.y1 = st.ty1; st.alpha = st.talpha; st.width = st.twidth; }
+            for (const b of blobs) { b.x = b.tx; b.y = b.ty; b.r = b.tr; b.alpha = b.talpha; }
+            fg.clearRect(0, 0, W, H);
+            for (const b of blobs) drawBlob(fg, b);
+            for (const st of strokes) drawStroke(fg, st);
+            for (const p of panels) drawPanel(fg, p);
+            for (const g of glyphs) drawGlyph(fg, g);
+          } else {
+            requestAnimationFrame(frame);
           }
         })();
         </script>

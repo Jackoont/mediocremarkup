@@ -8,7 +8,11 @@
       "Bash(powershell -Command \"\\(Get-Content 'c:\\\\Users\\\\jacko\\\\OneDrive\\\\Documents\\\\mediocremarkup\\\\index.html'\\).Count\")",
       "Bash(awk 'NR==1{ } *)",
       "Bash(mv index.html.new index.html)",
-      "Bash(rm _new_hero_sim.html)"
+      "Bash(rm _new_hero_sim.html)",
+      "Bash(r)",
+      "Bash(powershell.exe -NoProfile -Command ' *)",
+      "Read(//usr/**)",
+      "Bash(echo \"exit=$?\")"
     ]
   }
 }
