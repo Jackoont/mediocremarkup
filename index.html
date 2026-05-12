@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -794,7 +794,7 @@
     .phone-badge { position: absolute; bottom: -28px; left: 0; font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
     @media (max-width: 900px) { .phone-badge { display: none; } }
 
-    /* -- TEMPLATE 0: MERIDIAN LAW GROUP — Professional -- */
+    /* -- TEMPLATE 0: ATELIER VALE — Tailoring preview -- */
     #tpl-0 { background:#f7f8fa; font-family:'Inter',sans-serif; }
     .t1-topbar { background:#0f1f3d; padding:5px 14px; display:flex; justify-content:space-between; align-items:center; }
     .t1-topbar-logo { font-size:9px; font-weight:700; color:#c8a96e; letter-spacing:2px; text-transform:uppercase; }
@@ -4616,14 +4616,6 @@
       z-index: 4;
     }
 
-    .markup-field.is-building .symbol-stage {
-      z-index: 7;
-    }
-
-    .markup-field.is-built .symbol-stage {
-      z-index: 4;
-    }
-
     .symbol-particle {
       position: absolute;
       left: 0;
@@ -4638,27 +4630,6 @@
       text-shadow: 0 0 10px rgba(241,234,217,0.06);
     }
 
-    .symbol-particle.is-structural {
-      z-index: 7;
-      font-weight: 700;
-      text-shadow: 0 0 16px rgba(213,201,109,0.22);
-    }
-
-    .symbol-particle.is-secondary {
-      z-index: 3;
-      filter: saturate(0.82);
-    }
-
-    .symbol-particle.is-building {
-      z-index: 8;
-      font-weight: 750;
-      text-shadow: 0 0 18px rgba(213,201,109,0.26);
-    }
-
-    .symbol-particle.is-consumed {
-      pointer-events: none;
-    }
-
     .built-site {
       position: absolute;
       inset: 0;
@@ -4668,92 +4639,9 @@
       color: rgba(241,234,217,0.88);
     }
 
-    .sandbox-hotspots {
-      display: none;
-    }
-
-    .sandbox-hotspot {
-      --charge: 0;
-      position: absolute;
-      left: var(--hotspot-x);
-      top: var(--hotspot-y);
-      width: clamp(38px, 7vw, 58px);
-      height: clamp(38px, 7vw, 58px);
-      transform: translate(-50%, -50%) scale(0.88);
-      opacity: 0.08;
-      transition: opacity 0.28s ease, transform 0.28s ease, filter 0.28s ease;
-      filter: blur(0.1px);
-    }
-
-    .sandbox-hotspot::before,
-    .sandbox-hotspot::after {
-      content: '';
-      position: absolute;
-      pointer-events: none;
-    }
-
-    .sandbox-hotspot::before {
-      inset: 0;
-      border-radius: 50%;
-      border: 1px dotted rgba(241,234,217,0.28);
-      background:
-        conic-gradient(from -90deg, rgba(213,201,109,0.72) calc(var(--charge) * 1turn), transparent 0),
-        radial-gradient(circle, transparent 56%, rgba(213,201,109,0.08) 57% 63%, transparent 64%);
-      -webkit-mask: radial-gradient(circle, transparent 58%, #000 59% 70%, transparent 71%);
-      mask: radial-gradient(circle, transparent 58%, #000 59% 70%, transparent 71%);
-    }
-
-    .sandbox-hotspot::after {
-      left: 50%;
-      bottom: -8px;
-      width: calc(12px + (34px * var(--charge)));
-      height: 1px;
-      background: rgba(213,201,109,0.62);
-      transform: translateX(-50%) rotate(-2deg);
-      box-shadow: 0 0 10px rgba(213,201,109,0.22);
-    }
-
-    .sandbox-hotspot.is-hovered,
-    .sandbox-hotspot.is-charging {
-      opacity: 0.58;
-      transform: translate(-50%, -50%) scale(1);
-      filter: drop-shadow(0 0 14px rgba(213,201,109,0.14));
-    }
-
-    .sandbox-hotspot.is-building {
-      opacity: 0.72;
-      transform: translate(-50%, -50%) scale(0.94);
-    }
-
-    .sandbox-hotspot.is-built {
-      opacity: 0.05;
-      transform: translate(-50%, -50%) scale(0.78);
-    }
-
     .built-piece {
       position: absolute;
       box-sizing: border-box;
-      opacity: 0;
-      transform: translateY(10px) scale(0.975);
-      transform-origin: center;
-      transition:
-        opacity 0.58s cubic-bezier(.2,.8,.2,1),
-        transform 0.64s cubic-bezier(.2,.8,.2,1),
-        filter 0.64s cubic-bezier(.2,.8,.2,1);
-      filter: blur(7px);
-    }
-
-    .built-piece.is-built {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      filter: blur(0);
-    }
-
-    .built-piece.is-dissolving {
-      opacity: 0;
-      transform: translateY(-4px) scale(0.975);
-      filter: blur(8px);
-      transition-duration: 0.72s;
     }
 
     .built-frame {
@@ -4778,40 +4666,6 @@
       top: 36px;
       height: 1px;
       background: rgba(241,234,217,0.12);
-    }
-
-    .browser-dots {
-      position: absolute;
-      left: 15px;
-      top: 14px;
-      display: flex;
-      gap: 6px;
-    }
-
-    .browser-dots i {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: rgba(241,234,217,0.28);
-    }
-
-    .browser-line {
-      position: absolute;
-      left: 54px;
-      right: 116px;
-      top: 13px;
-      height: 8px;
-      border-radius: 999px;
-      background: rgba(241,234,217,0.09);
-    }
-
-    .browser-label {
-      position: absolute;
-      right: 18px;
-      top: 11px;
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: rgba(143,172,132,0.64);
     }
 
     .mini-nav {
@@ -4844,10 +4698,6 @@
       color: rgba(241,234,217,0.46);
     }
 
-    .mini-nav-links span:last-child {
-      color: rgba(213,201,109,0.68);
-    }
-
     .built-media {
       left: 12%;
       top: 24%;
@@ -4860,7 +4710,8 @@
       box-shadow: 0 16px 38px rgba(0,0,0,0.26);
     }
 
-    .built-media video {
+    .built-media video,
+    .built-media img {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -4924,18 +4775,6 @@
       object-fit: cover;
       display: block;
       filter: saturate(0.86) contrast(0.96) brightness(0.86);
-    }
-
-    .built-card {
-      left: 12%;
-      top: 66%;
-      width: 34%;
-      min-height: 88px;
-      padding: 11px;
-      border: 1px solid rgba(241,234,217,0.14);
-      border-radius: 6px;
-      background: rgba(241,234,217,0.06);
-      box-shadow: 0 12px 28px rgba(0,0,0,0.14);
     }
 
     .mini-card-image {
@@ -5257,17 +5096,6 @@
       filter: blur(calc((1 - var(--site-alpha)) * 5px));
     }
 
-    .built-site .built-card {
-      left: 52%;
-      top: 76%;
-      width: 36%;
-      min-height: 70px;
-      opacity: calc(max(0, (var(--site-alpha) - 0.44) * 1.55));
-      transform: translateY(calc((1 - var(--site-alpha)) * 9px));
-      filter: blur(calc((1 - var(--site-alpha)) * 5px));
-      background: rgba(241,234,217,0.045);
-    }
-
     .built-site .built-trust {
       left: 14%;
       top: 74%;
@@ -5282,109 +5110,6 @@
     .markup-field.is-clear .field-microcopy {
       opacity: 0.16;
       filter: blur(0.2px);
-    }
-
-    .sandbox-progress {
-      --sandbox-progress: 0;
-      position: absolute;
-      left: 26px;
-      right: 26px;
-      bottom: 26px;
-      z-index: 8;
-      display: grid;
-      grid-template-columns: minmax(130px, auto) minmax(90px, 1fr);
-      align-items: center;
-      gap: 14px;
-      opacity: 0;
-      transform: translateY(5px);
-      transition: opacity 0.28s ease, transform 0.28s ease;
-      pointer-events: none;
-    }
-
-    .markup-field.is-active .sandbox-progress,
-    .markup-field.is-building .sandbox-progress {
-      opacity: 0.84;
-      transform: translateY(0);
-    }
-
-    .markup-field.is-built .sandbox-progress {
-      opacity: 0;
-    }
-
-    .sandbox-progress-label {
-      color: rgba(213,201,109,0.64);
-      font-family: 'Caveat', 'Source Serif 4', cursive;
-      font-size: 18px;
-      line-height: 1;
-      transform: rotate(-1.5deg);
-    }
-
-    .sandbox-progress-track {
-      height: 2px;
-      background: rgba(241,234,217,0.12);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .sandbox-progress-fill {
-      display: block;
-      width: calc(var(--sandbox-progress) * 100%);
-      height: 100%;
-      background: linear-gradient(90deg, rgba(213,201,109,0.32), rgba(213,201,109,0.82));
-      transform-origin: left center;
-      box-shadow: 0 0 14px rgba(213,201,109,0.18);
-    }
-
-    .build-orbit {
-      --orbit-x: 50%;
-      --orbit-y: 50%;
-      position: absolute;
-      left: var(--orbit-x);
-      top: var(--orbit-y);
-      z-index: 8;
-      width: 54px;
-      height: 54px;
-      margin: -27px 0 0 -27px;
-      border-radius: 50%;
-      opacity: 0;
-      transform: scale(0.84);
-      transition: opacity 0.26s ease, transform 0.3s ease, left 0.42s cubic-bezier(.2,.8,.2,1), top 0.42s cubic-bezier(.2,.8,.2,1);
-      pointer-events: none;
-      filter: drop-shadow(0 0 12px rgba(213,201,109,0.16));
-    }
-
-    .build-orbit::before,
-    .build-orbit::after {
-      content: '';
-      position: absolute;
-      border-radius: 50%;
-    }
-
-    .build-orbit::before {
-      inset: 6px;
-      border: 1px solid rgba(213,201,109,0.38);
-      border-left-color: transparent;
-      border-bottom-color: rgba(241,234,217,0.10);
-      animation: buildOrbitSpin 1.1s linear infinite;
-    }
-
-    .build-orbit::after {
-      left: 50%;
-      top: 50%;
-      width: 5px;
-      height: 5px;
-      margin: -2.5px 0 0 -2.5px;
-      background: rgba(213,201,109,0.76);
-      box-shadow: 0 0 18px rgba(213,201,109,0.42);
-    }
-
-    .build-orbit.is-visible {
-      opacity: 0.82;
-      transform: scale(1);
-    }
-
-    @keyframes buildOrbitSpin {
-      to { transform: rotate(360deg); }
     }
 
     .sandbox-reset {
@@ -5461,25 +5186,6 @@
       box-shadow: 0 38px 92px rgba(0,0,0,0.32), 0 0 0 1px rgba(213,201,109,0.08), inset 0 0 0 1px rgba(241,234,217,0.055);
     }
 
-    .markup-field.is-hovering-hotspot::before,
-    .markup-field.is-charging::before,
-    .markup-field.is-building::before,
-    .markup-field.is-built::before {
-      opacity: 0.74;
-      background-size: 42px 42px;
-    }
-
-    .markup-field.is-charging,
-    .markup-field.is-building,
-    .markup-field.is-built {
-      border-color: rgba(213,201,109,0.50);
-      box-shadow: 0 38px 92px rgba(0,0,0,0.34), 0 0 0 1px rgba(213,201,109,0.12), inset 0 0 0 1px rgba(241,234,217,0.07);
-    }
-
-    .markup-field.is-static {
-      cursor: default;
-    }
-
     .field-microcopy {
       position: absolute;
       z-index: 5;
@@ -5506,13 +5212,6 @@
     .field-microcopy-structure { left: 12%; top: 31%; transform: rotate(-2deg); }
     .field-microcopy-clarity { right: 11%; bottom: 24%; transform: rotate(1.5deg); }
     .field-microcopy-restored { right: 15%; top: 57%; color: rgba(143,172,132,0.36); }
-
-    .markup-field.is-built .field-code-label,
-    .markup-field.is-built .field-sticker,
-    .markup-field.is-built .field-microcopy {
-      opacity: 0.18;
-      filter: blur(0.2px);
-    }
 
     .scroll-tag {
       position: absolute;
@@ -5541,6 +5240,10 @@
     }
 
     @media (max-width: 980px) {
+      .hero {
+        min-height: auto;
+        grid-template-rows: auto;
+      }
       .hero-content {
         grid-template-columns: 1fr;
         min-height: auto;
@@ -5559,6 +5262,7 @@
       }
       .hero-system {
         min-height: 370px;
+        width: 100%;
       }
       .hero-system::before {
         display: none;
@@ -5594,17 +5298,6 @@
       }
       .mini-headline {
         font-size: 22px;
-      }
-      .built-card {
-        left: 12%;
-        top: 67%;
-        width: 38%;
-        min-height: 92px;
-        padding: 9px;
-      }
-      .mini-card-image {
-        width: 46px;
-        height: 46px;
       }
       .built-actions {
         left: 17%;
@@ -5653,6 +5346,12 @@
     }
 
     @media (max-width: 560px) {
+      .hero {
+        min-height: 1040px;
+      }
+      .hero::after {
+        display: none;
+      }
       nav {
         padding: 0 16px;
       }
@@ -5698,20 +5397,22 @@
         justify-content: center;
       }
       .markup-field {
+        width: min(342px, calc(100vw - 48px));
         max-width: min(342px, calc(100vw - 48px));
         height: 330px;
+        margin-left: 0;
+        margin-right: 0;
+      }
+      .hero-system {
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
       }
       .built-frame {
         left: 8%;
         top: 13%;
         width: 84%;
         height: 75%;
-      }
-      .browser-line {
-        right: 12px;
-      }
-      .browser-label {
-        display: none;
       }
       .mini-nav {
         left: 13%;
@@ -5725,9 +5426,6 @@
       .mini-nav-links {
         gap: 8px;
         font-size: 7px;
-      }
-      .mini-nav-links span:nth-child(2) {
-        display: none;
       }
       .built-media {
         left: 13%;
@@ -5756,25 +5454,6 @@
         font-size: 7.5px;
         line-height: 1.38;
       }
-      .built-card {
-        left: 13%;
-        top: 67%;
-        width: 39%;
-        min-height: 84px;
-      }
-      .mini-card-image {
-        float: none;
-        width: 100%;
-        height: 30px;
-        margin-right: 0;
-        margin-bottom: 8px;
-      }
-      .mini-card-title {
-        font-size: 9px;
-      }
-      .mini-card-line {
-        font-size: 7px;
-      }
       .built-actions {
         left: 17%;
         top: 58%;
@@ -5798,20 +5477,6 @@
       .mini-seal { display: none; }
       .mini-trust-title { font-size: 7px; }
       .mini-trust-line { font-size: 7px; }
-      .sandbox-progress {
-        left: 16px;
-        right: 16px;
-        bottom: 16px;
-        grid-template-columns: 1fr;
-        gap: 7px;
-      }
-      .sandbox-progress-label {
-        font-size: 15px;
-      }
-      .sandbox-reset {
-        right: 14px;
-        bottom: 13px;
-      }
       .field-sticker-css {
         display: none;
       }
@@ -5860,15 +5525,6 @@
         width: 36%;
         height: 42%;
       }
-      .built-site .built-card {
-        left: 52%;
-        top: 74%;
-        width: 36%;
-        min-height: 58px;
-      }
-      .built-site .mini-card-image {
-        height: 24px;
-      }
       .built-site .built-trust {
         left: 14%;
         top: 79%;
@@ -5877,6 +5533,674 @@
       .magnet-outline-copy { left: 14%; top: 34%; width: 35%; height: 25%; }
       .magnet-outline-media { left: 52%; top: 29%; width: 36%; height: 42%; }
       .magnet-outline-cta { left: 14%; top: 66%; width: 30%; height: 8%; }
+    }
+
+    /* Hero sandbox v2: liquid markup resolves into a crafted atelier webpage. */
+    .hero.is-symbol-release {
+      overflow: visible;
+    }
+
+    .markup-field {
+      --story-progress: 0;
+      --neglect-alpha: 1;
+      --glow-strength: 0;
+      --symbol-opacity: 1;
+      --scroll-release: 0;
+      --containment: calc(1 - var(--scroll-release));
+      border-style: solid;
+      border-radius: 10px 7px 13px 8px;
+      transition:
+        border-color 0.42s ease,
+        box-shadow 0.42s ease,
+        filter 0.42s ease;
+    }
+
+    .markup-field[data-story-phase="neglected"] {
+      cursor: crosshair;
+    }
+
+    .markup-field[data-story-phase="awakening"],
+    .markup-field[data-story-phase="repairing"] {
+      cursor: none;
+    }
+
+    .markup-field[data-story-phase="transformed"] {
+      cursor: default;
+    }
+
+    .markup-field[data-story-phase="awakening"],
+    .markup-field[data-story-phase="repairing"],
+    .markup-field[data-story-phase="transformed"] {
+      border-color: rgba(213,201,109,0.46);
+      box-shadow:
+        0 38px 92px rgba(0,0,0,0.32),
+        0 0 0 1px rgba(213,201,109,calc(0.06 + var(--glow-strength) * 0.16)),
+        inset 0 0 0 1px rgba(241,234,217,0.07);
+    }
+
+    .neglected-presence {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      color: rgba(241,234,217,0.56);
+      opacity: calc(var(--neglect-alpha) * var(--containment));
+      transform: translateY(calc(var(--clarity) * -7px));
+      transition: opacity 0.42s ease, transform 0.42s ease, filter 0.42s ease;
+      filter: blur(calc(var(--clarity) * 2px));
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .neglected-presence::before {
+      content: '';
+      position: absolute;
+      inset: 9% 8% 10%;
+      border: 1px solid rgba(241,234,217,0.10);
+      border-radius: 14px 7px 16px 9px;
+      background:
+        radial-gradient(circle at 74% 22%, rgba(213,201,109,0.06), transparent 32%),
+        linear-gradient(180deg, rgba(241,234,217,0.032), rgba(241,234,217,0.01));
+      transform: rotate(-0.8deg);
+    }
+
+    .neglected-presence::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(118deg, transparent 0 31%, rgba(8,11,10,0.44) 31.5% 38%, transparent 39%),
+        radial-gradient(circle at 32% 42%, rgba(0,0,0,0.24), transparent 34%);
+      opacity: 0.72;
+    }
+
+    .neglected-media {
+      position: absolute;
+      right: 10%;
+      top: 21%;
+      width: 48%;
+      height: 35%;
+      border: 1px solid rgba(241,234,217,0.10);
+      border-radius: 9px 5px 12px 7px;
+      overflow: hidden;
+      transform: rotate(1.4deg) translate(8px, 8px);
+      opacity: 0.54;
+      background: rgba(0,0,0,0.28);
+    }
+
+    .neglected-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 48%;
+      display: block;
+      filter: grayscale(0.34) saturate(0.56) contrast(0.86) brightness(0.42) blur(2.2px);
+      transform: scale(1.075);
+    }
+
+    .neglected-copy {
+      position: absolute;
+      left: 14%;
+      top: 32%;
+      width: 38%;
+      transform: rotate(-1.1deg) translate(-8px, 10px);
+      z-index: 2;
+    }
+
+    .neglected-brand {
+      display: block;
+      margin-bottom: 9px;
+      font-family: 'Source Serif 4', serif;
+      font-size: 15px;
+      color: rgba(241,234,217,0.43);
+    }
+
+    .neglected-headline {
+      display: block;
+      max-width: 185px;
+      font-family: 'Source Serif 4', serif;
+      font-size: clamp(18px, 1.8vw, 23px);
+      line-height: 1.04;
+      color: rgba(241,234,217,0.34);
+      letter-spacing: 0;
+    }
+
+    .neglected-line {
+      display: block;
+      width: 78%;
+      height: 1px;
+      margin-top: 12px;
+      background: rgba(241,234,217,0.13);
+    }
+
+    .neglected-line:nth-child(4) {
+      width: 48%;
+      margin-top: 7px;
+      background: rgba(213,201,109,0.13);
+    }
+
+    .neglected-cta {
+      position: absolute;
+      left: 16%;
+      top: 61%;
+      padding: 8px 12px;
+      border: 1px dashed rgba(214,107,69,0.16);
+      border-radius: 4px;
+      color: rgba(241,234,217,0.28);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      transform: rotate(1.7deg) translate(18px, 10px);
+      background: rgba(241,234,217,0.028);
+    }
+
+    .neglected-note {
+      position: absolute;
+      right: 15%;
+      bottom: 21%;
+      color: rgba(213,190,99,0.42);
+      font-family: 'Caveat', 'Source Serif 4', cursive;
+      font-size: 19px;
+      transform: rotate(-5deg);
+      z-index: 3;
+    }
+
+    .neglected-scrap {
+      position: absolute;
+      z-index: 3;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: rgba(241,234,217,0.22);
+      transform: rotate(var(--scrap-rotate));
+    }
+
+    .neglected-scrap-one { left: 12%; top: 21%; --scrap-rotate: -4deg; }
+    .neglected-scrap-two { right: 12%; top: 60%; --scrap-rotate: 3deg; color: rgba(127,167,186,0.24); }
+    .neglected-scrap-three { left: 38%; bottom: 15%; --scrap-rotate: -2deg; color: rgba(214,107,69,0.22); }
+
+    .markup-field::after {
+      inset: 16px 18px 18px 15px;
+      border-style: solid;
+      border-radius: 9px 6px 11px 7px;
+      opacity: calc(0.62 * var(--containment));
+      transform: scale(calc(1 + var(--scroll-release) * 0.018));
+      transition: opacity 0.32s ease, transform 0.32s ease, border-color 0.32s ease;
+    }
+
+    .markup-field.is-resolved {
+      cursor: default;
+    }
+
+    .markup-field.is-resolved .built-site {
+      pointer-events: auto;
+    }
+
+    .markup-field.is-exiting {
+      overflow: visible;
+      border-color: rgba(241,234,217,calc(0.34 * var(--containment)));
+      box-shadow:
+        0 38px 92px rgba(0,0,0,0.24),
+        0 0 0 1px rgba(213,201,109,calc(0.12 * var(--containment))),
+        inset 0 0 0 1px rgba(241,234,217,calc(0.06 * var(--containment)));
+    }
+
+    .markup-field.is-exiting .built-site {
+      pointer-events: none;
+    }
+
+    .markup-field.is-exiting .symbol-stage {
+      z-index: 12;
+    }
+
+    .markup-field.is-exiting .field-code-label,
+    .markup-field.is-exiting .field-sticker,
+    .markup-field.is-exiting .field-microcopy,
+    .markup-field.is-exiting .field-note {
+      opacity: calc(0.22 * var(--containment));
+    }
+
+    .magnet-cursor {
+      background:
+        radial-gradient(circle, rgba(213,201,109,0.22) 0 2px, transparent 3px),
+        radial-gradient(circle, rgba(213,201,109,0.11), transparent 52%),
+        conic-gradient(from 90deg, transparent, rgba(127,167,186,0.08), transparent 42%);
+      box-shadow:
+        inset 0 0 0 1px rgba(213,201,109,0.18),
+        0 0 34px rgba(213,201,109,0.11);
+    }
+
+    .markup-field.is-resolved .magnet-cursor {
+      opacity: 0;
+      transform: scale(0.78);
+    }
+
+    .built-site {
+      --site-scroll-alpha: calc(var(--site-alpha) * var(--containment));
+    }
+
+    .built-site.transformed-presence {
+      pointer-events: none;
+    }
+
+    .markup-field[data-story-phase="transformed"] .built-site.transformed-presence {
+      pointer-events: auto;
+    }
+
+    .built-site .magnet-outline,
+    .built-site .magnet-guide {
+      opacity: calc(var(--guide-alpha) * var(--containment));
+    }
+
+    .built-site .built-frame {
+      left: 7%;
+      top: 7%;
+      width: 86%;
+      height: 84%;
+      opacity: calc(var(--site-scroll-alpha) * 0.88);
+      transform:
+        translateY(calc((1 - var(--site-scroll-alpha)) * 12px))
+        scale(calc(0.988 + var(--site-scroll-alpha) * 0.012));
+      filter: blur(calc((1 - var(--site-scroll-alpha)) * 8px));
+      border: 1px solid rgba(241,234,217,0.24);
+      border-radius: 13px 8px 15px 9px;
+      background:
+        linear-gradient(180deg, rgba(241,234,217,0.075), transparent 18%),
+        radial-gradient(circle at 74% 11%, rgba(213,201,109,0.08), transparent 30%),
+        rgba(11,14,13,0.62);
+      box-shadow: inset 0 1px 0 rgba(241,234,217,0.08), 0 22px 54px rgba(0,0,0,0.24);
+    }
+
+    .built-site .built-frame::before {
+      content: '';
+      position: absolute;
+      inset: -18%;
+      background:
+        radial-gradient(circle at 20% 15%, rgba(214,107,69,0.08), transparent 32%),
+        radial-gradient(circle at 86% 80%, rgba(127,167,186,0.06), transparent 28%);
+      opacity: calc(var(--site-scroll-alpha) * 0.8);
+      pointer-events: none;
+    }
+
+    .built-site .built-frame::after {
+      display: none;
+    }
+
+    .mini-corner {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      opacity: 0.72;
+      pointer-events: none;
+    }
+
+    .mini-corner::before,
+    .mini-corner::after {
+      content: '';
+      position: absolute;
+      background: rgba(213,201,109,0.54);
+      border-radius: 999px;
+    }
+
+    .mini-corner::before { width: 18px; height: 1px; }
+    .mini-corner::after { width: 1px; height: 18px; }
+    .mini-corner-tl { left: 10px; top: 10px; }
+    .mini-corner-tr { right: 10px; top: 9px; transform: rotate(2deg); }
+    .mini-corner-bl { left: 12px; bottom: 10px; transform: rotate(-2deg); }
+    .mini-corner-br { right: 11px; bottom: 12px; transform: rotate(1deg); }
+    .mini-corner-tr::before,
+    .mini-corner-br::before { right: 0; }
+    .mini-corner-bl::after,
+    .mini-corner-br::after { bottom: 0; }
+
+    .mini-canvas-label {
+      position: absolute;
+      z-index: 2;
+      font-family: var(--font-mono);
+      font-size: 8px;
+      letter-spacing: 0.08em;
+      color: rgba(241,234,217,0.45);
+      pointer-events: none;
+    }
+
+    .mini-canvas-label-top { right: 18px; top: 13px; color: rgba(143,172,132,0.62); }
+    .mini-canvas-label-bottom { left: 20px; bottom: 13px; }
+    .mini-canvas-label-left {
+      left: -32px;
+      top: 48%;
+      transform: rotate(-90deg);
+      color: rgba(213,201,109,0.42);
+    }
+
+    .built-site .mini-nav {
+      left: 12%;
+      top: 13.6%;
+      width: 76%;
+      height: 28px;
+      opacity: calc(max(0, (var(--site-scroll-alpha) - 0.18) * 1.55));
+      transform: translateY(calc((1 - var(--site-scroll-alpha)) * 8px));
+      filter: blur(calc((1 - var(--site-scroll-alpha)) * 4px));
+      z-index: 7;
+    }
+
+    .mini-nav-links {
+      display: flex;
+      gap: 13px;
+      align-items: center;
+    }
+
+    .mini-brand {
+      color: rgba(241,234,217,0.92);
+      letter-spacing: 0;
+    }
+
+    .mini-nav-links button {
+      border: 0;
+      padding: 4px 0;
+      background: transparent;
+      color: rgba(241,234,217,0.50);
+      font: inherit;
+      cursor: pointer;
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    .mini-nav-links button:hover {
+      color: rgba(213,201,109,0.88);
+      transform: translateY(-1px);
+    }
+
+    .mini-nav-links button:focus-visible,
+    .mini-button:focus-visible {
+      outline: 1px solid rgba(213,201,109,0.84);
+      outline-offset: 3px;
+    }
+
+    .mini-nav-links button:active,
+    .mini-button:active {
+      transform: translateY(0);
+    }
+
+    .mini-hero-media {
+      left: 12%;
+      top: 21%;
+      width: 76%;
+      height: 31%;
+      overflow: hidden;
+      border-radius: 8px 5px 10px 6px;
+      border: 1px solid rgba(241,234,217,0.13);
+      background: rgba(0,0,0,0.24);
+      box-shadow: 0 18px 42px rgba(0,0,0,0.22);
+      opacity: calc(max(0, (var(--site-scroll-alpha) - 0.12) * 1.22));
+      transform: translateY(calc((1 - var(--site-scroll-alpha)) * 11px)) scale(0.99);
+      filter: blur(calc((1 - var(--media-sharpness)) * 9px));
+      z-index: 4;
+    }
+
+    .mini-hero-media img,
+    .built-footer-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .mini-hero-media img {
+      object-position: center 48%;
+      filter: saturate(calc(0.74 + var(--media-sharpness) * 0.22)) contrast(1.03) brightness(calc(0.58 + var(--media-sharpness) * 0.23));
+      transform: scale(calc(1.04 - var(--media-sharpness) * 0.025));
+    }
+
+    .mini-hero-media::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(6,8,7,0.86) 0%, rgba(6,8,7,0.62) 39%, rgba(6,8,7,0.10) 76%),
+        linear-gradient(180deg, rgba(213,201,109,0.09), rgba(0,0,0,0.10));
+      pointer-events: none;
+    }
+
+    .built-site .built-copy {
+      left: 15%;
+      top: 29.8%;
+      width: 38%;
+      max-width: 330px;
+      opacity: calc(max(0, (var(--site-scroll-alpha) - 0.26) * 1.5));
+      transform: translateY(calc((1 - var(--site-scroll-alpha)) * 12px));
+      filter: blur(calc((1 - var(--site-scroll-alpha)) * 6px));
+      z-index: 8;
+    }
+
+    .built-site .mini-headline {
+      font-size: clamp(20px, 2vw, 26px);
+      line-height: 0.94;
+    }
+
+    .built-site .mini-copy {
+      max-width: 245px;
+    }
+
+    .built-site .built-actions {
+      left: 15%;
+      top: 47.5%;
+      width: 42%;
+      opacity: calc(max(0, (var(--site-scroll-alpha) - 0.52) * 1.9));
+      transform: translateY(calc((1 - var(--site-scroll-alpha)) * 9px));
+      filter: blur(calc((1 - var(--site-scroll-alpha)) * 5px));
+      z-index: 9;
+    }
+
+    .mini-button {
+      border-radius: 4px;
+      letter-spacing: 0.02em;
+      box-shadow: none;
+    }
+
+    .mini-button:hover {
+      transform: translateY(-2px);
+    }
+
+    .mini-button:active {
+      transform: translateY(0);
+    }
+
+    .built-process {
+      left: 12%;
+      top: 58%;
+      width: 38%;
+      min-height: 82px;
+      padding: 10px 10px 10px 78px;
+      border: 1px solid rgba(241,234,217,0.13);
+      border-radius: 7px 5px 9px 6px;
+      background: rgba(241,234,217,0.055);
+      opacity: calc(max(0, (var(--site-scroll-alpha) - 0.46) * 1.6));
+      transform: translateY(calc((1 - var(--site-scroll-alpha)) * 9px));
+      filter: blur(calc((1 - var(--site-scroll-alpha)) * 5px));
+      overflow: hidden;
+      z-index: 7;
+    }
+
+    .built-process video {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      width: 58px;
+      height: calc(100% - 20px);
+      object-fit: cover;
+      border-radius: 5px;
+      filter: saturate(0.82) contrast(1.02) brightness(0.78);
+    }
+
+    .built-footer-image {
+      left: 52%;
+      top: 58%;
+      width: 36%;
+      height: 20%;
+      border-radius: 7px 5px 9px 6px;
+      overflow: hidden;
+      border: 1px solid rgba(241,234,217,0.13);
+      opacity: calc(max(0, (var(--site-scroll-alpha) - 0.58) * 1.7));
+      transform: translateY(calc((1 - var(--site-scroll-alpha)) * 9px));
+      filter: blur(calc((1 - var(--site-scroll-alpha)) * 5px));
+      z-index: 6;
+    }
+
+    .built-footer-image img {
+      object-position: center 54%;
+      filter: saturate(0.82) contrast(0.98) brightness(0.74);
+    }
+
+    .built-footer-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 30%, rgba(7,9,8,0.78));
+    }
+
+    .built-footer-image span {
+      position: absolute;
+      left: 10px;
+      bottom: 8px;
+      z-index: 2;
+      font-family: var(--font-mono);
+      font-size: 8px;
+      letter-spacing: 0.08em;
+      color: rgba(241,234,217,0.72);
+      text-transform: uppercase;
+    }
+
+    .built-site .built-trust {
+      left: 52%;
+      top: 81%;
+      width: 36%;
+      min-height: 46px;
+      border-radius: 6px;
+      opacity: calc(max(0, (var(--site-scroll-alpha) - 0.64) * 1.72));
+      transform: translateY(calc((1 - var(--site-scroll-alpha)) * 8px));
+      filter: blur(calc((1 - var(--site-scroll-alpha)) * 5px));
+    }
+
+    .stitch-paths {
+      position: absolute;
+      inset: 0;
+      z-index: 6;
+      pointer-events: none;
+      opacity: calc(var(--guide-alpha) * var(--containment));
+      mix-blend-mode: screen;
+    }
+
+    .stitch-paths path {
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 9 11;
+      stroke-dashoffset: calc((1 - var(--clarity)) * 120);
+      transition: stroke-dashoffset 0.36s ease, opacity 0.36s ease;
+    }
+
+    .stitch-paths .stitch-warm {
+      stroke: rgba(213,201,109,0.34);
+      stroke-width: 1.2;
+    }
+
+    .stitch-paths .stitch-cool {
+      stroke: rgba(127,167,186,0.20);
+      stroke-width: 4;
+    }
+
+    .magnet-outline-copy { left: 15%; top: 30%; width: 36%; height: 19%; }
+    .magnet-outline-media { left: 12%; top: 21%; width: 76%; height: 31%; }
+    .magnet-outline-cta { left: 15%; top: 47.5%; width: 34%; height: 8%; }
+
+    @media (max-width: 980px) {
+      .built-process {
+        width: 39%;
+        padding-left: 65px;
+      }
+      .built-process video {
+        width: 47px;
+      }
+      .built-footer-image {
+        left: 54%;
+        width: 32%;
+      }
+      .built-site .built-trust {
+        left: 54%;
+        width: 32%;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .built-site .built-frame {
+        left: 7%;
+        top: 9%;
+        width: 86%;
+        height: 80%;
+      }
+      .mini-canvas-label-left,
+      .mini-canvas-label-bottom {
+        display: none;
+      }
+      .built-site .mini-nav {
+        left: 12%;
+        top: 15.5%;
+        width: 76%;
+      }
+      .mini-nav-links button:nth-child(2) {
+        display: none;
+      }
+      .mini-hero-media {
+        left: 12%;
+        top: 23%;
+        width: 76%;
+        height: 30%;
+      }
+      .built-site .built-copy {
+        left: 15%;
+        top: 30%;
+        width: 50%;
+      }
+      .built-site .mini-headline {
+        font-size: 17px;
+      }
+      .built-site .mini-copy {
+        max-width: 144px;
+        font-size: 7px;
+      }
+      .built-site .built-actions {
+        left: 15%;
+        top: 52%;
+        width: 52%;
+      }
+      .built-process {
+        left: 12%;
+        top: 64%;
+        width: 43%;
+        min-height: 64px;
+        padding: 8px;
+      }
+      .built-process video {
+        display: none;
+      }
+      .built-footer-image {
+        left: 58%;
+        top: 64%;
+        width: 30%;
+        height: 17%;
+      }
+      .built-footer-image span {
+        font-size: 6px;
+        left: 7px;
+        bottom: 6px;
+      }
+      .built-site .built-trust {
+        left: 58%;
+        top: 83%;
+        width: 30%;
+      }
+      .mini-trust-line {
+        display: none;
+      }
+      .magnet-outline-copy { left: 15%; top: 30%; width: 50%; height: 19%; }
+      .magnet-outline-media { left: 12%; top: 23%; width: 76%; height: 30%; }
+      .magnet-outline-cta { left: 15%; top: 52%; width: 42%; height: 8%; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -5894,6 +6218,34 @@
       letter-spacing: 3.5px;
       text-transform: uppercase;
       color: rgba(240,99,90,0.6);
+    }
+
+    /* -- CONDUCTING MARKUP — sandbox state transitions -- */
+    .markup-field {
+      transition: border-color 0.8s ease, box-shadow 0.8s ease;
+    }
+    .markup-field[data-logo-state="hold"] {
+      border-color: rgba(213,190,99,0.42);
+      box-shadow: 0 38px 92px rgba(0,0,0,0.32), inset 0 0 0 1px rgba(213,190,99,0.07);
+      transition: border-color 1s ease, box-shadow 1s ease;
+    }
+    .markup-field[data-logo-state="hold"] .field-code-label,
+    .markup-field[data-logo-state="hold"] .field-sticker {
+      opacity: 0.12;
+      transition: opacity 1s ease;
+    }
+    .markup-field[data-logo-state="release"] .field-code-label,
+    .markup-field[data-logo-state="release"] .field-sticker {
+      opacity: 0.5;
+      transition: opacity 1.2s ease;
+    }
+    .markup-field .field-code-label,
+    .markup-field .field-sticker {
+      transition: opacity 0.6s ease;
+    }
+    /* field-note title size for conducting states */
+    .field-note b {
+      font-size: inherit;
     }
   </style>
 
@@ -5996,27 +6348,14 @@
       </div>
 
       <div class="hero-system" aria-hidden="true">
-        <div class="markup-field" id="symbol-field">
-          <span class="field-code-label field-code-label-top">&lt;div class="presence"&gt;</span>
+        <div class="markup-field" id="symbol-field" data-logo-state="idle">
+          <span class="field-code-label field-code-label-top">&lt;div class="markup"&gt;</span>
           <span class="field-code-label field-code-label-bottom">&lt;/div&gt;</span>
           <span class="field-code-label field-code-label-left">HTML</span>
           <span class="field-code-label field-code-label-right">CSS</span>
-
           <span class="field-sticker field-sticker-html">HTML</span>
           <span class="field-sticker field-sticker-css">CSS</span>
-          <span class="field-sticker field-sticker-visibility">visibility</span>
-          <span class="field-sticker field-sticker-trust">trust</span>
-          <span class="field-microcopy field-microcopy-structure">structure</span>
-          <span class="field-microcopy field-microcopy-clarity">clarity</span>
-          <span class="field-microcopy field-microcopy-restored">layout restored</span>
-
           <div class="symbol-stage" id="symbol-stage"></div>
-          <div class="field-wireframe" id="field-wireframe">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
         </div>
         <div class="field-note">
           <svg class="field-note-arrow" viewBox="0 0 120 82" aria-hidden="true" focusable="false">
@@ -6026,8 +6365,8 @@
             <path d="M26 49 C21 54 18 57 13 60 C18 61 23 64 27 67" stroke-width="1" opacity=".38"></path>
           </svg>
           <b>INTERACT</b>
-          <span>move your cursor</span>
-          <span>watch markup find structure</span>
+          <span></span>
+          <span></span>
         </div>
       </div>
     </div>
@@ -6055,73 +6394,73 @@
               <div id="phone-crt-sweep"></div>
               <div class="phone-templates-wrap" id="phone-templates-wrap">
 
-                <!-- TEMPLATE 0: MERIDIAN LAW GROUP — Professional -->
+                <!-- TEMPLATE 0: ATELIER VALE - mobile tailoring preview -->
                 <div class="phone-template active" id="tpl-0">
                   <div class="t1-topbar">
-                    <span class="t1-topbar-logo">Meridian Law Group</span>
-                    <span class="t1-topbar-phone">(904) 555-0147</span>
+                    <span class="t1-topbar-logo">Atelier Vale</span>
+                    <span class="t1-topbar-phone">Fittings by appointment</span>
                   </div>
                   <div class="t1-nav">
                     <div>
-                      <div class="t1-nav-logo">Meridian<span>.</span></div>
-                      <div class="t1-logo-sub" style="font-size:7px;color:#8a9aaa;letter-spacing:1.5px;text-transform:uppercase;">Attorneys at Law</div>
+                      <div class="t1-nav-logo">Vale<span>.</span></div>
+                      <div class="t1-logo-sub" style="font-size:7px;color:#8a9aaa;letter-spacing:1.5px;text-transform:uppercase;">Bespoke atelier</div>
                     </div>
                     <div class="t1-nav-links">
-                      <span class="t1-nav-link">Practice</span>
-                      <span class="t1-nav-link">Team</span>
-                      <span class="t1-nav-link">Contact</span>
+                      <span class="t1-nav-link">Fit</span>
+                      <span class="t1-nav-link">Process</span>
+                      <span class="t1-nav-link">Book</span>
                     </div>
                   </div>
                   <div class="t1-hero">
-                    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=170&fit=crop&q=80" alt="Law office" loading="lazy">
+                    <img src="images/tail;oring%20hero%20page%20img.jpg" alt="Tailoring studio" loading="lazy">
                     <div class="t1-hero-overlay"></div>
                     <div class="t1-hero-content">
-                      <div class="t1-badge">&#9878; Est. 1998 &middot; St. Johns, FL</div>
-                      <h2 class="t1-headline">Trusted counsel<br>when it matters<br>most.</h2>
-                      <div class="t1-sub">Protecting families and businesses across Northeast Florida.</div>
-                      <button class="t1-btn">Free Consultation</button>
+                      <div class="t1-badge">Est. 2018 &middot; Hand finished</div>
+                      <h2 class="t1-headline">Tailoring that<br>moves with<br>you.</h2>
+                      <div class="t1-sub">Alterations, custom fits, and quiet details made in a local studio.</div>
+                      <button class="t1-btn">Book a Fitting</button>
                     </div>
                   </div>
                   <div class="t1-trust-bar">
-                    <div class="t1-trust-item"><div class="t1-trust-num">26yr</div><div class="t1-trust-label">Experience</div></div>
-                    <div class="t1-trust-item"><div class="t1-trust-num">2,400+</div><div class="t1-trust-label">Cases Won</div></div>
-                    <div class="t1-trust-item"><div class="t1-trust-num">4.9&#9733;</div><div class="t1-trust-label">Google</div></div>
+                    <div class="t1-trust-item"><div class="t1-trust-num">1:1</div><div class="t1-trust-label">Fittings</div></div>
+                    <div class="t1-trust-item"><div class="t1-trust-num">3wk</div><div class="t1-trust-label">Custom fit</div></div>
+                    <div class="t1-trust-item"><div class="t1-trust-num">4.9</div><div class="t1-trust-label">Client rating</div></div>
                   </div>
                   <div class="t1-practices">
-                    <div class="t1-practices-label">Practice Areas</div>
+                    <div class="t1-practices-label">Studio Services</div>
                     <div class="t1-practice">
-                      <div class="t1-practice-icon">&#127968;</div>
-                      <div><div class="t1-practice-name">Real Estate Law</div><div class="t1-practice-desc">Closings, disputes, title issues</div></div>
+                      <div class="t1-practice-icon">&bull;</div>
+                      <div><div class="t1-practice-name">Alterations</div><div class="t1-practice-desc">Clean hems, waists, sleeves, and shaping</div></div>
                     </div>
                     <div class="t1-practice">
-                      <div class="t1-practice-icon">&#128203;</div>
-                      <div><div class="t1-practice-name">Estate Planning</div><div class="t1-practice-desc">Wills, trusts, probate</div></div>
+                      <div class="t1-practice-icon">&bull;</div>
+                      <div><div class="t1-practice-name">Made to measure</div><div class="t1-practice-desc">Garments shaped around your proportions</div></div>
                     </div>
                     <div class="t1-practice">
-                      <div class="t1-practice-icon">&#9878;</div>
-                      <div><div class="t1-practice-name">Business Law</div><div class="t1-practice-desc">Contracts, formation, disputes</div></div>
+                      <div class="t1-practice-icon">&bull;</div>
+                      <div><div class="t1-practice-name">Restoration</div><div class="t1-practice-desc">Repair, relining, and quiet reinforcement</div></div>
                     </div>
                     <div class="t1-practice">
-                      <div class="t1-practice-icon">&#128106;</div>
-                      <div><div class="t1-practice-name">Family Law</div><div class="t1-practice-desc">Divorce, custody, adoption</div></div>
+                      <div class="t1-practice-icon">&bull;</div>
+                      <div><div class="t1-practice-name">Occasion wear</div><div class="t1-practice-desc">Final polish for events and ceremonies</div></div>
                     </div>
                   </div>
                   <div class="t1-team">
-                    <div class="t1-team-label">Lead Attorney</div>
+                    <div class="t1-team-label">Craft in motion</div>
                     <div class="t1-team-card">
-                      <img class="t1-team-avatar" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&h=80&fit=crop&q=80" alt="Attorney">
+                      <img class="t1-team-avatar" src="images/tailoring%20footer.jpg" alt="Fabric detail">
                       <div>
-                        <div class="t1-team-name">James R. Meridian, Esq.</div>
-                        <div class="t1-team-title">Managing Partner · FL Bar #987432</div>
-                        <div class="t1-team-creds">J.D. University of Florida · 26 yrs experience</div>
+                        <div class="t1-team-name">Measured, pinned, refined</div>
+                        <div class="t1-team-title">Local studio &middot; hand-finished detail</div>
+                        <div class="t1-team-creds">Each fitting records posture, drape, and daily movement.</div>
                       </div>
                     </div>
                   </div>
                   <div class="t1-cta-strip">
-                    <div><div class="t1-cta-text">Ready to get started?</div><div class="t1-cta-sub">No fees for initial consultation</div></div>
-                    <button class="t1-cta-btn">Call Now</button>
+                    <div><div class="t1-cta-text">Bring in the garment.</div><div class="t1-cta-sub">Leave with a plan and a fitting date.</div></div>
+                    <button class="t1-cta-btn">Reserve</button>
                   </div>
-                  <div class="t1-footer">© 2026 Meridian Law Group · Built by Mediocre Markup</div>
+                  <div class="t1-footer">&copy; 2026 Atelier Vale &middot; Built by Mediocre Markup</div>
                 </div>
 
                 <!-- TEMPLATE 1: BLOOM & CO. — Editorial Floral -->
@@ -6366,7 +6705,7 @@
             <div class="phone-dot"></div>
           </div>
         </div>
-        <div id="sc-name-pill">Meridian Law Group</div>
+        <div id="sc-name-pill">Atelier Vale</div>
       </div><!-- /sc-phone-col -->
 
       <div id="sc-tagline">Every industry. Built from scratch. No shortcuts.</div>
@@ -6524,47 +6863,41 @@
      MEDIOCRE MARKUP — FULL ANIMATION SYSTEM
      -------------------------------------------------------- */
 
-  /* -- 1. HERO MARKUP SANDBOX -- */
+  /* -- 1. HERO MARKUP SANDBOX — Conducting Markup -- */
   {
-    class MarkupSandbox {
-      constructor(field, stage, hero) {
+    class ConductingMarkup {
+      constructor(field, stage) {
         this.field = field;
         this.stage = stage;
-        this.hero = hero;
-        this.symbols = ['<', '>', '</>', '<div>', 'div', 'css', 'html', '{', '}', '#', '.', '/', '/*', '*/', 'px', ';', '='];
-        this.palette = ['#f1ead9', '#d5c96d', '#d66b45', '#7fa7ba', '#8fac84', '#b9a6ca'];
+        this.SYMBOLS = ['<', '>', '</>', '<div>', 'div', 'css', 'html', '{', '}', '#', '.', '/', '/*', '*/', 'px', ';', '='];
+        this.COLORS = [
+          'rgba(241,234,217,0.82)', 'rgba(127,167,186,0.76)',
+          'rgba(214,107,69,0.72)', 'rgba(185,166,202,0.74)',
+          'rgba(143,172,132,0.72)', 'rgba(213,190,99,0.76)'
+        ];
         this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        this.staticMode = this.reducedMotion;
-        this.pointer = { x: -9999, y: -9999, px: -9999, py: -9999, active: false, enteredAt: 0, movedAt: 0 };
-        this.particles = [];
         this.width = 1;
         this.height = 1;
-        this.seed = 24051986;
-        this.state = 'idle';
-        this.stateStarted = 0;
-        this.cooldownUntil = 0;
-        this.activeBuild = null;
-        this.activeHotspotKey = null;
-        this.hoverStartedAt = 0;
-        this.buildProgress = 0;
-        this.pendingMovement = 0;
-        this.nextBuildIndex = 0;
-        this.builtComponents = [];
-        this.allBuiltAt = 0;
-        this.resetAvailableAt = 0;
-        this.buildSteps = this.createBuildSteps();
-        this.componentState = {};
-        this.chargeProgress = {};
-        this.builtLayer = null;
-        this.hotspotLayer = null;
-        this.hotspotEls = {};
-        this.progressEl = null;
-        this.progressLabel = null;
-        this.orbitEl = null;
+        this.seed = 27042026;
+        this.cursor = {
+          x: -9999, y: -9999, px: -9999, py: -9999,
+          vx: 0, vy: 0, speed: 0, dir: 0, prevDir: 0,
+          inside: false, lastMoveAt: performance.now()
+        };
+        this.harmony = 0;
+        this.harmonyHighSince = 0;
+        this.logoState = 'idle';
+        this.logoStateAt = 0;
+        this.logoTargetsList = [];
+        this.particles = [];
         this.noteEl = null;
-        this.resetButton = null;
-        this.resizeQueued = false;
         this.lastFrame = 0;
+        this.resizeQueued = false;
+        this.isVisible = true;
+        this.frameCount = 0;
+        this._showingAgain = false;
+        this._againNoteAt = 0;
+        this._lastNoteTitle = '';
 
         this.animate = this.animate.bind(this);
         this.onPointerEnter = this.onPointerEnter.bind(this);
@@ -6573,239 +6906,196 @@
         this.onResize = this.onResize.bind(this);
       }
 
-      init() {
-        this.createBuiltLayer();
-        this.noteEl = this.field.closest('.hero-system')?.querySelector('.field-note');
-        this.resetComponentStates();
-        this.seedParticles();
-        this.field.addEventListener('pointerenter', this.onPointerEnter);
-        this.field.addEventListener('pointerdown', this.onPointerEnter);
-        this.field.addEventListener('pointermove', this.onPointerMove);
-        this.field.addEventListener('pointerleave', this.onPointerLeave);
-        window.addEventListener('resize', this.onResize);
-        window.markupSandbox = this;
-        requestAnimationFrame(this.animate);
-      }
-
       rand() {
         this.seed = (this.seed * 1664525 + 1013904223) >>> 0;
         return this.seed / 4294967296;
       }
 
-      clamp(value, min, max) {
-        return Math.max(min, Math.min(max, value));
-      }
-
-      mix(a, b, amount) {
-        return a + (b - a) * amount;
-      }
-
-      easeInOut(t) {
-        t = this.clamp(t, 0, 1);
+      clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+      lerp(a, b, t) { return a + (b - a) * t; }
+      smoothstep(e0, e1, x) {
+        const t = this.clamp((x - e0) / (e1 - e0), 0, 1);
         return t * t * (3 - 2 * t);
       }
 
-      easeOut(t) {
-        t = this.clamp(t, 0, 1);
-        return 1 - Math.pow(1 - t, 3);
-      }
-
-      smoothstep(start, end, value) {
-        const t = this.clamp((value - start) / (end - start), 0, 1);
-        return t * t * (3 - 2 * t);
-      }
-
-      pctX(value) {
-        return (value / 100) * this.width;
-      }
-
-      pctY(value) {
-        return (value / 100) * this.height;
-      }
-
-      createBuildSteps() {
-        return [
-          { key: 'frame', label: 'markup finding structure...', trigger: 0.06, share: 0.18, maxCount: 22, bounds: { x: 8, y: 10, w: 84, h: 78 }, trace: 'rect', hotspot: { x: 50, y: 49, r: 48, chargeDuration: 1 } },
-          { key: 'media', label: 'stitching in motion...', trigger: 0.26, share: 0.20, maxCount: 24, bounds: { x: 12, y: 24, w: 76, h: 39 }, trace: 'hero', hotspot: { x: 50, y: 43, r: 48, chargeDuration: 1 } },
-          { key: 'copy', label: 'placing the promise...', trigger: 0.46, share: 0.15, maxCount: 18, bounds: { x: 17, y: 33, w: 34, h: 22 }, trace: 'text', hotspot: { x: 34, y: 44, r: 48, chargeDuration: 1 } },
-          { key: 'details', label: 'proof settling in...', trigger: 0.66, share: 0.16, maxCount: 20, bounds: { x: 12, y: 66, w: 71, h: 12 }, trace: 'details', hotspot: { x: 48, y: 72, r: 48, chargeDuration: 1 } },
-          { key: 'cta', label: 'presence restored...', trigger: 0.84, share: 0.10, maxCount: 14, bounds: { x: 17, y: 54, w: 30, h: 8 }, trace: 'pill', hotspot: { x: 32, y: 58, r: 48, chargeDuration: 1 } }
-        ];
-      }
-
-      createBuiltLayer() {
-        if (this.builtLayer) return;
-        this.builtLayer = document.createElement('div');
-        this.builtLayer.className = 'built-site';
-        this.builtLayer.innerHTML = `
-          <div class="built-piece built-frame" data-build-key="frame">
-            <span class="browser-dots"><i></i><i></i><i></i></span>
-            <span class="browser-line"></span>
-            <span class="browser-label">atelierstudio.local</span>
-          </div>
-          <div class="built-piece mini-nav" data-build-key="frame">
-            <span class="mini-brand">Atelier Vale</span>
-            <span class="mini-nav-links"><span>Services</span><span>Process</span><span>Book</span></span>
-          </div>
-          <div class="built-piece built-media" data-build-key="media">
-            <video muted loop playsinline preload="metadata" poster="images/vecteezy_fashion-designer-tailor-or-sewer_7360006.jpg">
-              <source src="images/sewing%202.mp4" type="video/mp4">
-            </video>
-          </div>
-          <div class="built-piece built-copy" data-build-key="copy">
-            <span class="mini-kicker">Bespoke atelier</span>
-            <span class="mini-headline">Custom tailoring,<br>made personal</span>
-            <span class="mini-copy">Hand-finished alterations and made-to-measure pieces shaped around the person wearing them.</span>
-          </div>
-          <div class="built-piece built-card" data-build-key="details">
-            <span class="mini-card-image"><img src="images/vecteezy_needle-and-thread-with-button-on-material-mending-clothing_76760151.jpeg" alt=""></span>
-            <span class="mini-card-title">Alterations & custom fits</span>
-            <span class="mini-card-line">Quiet craft, clean lines, exacting detail.</span>
-          </div>
-          <div class="built-piece built-actions" data-build-key="cta">
-            <button class="mini-button mini-button-primary" type="button">Book a fitting</button>
-            <button class="mini-button mini-button-secondary" type="button">View services</button>
-          </div>
-          <div class="built-piece built-trust" data-build-key="details">
-            <span class="mini-seal"></span>
-            <span>
-              <span class="mini-trust-title">Hand-finished</span>
-              <span class="mini-trust-line">Local studio, precise fittings</span>
-            </span>
-          </div>
-        `;
-        this.field.insertBefore(this.builtLayer, this.stage);
-
-        this.progressEl = document.createElement('div');
-        this.progressEl.className = 'sandbox-progress';
-        this.progressEl.innerHTML = `
-          <span class="sandbox-progress-label">building presence...</span>
-          <span class="sandbox-progress-track"><span class="sandbox-progress-fill"></span></span>
-        `;
-        this.progressLabel = this.progressEl.querySelector('.sandbox-progress-label');
-        this.field.appendChild(this.progressEl);
-
-        this.orbitEl = document.createElement('span');
-        this.orbitEl.className = 'build-orbit';
-        this.field.appendChild(this.orbitEl);
-
-        this.resetButton = document.createElement('button');
-        this.resetButton.className = 'sandbox-reset';
-        this.resetButton.type = 'button';
-        this.resetButton.textContent = 'rebuild';
-        this.resetButton.addEventListener('click', event => {
-          event.stopPropagation();
-          this.resetSandbox(performance.now());
-        });
-        this.field.appendChild(this.resetButton);
-      }
-
-      createHotspotLayer() {
-        if (this.hotspotLayer) return;
-        this.hotspotLayer = document.createElement('div');
-        this.hotspotLayer.className = 'sandbox-hotspots';
-        this.buildSteps.forEach(step => {
-          const el = document.createElement('span');
-          el.className = 'sandbox-hotspot';
-          el.dataset.buildKey = step.key;
-          el.style.setProperty('--hotspot-x', `${step.hotspot.x}%`);
-          el.style.setProperty('--hotspot-y', `${step.hotspot.y}%`);
-          el.style.setProperty('--charge', '0');
-          this.hotspotLayer.appendChild(el);
-          this.hotspotEls[step.key] = el;
-        });
-        this.field.insertBefore(this.hotspotLayer, this.stage);
-      }
-
-      resetComponentStates() {
-        this.buildSteps.forEach(step => {
-          this.componentState[step.key] = 'unbuilt';
-          this.chargeProgress[step.key] = 0;
-          this.updateHotspotEl(step.key);
-        });
-        this.buildProgress = 0;
-        this.pendingMovement = 0;
-        this.nextBuildIndex = 0;
-        this.builtComponents = [];
-        this.allBuiltAt = 0;
-        this.resetAvailableAt = 0;
-        this.field.dataset.builtCount = '0';
-        this.updateProgressUI();
-        this.updateNote('INTERACT', ['move inside the sandbox', 'scrub chaos into structure']);
+      buildLogoTargets() {
+        // Percentage-coordinate MM monogram target points, [0,1] range
+        const pts = [];
+        const addLine = (x1, y1, x2, y2, n) => {
+          for (let i = 0; i < n; i++) {
+            const t = n > 1 ? i / (n - 1) : 0.5;
+            pts.push({ xPct: x1 + (x2 - x1) * t, yPct: y1 + (y2 - y1) * t });
+          }
+        };
+        const y0 = 0.20, yB = 0.78, yM = 0.49;
+        // Left M
+        addLine(0.14, y0, 0.14, yB, 9);
+        addLine(0.14, y0, 0.265, yM, 7);
+        addLine(0.265, yM, 0.39, y0, 7);
+        addLine(0.39, y0, 0.39, yB, 9);
+        // Right M
+        addLine(0.46, y0, 0.46, yB, 9);
+        addLine(0.46, y0, 0.585, yM, 7);
+        addLine(0.585, yM, 0.71, y0, 7);
+        addLine(0.71, y0, 0.71, yB, 9);
+        return pts; // 64 target points
       }
 
       getParticleCount() {
-        if (window.innerWidth < 560) return 70;
-        if (window.innerWidth < 980) return 82;
-        return 108;
+        if (this.reducedMotion) return 40;
+        if (window.innerWidth < 560) return 58;
+        if (window.innerWidth < 980) return 76;
+        return 92;
       }
 
       seedParticles() {
-        this.seed = 24051986;
-        this.width = this.field.clientWidth || 1;
-        this.height = this.field.clientHeight || 1;
+        this.seed = 27042026;
         this.particles = [];
         this.stage.replaceChildren();
-        this.state = 'idle';
-        this.activeBuild = null;
-        this.activeHotspotKey = null;
-        this.cooldownUntil = 0;
-        this.field.classList.toggle('is-static', this.staticMode);
-        this.setFieldState('idle');
-
+        this.width = this.field.clientWidth || 600;
+        this.height = this.field.clientHeight || 500;
+        this.logoTargetsList = this.buildLogoTargets();
         const count = this.getParticleCount();
-        const cols = Math.ceil(Math.sqrt(count * 1.32));
-        const rows = Math.ceil(count / cols);
-
         for (let i = 0; i < count; i++) {
-          const col = i % cols;
-          const row = Math.floor(i / cols);
-          const symbol = this.symbols[Math.floor(this.rand() * this.symbols.length)];
-          const baseXPct = this.clamp(((col + 0.22 + this.rand() * 0.7) / cols) * 100, 6, 94);
-          const baseYPct = this.clamp(((row + 0.22 + this.rand() * 0.7) / rows) * 100, 8, 92);
+          const sym = this.SYMBOLS[Math.floor(this.rand() * this.SYMBOLS.length)];
+          const color = this.COLORS[Math.floor(this.rand() * this.COLORS.length)];
+          const baseSize = 10 + this.rand() * (sym.length > 3 ? 3 : 6);
           const el = document.createElement('span');
-          const size = (window.innerWidth < 560 ? 9.5 : 10.5) + this.rand() * (symbol.length > 2 ? 3.5 : 6.5);
-          const color = this.palette[Math.floor(this.rand() * this.palette.length)];
-
           el.className = 'symbol-particle';
-          el.textContent = symbol;
-          el.style.fontSize = `${size.toFixed(1)}px`;
+          el.textContent = sym;
+          el.style.fontSize = `${baseSize.toFixed(1)}px`;
           el.style.color = color;
           this.stage.appendChild(el);
-
+          const bxp = 0.05 + this.rand() * 0.90;
+          const byp = 0.06 + this.rand() * 0.88;
           this.particles.push({
-            id: i,
-            el,
-            symbol,
-            baseXPct,
-            baseYPct,
-            x: (baseXPct / 100) * this.width,
-            y: (baseYPct / 100) * this.height,
-            vx: 0,
-            vy: 0,
+            id: i, el, sym, color,
+            baseXPct: bxp,
+            baseYPct: byp,
+            x: this.width * bxp,
+            y: this.height * byp,
+            vx: 0, vy: 0,
+            rotation: -12 + this.rand() * 24,
+            baseOpacity: 0.22 + this.rand() * 0.48,
+            baseScale: 0.82 + this.rand() * 0.36,
             phase: this.rand() * Math.PI * 2,
-            driftX: 3 + this.rand() * 10,
-            driftY: 4 + this.rand() * 12,
-            speed: 0.26 + this.rand() * 0.48,
-            rotation: -10 + this.rand() * 20,
-            rotationSpeed: -0.12 + this.rand() * 0.24,
-            baseOpacity: 0.32 + this.rand() * 0.48,
-            size,
-            color,
-            assignedToBuild: null,
-            build: null,
-            consumed: false,
-            lockedConsumed: false,
-            atmosphereXPct: null,
-            atmosphereYPct: null,
-            hiddenUntil: 0,
-            respawnStart: 0,
-            respawnDuration: 0,
-            renderRotation: 0,
-            renderOpacity: 0,
-            renderScale: 1
+            driftR: 14 + this.rand() * 26,
+            driftSpd: 0.15 + this.rand() * 0.32,
+            side: this.rand() > 0.5 ? 1 : -1,
+            logoTargetIdx: -1,
+            sweepDelay: 0,
+            sweepCurve: (this.rand() - 0.5) * 0.5,
+            releaseWave: this.rand(),
+            isAmbient: false
           });
         }
+      }
+
+      assignLogoTargets() {
+        const tList = this.logoTargetsList;
+        for (const p of this.particles) { p.logoTargetIdx = -1; p.isAmbient = false; }
+        // Sort all particle-target pairs by distance, assign greedily (nearest first)
+        const pairs = [];
+        for (let ti = 0; ti < tList.length; ti++) {
+          const tx = tList[ti].xPct * this.width, ty = tList[ti].yPct * this.height;
+          for (let pi = 0; pi < this.particles.length; pi++) {
+            const p = this.particles[pi];
+            pairs.push({ ti, pi, dist: Math.hypot(p.x - tx, p.y - ty) });
+          }
+        }
+        pairs.sort((a, b) => a.dist - b.dist);
+        const usedT = new Set(), usedP = new Set();
+        for (const { ti, pi } of pairs) {
+          if (usedT.has(ti) || usedP.has(pi)) continue;
+          this.particles[pi].logoTargetIdx = ti;
+          usedT.add(ti); usedP.add(pi);
+          if (usedT.size >= tList.length) break;
+        }
+        // Mark ambient particles; assign sweep delay by distance from center
+        const cx = this.width * 0.5, cy = this.height * 0.5;
+        const maxD = Math.hypot(cx, cy);
+        for (const p of this.particles) {
+          p.isAmbient = p.logoTargetIdx < 0;
+          p.sweepDelay = (Math.hypot(p.x - cx, p.y - cy) / maxD) * 0.45;
+        }
+      }
+
+      getLogoTargetPx(p) {
+        if (p.logoTargetIdx < 0) return null;
+        const t = this.logoTargetsList[p.logoTargetIdx];
+        return { x: t.xPct * this.width, y: t.yPct * this.height };
+      }
+
+      init() {
+        this.noteEl = this.field.closest('.hero-system')?.querySelector('.field-note');
+        this.seedParticles();
+        this.field.addEventListener('pointerenter', this.onPointerEnter, { passive: true });
+        this.field.addEventListener('pointermove', this.onPointerMove, { passive: true });
+        this.field.addEventListener('pointerleave', this.onPointerLeave, { passive: true });
+        this.field.addEventListener('pointerdown', this.onPointerEnter, { passive: true });
+        window.addEventListener('resize', this.onResize, { passive: true });
+        if ('IntersectionObserver' in window) {
+          new IntersectionObserver(e => { this.isVisible = e[0].isIntersecting; }, { threshold: 0 })
+            .observe(this.field);
+        }
+        this.updateNote('INTERACT');
+        window.conductingMarkup = this;
+        requestAnimationFrame(this.animate);
+      }
+
+      updateNote(title, sub) {
+        if (!this.noteEl || this._lastNoteTitle === title) return;
+        this._lastNoteTitle = title;
+        const b = this.noteEl.querySelector('b');
+        if (b) b.textContent = title;
+        const spans = [...this.noteEl.querySelectorAll('span')];
+        spans.forEach((s, i) => {
+          const text = sub?.[i] || '';
+          s.textContent = text;
+          s.style.display = text ? 'block' : 'none';
+        });
+      }
+
+      onPointerEnter(e) {
+        this.cursor.inside = true;
+        if (this.reducedMotion && this.logoState === 'idle') {
+          this.startAnticipation(performance.now());
+          return;
+        }
+        this.updateCursor(e);
+      }
+
+      onPointerMove(e) {
+        this.cursor.inside = true;
+        this.updateCursor(e);
+      }
+
+      onPointerLeave() {
+        this.cursor.inside = false;
+      }
+
+      updateCursor(e) {
+        const rect = this.field.getBoundingClientRect();
+        const x = this.clamp(e.clientX - rect.left, 0, rect.width);
+        const y = this.clamp(e.clientY - rect.top, 0, rect.height);
+        const now = performance.now();
+        const dt = Math.max(8, now - (this.cursor.lastMoveAt || now - 16));
+        if (this.cursor.x > -100) {
+          const dx = x - this.cursor.x, dy = y - this.cursor.y;
+          const dist = Math.hypot(dx, dy);
+          this.cursor.vx = dx / dt * 1000;
+          this.cursor.vy = dy / dt * 1000;
+          this.cursor.speed = dist / dt * 1000;
+          if (dist > 0.5) {
+            this.cursor.prevDir = this.cursor.dir;
+            this.cursor.dir = Math.atan2(dy, dx);
+          }
+        }
+        this.cursor.px = this.cursor.x;
+        this.cursor.py = this.cursor.y;
+        this.cursor.x = x;
+        this.cursor.y = y;
+        this.cursor.lastMoveAt = now;
       }
 
       onResize() {
@@ -6818,1344 +7108,302 @@
         });
       }
 
-      onPointerEnter(event) {
-        if (this.staticMode) return;
-        const now = performance.now();
-        this.pointer.active = true;
-        this.pointer.enteredAt = now;
-        this.pointer.movedAt = now;
-        this.updatePointer(event, now);
-      }
-
-      onPointerMove(event) {
-        this.updatePointer(event, performance.now());
-      }
-
-      onPointerLeave() {
-        this.pointer.active = false;
-        this.pointer.x = -9999;
-        this.pointer.y = -9999;
-        this.pointer.px = -9999;
-        this.pointer.py = -9999;
-        this.clearActiveHotspot();
-        if (!this.activeBuild && this.state !== 'cooldown' && this.state !== 'built') {
-          this.state = 'idle';
-          this.setFieldState('idle');
-        }
-      }
-
-      updatePointer(event, now) {
-        if (this.staticMode) return;
-        const rect = this.field.getBoundingClientRect();
-        const x = this.clamp(event.clientX - rect.left, 0, rect.width);
-        const y = this.clamp(event.clientY - rect.top, 0, rect.height);
-        this.pointer.px = this.pointer.x;
-        this.pointer.py = this.pointer.y;
-        this.pointer.x = x;
-        this.pointer.y = y;
-        this.pointer.movedAt = now;
-        if (Number.isFinite(this.pointer.px) && this.pointer.px > -100 && this.pointer.py > -100) {
-          const moved = Math.hypot(this.pointer.x - this.pointer.px, this.pointer.y - this.pointer.py);
-          this.pendingMovement += this.clamp(moved, 0, 72);
-        }
-      }
-
-      setFieldState(state) {
-        this.field.classList.toggle('is-active', state !== 'idle');
-        this.field.classList.toggle('is-hovering-hotspot', state === 'hoveringHotspot');
-        this.field.classList.toggle('is-charging', state === 'charging');
-        this.field.classList.toggle('is-building', state === 'building');
-        this.field.classList.toggle('is-built', state === 'built');
-        this.field.dataset.sandboxState = state;
-      }
-
-      updateNote(title, lines = []) {
-        if (!this.noteEl) return;
-        const titleEl = this.noteEl.querySelector('b');
-        const lineEls = this.noteEl.querySelectorAll('span');
-        if (titleEl) titleEl.textContent = title;
-        lineEls.forEach((el, index) => {
-          el.textContent = lines[index] || '';
-          el.style.display = lines[index] ? 'block' : 'none';
-        });
-      }
-
-      updateProgressUI() {
-        if (this.progressEl) {
-          this.progressEl.style.setProperty('--sandbox-progress', this.clamp(this.buildProgress, 0, 1).toFixed(3));
-        }
-        if (!this.progressLabel) return;
-        const progress = this.buildProgress;
-        let label = 'building presence...';
-        if (progress >= 0.2) label = 'markup finding structure...';
-        if (progress >= 0.4) label = 'stitching in motion...';
-        if (progress >= 0.6) label = 'proof settling in...';
-        if (progress >= 0.8) label = 'presence restored...';
-        this.progressLabel.textContent = label;
-      }
-
-      setComponentState(key, state) {
-        this.componentState[key] = state;
-        this.updateHotspotEl(key);
-      }
-
-      updateHotspotEl(key) {
-        const el = this.hotspotEls[key];
-        if (!el) return;
-        const state = this.componentState[key] || 'unbuilt';
-        el.style.setProperty('--charge', `${this.clamp(this.chargeProgress[key] || 0, 0, 1)}`);
-        el.classList.toggle('is-hovered', this.activeHotspotKey === key && state !== 'built');
-        el.classList.toggle('is-charging', state === 'charging');
-        el.classList.toggle('is-building', state === 'building');
-        el.classList.toggle('is-built', state === 'built');
-        el.dataset.componentState = state;
-      }
-
-      getStep(key) {
-        return this.buildSteps.find(step => step.key === key);
-      }
-
-      absoluteBounds(bounds) {
-        return {
-          x: this.pctX(bounds.x),
-          y: this.pctY(bounds.y),
-          w: this.pctX(bounds.w),
-          h: this.pctY(bounds.h)
-        };
-      }
-
-      hotspotCenter(step) {
-        return { x: this.pctX(step.hotspot.x), y: this.pctY(step.hotspot.y) };
-      }
-
-      hotspotRadius(step, multiplier = 1) {
-        return Math.min(this.width, this.height) * (step.hotspot.r / 100) * multiplier;
-      }
-
-      rectPoint(bounds, t) {
-        const b = this.absoluteBounds(bounds);
-        const perimeter = (b.w + b.h) * 2;
-        const d = (t % 1) * perimeter;
-        if (d < b.w) return { x: b.x + d, y: b.y, rotation: 0 };
-        if (d < b.w + b.h) return { x: b.x + b.w, y: b.y + d - b.w, rotation: 90 };
-        if (d < b.w * 2 + b.h) return { x: b.x + b.w - (d - b.w - b.h), y: b.y + b.h, rotation: 0 };
-        return { x: b.x, y: b.y + b.h - (d - b.w * 2 - b.h), rotation: 90 };
-      }
-
-      createTraceTargets(step, count) {
-        const targets = [];
-        const b = this.absoluteBounds(step.bounds);
-        for (let i = 0; i < count; i++) {
-          const t = count === 1 ? 0.5 : i / count;
-          let point = this.rectPoint(step.bounds, t);
-
-          if (step.trace === 'hero') {
-            const row = i % 5;
-            const colT = ((i * 0.37) % 1);
-            if (row < 3) {
-              point = {
-                x: b.x + b.w * (0.03 + colT * 0.38),
-                y: b.y + b.h * (0.24 + row * 0.18),
-                rotation: Math.sin(i) * 2
-              };
-            } else {
-              const angle = colT * Math.PI * 2;
-              point = {
-                x: b.x + b.w * 0.72 + Math.cos(angle) * b.w * 0.18,
-                y: b.y + b.h * 0.48 + Math.sin(angle) * b.h * 0.34,
-                rotation: angle * 12
-              };
-            }
-          }
-
-          if (step.trace === 'text') {
-            const row = i % 4;
-            point = {
-              x: b.x + b.w * (0.03 + ((i * 0.29) % 1) * 0.68),
-              y: b.y + b.h * (0.18 + row * 0.18),
-              rotation: -1 + row * 0.6
-            };
-          }
-
-          if (step.trace === 'details') {
-            const split = i / Math.max(1, count - 1);
-            point = {
-              x: b.x + b.w * (0.04 + split * 0.88),
-              y: b.y + b.h * (0.25 + (i % 3) * 0.22),
-              rotation: Math.sin(i * 1.7) * 2
-            };
-          }
-
-          if (step.trace === 'pill') {
-            point = this.rectPoint(step.bounds, (t + 0.08) % 1);
-          }
-
-          targets.push(point);
-        }
-        return targets;
-      }
-
-      findHotspot() {
-        if (!this.pointer.active || this.activeBuild || performance.now() < this.cooldownUntil) return null;
-        let nearest = null;
-        this.buildSteps.forEach(step => {
-          if (this.componentState[step.key] === 'built' || this.componentState[step.key] === 'building') return;
-          const center = this.hotspotCenter(step);
-          const dist = Math.hypot(this.pointer.x - center.x, this.pointer.y - center.y);
-          const radius = this.hotspotRadius(step, 1);
-          if (dist <= radius && (!nearest || dist < nearest.dist)) {
-            nearest = { step, dist, radius };
-          }
-        });
-        return nearest;
-      }
-
-      clearActiveHotspot() {
-        const previous = this.activeHotspotKey;
-        this.activeHotspotKey = null;
-        this.hoverStartedAt = 0;
-        if (previous && this.componentState[previous] === 'charging') {
-          this.setComponentState(previous, 'unbuilt');
-        }
-        if (previous) this.updateHotspotEl(previous);
-      }
-
-      updateHotspotCharge(now, dt) {
-        if (this.activeBuild || this.staticMode) return;
-
-        const found = this.findHotspot();
-        this.buildSteps.forEach(step => {
-          if (found?.step.key === step.key || this.componentState[step.key] === 'built') return;
-          const current = this.chargeProgress[step.key] || 0;
-          if (current <= 0) return;
-          this.chargeProgress[step.key] = Math.max(0, current - dt / 320);
-          this.updateHotspotEl(step.key);
-        });
-
-        if (!found) {
-          this.clearActiveHotspot();
-          if (this.state !== 'cooldown' && this.state !== 'built') {
-            this.state = 'idle';
-            this.setFieldState('idle');
-          }
-          return;
-        }
-
-        const { step } = found;
-        if (this.activeHotspotKey !== step.key) {
-          this.clearActiveHotspot();
-          this.activeHotspotKey = step.key;
-          this.hoverStartedAt = now;
-          this.setComponentState(step.key, 'charging');
-        }
-
-        const hoverAge = now - this.hoverStartedAt;
-        this.state = hoverAge < 120 ? 'hoveringHotspot' : 'charging';
-        this.setFieldState(this.state);
-
-        this.chargeProgress[step.key] = this.clamp(
-          (this.chargeProgress[step.key] || 0) + dt / step.hotspot.chargeDuration,
-          0,
-          1
-        );
-        this.updateHotspotEl(step.key);
-
-        if (this.chargeProgress[step.key] >= 1) {
-          this.beginBuild(step.key, now);
-        }
-      }
-
-      updateBuildProgress(now, dt) {
-        if (this.staticMode || this.state === 'built') return;
-
-        const moved = this.pendingMovement;
-        this.pendingMovement = 0;
-        if (this.pointer.active && (moved > 0 || now - this.pointer.movedAt < 260)) {
-          const movementGain = moved * 0.00034;
-          const presenceGain = dt * 0.000012;
-          this.buildProgress = this.clamp(this.buildProgress + movementGain + presenceGain, 0, 1);
-          if (!this.activeBuild) {
-            this.state = this.state === 'cooldown' ? this.state : 'charging';
-            if (this.state !== 'cooldown') this.setFieldState('charging');
-          }
-          this.updateProgressUI();
-        }
-
-        if (this.activeBuild || now < this.cooldownUntil) {
-          this.updateOrbitEl();
-          return;
-        }
-
-        const nextStep = this.buildSteps[this.nextBuildIndex];
-        if (nextStep && this.buildProgress >= nextStep.trigger) {
-          if (this.beginBuild(nextStep.key, now)) this.nextBuildIndex += 1;
-        }
-        this.updateOrbitEl();
-      }
-
-      updateOrbitEl() {
-        if (!this.orbitEl) return;
-        const step = this.activeBuild?.step;
-        if (!step || this.activeBuild?.componentRevealed) {
-          this.orbitEl.classList.remove('is-visible');
-          return;
-        }
-        const b = this.absoluteBounds(step.bounds);
-        const x = b.x + b.w * 0.5;
-        const y = b.y + b.h * 0.5;
-        this.orbitEl.style.setProperty('--orbit-x', `${x}px`);
-        this.orbitEl.style.setProperty('--orbit-y', `${y}px`);
-        this.orbitEl.classList.add('is-visible');
-      }
-
-      selectParticles(step, targets) {
-        const center = this.hotspotCenter(step);
-        return this.particles
-          .filter(p => !p.consumed && !p.assignedToBuild)
-          .map(p => ({
-            p,
-            score: Math.hypot(p.x - center.x, p.y - center.y)
-          }))
-          .sort((a, b) => a.score - b.score)
-          .slice(0, targets.length)
-          .map(item => item.p);
-      }
-
-      beginBuild(key, now) {
-        if (this.activeBuild || now < this.cooldownUntil || this.componentState[key] === 'built') return false;
-        const step = this.getStep(key);
-        if (!step) return false;
-        const desiredCount = this.clamp(Math.round(this.particles.length * (step.share || 0.14)), 6, step.maxCount || 20);
-        const targets = this.createTraceTargets(step, desiredCount);
-        const selected = this.selectParticles(step, targets);
-        if (!selected.length) return false;
-
-        const b = this.absoluteBounds(step.bounds);
-        const center = { x: b.x + b.w * 0.5, y: b.y + b.h * 0.5 };
-        this.activeBuild = {
-          id: `build-${step.key}-${now}`,
-          step,
-          selected,
-          targets,
-          center,
-          gatherDuration: this.reducedMotion ? 1 : 460,
-          constructDuration: this.reducedMotion ? 1 : 680,
-          transmuteDuration: this.reducedMotion ? 1 : 560,
-          phase: 'gathering',
-          phaseStarted: now,
-          componentRevealed: false
-        };
-
-        selected.forEach((p, index) => {
-          const target = targets[index % targets.length];
-          const angle = (index / selected.length) * Math.PI * 2;
-          p.assignedToBuild = this.activeBuild.id;
-          p.build = {
-            index,
-            startX: p.x,
-            startY: p.y,
-            startRotation: Number.isFinite(p.renderRotation) ? p.renderRotation : p.rotation,
-            startOpacity: Number.isFinite(p.renderOpacity) ? p.renderOpacity : p.baseOpacity,
-            targetX: target.x,
-            targetY: target.y,
-            targetRotation: target.rotation,
-            gatherX: center.x + Math.cos(angle) * (20 + (index % 4) * 4),
-            gatherY: center.y + Math.sin(angle) * (15 + (index % 5) * 3),
-            orbit: angle,
-            color: this.palette[(index + this.buildSteps.indexOf(step)) % this.palette.length]
-          };
-          p.vx *= 0.08;
-          p.vy *= 0.08;
-          p.el.classList.add('is-building');
-          p.el.classList.remove('is-secondary', 'is-consumed');
-          p.el.style.color = p.build.color;
-        });
-
-        this.activeHotspotKey = null;
-        this.setComponentState(step.key, 'building');
-        this.state = 'building';
-        this.stateStarted = now;
-        this.setFieldState('building');
-        this.updateOrbitEl();
-        return true;
-      }
-
-      revealComponent(key) {
-        const els = this.builtLayer?.querySelectorAll(`[data-build-key="${key}"]`);
-        if (!els?.length) return;
-        els.forEach(el => {
-          el.classList.remove('is-dissolving');
-          requestAnimationFrame(() => el.classList.add('is-built'));
-          const video = el.querySelector('video');
-          video?.play?.().catch(() => {});
-        });
-        this.orbitEl?.classList.remove('is-visible');
-        if (!this.builtComponents.includes(key)) this.builtComponents.push(key);
-        this.field.dataset.builtCount = String(this.builtComponents.length);
-      }
-
-      finishBuild(now) {
-        const build = this.activeBuild;
-        if (!build) return;
-
-        build.selected.forEach(p => {
-          p.assignedToBuild = null;
-          p.build = null;
-          p.consumed = true;
-          p.lockedConsumed = true;
-          p.hiddenUntil = now + 1500 + this.rand() * 1800;
-          p.respawnStart = 0;
-          p.el.classList.remove('is-building');
-          p.el.classList.add('is-consumed');
-          p.el.style.opacity = '0';
-          p.el.style.filter = 'none';
-        });
-
-        this.chargeProgress[build.step.key] = 1;
-        this.setComponentState(build.step.key, 'built');
-        this.activeBuild = null;
-        this.cooldownUntil = now + 560;
-
-        if (this.builtComponents.length >= this.buildSteps.length) {
-          this.allBuiltAt = now;
-          this.resetAvailableAt = now + 20000;
-          this.state = 'built';
-          this.setFieldState('built');
-          this.buildProgress = 1;
-          this.updateProgressUI();
-          this.settleAtmosphere();
-          this.updateNote('built from markup', ['presence restored']);
+      computeHarmony(now, rawDt) {
+        const s = rawDt / 1000;
+        const ms = now - this.cursor.lastMoveAt;
+        let delta;
+        if (!this.cursor.inside) {
+          delta = -0.20 * s;
+        } else if (ms > 2800) {
+          delta = -0.12 * s;
         } else {
-          this.state = 'cooldown';
-          this.setFieldState('cooldown');
-        }
-        this.updateOrbitEl();
-      }
-
-      resetSandbox(now) {
-        this.state = 'cooldown';
-        this.stateStarted = now;
-        this.cooldownUntil = now + 1150;
-        this.activeBuild = null;
-        this.activeHotspotKey = null;
-        this.resetButton?.classList.remove('is-visible');
-        this.resetComponentStates();
-        this.setFieldState('cooldown');
-
-        this.builtLayer?.querySelectorAll('.built-piece').forEach(el => {
-          el.classList.add('is-dissolving');
-          el.classList.remove('is-built');
-        });
-
-        this.particles.forEach((p, index) => {
-          p.assignedToBuild = null;
-          p.build = null;
-          p.consumed = true;
-          p.lockedConsumed = false;
-          p.hiddenUntil = 0;
-          p.respawnStart = now + (index % 16) * 24;
-          p.respawnDuration = 820 + this.rand() * 420;
-          p.atmosphereXPct = null;
-          p.atmosphereYPct = null;
-          p.baseXPct = 7 + this.rand() * 86;
-          p.baseYPct = 9 + this.rand() * 82;
-          p.x = this.pctX(p.baseXPct);
-          p.y = this.pctY(p.baseYPct);
-          p.vx = 0;
-          p.vy = 0;
-          p.el.classList.remove('is-building', 'is-secondary');
-          p.el.classList.add('is-consumed');
-          p.el.textContent = p.symbol;
-          p.el.style.color = p.color;
-        });
-      }
-
-      updateLifecycle(now) {
-        if (this.activeBuild) {
-          const build = this.activeBuild;
-          const elapsed = now - build.phaseStarted;
-
-          if (build.phase === 'gathering' && elapsed >= build.gatherDuration) {
-            build.phase = 'constructing';
-            build.phaseStarted = now;
-          } else if (build.phase === 'constructing' && elapsed >= build.constructDuration) {
-            build.phase = 'transmuting';
-            build.phaseStarted = now;
-            this.revealComponent(build.step.key);
-            build.componentRevealed = true;
-          } else if (build.phase === 'transmuting' && elapsed >= build.transmuteDuration) {
-            this.finishBuild(now);
+          const speed = this.cursor.speed;
+          const speedScore = this.clamp(1 - Math.abs(speed - 130) / 310, 0, 1);
+          let angleDelta = 0;
+          if (this.cursor.prevDir !== this.cursor.dir) {
+            const d = this.cursor.dir - this.cursor.prevDir;
+            angleDelta = Math.abs(Math.atan2(Math.sin(d), Math.cos(d)));
           }
-        } else if (this.state === 'cooldown' && now >= this.cooldownUntil) {
-          this.state = 'idle';
-          this.setFieldState('idle');
+          const smoothScore = this.clamp(1 - angleDelta * 2.2, 0, 1);
+          const chaosPenalty = this.clamp((speed - 420) / 580, 0, 1);
+          delta = (0.26 + speedScore * 0.44 + smoothScore * 0.28 - chaosPenalty * 0.78) * s;
         }
-
-        if (this.resetAvailableAt && now >= this.resetAvailableAt) {
-          this.resetButton?.classList.add('is-visible');
-          this.resetAvailableAt = 0;
+        this.harmony = this.clamp(this.harmony + delta, 0, 1);
+        if (this.harmony > 0.78) {
+          if (!this.harmonyHighSince) this.harmonyHighSince = now;
+        } else {
+          this.harmonyHighSince = 0;
         }
       }
 
-      idleTarget(p, time) {
-        const driftScale = this.reducedMotion ? 0 : 1;
+      startAnticipation(now) {
+        this.logoState = 'anticipation';
+        this.logoStateAt = now;
+        this.field.dataset.logoState = 'anticipation';
+        this.assignLogoTargets();
+        this.updateNote('forming');
+      }
+
+      startSweep(now) {
+        this.logoState = 'sweep';
+        this.logoStateAt = now;
+        this.field.dataset.logoState = 'sweep';
+      }
+
+      startHold(now) {
+        this.logoState = 'hold';
+        this.logoStateAt = now;
+        this.field.dataset.logoState = 'hold';
+        this.updateNote("that's the markup");
+      }
+
+      startRelease(now) {
+        this.logoState = 'release';
+        this.logoStateAt = now;
+        this.field.dataset.logoState = 'release';
+        const cx = this.width * 0.5, cy = this.height * 0.5;
+        for (const p of this.particles) {
+          const ang = Math.atan2(p.y - cy, p.x - cx);
+          p.releaseWave = ((ang + Math.PI) / (Math.PI * 2) + this.rand() * 0.25) % 1;
+        }
+      }
+
+      resetToIdle(now) {
+        this.logoState = 'idle';
+        this.logoStateAt = now;
+        this.harmony = 0.18;
+        this.harmonyHighSince = 0;
+        this.field.dataset.logoState = 'idle';
+        for (const p of this.particles) { p.logoTargetIdx = -1; p.isAmbient = false; }
+        this._showingAgain = true;
+        this._againNoteAt = now;
+        this.updateNote('again?');
+      }
+
+      updateLogoState(now) {
+        switch (this.logoState) {
+          case 'idle':
+            if (!this.reducedMotion && this.harmonyHighSince && now - this.harmonyHighSince > 1500)
+              this.startAnticipation(now);
+            break;
+          case 'anticipation':
+            if (now - this.logoStateAt > 420) this.startSweep(now);
+            break;
+          case 'sweep':
+            if (now - this.logoStateAt > 2500) this.startHold(now);
+            break;
+          case 'hold':
+            if (now - this.logoStateAt > 4200) this.startRelease(now);
+            break;
+          case 'release':
+            if (now - this.logoStateAt > 2400) this.resetToIdle(now);
+            break;
+        }
+      }
+
+      getIdleTarget(p, time) {
         return {
-          x: (p.baseXPct / 100) * this.width + Math.sin(time * p.speed + p.phase) * p.driftX * driftScale,
-          y: (p.baseYPct / 100) * this.height + Math.cos(time * (p.speed * 0.76) + p.phase * 1.37) * p.driftY * driftScale
+          x: p.baseXPct * this.width + Math.sin(time * p.driftSpd + p.phase) * p.driftR,
+          y: p.baseYPct * this.height + Math.cos(time * p.driftSpd * 0.80 + p.phase * 1.27) * p.driftR * 0.75
         };
-      }
-
-      settleAtmosphere() {
-        this.particles.forEach(p => {
-          if (p.consumed) return;
-          const side = p.id % 4;
-          if (side === 0) {
-            p.atmosphereXPct = 3 + this.rand() * 9;
-            p.atmosphereYPct = 10 + this.rand() * 80;
-          } else if (side === 1) {
-            p.atmosphereXPct = 88 + this.rand() * 9;
-            p.atmosphereYPct = 10 + this.rand() * 80;
-          } else if (side === 2) {
-            p.atmosphereXPct = 10 + this.rand() * 80;
-            p.atmosphereYPct = 5 + this.rand() * 8;
-          } else {
-            p.atmosphereXPct = 10 + this.rand() * 80;
-            p.atmosphereYPct = 87 + this.rand() * 8;
-          }
-          p.baseOpacity = Math.min(p.baseOpacity, 0.22);
-        });
-      }
-
-      atmosphericTarget(p, time) {
-        if (p.atmosphereXPct === null || p.atmosphereYPct === null) {
-          p.atmosphereXPct = p.baseXPct;
-          p.atmosphereYPct = p.baseYPct;
-        }
-        const driftScale = this.reducedMotion ? 0 : 1;
-        return {
-          x: (p.atmosphereXPct / 100) * this.width + Math.sin(time * 0.42 + p.phase) * 5 * driftScale,
-          y: (p.atmosphereYPct / 100) * this.height + Math.cos(time * 0.34 + p.phase) * 6 * driftScale
-        };
-      }
-
-      respawnParticle(p, now) {
-        if (!p.respawnStart) {
-          p.baseXPct = 7 + this.rand() * 86;
-          p.baseYPct = 9 + this.rand() * 82;
-          p.x = this.pctX(p.baseXPct);
-          p.y = this.pctY(p.baseYPct);
-          p.vx = 0;
-          p.vy = 0;
-          p.respawnStart = now;
-          p.respawnDuration = 900 + this.rand() * 520;
-          p.el.textContent = p.symbol;
-          p.el.style.color = p.color;
-          p.el.classList.remove('is-consumed');
-          p.lockedConsumed = false;
-          p.atmosphereXPct = null;
-          p.atmosphereYPct = null;
-        }
-      }
-
-      renderParticle(p, x, y, rotation, opacity, scale, glow = 0, blur = 0) {
-        p.x = this.clamp(x, -36, this.width + 36);
-        p.y = this.clamp(y, -36, this.height + 36);
-        p.renderRotation = rotation;
-        p.renderOpacity = this.clamp(opacity, 0, 1);
-        p.renderScale = scale;
-
-        p.el.style.opacity = p.renderOpacity.toFixed(3);
-        p.el.style.transform = `translate3d(${p.x.toFixed(2)}px, ${p.y.toFixed(2)}px, 0) rotate(${rotation.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
-        const shadow = glow > 0.04 ? `drop-shadow(0 0 ${(7 + glow * 22).toFixed(1)}px rgba(213,201,109,${glow.toFixed(2)}))` : '';
-        const blurFilter = blur > 0.05 ? ` blur(${blur.toFixed(2)}px)` : '';
-        p.el.style.filter = shadow || blurFilter ? `${shadow}${blurFilter}`.trim() : 'none';
-      }
-
-      animateBuildParticle(p, now, time) {
-        const build = this.activeBuild;
-        const data = p.build;
-        if (!build || !data) return false;
-
-        const elapsed = now - build.phaseStarted;
-        const baseRotation = data.startRotation + Math.sin(time + p.phase) * 3;
-        let raw = 0;
-        let x = p.x;
-        let y = p.y;
-        let rotation = baseRotation;
-        let opacity = 0.96;
-        let scale = 1.08;
-        let glow = 0.24;
-        let blur = 0;
-
-        if (build.phase === 'gathering') {
-          raw = this.clamp(elapsed / build.gatherDuration, 0, 1);
-          const eased = this.easeOut(raw);
-          const swirl = Math.sin(raw * Math.PI) * (14 + (data.index % 5) * 2.6);
-          x = this.mix(data.startX, data.gatherX, eased) + Math.cos(data.orbit + raw * 4.6) * swirl;
-          y = this.mix(data.startY, data.gatherY, eased) + Math.sin(data.orbit + raw * 4.6) * swirl;
-          rotation = this.mix(data.startRotation, data.targetRotation + 18, eased);
-          opacity = this.mix(data.startOpacity, 0.96, this.smoothstep(0, 0.62, raw));
-          scale = this.mix(1, 1.1, Math.sin(raw * Math.PI));
-        } else if (build.phase === 'constructing') {
-          raw = this.clamp(elapsed / build.constructDuration, 0, 1);
-          const eased = this.easeInOut(raw);
-          const orbit = Math.sin(raw * Math.PI) * 6;
-          x = this.mix(data.gatherX, data.targetX, eased) + Math.cos(data.orbit + raw * 6.2) * orbit;
-          y = this.mix(data.gatherY, data.targetY, eased) + Math.sin(data.orbit + raw * 6.2) * orbit;
-          rotation = this.mix(data.targetRotation + 16, data.targetRotation, eased);
-          opacity = 0.92 + Math.sin(raw * Math.PI) * 0.06;
-          scale = 1.03 + Math.sin(raw * Math.PI) * 0.07;
-          glow = 0.18 + Math.sin(raw * Math.PI) * 0.12;
-        } else if (build.phase === 'transmuting') {
-          raw = this.clamp(elapsed / build.transmuteDuration, 0, 1);
-          const eased = this.easeInOut(raw);
-          const spark = Math.sin(raw * Math.PI);
-          x = this.mix(data.targetX, build.center.x, eased * 0.16);
-          y = this.mix(data.targetY, build.center.y, eased * 0.16);
-          rotation = data.targetRotation + raw * 24;
-          opacity = this.mix(0.9, 0, this.smoothstep(0.08, 1, raw));
-          scale = this.mix(1.04, 0.38, eased);
-          glow = 0.34 * spark;
-          blur = 3.8 * eased;
-        }
-
-        this.renderParticle(p, x, y, rotation, opacity, scale, glow, blur);
-        return true;
-      }
-
-      activeHotspotInfluence(p, time, index) {
-        const step = this.activeHotspotKey ? this.getStep(this.activeHotspotKey) : null;
-        if (!step || this.componentState[step.key] === 'built') return { pull: 0, glow: 0 };
-        const center = this.hotspotCenter(step);
-        const radius = this.hotspotRadius(step, 2.35);
-        const dx = center.x - p.x;
-        const dy = center.y - p.y;
-        const dist = Math.hypot(dx, dy) || 1;
-        const near = this.clamp(1 - dist / radius, 0, 1);
-        if (!near || this.reducedMotion) return { pull: near, glow: near * 0.08 };
-
-        const charge = this.chargeProgress[step.key] || 0;
-        const orbitRadius = this.hotspotRadius(step, 0.42 + charge * 0.32);
-        const angle = p.phase + time * (1.1 + charge * 1.25) + index * 0.34;
-        const targetX = center.x + Math.cos(angle) * orbitRadius;
-        const targetY = center.y + Math.sin(angle) * orbitRadius * 0.72;
-        const force = near * near * (0.018 + charge * 0.044);
-        p.vx += (targetX - p.x) * force;
-        p.vy += (targetY - p.y) * force;
-        p.vx += Math.cos(angle + Math.PI * 0.5) * near * (0.018 + charge * 0.028);
-        p.vy += Math.sin(angle + Math.PI * 0.5) * near * (0.018 + charge * 0.028);
-        return { pull: near, glow: near * (0.08 + charge * 0.18) };
       }
 
       animate(now) {
-        this.width = this.field.clientWidth || this.width;
-        this.height = this.field.clientHeight || this.height;
-        const rawDt = this.lastFrame ? Math.min(180, now - this.lastFrame) : 16;
-        this.lastFrame = now;
-        this.updateLifecycle(now);
-        this.updateBuildProgress(now, rawDt);
-
-        const time = now * 0.001;
-        const pointerFresh = this.pointer.active && now - this.pointer.movedAt < 1600;
-        const cursorInfluence = this.activeBuild ? 0 : (this.activeHotspotKey ? 0.28 : 1);
-
-        this.particles.forEach((p, i) => {
-          if (p.assignedToBuild && this.animateBuildParticle(p, now, time)) return;
-
-          if (p.consumed) {
-            if (p.lockedConsumed) {
-              this.renderParticle(p, p.x, p.y, p.renderRotation || 0, 0, 0.32, 0, 2.4);
-              return;
-            }
-            if (now < p.hiddenUntil) {
-              this.renderParticle(p, p.x, p.y, p.renderRotation || 0, 0, 0.4, 0, 2);
-              return;
-            }
-
-            this.respawnParticle(p, now);
-            const raw = this.clamp((now - p.respawnStart) / p.respawnDuration, 0, 1);
-            const eased = this.easeInOut(raw);
-            const target = this.idleTarget(p, time);
-            this.renderParticle(
-              p,
-              target.x,
-              target.y,
-              p.rotation + Math.sin(time + p.phase) * 3,
-              p.baseOpacity * eased,
-              0.82 + eased * 0.18,
-              0.05 * eased,
-              (1 - eased) * 2
-            );
-            if (raw >= 1) {
-              p.consumed = false;
-              p.respawnStart = 0;
-              p.el.classList.remove('is-consumed');
-            }
-            return;
-          }
-
-          const target = this.state === 'built' ? this.atmosphericTarget(p, time) : this.idleTarget(p, time);
-          const baseRotation = p.rotation + Math.sin(time * 0.66 + p.phase) * 4 + p.rotationSpeed * now * 0.008;
-          const dx = p.x - this.pointer.x;
-          const dy = p.y - this.pointer.y;
-          const dist = Math.hypot(dx, dy) || 1;
-          const nearCursor = this.state === 'built' ? 0 : (pointerFresh ? this.clamp(1 - dist / 118, 0, 1) : 0);
-          const hotspot = this.activeHotspotInfluence(p, time, i);
-          const spring = this.reducedMotion ? 0.22 : (this.state === 'built' ? 0.024 : 0.018);
-
-          if (!this.reducedMotion && nearCursor > 0 && cursorInfluence > 0) {
-            const force = nearCursor * nearCursor * 0.16 * cursorInfluence;
-            p.vx += (dx / dist) * force;
-            p.vy += (dy / dist) * force;
-            p.vx += Math.sin(time * 9 + i) * nearCursor * 0.012 * cursorInfluence;
-            p.vy += Math.cos(time * 8 + i) * nearCursor * 0.012 * cursorInfluence;
-          }
-
-          p.vx += (target.x - p.x) * spring;
-          p.vy += (target.y - p.y) * spring;
-          p.vx *= 0.88;
-          p.vy *= 0.88;
-
-          const x = p.x + p.vx;
-          const y = p.y + p.vy;
-          const opacity = this.state === 'built'
-            ? this.clamp(p.baseOpacity * 0.62, 0.045, 0.16)
-            : this.clamp(p.baseOpacity + nearCursor * 0.12 + hotspot.pull * 0.24, 0.08, 1);
-          const scale = this.state === 'built' ? 0.82 : 1 + nearCursor * 0.025 + hotspot.pull * 0.06;
-          this.renderParticle(p, x, y, baseRotation + nearCursor * 3 + hotspot.pull * 6, opacity, scale, hotspot.glow, this.state === 'built' ? 0.35 : 0);
-        });
-
         requestAnimationFrame(this.animate);
-      }
+        if (!this.isVisible) return;
 
-      // Future scroll transition hooks: page-2 phone handoff can read these
-      // positions, bounds, and built states before calling an exit animation.
-      getParticleSnapshot() {
-        return this.particles.map(p => ({
-          id: p.id,
-          symbol: p.symbol,
-          x: p.x,
-          y: p.y,
-          vx: p.vx,
-          vy: p.vy,
-          opacity: p.renderOpacity,
-          scale: p.renderScale
-        }));
-      }
-
-      getBuiltComponentState() {
-        return { ...this.componentState };
-      }
-
-      getSandboxBounds() {
-        return this.field.getBoundingClientRect();
-      }
-
-      exitToTarget(target) {
-        this.exitTarget = target;
-        this.state = 'cooldown';
-        this.setFieldState('cooldown');
-        return this.getParticleSnapshot();
-      }
-    }
-
-    class CursorMagnetismSandbox {
-      constructor(field, stage, hero) {
-        this.field = field;
-        this.stage = stage;
-        this.hero = hero;
-        this.symbols = ['<div>', '</>', 'css', 'html', '{ }', '#', 'px', '=', '/', '*', ';', '>', '<', 'grid', 'gap', 'line-height', 'margin', 'display', 'src=', '.hero', '--space', '::before'];
-        this.palette = ['#f1ead9', '#d5c96d', '#d66b45', '#7fa7ba', '#8fac84', '#b9a6ca'];
-        this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        this.pointer = {
-          x: -9999,
-          y: -9999,
-          sx: -9999,
-          sy: -9999,
-          px: -9999,
-          py: -9999,
-          active: false,
-          movedAt: 0,
-          lastMoveAt: 0,
-          speed: 0,
-          quality: 0
-        };
-        this.particles = [];
-        this.path = [];
-        this.width = 1;
-        this.height = 1;
-        this.seed = 27042026;
-        this.clarity = this.reducedMotion ? 0.74 : 0;
-        this.pendingClarity = 0;
-        this.turbulence = 0;
-        this.lastFrame = 0;
-        this.resizeQueued = false;
-        this.noteEl = null;
-        this.builtLayer = null;
-        this.trailCanvas = null;
-        this.trailCtx = null;
-        this.cursorEl = null;
-        this.resetButton = null;
-
-        this.animate = this.animate.bind(this);
-        this.onPointerEnter = this.onPointerEnter.bind(this);
-        this.onPointerMove = this.onPointerMove.bind(this);
-        this.onPointerLeave = this.onPointerLeave.bind(this);
-        this.onResize = this.onResize.bind(this);
-      }
-
-      init() {
-        this.noteEl = this.field.closest('.hero-system')?.querySelector('.field-note');
-        this.createRevealLayer();
-        this.createTrailCanvas();
-        this.seedParticles();
-        this.field.addEventListener('pointerenter', this.onPointerEnter);
-        this.field.addEventListener('pointerdown', this.onPointerEnter);
-        this.field.addEventListener('pointermove', this.onPointerMove);
-        this.field.addEventListener('pointerleave', this.onPointerLeave);
-        window.addEventListener('resize', this.onResize);
-        this.updateNote('INTERACT', ['move with intent']);
-        this.updateClarityUI();
-        window.markupSandbox = this;
-        requestAnimationFrame(this.animate);
-      }
-
-      rand() {
-        this.seed = (this.seed * 1664525 + 1013904223) >>> 0;
-        return this.seed / 4294967296;
-      }
-
-      clamp(value, min, max) {
-        return Math.max(min, Math.min(max, value));
-      }
-
-      mix(a, b, amount) {
-        return a + (b - a) * amount;
-      }
-
-      smoothstep(start, end, value) {
-        const t = this.clamp((value - start) / (end - start), 0, 1);
-        return t * t * (3 - 2 * t);
-      }
-
-      pctX(value) {
-        return (value / 100) * this.width;
-      }
-
-      pctY(value) {
-        return (value / 100) * this.height;
-      }
-
-      getParticleCount() {
-        if (window.innerWidth < 560) return 76;
-        if (window.innerWidth < 980) return 92;
-        return 124;
-      }
-
-      createRevealLayer() {
-        this.builtLayer = document.createElement('div');
-        this.builtLayer.className = 'built-site magnet-site';
-        this.builtLayer.innerHTML = `
-          <div class="magnet-guide magnet-grid-lines" aria-hidden="true"></div>
-          <div class="magnet-guide magnet-baselines" aria-hidden="true"></div>
-          <span class="magnet-outline magnet-outline-frame" data-label="div.frame"></span>
-          <span class="magnet-outline magnet-outline-copy" data-label="type area"></span>
-          <span class="magnet-outline magnet-outline-media" data-label="media"></span>
-          <span class="magnet-outline magnet-outline-cta" data-label="cta"></span>
-
-          <div class="built-piece built-frame">
-            <span class="browser-dots"><i></i><i></i><i></i></span>
-            <span class="browser-line"></span>
-            <span class="browser-label">atelierstudio.local</span>
-          </div>
-          <div class="built-piece mini-nav">
-            <span class="mini-brand">Atelier Vale</span>
-            <span class="mini-nav-links"><span>Services</span><span>Process</span><span>Book</span></span>
-          </div>
-          <div class="built-piece built-media">
-            <video muted loop playsinline preload="metadata" poster="images/vecteezy_fashion-designer-tailor-or-sewer_7360006.jpg">
-              <source src="images/sewing%202.mp4" type="video/mp4">
-            </video>
-          </div>
-          <div class="built-piece built-copy">
-            <span class="mini-kicker">Bespoke atelier</span>
-            <span class="mini-headline">Custom tailoring,<br>made personal</span>
-            <span class="mini-copy">Hand-finished alterations and made-to-measure pieces shaped around the person wearing them.</span>
-          </div>
-          <div class="built-piece built-actions">
-            <button class="mini-button mini-button-primary" type="button">Book a fitting</button>
-            <button class="mini-button mini-button-secondary" type="button">View services</button>
-          </div>
-          <div class="built-piece built-card">
-            <span class="mini-card-image"><img src="images/vecteezy_needle-and-thread-with-button-on-material-mending-clothing_76760151.jpeg" alt=""></span>
-            <span class="mini-card-title">Alterations & custom fits</span>
-            <span class="mini-card-line">Quiet craft, clean lines, exacting detail.</span>
-          </div>
-          <div class="built-piece built-trust">
-            <span class="mini-seal"></span>
-            <span>
-              <span class="mini-trust-title">Hand-finished</span>
-              <span class="mini-trust-line">Local studio, precise fittings</span>
-            </span>
-          </div>
-        `;
-        this.field.insertBefore(this.builtLayer, this.stage);
-
-        this.cursorEl = document.createElement('span');
-        this.cursorEl.className = 'magnet-cursor';
-        this.field.insertBefore(this.cursorEl, this.stage);
-
-        this.resetButton = document.createElement('button');
-        this.resetButton.className = 'sandbox-reset';
-        this.resetButton.type = 'button';
-        this.resetButton.textContent = 'soft reset';
-        this.resetButton.addEventListener('click', event => {
-          event.stopPropagation();
-          this.resetSandbox();
-        });
-        this.field.appendChild(this.resetButton);
-      }
-
-      createTrailCanvas() {
-        this.trailCanvas = document.createElement('canvas');
-        this.trailCanvas.className = 'magnet-trails';
-        this.field.insertBefore(this.trailCanvas, this.stage);
-        this.trailCtx = this.trailCanvas.getContext('2d');
-        this.resizeTrailCanvas();
-      }
-
-      resizeTrailCanvas() {
-        if (!this.trailCanvas) return;
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        this.width = this.field.clientWidth || 1;
-        this.height = this.field.clientHeight || 1;
-        this.trailCanvas.width = Math.round(this.width * dpr);
-        this.trailCanvas.height = Math.round(this.height * dpr);
-        this.trailCanvas.style.width = `${this.width}px`;
-        this.trailCanvas.style.height = `${this.height}px`;
-        this.trailCtx?.setTransform(dpr, 0, 0, dpr, 0, 0);
-      }
-
-      assignAlignmentTarget(index, count) {
-        const t = count <= 1 ? 0 : index / (count - 1);
-        const group = index % 8;
-
-        if (group === 0) return this.rectTarget({ x: 8, y: 10, w: 84, h: 78 }, t);
-        if (group === 1) return this.rectTarget({ x: 52, y: 25, w: 36, h: 48 }, (t * 1.7) % 1);
-        if (group === 2) return this.lineTarget(14, 31 + (index % 5) * 5.3, 34, (t * 2.3) % 1, -1);
-        if (group === 3) return this.lineTarget(14, 62 + (index % 2) * 3.4, 26, (t * 3.1) % 1, 0);
-        if (group === 4) return this.lineTarget(12, 18.5, 76, (t * 2.7) % 1, 0);
-        if (group === 5) return this.lineTarget(10, 30 + (index % 6) * 8, 80, (t * 1.9) % 1, 0);
-        if (group === 6) return this.rectTarget({ x: 14, y: 74, w: 34, h: 9 }, (t * 1.4) % 1);
-        return this.rectTarget({ x: 52, y: 76, w: 36, h: 12 }, (t * 1.8) % 1);
-      }
-
-      rectTarget(bounds, t) {
-        const x = bounds.x;
-        const y = bounds.y;
-        const w = bounds.w;
-        const h = bounds.h;
-        const p = (t % 1) * 2 * (w + h);
-        if (p < w) return { x: x + p, y, rotation: 0 };
-        if (p < w + h) return { x: x + w, y: y + p - w, rotation: 90 };
-        if (p < w * 2 + h) return { x: x + w - (p - w - h), y: y + h, rotation: 0 };
-        return { x, y: y + h - (p - w * 2 - h), rotation: 90 };
-      }
-
-      lineTarget(x, y, w, t, rotation = 0) {
-        return { x: x + w * (t % 1), y, rotation };
-      }
-
-      seedParticles() {
-        this.seed = 27042026;
-        this.width = this.field.clientWidth || 1;
-        this.height = this.field.clientHeight || 1;
-        this.particles = [];
-        this.stage.replaceChildren();
-        const count = this.getParticleCount();
-
-        for (let i = 0; i < count; i++) {
-          const symbol = this.symbols[Math.floor(this.rand() * this.symbols.length)];
-          const el = document.createElement('span');
-          const size = (window.innerWidth < 560 ? 9 : 10) + this.rand() * (symbol.length > 4 ? 3 : 6);
-          const color = this.palette[Math.floor(this.rand() * this.palette.length)];
-          const align = this.assignAlignmentTarget(i, count);
-
-          el.className = 'symbol-particle';
-          el.textContent = symbol;
-          el.style.fontSize = `${size.toFixed(1)}px`;
-          el.style.color = color;
-          this.stage.appendChild(el);
-
-          this.particles.push({
-            id: i,
-            el,
-            symbol,
-            color,
-            size,
-            baseXPct: 5 + this.rand() * 90,
-            baseYPct: 7 + this.rand() * 86,
-            alignXPct: align.x,
-            alignYPct: align.y,
-            alignRotation: align.rotation,
-            x: this.pctX(5 + this.rand() * 90),
-            y: this.pctY(7 + this.rand() * 86),
-            vx: 0,
-            vy: 0,
-            phase: this.rand() * Math.PI * 2,
-            driftX: 4 + this.rand() * 13,
-            driftY: 4 + this.rand() * 14,
-            speed: 0.18 + this.rand() * 0.44,
-            rotation: -10 + this.rand() * 20,
-            rotationSpeed: -0.08 + this.rand() * 0.16,
-            baseOpacity: 0.26 + this.rand() * 0.46,
-            side: this.rand() > 0.5 ? 1 : -1,
-            structuralWeight: 0.72 + this.rand() * 0.54,
-            renderOpacity: 0,
-            renderScale: 1,
-            renderRotation: 0
-          });
-        }
-      }
-
-      onResize() {
-        if (this.resizeQueued) return;
-        this.resizeQueued = true;
-        requestAnimationFrame(() => {
-          this.resizeQueued = false;
-          this.resizeTrailCanvas();
-        });
-      }
-
-      onPointerEnter(event) {
-        if (this.reducedMotion) return;
-        this.pointer.active = true;
-        this.updatePointer(event, performance.now());
-      }
-
-      onPointerMove(event) {
-        if (this.reducedMotion) return;
-        this.updatePointer(event, performance.now());
-      }
-
-      onPointerLeave() {
-        this.pointer.active = false;
-        this.field.classList.remove('is-active');
-      }
-
-      updatePointer(event, now) {
-        const rect = this.field.getBoundingClientRect();
-        const x = this.clamp(event.clientX - rect.left, 0, rect.width);
-        const y = this.clamp(event.clientY - rect.top, 0, rect.height);
-        const previousX = this.pointer.x;
-        const previousY = this.pointer.y;
-        const previousTime = this.pointer.lastMoveAt || now;
-        const dt = Math.max(16, now - previousTime);
-        const distance = previousX > -100 ? Math.hypot(x - previousX, y - previousY) : 0;
-        const speed = (distance / dt) * 1000;
-        const controlled = this.clamp(1 - Math.abs(speed - 230) / 520, 0, 1);
-        const frantic = this.clamp((speed - 780) / 900, 0, 1);
-        const quality = this.clamp(0.28 + controlled * 0.78 - frantic * 0.5, 0.08, 1);
-
-        this.pointer.px = previousX;
-        this.pointer.py = previousY;
-        this.pointer.x = x;
-        this.pointer.y = y;
-        if (this.pointer.sx < -100) {
-          this.pointer.sx = x;
-          this.pointer.sy = y;
-        }
-        this.pointer.speed = speed;
-        this.pointer.quality = quality;
-        this.pointer.movedAt = now;
-        this.pointer.lastMoveAt = now;
-        this.field.classList.add('is-active', 'is-clarifying');
-
-        if (distance > 0.5) {
-          this.path.push({
-            x,
-            y,
-            px: previousX > -100 ? previousX : x,
-            py: previousY > -100 ? previousY : y,
-            age: 0,
-            life: 1550 + quality * 850,
-            quality,
-            speed
-          });
-          if (this.path.length > 42) this.path.splice(0, this.path.length - 42);
-          this.pendingClarity += distance * 0.00046 * (0.54 + quality * 0.92) * (1 - frantic * 0.72);
-          this.turbulence = this.clamp(this.turbulence + distance * frantic * 0.0012, 0, 1);
-        }
-      }
-
-      updateNote(title, lines = []) {
-        if (!this.noteEl) return;
-        const titleEl = this.noteEl.querySelector('b');
-        const lineEls = this.noteEl.querySelectorAll('span');
-        if (titleEl) titleEl.textContent = title;
-        lineEls.forEach((el, index) => {
-          el.textContent = lines[index] || '';
-          el.style.display = lines[index] ? 'block' : 'none';
-        });
-      }
-
-      updateClarityUI() {
-        const guide = this.smoothstep(0.08, 0.72, this.clarity);
-        const site = this.smoothstep(0.2, 0.92, this.clarity);
-        const sharp = this.smoothstep(0.36, 0.98, this.clarity);
-        this.field.style.setProperty('--clarity', this.clarity.toFixed(3));
-        this.field.style.setProperty('--guide-alpha', (guide * 0.92).toFixed(3));
-        this.field.style.setProperty('--site-alpha', site.toFixed(3));
-        this.field.style.setProperty('--media-sharpness', sharp.toFixed(3));
-        this.field.classList.toggle('is-clear', this.clarity > 0.78);
-        this.resetButton?.classList.toggle('is-visible', this.clarity > 0.86);
-
-        const video = this.builtLayer?.querySelector('video');
-        if (this.clarity > 0.22) video?.play?.().catch(() => {});
-
-        if (this.clarity > 0.8) {
-          this.updateNote('visible again', ['signal recovered']);
-        } else if (this.pointer.active || performance.now() - this.pointer.movedAt < 1400) {
-          this.updateNote('finding structure...', ['steady motion helps']);
-        } else {
-          this.updateNote('INTERACT', ['move with intent']);
-        }
-      }
-
-      idleTarget(p, time) {
-        const driftScale = this.reducedMotion ? 0 : 1;
-        return {
-          x: this.pctX(p.baseXPct) + Math.sin(time * p.speed + p.phase) * p.driftX * driftScale,
-          y: this.pctY(p.baseYPct) + Math.cos(time * p.speed * 0.82 + p.phase * 1.31) * p.driftY * driftScale
-        };
-      }
-
-      alignmentTarget(p, time) {
-        const breathe = Math.sin(time * 0.44 + p.phase) * 2.2;
-        return {
-          x: this.pctX(p.alignXPct) + Math.cos(p.phase + time * 0.28) * breathe,
-          y: this.pctY(p.alignYPct) + Math.sin(p.phase + time * 0.22) * breathe,
-          rotation: p.alignRotation
-        };
-      }
-
-      nearestPathPoint(p) {
-        let best = null;
-        const radius = this.mix(92, 154, this.clarity);
-        for (let i = this.path.length - 1; i >= Math.max(0, this.path.length - 18); i--) {
-          const point = this.path[i];
-          const dx = point.x - p.x;
-          const dy = point.y - p.y;
-          const dist = Math.hypot(dx, dy);
-          if (dist > radius) continue;
-          const influence = Math.pow(1 - dist / radius, 2) * point.quality * this.clamp(1 - point.age / point.life, 0, 1);
-          if (!best || influence > best.influence) best = { point, dist, influence };
-        }
-        return best;
-      }
-
-      drawTrails(dt) {
-        const ctx = this.trailCtx;
-        if (!ctx) return;
-        ctx.clearRect(0, 0, this.width, this.height);
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-
-        for (let i = 0; i < this.path.length; i++) {
-          const point = this.path[i];
-          point.age += dt;
-          const life = this.clamp(1 - point.age / point.life, 0, 1);
-          if (life <= 0) continue;
-          const alpha = life * point.quality * (0.12 + this.clarity * 0.18);
-          const speedWidth = this.clamp(point.speed / 420, 0.6, 2.4);
-
-          ctx.beginPath();
-          ctx.moveTo(point.px, point.py);
-          const mx = (point.px + point.x) * 0.5;
-          const my = (point.py + point.y) * 0.5;
-          ctx.quadraticCurveTo(mx, my, point.x, point.y);
-          ctx.strokeStyle = `rgba(213, 201, 109, ${alpha.toFixed(3)})`;
-          ctx.lineWidth = 1.2 + speedWidth * 1.7;
-          ctx.stroke();
-
-          ctx.beginPath();
-          ctx.moveTo(point.px, point.py);
-          ctx.quadraticCurveTo(mx, my, point.x, point.y);
-          ctx.strokeStyle = `rgba(127, 167, 186, ${(alpha * 0.34).toFixed(3)})`;
-          ctx.lineWidth = 7 + speedWidth * 4;
-          ctx.stroke();
-        }
-
-        while (this.path.length && this.path[0].age > this.path[0].life) this.path.shift();
-      }
-
-      renderParticle(p, x, y, rotation, opacity, scale, stretch, glow, blur) {
-        p.x = this.clamp(x, -42, this.width + 42);
-        p.y = this.clamp(y, -42, this.height + 42);
-        p.renderOpacity = this.clamp(opacity, 0, 1);
-        p.renderScale = scale;
-        p.renderRotation = rotation;
-        p.el.style.opacity = p.renderOpacity.toFixed(3);
-        p.el.style.transform = `translate3d(${p.x.toFixed(2)}px, ${p.y.toFixed(2)}px, 0) rotate(${rotation.toFixed(2)}deg) scale(${scale.toFixed(3)}) scaleX(${stretch.toFixed(3)})`;
-        const shadow = glow > 0.03 ? `drop-shadow(0 0 ${(5 + glow * 20).toFixed(1)}px rgba(213,201,109,${glow.toFixed(3)}))` : '';
-        const blurFilter = blur > 0.04 ? ` blur(${blur.toFixed(2)}px)` : '';
-        p.el.style.filter = shadow || blurFilter ? `${shadow}${blurFilter}`.trim() : 'none';
-      }
-
-      animate(now) {
-        this.width = this.field.clientWidth || this.width;
-        this.height = this.field.clientHeight || this.height;
         const rawDt = this.lastFrame ? Math.min(80, now - this.lastFrame) : 16;
-        const dtScale = rawDt / 16.666;
         this.lastFrame = now;
         const time = now * 0.001;
-        const pointerFresh = this.pointer.active && now - this.pointer.movedAt < 1500;
-
-        this.pointer.sx = this.pointer.sx < -100 ? this.pointer.x : this.mix(this.pointer.sx, this.pointer.x, 0.18);
-        this.pointer.sy = this.pointer.sy < -100 ? this.pointer.y : this.mix(this.pointer.sy, this.pointer.y, 0.18);
-        if (this.cursorEl && pointerFresh) {
-          this.cursorEl.style.setProperty('--cursor-x', `${this.pointer.sx.toFixed(2)}px`);
-          this.cursorEl.style.setProperty('--cursor-y', `${this.pointer.sy.toFixed(2)}px`);
+        this.frameCount++;
+        if (this.frameCount % 90 === 0) {
+          this.width = this.field.clientWidth || this.width;
+          this.height = this.field.clientHeight || this.height;
         }
 
-        this.clarity = this.clamp(this.clarity + this.pendingClarity, 0, 1);
-        this.pendingClarity = 0;
-        this.turbulence = this.clamp(this.turbulence - rawDt * 0.00042, 0, 1);
-        if (!pointerFresh && this.clarity > 0.08) this.clarity = this.clamp(this.clarity - rawDt * 0.000002, 0, 1);
-        this.updateClarityUI();
-        this.drawTrails(rawDt);
+        this.computeHarmony(now, rawDt);
+        this.updateLogoState(now);
 
-        this.particles.forEach((p, i) => {
-          const idle = this.idleTarget(p, time);
-          const aligned = this.alignmentTarget(p, time);
-          const clarityEase = this.smoothstep(0.14, 0.96, this.clarity) * p.structuralWeight;
-          let targetX = this.mix(idle.x, aligned.x, this.clamp(clarityEase, 0, 1));
-          let targetY = this.mix(idle.y, aligned.y, this.clamp(clarityEase, 0, 1));
-          let rotation = this.mix(
-            p.rotation + Math.sin(time * 0.58 + p.phase) * 4 + p.rotationSpeed * now * 0.005,
-            aligned.rotation,
-            this.clamp(clarityEase * 0.82, 0, 1)
-          );
-          let glow = 0;
-          let blur = this.clarity > 0.82 ? 0.18 : 0;
-          let stretch = 1;
+        // Note updates in idle state
+        if (this.logoState === 'idle') {
+          if (this._showingAgain) {
+            if (now - this._againNoteAt > 2400) {
+              this._showingAgain = false;
+              this.updateNote('INTERACT');
+            }
+          } else {
+            const ms = now - this.cursor.lastMoveAt;
+            if (this.harmony > 0.55 && this.cursor.inside) {
+              this.updateNote('forming');
+            } else if (this.harmony > 0.28 && this.cursor.inside && ms < 2200) {
+              this.updateNote('smooth');
+            } else if (!this.cursor.inside || ms > 4500) {
+              this.updateNote('INTERACT');
+            }
+          }
+        }
 
-          const pathPoint = this.nearestPathPoint(p);
-          if (pathPoint && !this.reducedMotion) {
-            const point = pathPoint.point;
-            const vx = point.x - point.px;
-            const vy = point.y - point.py;
-            const len = Math.hypot(vx, vy) || 1;
-            const nx = -vy / len;
-            const ny = vx / len;
-            const corridor = 10 + this.clarity * 20 + (i % 3) * 4;
-            const magneticX = point.x + nx * p.side * corridor;
-            const magneticY = point.y + ny * p.side * corridor;
-            const pull = pathPoint.influence;
-            targetX = this.mix(targetX, magneticX, this.clamp(pull * 0.92, 0, 0.88));
-            targetY = this.mix(targetY, magneticY, this.clamp(pull * 0.92, 0, 0.88));
-            p.vx += (vx / len) * pull * 0.19 * dtScale;
-            p.vy += (vy / len) * pull * 0.19 * dtScale;
-            p.vx += nx * p.side * pull * 0.045 * dtScale;
-            p.vy += ny * p.side * pull * 0.045 * dtScale;
-            rotation = this.mix(rotation, Math.atan2(vy, vx) * 180 / Math.PI, this.clamp(pull * 0.72, 0, 0.72));
-            stretch = 1 + pull * this.clamp(point.speed / 540, 0.2, 0.72);
-            glow = pull * (0.08 + point.quality * 0.14);
-            blur = pull * this.clamp(point.speed / 980, 0, 0.65);
+        const logoStateAge = now - this.logoStateAt;
+        const isIdle = this.logoState === 'idle';
+        const isAnticipating = this.logoState === 'anticipation';
+        const isSweep = this.logoState === 'sweep';
+        const isHold = this.logoState === 'hold';
+        const isRelease = this.logoState === 'release';
+
+        this.particles.forEach(p => {
+          const idle = this.getIdleTarget(p, time);
+          let tx = idle.x, ty = idle.y;
+          let springK = 0.016, friction = 0.886;
+          let targetRot = p.rotation + Math.sin(time * 0.52 + p.phase) * 5;
+
+          // Harmony wave alignment at medium harmony (idle only)
+          if (isIdle && this.harmony > 0.32) {
+            const wStr = this.smoothstep(0.32, 0.70, this.harmony) * 0.20;
+            const band = (Math.floor(p.baseYPct * 4) + 0.5) / 4;
+            const wY = band * this.height + Math.sin(time * 0.48 + p.id * 0.3) * this.height * 0.028;
+            const wX = idle.x + Math.sin(time * 0.33 + p.phase) * this.width * 0.035;
+            tx = this.lerp(tx, wX, wStr);
+            ty = this.lerp(ty, wY, wStr);
           }
 
-          const spring = this.reducedMotion ? 0.35 : this.mix(0.012, 0.033, this.clarity);
-          p.vx += (targetX - p.x) * spring * dtScale;
-          p.vy += (targetY - p.y) * spring * dtScale;
-
-          if (this.turbulence > 0.01) {
-            const distortion = this.turbulence * (1 - this.clarity * 0.56);
-            p.vx += Math.sin(time * 1.9 + p.phase + i) * distortion * 0.045 * dtScale;
-            p.vy += Math.cos(time * 1.7 + p.phase * 1.2) * distortion * 0.045 * dtScale;
-            blur += distortion * 0.36;
+          // Cursor influence (idle only, no cursor halo or visible trail)
+          let cursorRotInf = 0;
+          const ms = now - this.cursor.lastMoveAt;
+          const cursorFresh = this.cursor.inside && ms < 1500 && isIdle && !this.reducedMotion;
+          if (cursorFresh && this.cursor.x > 0) {
+            const dx = p.x - this.cursor.x, dy = p.y - this.cursor.y;
+            const dist = Math.hypot(dx, dy) || 1;
+            const radius = 115 + this.harmony * 50;
+            if (dist < radius) {
+              const inf = Math.pow(1 - dist / radius, 1.7);
+              const spd = this.cursor.speed;
+              if (spd > 20) {
+                // Moving cursor: symbols lean tangentially — conductor's baton effect
+                const cLen = Math.hypot(this.cursor.vx, this.cursor.vy) || 1;
+                const cvx = this.cursor.vx / cLen, cvy = this.cursor.vy / cLen;
+                const tangX = -cvy * p.side, tangY = cvx * p.side;
+                const force = inf * 0.038 * this.clamp(1 - spd / 950, 0.25, 1);
+                p.vx += tangX * force;
+                p.vy += tangY * force;
+                const fwdPull = inf * 0.13 * (1 - this.clamp(spd / 650, 0, 1) * 0.65);
+                tx = this.lerp(tx, this.cursor.x + (dx / dist) * 32, fwdPull);
+                ty = this.lerp(ty, this.cursor.y + (dy / dist) * 32, fwdPull);
+                cursorRotInf = inf * 0.28;
+              } else {
+                // Still cursor: gentle push
+                tx = this.lerp(tx, p.x + dx / dist * 16, inf * 0.07);
+                ty = this.lerp(ty, p.y + dy / dist * 16, inf * 0.07);
+              }
+            }
+          }
+          if (cursorRotInf > 0 && this.cursor.speed > 20) {
+            const angle = Math.atan2(this.cursor.vy, this.cursor.vx) * 180 / Math.PI;
+            targetRot = this.lerp(targetRot, angle + p.side * 18, cursorRotInf);
           }
 
-          const friction = Math.pow(this.reducedMotion ? 0.58 : 0.89, dtScale);
+          // Anticipation: symbols slow and orient inward
+          if (isAnticipating) {
+            const t = this.smoothstep(0, 1, logoStateAge / 420);
+            const cx = this.width * 0.5, cy = this.height * 0.5;
+            tx = this.lerp(tx, p.x + (cx - p.x) * 0.10, t * 0.28);
+            ty = this.lerp(ty, p.y + (cy - p.y) * 0.10, t * 0.28);
+            springK = 0.013;
+          }
+
+          // Logo formation forces
+          if (!p.isAmbient && (isSweep || isHold || isRelease)) {
+            const logoT = this.getLogoTargetPx(p);
+            if (logoT) {
+              if (isSweep) {
+                // Staggered, organically curved sweep — symbols discover the shape
+                const delay = p.sweepDelay * 720;
+                const prog = this.clamp((logoStateAge - delay) / 2100, 0, 1);
+                const ease = this.smoothstep(0, 0.65, prog);
+                if (prog > 0) {
+                  const toDx = logoT.x - p.x, toDy = logoT.y - p.y;
+                  const toLen = Math.hypot(toDx, toDy) || 1;
+                  const perpX = -toDy / toLen, perpY = toDx / toLen;
+                  // Arc that fades as the symbol approaches its target
+                  const curveOff = Math.sin(prog * Math.PI) * p.sweepCurve * 52;
+                  tx = this.lerp(tx, logoT.x + perpX * curveOff * (1 - ease * 0.9), ease * 0.74);
+                  ty = this.lerp(ty, logoT.y + perpY * curveOff * (1 - ease * 0.9), ease * 0.74);
+                  springK = 0.024;
+                  friction = 0.905; // slight overshoot gives organic feel
+                }
+              } else if (isHold) {
+                // Settled logo breathes subtly — still feels alive
+                const bX = Math.sin(time * 1.1 + p.phase) * 2.1;
+                const bY = Math.cos(time * 0.88 + p.phase * 1.28) * 1.4;
+                tx = logoT.x + bX;
+                ty = logoT.y + bY;
+                targetRot = Math.sin(time * 0.72 + p.phase) * 3.5;
+                springK = 0.055;
+                friction = 0.80;
+              } else if (isRelease) {
+                // Wave-staggered peel away — logo dissolves back to field
+                const delay = p.releaseWave * 950;
+                const prog = this.clamp((logoStateAge - delay) / 1400, 0, 1);
+                const ease = this.smoothstep(0, 1, prog);
+                tx = this.lerp(logoT.x, idle.x, ease);
+                ty = this.lerp(logoT.y, idle.y, ease);
+                springK = 0.018;
+              }
+            }
+          } else if (isSweep && p.isAmbient) {
+            // Ambient particles drift slightly outward as logo forms
+            const cx = this.width * 0.5, cy = this.height * 0.5;
+            const dx = p.x - cx, dy = p.y - cy;
+            const dist = Math.hypot(dx, dy) || 1;
+            const prog = this.clamp(logoStateAge / 1600, 0, 0.12);
+            tx = this.lerp(tx, p.x + (dx / dist) * 18, prog);
+            ty = this.lerp(ty, p.y + (dy / dist) * 18, prog);
+          }
+
+          // Spring physics
+          p.vx += (tx - p.x) * springK;
+          p.vy += (ty - p.y) * springK;
           p.vx *= friction;
           p.vy *= friction;
-          const speed = Math.hypot(p.vx, p.vy);
-          const maxSpeed = this.mix(3.6, 6.4, 1 - this.clarity * 0.35);
-          if (speed > maxSpeed) {
-            p.vx = (p.vx / speed) * maxSpeed;
-            p.vy = (p.vy / speed) * maxSpeed;
+          const spd = Math.hypot(p.vx, p.vy);
+          if (spd > 9) { p.vx = p.vx / spd * 9; p.vy = p.vy / spd * 9; }
+          p.x += p.vx;
+          p.y += p.vy;
+          p.x = this.clamp(p.x, -28, this.width + 28);
+          p.y = this.clamp(p.y, -28, this.height + 28);
+
+          // Rotation update
+          p.rotation = this.lerp(p.rotation, targetRot, 0.036);
+
+          // Opacity and scale
+          let opacity = p.baseOpacity;
+          let scale = p.baseScale;
+          if (isIdle && this.harmony > 0.45) {
+            const boost = this.smoothstep(0.45, 0.85, this.harmony) * 0.28;
+            opacity = Math.min(0.94, opacity * (1 + boost));
+          }
+          if (isHold) {
+            opacity = this.lerp(opacity, Math.min(0.96, p.baseOpacity * 1.55), 0.07);
+            scale = this.lerp(scale, 1.02, 0.05);
+          }
+          if (isRelease) {
+            const gP = this.clamp(logoStateAge / 2400, 0, 1);
+            opacity = this.lerp(opacity, p.baseOpacity * 0.52, gP * 0.62);
           }
 
-          const nearFade = pathPoint ? pathPoint.influence : 0;
-          const highQuiet = this.smoothstep(0.72, 1, this.clarity);
-          const organizedOpacity = p.baseOpacity * this.mix(1, 0.14, this.smoothstep(0.55, 1, this.clarity));
-          const structuralOpacity = this.smoothstep(0.28, 0.9, this.clarity) * this.mix(i % 3 === 0 ? 0.14 : 0.035, 0.018, highQuiet);
-          const opacity = this.clamp(organizedOpacity + nearFade * 0.24 + structuralOpacity, 0.035, 0.9);
-          const scale = this.mix(0.98, 0.84, this.smoothstep(0.72, 1, this.clarity)) + nearFade * 0.045;
-          this.renderParticle(
-            p,
-            p.x + p.vx,
-            p.y + p.vy,
-            rotation,
-            opacity,
-            scale,
-            stretch,
-            glow,
-            blur
-          );
+          // Render via transform only (no layout thrash)
+          p.el.style.opacity = this.clamp(opacity, 0.02, 1).toFixed(3);
+          p.el.style.transform = `translate3d(${p.x.toFixed(1)}px,${p.y.toFixed(1)}px,0) rotate(${p.rotation.toFixed(1)}deg) scale(${scale.toFixed(3)})`;
         });
-
-        if (!pointerFresh) this.field.classList.remove('is-clarifying');
-        requestAnimationFrame(this.animate);
       }
 
-      resetSandbox() {
-        this.clarity = 0;
-        this.pendingClarity = 0;
-        this.turbulence = 0;
-        this.path = [];
-        this.pointer.active = false;
-        this.pointer.x = -9999;
-        this.pointer.y = -9999;
-        this.pointer.sx = -9999;
-        this.pointer.sy = -9999;
-        this.field.classList.remove('is-active', 'is-clear', 'is-clarifying');
-        this.seedParticles();
-        this.updateClarityUI();
-      }
-
-      getParticleSnapshot() {
-        return this.particles.map(p => ({
-          id: p.id,
-          symbol: p.symbol,
-          x: p.x,
-          y: p.y,
-          vx: p.vx,
-          vy: p.vy,
-          opacity: p.renderOpacity,
-          scale: p.renderScale
-        }));
-      }
-
-      getBuiltComponentState() {
-        return { clarity: this.clarity };
-      }
-
-      getSandboxBounds() {
-        return this.field.getBoundingClientRect();
-      }
-
-      exitToTarget(target) {
-        this.exitTarget = target;
-        this.field.classList.add('is-scrolling');
-        return this.getParticleSnapshot();
-      }
+      // TODO(scroll-transition): expose getParticleSnapshot(), getSandboxBounds(), exitToTarget(targetRect)
+      // for a future animation where symbols exit toward next section on scroll
     }
 
     const field = document.getElementById('symbol-field');
     const stage = document.getElementById('symbol-stage');
-    const hero = document.getElementById('hero');
     if (field && stage) {
-      new CursorMagnetismSandbox(field, stage, hero).init();
+      new ConductingMarkup(field, stage).init();
     }
   }
 
@@ -8497,7 +7745,7 @@
     const depthRing   = document.getElementById('showcase-depth-ring');
     const phoneWrap   = document.getElementById('phone-wrapper');
     const namePill    = document.getElementById('sc-name-pill');
-    const NAMES = ['Meridian Law Group','Bloom & Co.','Coastal Properties','Eleven North Coffee'];
+    const NAMES = ['Atelier Vale','Bloom & Co.','Coastal Properties','Eleven North Coffee'];
     let currentTpl = 0;
     const tplCount = 4;
     let scVisible = false, landed = false, tiltOn = false;
@@ -10426,8 +9674,8 @@
     });
     gsap.to('.markup-field', {
       scrollTrigger: { trigger: '#hero', start: '25% top', end: 'bottom top', scrub: 1.2 },
-      y: -42,
-      opacity: 0.18,
+      y: -18,
+      opacity: 1,
       ease: 'none',
     });
     // Hero tokens parallax slower — linger as content leaves
