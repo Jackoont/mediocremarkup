@@ -4163,8 +4163,11 @@
     .hero-line { display: none !important; }
 
     .hero-content {
-      display: block;
-      max-width: 1180px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.92fr);
+      align-items: center;
+      gap: clamp(36px, 5vw, 80px);
+      max-width: 1280px;
       width: 100%;
       margin: 0 auto;
       min-height: 100svh;
@@ -4174,9 +4177,40 @@
     }
 
     .hero-left {
-      max-width: 880px;
+      max-width: 660px;
       position: relative;
       z-index: 5;
+    }
+
+    .hero-art {
+      position: relative;
+      width: 100%;
+      height: clamp(480px, 56vw, 660px);
+      max-height: 740px;
+      align-self: center;
+      justify-self: end;
+      max-width: 560px;
+    }
+    .hero-art canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: crosshair;
+    }
+    @media (max-width: 980px) {
+      .hero-art {
+        margin: 0 auto;
+        justify-self: center;
+        max-width: 540px;
+        height: clamp(380px, 78vw, 520px);
+      }
+    }
+    @media (max-width: 560px) {
+      .hero-art {
+        height: clamp(320px, 86vw, 440px);
+      }
     }
 
     .hero-eyebrow {
@@ -6242,234 +6276,6 @@
 
   <section class="hero" id="hero">
 
-    <canvas class="hero-field" id="hero-field" aria-hidden="true"></canvas>
-    <script>
-      (function () {
-        const hero = document.getElementById('hero');
-        const canvas = document.getElementById('hero-field');
-        if (!hero || !canvas) return;
-        const ctx = canvas.getContext('2d');
-        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-        /* ink colors that read on warm cream */
-        const INK_PRIMARY  = 'rgba(46, 36, 26, 0.62)';
-        const INK_WALNUT   = 'rgba(95, 72, 50, 0.46)';
-        const INK_SAGE     = 'rgba(95, 110, 88, 0.55)';
-        const INK_PEACH    = 'rgba(170, 88, 56, 0.50)';
-
-        /* a hand-set vocabulary of webpage fragments */
-        const TOKENS = [
-          '<header>', '</header>', '<nav>', '</nav>', '<main>', '</main>',
-          '<section>', '</section>', '<article>', '</article>', '<aside>',
-          '<footer>', '</footer>', '<h1>', '</h1>', '<h2>', '<p>', '</p>',
-          '<a>', '</a>', '<img/>', '<button>', '</button>', '<form>', '</form>',
-          '<input/>', '<label>', '<ul>', '<li>', '</li>', '</ul>', '<div>',
-          '</div>', '<span>', '</span>', '<!-- -->', 'class=', 'href=', 'alt=',
-          'aria-', 'rel=', '/>', '{ }', ':root', '@media', '.hover'
-        ];
-
-        function pickToken() {
-          return TOKENS[(Math.random() * TOKENS.length) | 0];
-        }
-
-        function pickInk() {
-          const r = Math.random();
-          if (r < 0.55) return INK_PRIMARY;
-          if (r < 0.80) return INK_WALNUT;
-          if (r < 0.92) return INK_SAGE;
-          return INK_PEACH;
-        }
-
-        let W = 0, H = 0, dpr = 1;
-        let particles = [];
-        let t = 0;
-        const mouse = { x: -9999, y: -9999, active: false, vx: 0, vy: 0, px: 0, py: 0 };
-
-        function targetCount() {
-          /* roughly one token per ~7,500 pixels of hero area, clamped */
-          const area = W * H;
-          return Math.round(Math.max(70, Math.min(180, area / 7500)));
-        }
-
-        function spawn(p) {
-          p.x = Math.random() * W;
-          p.y = Math.random() * H;
-          p.vx = (Math.random() - 0.5) * 0.4;
-          p.vy = (Math.random() - 0.5) * 0.4;
-          p.token = pickToken();
-          p.size = 9.5 + Math.random() * 5.5;
-          p.color = pickInk();
-          p.angle = (Math.random() - 0.5) * 0.36;
-          p.alpha = 0.55 + Math.random() * 0.38;
-        }
-
-        function rebuild() {
-          const r = hero.getBoundingClientRect();
-          dpr = Math.min(2, window.devicePixelRatio || 1);
-          W = r.width;
-          H = r.height;
-          if (W < 2 || H < 2) return;
-          canvas.width  = Math.round(W * dpr);
-          canvas.height = Math.round(H * dpr);
-          canvas.style.width  = W + 'px';
-          canvas.style.height = H + 'px';
-          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-          const target = targetCount();
-          if (!particles.length) {
-            particles = new Array(target).fill(null).map(() => {
-              const p = {};
-              spawn(p);
-              return p;
-            });
-          } else if (particles.length < target) {
-            while (particles.length < target) {
-              const p = {};
-              spawn(p);
-              particles.push(p);
-            }
-          } else if (particles.length > target) {
-            particles.length = target;
-          }
-        }
-
-        /* flowing field — sum-of-sines, smooth and slow-varying */
-        function flowAt(x, y) {
-          const k1 = 0.0028, k2 = 0.0021;
-          const fx = Math.sin(x * k1 + y * k2 * 0.6 + t * 0.18)
-                   + Math.cos(y * k1 * 1.3 - t * 0.11);
-          const fy = Math.cos(x * k2 - y * k1 + t * 0.15)
-                   + Math.sin(x * k2 * 1.3 + t * 0.20);
-          return [fx, fy];
-        }
-
-        function step(dtScale) {
-          t += 0.016 * dtScale;
-          const damping = 0.94;
-          const accel = 0.055 * dtScale;
-          const R = 140;
-          const R2 = R * R;
-          const margin = 60;
-
-          /* cursor velocity for a stronger trail along motion direction */
-          const mvx = mouse.x - mouse.px;
-          const mvy = mouse.y - mouse.py;
-          mouse.px = mouse.x;
-          mouse.py = mouse.y;
-
-          for (let i = 0; i < particles.length; i++) {
-            const p = particles[i];
-            const [fx, fy] = flowAt(p.x, p.y);
-            p.vx += fx * accel;
-            p.vy += fy * accel;
-
-            if (mouse.active) {
-              const dx = p.x - mouse.x;
-              const dy = p.y - mouse.y;
-              const d2 = dx * dx + dy * dy;
-              if (d2 < R2 && d2 > 0.0001) {
-                const d = Math.sqrt(d2);
-                const k = 1 - d / R;
-                const force = k * k * 1.6;
-                p.vx += (dx / d) * force;
-                p.vy += (dy / d) * force;
-                /* small drag along the cursor's own motion — feels like wind */
-                p.vx += mvx * k * 0.02;
-                p.vy += mvy * k * 0.02;
-              }
-            }
-
-            p.vx *= damping;
-            p.vy *= damping;
-            p.x += p.vx;
-            p.y += p.vy;
-
-            /* gentle wrap with margin so tokens reappear seamlessly */
-            if (p.x < -margin) { p.x = W + margin; p.token = pickToken(); }
-            if (p.x > W + margin) { p.x = -margin; p.token = pickToken(); }
-            if (p.y < -margin) { p.y = H + margin; }
-            if (p.y > H + margin) { p.y = -margin; }
-          }
-        }
-
-        function render() {
-          ctx.clearRect(0, 0, W, H);
-          for (let i = 0; i < particles.length; i++) {
-            const p = particles[i];
-            ctx.save();
-            ctx.translate(p.x, p.y);
-            ctx.rotate(p.angle);
-            ctx.globalAlpha = p.alpha;
-            ctx.fillStyle = p.color;
-            ctx.font = '500 ' + p.size.toFixed(2) + 'px "JetBrains Mono", ui-monospace, monospace';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(p.token, 0, 0);
-            ctx.restore();
-          }
-          ctx.globalAlpha = 1;
-        }
-
-        /* cursor tracking via the hero element (canvas is pointer-events:none) */
-        function onMove(e) {
-          const r = canvas.getBoundingClientRect();
-          mouse.x = e.clientX - r.left;
-          mouse.y = e.clientY - r.top;
-          if (!mouse.active) {
-            mouse.px = mouse.x;
-            mouse.py = mouse.y;
-          }
-          mouse.active = true;
-        }
-        function onLeave() {
-          mouse.active = false;
-          mouse.x = -9999;
-          mouse.y = -9999;
-        }
-        hero.addEventListener('pointermove', onMove);
-        hero.addEventListener('pointerleave', onLeave);
-
-        /* keep canvas in sync with layout */
-        let resizeT;
-        window.addEventListener('resize', () => {
-          clearTimeout(resizeT);
-          resizeT = setTimeout(() => {
-            particles = [];
-            rebuild();
-          }, 120);
-        });
-
-        /* pause when offscreen */
-        let visible = true;
-        if ('IntersectionObserver' in window) {
-          new IntersectionObserver((entries) => {
-            visible = entries[0].isIntersecting;
-          }, { threshold: 0 }).observe(hero);
-        }
-
-        rebuild();
-        /* warm up with a few frames so it looks settled at first paint */
-        for (let i = 0; i < 40; i++) step(1);
-        render();
-
-        let last = performance.now();
-        function frame(now) {
-          const dt = Math.min(40, now - last);
-          last = now;
-          if (visible) {
-            if (prefersReduced) {
-              /* freeze; still respond to cursor lightly */
-              if (mouse.active) { step(0.5); render(); }
-            } else {
-              step(dt / 16.6667);
-              render();
-            }
-          }
-          requestAnimationFrame(frame);
-        }
-        requestAnimationFrame(frame);
-      })();
-    </script>
     <div class="hero-content" id="hero-content">
       <div class="hero-left" id="hero-left">
         <div class="hero-eyebrow" id="hero-eyebrow">&lt;!-- digital presence check --&gt;</div>
@@ -6488,6 +6294,393 @@
           <div class="stat"><span class="stat-num">7 days</span><span class="stat-label">typical first pass</span></div>
           <div class="stat"><span class="stat-num">Custom code</span><span class="stat-label">no page builders</span></div>
         </div>
+      </div>
+      <div class="hero-art" id="hero-art" aria-hidden="true">
+        <canvas id="hero-art-canvas"></canvas>
+        <script>
+          (function () {
+            const host = document.getElementById('hero-art');
+            const canvas = document.getElementById('hero-art-canvas');
+            if (!host || !canvas) return;
+            const ctx = canvas.getContext('2d');
+            const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            /* warm ink + small accent palette */
+            const INK         = 'rgba(31, 24, 18, 0.78)';
+            const INK_SOFT    = 'rgba(31, 24, 18, 0.50)';
+            const INK_FAINT   = 'rgba(31, 24, 18, 0.30)';
+            const INK_WASH    = 'rgba(31, 24, 18, 0.05)';
+            const SAGE        = 'rgba(95, 110, 88, 0.78)';
+            const PEACH       = 'rgba(170, 88, 56, 0.78)';
+            const TRAIL       = 'rgba(95, 110, 88, 0.55)';
+
+            let W = 0, H = 0, dpr = 1;
+            let lastResize = 0;
+            let t0 = performance.now();
+            let visible = true;
+
+            const mouse = { x: -9999, y: -9999, inside: false };
+            const trail = []; /* {x, y, t} */
+
+            /* smooth pseudo-noise from a few sines — cheap and reproducible */
+            function n1(seed, phase) {
+              return 0.5 + 0.5 * Math.sin(seed * 1.31 + phase) * Math.cos(seed * 0.73 + phase * 0.6);
+            }
+            function jit(seed, t, amp) {
+              const v = Math.sin(seed * 2.137 + t * 0.6) + Math.cos(seed * 1.119 - t * 0.4) * 0.6;
+              return v * amp * 0.5;
+            }
+
+            /* one hand-drawn ink stroke: micro-segments with perpendicular wobble.
+               Drawn twice — a wider, very soft underline then a sharper top stroke
+               — to fake fountain-pen pressure. */
+            function inkStroke(x1, y1, x2, y2, opts) {
+              const seed  = opts.seed || 1;
+              const t     = opts.t || 0;
+              const amp   = opts.jitter ?? 0.85;
+              const wMain = opts.weight ?? 1.5;
+              const wSoft = wMain + 1.1;
+              const color = opts.color || INK;
+              const dx = x2 - x1, dy = y2 - y1;
+              const len = Math.hypot(dx, dy);
+              if (len < 0.5) return;
+              const segs = Math.max(2, Math.min(48, Math.round(len / 14)));
+              const nxv = -dy / len, nyv = dx / len;
+
+              const pts = new Array(segs + 1);
+              for (let i = 0; i <= segs; i++) {
+                const u = i / segs;
+                /* taper jitter at the ends so corners stay reasonably crisp */
+                const edge = Math.min(1, Math.min(u, 1 - u) * 4);
+                const j = jit(seed + i * 0.317, t, amp) * edge;
+                pts[i] = [x1 + dx * u + nxv * j, y1 + dy * u + nyv * j];
+              }
+
+              /* soft underlayer */
+              ctx.lineCap = 'round';
+              ctx.lineJoin = 'round';
+              ctx.strokeStyle = INK_FAINT;
+              ctx.lineWidth = wSoft;
+              ctx.beginPath();
+              ctx.moveTo(pts[0][0], pts[0][1]);
+              for (let i = 1; i <= segs; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+              ctx.stroke();
+
+              /* primary stroke */
+              ctx.strokeStyle = color;
+              ctx.lineWidth = wMain;
+              ctx.beginPath();
+              ctx.moveTo(pts[0][0], pts[0][1]);
+              for (let i = 1; i <= segs; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+              ctx.stroke();
+            }
+
+            function inkRect(x, y, w, h, opts) {
+              const s = opts.seed || 1;
+              inkStroke(x,     y,     x + w, y,     { ...opts, seed: s + 1 });
+              inkStroke(x + w, y,     x + w, y + h, { ...opts, seed: s + 2 });
+              inkStroke(x + w, y + h, x,     y + h, { ...opts, seed: s + 3 });
+              inkStroke(x,     y + h, x,     y,     { ...opts, seed: s + 4 });
+            }
+
+            function inkPill(x, y, w, h, opts) {
+              const r = h / 2;
+              const s = opts.seed || 1;
+              inkStroke(x + r, y,         x + w - r, y,         { ...opts, seed: s + 1 });
+              inkStroke(x + r, y + h,     x + w - r, y + h,     { ...opts, seed: s + 2 });
+              /* hand-drawn rounded ends approximated with a chord */
+              inkArc(x + r,     y + r, r, Math.PI * 0.5,  Math.PI * 1.5, { ...opts, seed: s + 3 });
+              inkArc(x + w - r, y + r, r, Math.PI * 1.5,  Math.PI * 2.5, { ...opts, seed: s + 4 });
+            }
+
+            function inkArc(cx, cy, r, a0, a1, opts) {
+              const segs = Math.max(6, Math.round((Math.abs(a1 - a0) * r) / 6));
+              const t = opts.t || 0;
+              const amp = (opts.jitter ?? 0.7);
+              const s = opts.seed || 1;
+              const color = opts.color || INK;
+              const wMain = opts.weight ?? 1.5;
+              const wSoft = wMain + 1.1;
+              const pts = [];
+              for (let i = 0; i <= segs; i++) {
+                const a = a0 + (a1 - a0) * (i / segs);
+                const edge = Math.min(1, Math.min(i / segs, 1 - i / segs) * 4);
+                const j = jit(s + i * 0.41, t, amp) * edge;
+                pts.push([cx + Math.cos(a) * (r + j), cy + Math.sin(a) * (r + j)]);
+              }
+              ctx.lineCap = 'round';
+              ctx.lineJoin = 'round';
+              ctx.strokeStyle = INK_FAINT;
+              ctx.lineWidth = wSoft;
+              ctx.beginPath();
+              ctx.moveTo(pts[0][0], pts[0][1]);
+              for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+              ctx.stroke();
+              ctx.strokeStyle = color;
+              ctx.lineWidth = wMain;
+              ctx.beginPath();
+              ctx.moveTo(pts[0][0], pts[0][1]);
+              for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+              ctx.stroke();
+            }
+
+            /* a hand-drawn curving arrow, ending in a tiny head */
+            function inkArrow(x1, y1, x2, y2, opts) {
+              const t = opts.t || 0;
+              const s = opts.seed || 7;
+              const color = opts.color || INK_SOFT;
+              const curve = opts.curve ?? 18;
+              const mx = (x1 + x2) / 2 + curve;
+              const my = (y1 + y2) / 2;
+              const segs = 18;
+              const pts = [];
+              for (let i = 0; i <= segs; i++) {
+                const u = i / segs;
+                const bx = (1 - u) * (1 - u) * x1 + 2 * (1 - u) * u * mx + u * u * x2;
+                const by = (1 - u) * (1 - u) * y1 + 2 * (1 - u) * u * my + u * u * y2;
+                const edge = Math.min(1, Math.min(u, 1 - u) * 5);
+                const j = jit(s + i * 0.29, t, 0.5) * edge;
+                pts.push([bx + j * 0.6, by + j * 0.6]);
+              }
+              ctx.lineCap = 'round';
+              ctx.lineJoin = 'round';
+              ctx.strokeStyle = color;
+              ctx.lineWidth = 1.1;
+              ctx.beginPath();
+              ctx.moveTo(pts[0][0], pts[0][1]);
+              for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+              ctx.stroke();
+              /* arrowhead */
+              const dx = x2 - pts[pts.length - 3][0];
+              const dy = y2 - pts[pts.length - 3][1];
+              const a = Math.atan2(dy, dx);
+              const ah = 8;
+              ctx.beginPath();
+              ctx.moveTo(x2, y2);
+              ctx.lineTo(x2 - Math.cos(a - 0.42) * ah, y2 - Math.sin(a - 0.42) * ah);
+              ctx.moveTo(x2, y2);
+              ctx.lineTo(x2 - Math.cos(a + 0.42) * ah, y2 - Math.sin(a + 0.42) * ah);
+              ctx.stroke();
+            }
+
+            function inkLabel(x, y, text, opts) {
+              ctx.save();
+              ctx.translate(x, y);
+              if (opts.rot) ctx.rotate(opts.rot);
+              ctx.fillStyle = opts.color || INK;
+              ctx.font = (opts.style || '500') + ' ' + (opts.size || 12) + 'px "JetBrains Mono", ui-monospace, monospace';
+              ctx.textAlign = opts.align || 'left';
+              ctx.textBaseline = opts.baseline || 'alphabetic';
+              ctx.fillText(text, 0, 0);
+              ctx.restore();
+            }
+
+            /* the composition — designed against a 480 x 600 canvas; scales to fit */
+            function paintComposition(now) {
+              const t = (now - t0) / 1000;
+
+              /* design coordinates */
+              const Cw = 480, Ch = 600;
+              const sx = W / Cw, sy = H / Ch;
+              const s = Math.min(sx, sy);
+              const ox = (W - Cw * s) / 2;
+              const oy = (H - Ch * s) / 2;
+
+              ctx.save();
+              ctx.translate(ox, oy);
+              ctx.scale(s, s);
+
+              /* corner note — handwriting-feel comment */
+              inkLabel(18, 30, '// hand-set', {
+                size: 11, color: INK_SOFT, style: '400 italic'
+              });
+
+              /* tilt the page itself */
+              const pageCx = 240, pageCy = 312;
+              ctx.save();
+              ctx.translate(pageCx, pageCy);
+              ctx.rotate(-1.4 * Math.PI / 180);
+              ctx.translate(-pageCx, -pageCy);
+
+              /* page footprint */
+              const PX = 56, PY = 70, PW = 320, PH = 484;
+
+              /* faintest wash inside the page */
+              ctx.fillStyle = INK_WASH;
+              ctx.fillRect(PX, PY, PW, PH);
+
+              /* page border */
+              inkRect(PX, PY, PW, PH, { seed: 11, jitter: 1.1, weight: 1.7, t });
+
+              /* header band */
+              const HX = PX + 18, HY = PY + 18, HW = PW - 36, HH = 30;
+              inkRect(HX, HY, HW, HH, { seed: 21, jitter: 0.85, weight: 1.25, t });
+              /* logo mark inside header — a small square + a stroke */
+              inkRect(HX + 8, HY + 8, 14, 14, { seed: 25, jitter: 0.6, weight: 1.1, t });
+              inkStroke(HX + 28, HY + 15, HX + 56, HY + 15, { seed: 26, jitter: 0.4, weight: 1.0, t });
+              /* nav dots */
+              for (let i = 0; i < 3; i++) {
+                const dx = HX + HW - 14 - i * 16;
+                inkArc(dx, HY + 15, 2.4, 0, Math.PI * 2, { seed: 27 + i, jitter: 0.25, weight: 1.0, t });
+              }
+
+              /* H1 — three confident heavy strokes (varied length, slight stagger) */
+              const H1X = PX + 18, H1Y = PY + 80;
+              inkStroke(H1X,      H1Y,      H1X + 264, H1Y,      { seed: 31, jitter: 0.9, weight: 3.6, t, color: INK });
+              inkStroke(H1X,      H1Y + 22, H1X + 232, H1Y + 22, { seed: 32, jitter: 0.9, weight: 3.6, t, color: INK });
+              inkStroke(H1X,      H1Y + 44, H1X + 180, H1Y + 44, { seed: 33, jitter: 0.9, weight: 3.6, t, color: INK });
+
+              /* paragraph — three thin lines */
+              const PPX = PX + 18, PPY = PY + 158;
+              inkStroke(PPX, PPY,      PPX + 248, PPY,      { seed: 41, jitter: 0.55, weight: 1.0, t, color: INK_SOFT });
+              inkStroke(PPX, PPY + 13, PPX + 232, PPY + 13, { seed: 42, jitter: 0.55, weight: 1.0, t, color: INK_SOFT });
+              inkStroke(PPX, PPY + 26, PPX + 156, PPY + 26, { seed: 43, jitter: 0.55, weight: 1.0, t, color: INK_SOFT });
+
+              /* CTA pill — filled with ink, the heroic mark */
+              const BX = PX + 18, BY = PY + 214, BW = 108, BH = 30;
+              /* the fill */
+              ctx.save();
+              ctx.fillStyle = 'rgba(31,24,18,0.92)';
+              ctx.beginPath();
+              const br = BH / 2;
+              ctx.moveTo(BX + br, BY);
+              ctx.lineTo(BX + BW - br, BY);
+              ctx.arc(BX + BW - br, BY + br, br, -Math.PI / 2, Math.PI / 2);
+              ctx.lineTo(BX + br, BY + BH);
+              ctx.arc(BX + br, BY + br, br, Math.PI / 2, -Math.PI / 2);
+              ctx.closePath();
+              ctx.fill();
+              ctx.restore();
+              /* a small line inside the button to suggest text */
+              inkStroke(BX + 18, BY + BH / 2, BX + BW - 22, BY + BH / 2, {
+                seed: 51, jitter: 0.3, weight: 1.1, t, color: 'rgba(245,239,224,0.78)'
+              });
+
+              /* image placeholder — rectangle with diagonal cross */
+              const IX = PX + 156, IY = PY + 264, IW = 152, IH = 116;
+              inkRect(IX, IY, IW, IH, { seed: 61, jitter: 0.85, weight: 1.4, t });
+              inkStroke(IX, IY,       IX + IW, IY + IH, { seed: 62, jitter: 0.45, weight: 1.0, t, color: INK_SOFT });
+              inkStroke(IX + IW, IY,  IX,       IY + IH, { seed: 63, jitter: 0.45, weight: 1.0, t, color: INK_SOFT });
+
+              /* caption line below image */
+              inkStroke(IX + 12, IY + IH + 14, IX + IW - 24, IY + IH + 14, {
+                seed: 64, jitter: 0.4, weight: 1.0, t, color: INK_SOFT
+              });
+
+              /* footer band */
+              const FX = HX, FH = 20, FY = PY + PH - 18 - FH, FW = HW;
+              inkRect(FX, FY, FW, FH, { seed: 71, jitter: 0.65, weight: 1.2, t, color: INK_SOFT });
+
+              ctx.restore(); /* end page tilt */
+
+              /* annotations — un-rotated, sit in margins like a designer's hand */
+
+              /* <h1> label + arrow pointing to the heavy strokes */
+              inkLabel(388, 134, '<h1>', { size: 12, color: SAGE });
+              inkArrow(404, 144, 376, 168, { t, seed: 81, curve: 16, color: SAGE });
+
+              /* <img/> label + arrow to image placeholder */
+              inkLabel(388, 336, '<img/>', { size: 12, color: PEACH });
+              inkArrow(404, 346, 374, 332, { t, seed: 82, curve: -14, color: PEACH });
+
+              /* measurement marker beneath page — a width annotation */
+              const MX1 = 72, MX2 = 372, MY = 580;
+              inkStroke(MX1, MY, MX2, MY, { seed: 91, jitter: 0.3, weight: 0.9, t, color: INK_FAINT });
+              inkStroke(MX1, MY - 4, MX1, MY + 4, { seed: 92, jitter: 0.2, weight: 0.9, t, color: INK_FAINT });
+              inkStroke(MX2, MY - 4, MX2, MY + 4, { seed: 93, jitter: 0.2, weight: 0.9, t, color: INK_FAINT });
+              ctx.fillStyle = INK_FAINT;
+              ctx.font = '500 10px "JetBrains Mono", ui-monospace, monospace';
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'bottom';
+              ctx.fillText('480 px', (MX1 + MX2) / 2, MY - 6);
+
+              ctx.restore();
+            }
+
+            /* the cursor leaves a fading ink trail — feels like drawing */
+            function paintTrail(now) {
+              const maxAge = 950;
+              while (trail.length && (now - trail[0].t) > maxAge) trail.shift();
+              if (trail.length < 2) return;
+              ctx.lineCap = 'round';
+              ctx.lineJoin = 'round';
+              for (let i = 1; i < trail.length; i++) {
+                const a = trail[i - 1], b = trail[i];
+                const age = now - b.t;
+                if (age > maxAge) continue;
+                const k = 1 - age / maxAge;
+                ctx.strokeStyle = TRAIL.replace('0.55', (0.55 * k * k).toFixed(3));
+                ctx.lineWidth = 1.2 + 0.8 * k;
+                ctx.beginPath();
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+                ctx.stroke();
+              }
+            }
+
+            function paint(now) {
+              ctx.clearRect(0, 0, W, H);
+              paintComposition(now);
+              paintTrail(now);
+            }
+
+            function rebuild() {
+              const r = host.getBoundingClientRect();
+              dpr = Math.min(2, window.devicePixelRatio || 1);
+              W = r.width;
+              H = r.height;
+              if (W < 2 || H < 2) return;
+              canvas.width  = Math.round(W * dpr);
+              canvas.height = Math.round(H * dpr);
+              canvas.style.width  = W + 'px';
+              canvas.style.height = H + 'px';
+              ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            }
+
+            function onMove(e) {
+              const r = canvas.getBoundingClientRect();
+              const x = e.clientX - r.left;
+              const y = e.clientY - r.top;
+              mouse.x = x; mouse.y = y; mouse.inside = true;
+              trail.push({ x, y, t: performance.now() });
+              if (trail.length > 80) trail.splice(0, trail.length - 80);
+            }
+            function onLeave() {
+              mouse.inside = false;
+            }
+            host.addEventListener('pointermove', onMove);
+            host.addEventListener('pointerleave', onLeave);
+
+            let resizeT;
+            window.addEventListener('resize', () => {
+              clearTimeout(resizeT);
+              resizeT = setTimeout(rebuild, 120);
+            });
+
+            if ('IntersectionObserver' in window) {
+              new IntersectionObserver(es => { visible = es[0].isIntersecting; }, { threshold: 0 })
+                .observe(host);
+            }
+
+            rebuild();
+            paint(performance.now());
+
+            let last = performance.now();
+            function frame(now) {
+              last = now;
+              if (visible) {
+                if (prefersReduced) {
+                  /* re-render only when cursor moves so the trail is responsive */
+                  if (mouse.inside || trail.length) paint(now);
+                } else {
+                  paint(now);
+                }
+              }
+              requestAnimationFrame(frame);
+            }
+            requestAnimationFrame(frame);
+          })();
+        </script>
       </div>
     </div>
   </section>
