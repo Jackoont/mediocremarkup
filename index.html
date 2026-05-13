@@ -6342,843 +6342,1057 @@
 
       <div class="hero-system" aria-hidden="true">
         <style>
-          /* === SANDBOX: scroll-reactive handcrafted simulation === */
-          .sandbox-frame {
+          /* === ATELIER STAGE — markup builds the tailoring website === */
+          .atelier-stage {
+            --p: 0;
+            --crumple: 0;
             position: relative;
-            width: min(calc(100% - clamp(72px, 5.5vw, 92px)), 620px);
+            width: min(calc(100% - clamp(56px, 4.5vw, 92px)), 620px);
             height: clamp(440px, 51vw, 620px);
             margin-left: auto;
-            margin-right: clamp(72px, 5.5vw, 92px);
-            border: 1px solid rgba(241,234,217,0.10);
+            margin-right: clamp(56px, 4.5vw, 92px);
+            border: 1px solid rgba(241,234,217,0.08);
             background:
-              radial-gradient(ellipse at 28% 32%, rgba(213,168,92,0.07), transparent 58%),
-              radial-gradient(ellipse at 78% 76%, rgba(143,118,178,0.06), transparent 62%),
-              radial-gradient(ellipse at 50% 110%, rgba(120,160,138,0.05), transparent 62%),
-              linear-gradient(168deg, #15110d 0%, #100d10 52%, #0a0809 100%);
+              radial-gradient(ellipse at 22% 28%, rgba(213,168,92,0.10), transparent 52%),
+              radial-gradient(ellipse at 78% 76%, rgba(120,160,138,0.07), transparent 58%),
+              radial-gradient(ellipse at 50% 105%, rgba(106,138,144,0.05), transparent 60%),
+              linear-gradient(165deg, #15110d 0%, #100d10 52%, #0a0809 100%);
             box-shadow:
-              0 38px 92px rgba(0,0,0,0.46),
+              0 36px 88px rgba(0,0,0,0.50),
               inset 0 0 0 1px rgba(241,234,217,0.04),
-              inset 0 60px 120px rgba(0,0,0,0.35);
+              inset 0 50px 110px rgba(0,0,0,0.34);
             overflow: hidden;
             isolation: isolate;
-            touch-action: manipulation;
+            touch-action: pan-y;
             cursor: crosshair;
+            perspective: 1200px;
           }
-          .sandbox-frame canvas {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            display: block;
-          }
-          .sandbox-grain {
-            position: absolute; inset: 0;
-            pointer-events: none;
-            mix-blend-mode: overlay;
-            opacity: 0.13;
-            z-index: 3;
-            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>");
-          }
-          .sandbox-vignette {
-            position: absolute; inset: 0;
-            pointer-events: none;
-            z-index: 4;
-            background:
-              radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 48%, rgba(0,0,0,0.45) 100%),
-              linear-gradient(180deg, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0) 14%, rgba(0,0,0,0) 84%, rgba(0,0,0,0.28) 100%);
-          }
-          .sandbox-label {
-            position: absolute;
-            left: 18px;
-            bottom: 14px;
-            z-index: 5;
-            pointer-events: none;
-            font: 500 9px/1 var(--font-mono, 'JetBrains Mono', monospace);
-            letter-spacing: 0.32em;
-            text-transform: uppercase;
-            color: rgba(241,234,217,0.30);
-          }
-          .sandbox-label span {
-            color: rgba(213,168,92,0.85);
-            margin-left: 12px;
-            transition: opacity 0.6s ease;
-          }
-          .sandbox-tick {
-            position: absolute;
-            right: 18px;
-            bottom: 14px;
-            z-index: 5;
-            pointer-events: none;
-            font: 500 9px/1 var(--font-mono, 'JetBrains Mono', monospace);
-            letter-spacing: 0.24em;
-            color: rgba(241,234,217,0.24);
-          }
-          @media (max-width: 860px) {
-            .sandbox-frame {
+          .hero-system:has(> .atelier-stage)::before { display: none; }
+          @media (max-width: 900px) {
+            .atelier-stage {
               margin-right: auto;
               width: min(100%, 560px);
+              cursor: auto;
             }
           }
+
+          /* === ORBITAL ARCH === */
+          .atelier-orbit {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            opacity: clamp(0, calc((var(--p) - 0.02) * 1.6 + 0.20), 1);
+          }
+          .atelier-orbit svg {
+            width: 100%; height: 100%; overflow: visible;
+          }
+          .orbit-ring {
+            fill: none;
+            stroke-width: 1;
+            vector-effect: non-scaling-stroke;
+          }
+          .orbit-ring--outer { stroke: rgba(213,168,92,0.20); }
+          .orbit-ring--mid   { stroke: rgba(241,234,217,0.10); stroke-dasharray: 2 9; }
+          .orbit-ring--inner { stroke: rgba(120,160,138,0.16); }
+          .orbit-sweep {
+            fill: none;
+            stroke: #d5a85c;
+            stroke-width: 1.6;
+            stroke-linecap: round;
+            stroke-dasharray: 0 9999;
+            filter: drop-shadow(0 0 6px rgba(213,168,92,0.45));
+            opacity: clamp(0, calc(var(--p) * 1.4), 1);
+            transition: stroke-dasharray 0.32s ease-out;
+          }
+          .orbit-node {
+            fill: #d5a85c;
+            filter: drop-shadow(0 0 5px rgba(213,168,92,0.55));
+          }
+          .orbit-spin { transform-origin: 300px 300px; animation: orbitSpin 90s linear infinite; }
+          .orbit-spin--rev { animation-duration: 140s; animation-direction: reverse; }
+          @keyframes orbitSpin { to { transform: rotate(360deg); } }
+
+          /* === CODE COLUMN === */
+          .atelier-code {
+            position: absolute;
+            left: 16px;
+            top: 22px;
+            bottom: 38px;
+            width: clamp(124px, 28%, 188px);
+            z-index: 3;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9.5px;
+            line-height: 1.62;
+            color: rgba(241,234,217,0.7);
+            pointer-events: none;
+            mask-image: linear-gradient(to bottom, transparent 0, #000 6%, #000 88%, transparent 100%);
+            overflow: hidden;
+          }
+          .atelier-code .code-head {
+            display: flex; align-items: center;
+            gap: 4px;
+            margin-bottom: 10px;
+            padding-bottom: 7px;
+            border-bottom: 1px solid rgba(241,234,217,0.07);
+          }
+          .atelier-code .code-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: rgba(241,234,217,0.18);
+          }
+          .atelier-code .code-file {
+            margin-left: 6px;
+            font-size: 8px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: rgba(213,168,92,0.6);
+          }
+          .atelier-code .code-line {
+            display: block;
+            white-space: pre;
+            opacity: clamp(0, calc((var(--p) - var(--at, 0)) * 12), 1);
+            transform: translateX(calc((1 - clamp(0, (var(--p) - var(--at, 0)) * 14, 1)) * -4px));
+          }
+          .atelier-code .code-line .tag  { color: rgba(120,160,138,0.85); }
+          .atelier-code .code-line .attr { color: rgba(213,168,92,0.82); }
+          .atelier-code .code-line .str  { color: rgba(241,234,217,0.65); }
+          .atelier-code .code-line .com  { color: rgba(184,177,161,0.5); font-style: italic; }
+          .atelier-code .code-line .sel  { color: rgba(194,128,110,0.85); }
+          .atelier-code .code-line .prop { color: rgba(213,168,92,0.78); }
+          .atelier-code .code-line .val  { color: rgba(241,234,217,0.78); }
+          .atelier-code .code-line .punc { color: rgba(241,234,217,0.4); }
+          .atelier-code .code-caret {
+            display: inline-block;
+            width: 5px; height: 10px;
+            background: #d5a85c;
+            vertical-align: -1px;
+            margin-left: 2px;
+            animation: ateCaret 1s infinite step-end;
+            opacity: clamp(0, calc(var(--p) * 4), 1);
+          }
+          @keyframes ateCaret { 50% { opacity: 0; } }
+
+          /* === WEBSITE PREVIEW === */
+          .atelier-preview {
+            position: absolute;
+            right: 30px;
+            top: 36px;
+            bottom: 56px;
+            width: clamp(260px, 55%, 360px);
+            z-index: 4;
+            border-radius: 6px;
+            background: #faf7f1;
+            box-shadow:
+              0 22px 60px rgba(0,0,0,0.55),
+              0 0 0 1px rgba(241,234,217,0.08);
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: box-shadow 0.6s ease, transform 0.6s ease;
+          }
+          .atelier-preview .chrome {
+            display: flex; align-items: center;
+            gap: 5px;
+            padding: 7px 10px;
+            background: #efe9dd;
+            border-bottom: 1px solid rgba(20,16,12,0.06);
+          }
+          .atelier-preview .chrome-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: rgba(20,16,12,0.18);
+          }
+          .atelier-preview .chrome-url {
+            margin-left: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 8px;
+            color: rgba(20,16,12,0.5);
+            letter-spacing: 0.04em;
+          }
+          .atelier-site {
+            position: relative;
+            height: calc(100% - 24px);
+            overflow: hidden;
+            background: #faf7f1;
+            color: #15110d;
+          }
+          .atelier-site > * {
+            transition: opacity 0.28s ease, transform 0.28s ease;
+          }
+
+          /* nav */
+          .site-nav {
+            display: flex; align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-bottom: 1px solid rgba(20,16,12,0.06);
+            opacity: clamp(0, calc((var(--p) - 0.05) * 7), 1);
+            transform: translateY(calc((1 - clamp(0, (var(--p) - 0.05) * 7, 1)) * -8px));
+          }
+          .site-nav .nav-brand {
+            font-family: 'DM Serif Display', serif;
+            font-size: 13px;
+            font-style: italic;
+            color: #0f1f3d;
+            margin-right: auto;
+          }
+          .site-nav .nav-brand i { color: #c8a96e; font-style: normal; }
+          .site-nav .nav-link {
+            font-size: 7px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: rgba(20,16,12,0.5);
+          }
+          .site-nav .nav-cta {
+            font-size: 7px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            background: #0f1f3d;
+            color: #c8a96e;
+            padding: 5px 10px;
+            border-radius: 2px;
+            font-weight: 700;
+          }
+
+          /* hero */
+          .site-hero {
+            position: relative;
+            display: grid;
+            grid-template-columns: 1.05fr 1fr;
+            opacity: clamp(0, calc((var(--p) - 0.12) * 6), 1);
+            transform: translateY(calc((1 - clamp(0, (var(--p) - 0.12) * 6, 1)) * 12px));
+          }
+          .site-hero .hero-copy {
+            padding: 13px 12px 12px;
+            display: flex; flex-direction: column;
+            justify-content: center;
+          }
+          .site-hero .hero-eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 6.5px;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: #c8a96e;
+            margin-bottom: 7px;
+          }
+          .site-hero .hero-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.05;
+            color: #0f1f3d;
+            margin-bottom: 6px;
+          }
+          .site-hero .hero-sub {
+            font-size: 7.5px;
+            line-height: 1.5;
+            color: rgba(20,16,12,0.55);
+            margin-bottom: 9px;
+          }
+          .site-hero .hero-cta {
+            align-self: flex-start;
+            background: #c8a96e;
+            color: #0f1f3d;
+            font-size: 7px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            padding: 6px 10px;
+            border-radius: 2px;
+          }
+          .site-hero .hero-img {
+            position: relative;
+            background: #d4cdb9 center/cover no-repeat;
+            filter: saturate(0.92);
+            opacity: clamp(0, calc((var(--p) - 0.30) * 5), 1);
+          }
+          .site-hero .hero-img::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(220deg, rgba(15,31,61,0) 50%, rgba(15,31,61,0.25) 100%);
+          }
+
+          /* services */
+          .site-services {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            padding: 9px 12px;
+            border-top: 1px solid rgba(20,16,12,0.05);
+            opacity: clamp(0, calc((var(--p) - 0.35) * 6), 1);
+            transform: translateY(calc((1 - clamp(0, (var(--p) - 0.35) * 6, 1)) * 10px));
+          }
+          .svc {
+            padding: 7px 7px 8px;
+            background: #fff;
+            border: 1px solid rgba(20,16,12,0.06);
+            border-radius: 3px;
+          }
+          .svc .svc-tag {
+            width: 5px; height: 5px;
+            background: #c8a96e;
+            border-radius: 50%;
+            margin-bottom: 6px;
+          }
+          .svc .svc-name {
+            font-size: 7.5px;
+            font-weight: 700;
+            color: #0f1f3d;
+            margin-bottom: 2px;
+            letter-spacing: 0.02em;
+          }
+          .svc .svc-desc {
+            font-size: 6px;
+            line-height: 1.45;
+            color: rgba(20,16,12,0.5);
+          }
+
+          /* craft */
+          .site-craft {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            padding: 4px 12px 0;
+            opacity: clamp(0, calc((var(--p) - 0.50) * 6), 1);
+            transform: translateY(calc((1 - clamp(0, (var(--p) - 0.50) * 6, 1)) * 10px));
+          }
+          .craft-img {
+            aspect-ratio: 1 / 1;
+            background: #d4cdb9 center/cover no-repeat;
+            border-radius: 3px;
+          }
+          .craft-body { padding: 4px 0 4px 10px; }
+          .craft-body .craft-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 6.5px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: #c8a96e;
+            margin-bottom: 5px;
+          }
+          .craft-body .craft-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 11px;
+            line-height: 1.15;
+            color: #0f1f3d;
+            margin-bottom: 4px;
+          }
+          .craft-body .craft-sub {
+            font-size: 6.5px;
+            line-height: 1.55;
+            color: rgba(20,16,12,0.5);
+          }
+          .craft-body .craft-line {
+            display: block;
+            width: 32px; height: 1px;
+            background: #c8a96e;
+            margin-top: 7px;
+          }
+
+          /* booking strip */
+          .site-book {
+            margin: 9px 12px 0;
+            padding: 9px 11px;
+            background: #0f1f3d;
+            border-radius: 3px;
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 10px;
+            opacity: clamp(0, calc((var(--p) - 0.62) * 7), 1);
+            transform: translateY(calc((1 - clamp(0, (var(--p) - 0.62) * 7, 1)) * 8px));
+          }
+          .site-book .book-left { display: flex; flex-direction: column; gap: 1px; }
+          .site-book .book-title { font-size: 8px; color: #fff; font-weight: 700; }
+          .site-book .book-sub { font-size: 6.5px; color: rgba(255,255,255,0.45); }
+          .site-book .book-cta {
+            background: #c8a96e;
+            color: #0f1f3d;
+            font-size: 7px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            padding: 5px 9px;
+            border-radius: 2px;
+          }
+
+          /* footer */
+          .site-foot {
+            margin-top: 9px;
+            padding: 7px 12px;
+            font-size: 6.5px;
+            color: rgba(20,16,12,0.4);
+            text-align: center;
+            letter-spacing: 0.06em;
+            border-top: 1px solid rgba(20,16,12,0.06);
+            opacity: clamp(0, calc((var(--p) - 0.72) * 7), 1);
+          }
+
+          /* === MOBILE MOCKUP === */
+          .atelier-mobile {
+            position: absolute;
+            right: 16px;
+            bottom: 56px;
+            width: 58px;
+            height: 112px;
+            background: #15110d;
+            border-radius: 9px;
+            padding: 2.5px;
+            box-shadow:
+              0 14px 28px rgba(0,0,0,0.55),
+              0 0 0 1px rgba(241,234,217,0.06);
+            z-index: 5;
+            opacity: clamp(0, calc((var(--p) - 0.66) * 6), 1);
+            transform:
+              translate(
+                calc((1 - clamp(0, (var(--p) - 0.66) * 6, 1)) * 20px),
+                calc((1 - clamp(0, (var(--p) - 0.66) * 6, 1)) * 14px)
+              )
+              rotate(-3deg);
+          }
+          .atelier-mobile .mob-screen {
+            position: relative;
+            width: 100%; height: 100%;
+            background: #faf7f1;
+            border-radius: 6px;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+          }
+          .atelier-mobile .mob-nav {
+            display: flex; justify-content: space-between;
+            padding: 4px 5px 3px;
+            background: #fff;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+          }
+          .atelier-mobile .mob-brand {
+            font-family: 'DM Serif Display', serif;
+            font-size: 6px; color: #0f1f3d; font-style: italic;
+          }
+          .atelier-mobile .mob-dot {
+            width: 3px; height: 3px; background: #c8a96e; border-radius: 50%; align-self: center;
+          }
+          .atelier-mobile .mob-hero {
+            height: 38px;
+            background: #d4cdb9 center/cover no-repeat;
+            position: relative;
+          }
+          .atelier-mobile .mob-hero::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(180deg, transparent 30%, rgba(15,31,61,0.85) 100%);
+          }
+          .atelier-mobile .mob-title {
+            position: absolute;
+            bottom: 4px; left: 5px; right: 5px;
+            font-family: 'DM Serif Display', serif;
+            font-size: 5px; color: #fff;
+            line-height: 1.05;
+            z-index: 1;
+          }
+          .atelier-mobile .mob-card {
+            margin: 4px;
+            height: 14px;
+            background: #fff;
+            border-radius: 2px;
+            border: 1px solid rgba(0,0,0,0.06);
+          }
+          .atelier-mobile .mob-btn {
+            margin: 0 4px 4px;
+            padding: 3px 0;
+            background: #c8a96e;
+            border-radius: 1.5px;
+            font-size: 4.2px;
+            color: #0f1f3d;
+            font-weight: 800;
+            text-align: center;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+          }
+
+          /* === PROGRESS RAIL === */
+          .atelier-rail {
+            position: absolute;
+            right: 10px;
+            top: 38px;
+            bottom: 52px;
+            width: 2px;
+            z-index: 6;
+            pointer-events: none;
+            opacity: clamp(0.3, calc(0.3 + var(--p) * 0.7), 1);
+          }
+          .atelier-rail .rail-track {
+            position: absolute; inset: 0;
+            width: 1px;
+            background: rgba(241,234,217,0.10);
+            left: 0.5px;
+          }
+          .atelier-rail .rail-fill {
+            position: absolute;
+            top: 0; left: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #d5a85c, rgba(213,168,92,0.2));
+            box-shadow: 0 0 6px rgba(213,168,92,0.5);
+            height: calc(var(--p) * 100%);
+            transition: height 0.20s ease-out;
+          }
+          .atelier-rail .rail-knob {
+            position: absolute;
+            left: -2px;
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #d5a85c;
+            box-shadow: 0 0 8px rgba(213,168,92,0.65);
+            top: calc(var(--p) * 100% - 3px);
+            transition: top 0.20s ease-out;
+          }
+
+          /* === LOCK ICON === */
+          .atelier-lock {
+            position: absolute;
+            right: 22px;
+            top: 16px;
+            z-index: 7;
+            width: 24px; height: 24px;
+            display: grid; place-items: center;
+            border: 1px solid rgba(213,168,92,0.5);
+            border-radius: 50%;
+            background: rgba(21,17,13,0.55);
+            backdrop-filter: blur(4px);
+            opacity: clamp(0, calc((var(--p) - 0.92) * 14), 1);
+            transform: scale(clamp(0.6, calc(0.6 + (var(--p) - 0.92) * 5), 1));
+            transition: opacity 0.3s, transform 0.3s, box-shadow 0.6s;
+          }
+          .atelier-lock svg { width: 11px; height: 11px; stroke: #d5a85c; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+          .atelier-stage.is-locked .atelier-lock {
+            box-shadow: 0 0 16px rgba(213,168,92,0.4);
+          }
+          .atelier-stage.is-locked .atelier-preview {
+            box-shadow:
+              0 26px 70px rgba(0,0,0,0.58),
+              0 0 0 1px rgba(213,168,92,0.18),
+              0 0 28px rgba(213,168,92,0.06);
+          }
+
+          /* === META BAR === */
+          .atelier-meta {
+            position: absolute;
+            left: 16px;
+            bottom: 14px;
+            right: 16px;
+            z-index: 6;
+            display: flex; align-items: center; gap: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            color: rgba(241,234,217,0.32);
+            pointer-events: none;
+          }
+          .atelier-meta .meta-tag { color: rgba(213,168,92,0.7); }
+          .atelier-meta .meta-phase { color: rgba(241,234,217,0.55); transition: color 0.4s; }
+          .atelier-meta .meta-progress {
+            margin-left: auto;
+            color: rgba(241,234,217,0.5);
+            font-variant-numeric: tabular-nums;
+          }
+
+          /* hover affordance */
+          .atelier-stage.is-hover .atelier-preview {
+            transform: translateY(-2px);
+            box-shadow:
+              0 28px 76px rgba(0,0,0,0.62),
+              0 0 0 1px rgba(213,168,92,0.16),
+              0 0 24px rgba(213,168,92,0.06);
+          }
+          .atelier-stage.is-hover .atelier-rail .rail-knob {
+            box-shadow: 0 0 14px rgba(213,168,92,0.85);
+          }
+
+          /* subtle grain */
+          .atelier-grain {
+            position: absolute; inset: 0; z-index: 8;
+            pointer-events: none;
+            mix-blend-mode: overlay;
+            opacity: 0.10;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>");
+          }
+
+          /* === CRUMPLE TRANSITION === */
+          .atelier-stage.is-crumpling .atelier-site > *,
+          .atelier-stage.is-crumpling .atelier-code .code-line,
+          .atelier-stage.is-crumpling .atelier-mobile,
+          .atelier-stage.is-crumpling .atelier-preview,
+          .atelier-stage.is-crumpling .atelier-orbit,
+          .atelier-stage.is-crumpling .atelier-rail,
+          .atelier-stage.is-crumpling .atelier-lock,
+          .atelier-stage.is-crumpling .atelier-meta {
+            transition: none;
+          }
+          .atelier-stage.is-crumpling .atelier-preview {
+            transform: translateY(calc(var(--crumple) * 64px)) rotate(calc(var(--crumple) * -1.6deg));
+            box-shadow:
+              0 calc(20px + var(--crumple) * 60px) calc(40px + var(--crumple) * 80px) rgba(0,0,0,0.6),
+              0 0 0 1px rgba(241,234,217,0.05);
+          }
+          .atelier-stage.is-crumpling .site-nav {
+            transform:
+              translate(calc(var(--crumple) * -30px), calc(var(--crumple) * -22px))
+              rotate(calc(var(--crumple) * -7deg));
+            opacity: calc(1 - var(--crumple) * 1.3);
+            filter: blur(calc(var(--crumple) * 0.6px));
+          }
+          .atelier-stage.is-crumpling .site-hero .hero-copy {
+            transform:
+              translate(calc(var(--crumple) * -44px), calc(var(--crumple) * 24px))
+              rotate(calc(var(--crumple) * 4deg));
+            opacity: calc(1 - var(--crumple) * 1.2);
+          }
+          .atelier-stage.is-crumpling .site-hero .hero-img {
+            transform:
+              translate(calc(var(--crumple) * 32px), calc(var(--crumple) * -14px))
+              rotate(calc(var(--crumple) * -3deg));
+            opacity: calc(1 - var(--crumple) * 1.1);
+          }
+          .atelier-stage.is-crumpling .site-services {
+            opacity: calc(1 - var(--crumple) * 0.4);
+          }
+          .atelier-stage.is-crumpling .svc:nth-child(1) {
+            transform: translate(calc(var(--crumple) * -54px), calc(var(--crumple) * 64px)) rotate(calc(var(--crumple) * -14deg));
+            opacity: calc(1 - var(--crumple) * 1.3);
+          }
+          .atelier-stage.is-crumpling .svc:nth-child(2) {
+            transform: translate(0, calc(var(--crumple) * 78px)) rotate(calc(var(--crumple) * 5deg));
+            opacity: calc(1 - var(--crumple) * 1.3);
+          }
+          .atelier-stage.is-crumpling .svc:nth-child(3) {
+            transform: translate(calc(var(--crumple) * 50px), calc(var(--crumple) * 86px)) rotate(calc(var(--crumple) * 12deg));
+            opacity: calc(1 - var(--crumple) * 1.3);
+          }
+          .atelier-stage.is-crumpling .site-craft .craft-img {
+            transform: translate(calc(var(--crumple) * -38px), calc(var(--crumple) * 38px)) rotate(calc(var(--crumple) * -8deg));
+            opacity: calc(1 - var(--crumple) * 1.2);
+          }
+          .atelier-stage.is-crumpling .site-craft .craft-body {
+            transform: translate(calc(var(--crumple) * 28px), calc(var(--crumple) * 26px)) rotate(calc(var(--crumple) * 6deg));
+            opacity: calc(1 - var(--crumple) * 1.2);
+          }
+          .atelier-stage.is-crumpling .site-book {
+            transform:
+              translate(calc(var(--crumple) * -22px), calc(var(--crumple) * 52px))
+              rotate(calc(var(--crumple) * 3deg))
+              scale(calc(1 - var(--crumple) * 0.18));
+            opacity: calc(1 - var(--crumple) * 1.3);
+          }
+          .atelier-stage.is-crumpling .site-foot {
+            transform: translateY(calc(var(--crumple) * 100px));
+            opacity: calc(1 - var(--crumple) * 1.6);
+          }
+          .atelier-stage.is-crumpling .atelier-code {
+            mask-image: none;
+          }
+          .atelier-stage.is-crumpling .atelier-code .code-line {
+            transform:
+              translateY(calc(var(--crumple) * (var(--ci, 0) * 5px + 80px)))
+              rotate(calc(var(--crumple) * (var(--ci, 0) * 0.6deg - 3deg)));
+            opacity: calc(1 - var(--crumple) * 0.9);
+          }
+          .atelier-stage.is-crumpling .atelier-mobile {
+            transform:
+              translate(calc(var(--crumple) * 36px), calc(var(--crumple) * 120px))
+              rotate(calc(-3deg + var(--crumple) * 12deg))
+              scale(calc(1 + var(--crumple) * 0.18));
+            opacity: calc(1 - var(--crumple) * 0.65);
+            filter: blur(calc(var(--crumple) * 0.9px));
+          }
+          .atelier-stage.is-crumpling .atelier-orbit {
+            transform: scale(calc(1 + var(--crumple) * 0.22)) rotate(calc(var(--crumple) * 18deg));
+            opacity: calc(1 - var(--crumple) * 1.1);
+            filter: blur(calc(var(--crumple) * 1.4px));
+          }
+          .atelier-stage.is-crumpling .atelier-rail {
+            opacity: calc(1 - var(--crumple) * 1.4);
+          }
+          .atelier-stage.is-crumpling .atelier-lock {
+            transform:
+              translate(calc(var(--crumple) * 22px), calc(var(--crumple) * 30px))
+              rotate(calc(var(--crumple) * 14deg))
+              scale(clamp(0.6, calc(0.6 + (var(--p) - 0.92) * 5), 1));
+            opacity: calc(clamp(0, calc((var(--p) - 0.92) * 14), 1) * (1 - var(--crumple) * 1.0));
+          }
+          .atelier-stage.is-crumpling .atelier-meta {
+            opacity: calc(1 - var(--crumple) * 1.4);
+          }
+
           @media (prefers-reduced-motion: reduce) {
-            .sandbox-frame canvas { animation: none; }
+            .atelier-stage { --p: 1; }
+            .orbit-spin { animation: none; }
+            .atelier-code .code-caret { animation: none; }
+            .atelier-site > * { transition: none; }
           }
         </style>
 
-        <div class="sandbox-frame" id="sandbox-frame">
-          <canvas id="sandbox-canvas"></canvas>
-          <div class="sandbox-grain"></div>
-          <div class="sandbox-vignette"></div>
-          <div class="sandbox-label">SANDBOX<span id="sandbox-phase">raw markup</span></div>
-          <div class="sandbox-tick" id="sandbox-tick">00:00</div>
+        <div class="atelier-stage" id="atelier-stage" data-progress="0">
+
+          <!-- ORBITAL ARCH -->
+          <div class="atelier-orbit">
+            <svg viewBox="0 0 600 600" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <defs>
+                <radialGradient id="ate-orbit-glow" cx="50%" cy="50%" r="50%">
+                  <stop offset="62%" stop-color="rgba(213,168,92,0)"/>
+                  <stop offset="100%" stop-color="rgba(213,168,92,0.07)"/>
+                </radialGradient>
+              </defs>
+              <circle cx="300" cy="300" r="282" fill="url(#ate-orbit-glow)"/>
+              <circle class="orbit-ring orbit-ring--outer" cx="300" cy="300" r="270"/>
+              <circle class="orbit-ring orbit-ring--mid" cx="300" cy="300" r="220"/>
+              <circle class="orbit-ring orbit-ring--inner" cx="300" cy="300" r="170"/>
+              <circle class="orbit-sweep" cx="300" cy="300" r="270"
+                      style="transform: rotate(-90deg); transform-origin: 300px 300px;"/>
+              <g class="orbit-spin"><g id="ate-ticks-outer"></g></g>
+              <g class="orbit-spin orbit-spin--rev"><g id="ate-ticks-inner"></g></g>
+            </svg>
+          </div>
+
+          <!-- CODE COLUMN -->
+          <div class="atelier-code" aria-hidden="true">
+            <div class="code-head">
+              <span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span>
+              <span class="code-file">atelier.html</span>
+            </div>
+            <div class="code-body" id="ate-code-body"></div>
+          </div>
+
+          <!-- WEBSITE PREVIEW -->
+          <div class="atelier-preview" id="ate-preview">
+            <div class="chrome">
+              <span class="chrome-dot"></span><span class="chrome-dot"></span><span class="chrome-dot"></span>
+              <span class="chrome-url">ateliervale.studio</span>
+            </div>
+            <div class="atelier-site" id="ate-site">
+              <header class="site-nav">
+                <span class="nav-brand">Vale<i>.</i></span>
+                <span class="nav-link">Services</span>
+                <span class="nav-link">Process</span>
+                <span class="nav-link">Booking</span>
+                <span class="nav-cta">Book</span>
+              </header>
+              <section class="site-hero">
+                <div class="hero-copy">
+                  <span class="hero-eyebrow">Est. 2018 · Hand finished</span>
+                  <h3 class="hero-title">Tailoring that moves with you.</h3>
+                  <p class="hero-sub">Alterations, custom fits, and quiet details made in a local studio.</p>
+                  <span class="hero-cta">Book a fitting →</span>
+                </div>
+                <div class="hero-img" style="background-image: url('images/tail;oring%20hero%20page%20img.jpg');"></div>
+              </section>
+              <section class="site-services">
+                <div class="svc"><div class="svc-tag"></div><div class="svc-name">Alterations</div><div class="svc-desc">Hems, waists, sleeves, shaping</div></div>
+                <div class="svc"><div class="svc-tag"></div><div class="svc-name">Made to measure</div><div class="svc-desc">Shaped around your proportions</div></div>
+                <div class="svc"><div class="svc-tag"></div><div class="svc-name">Restoration</div><div class="svc-desc">Repair, relining, reinforcement</div></div>
+              </section>
+              <section class="site-craft">
+                <div class="craft-img" style="background-image: url('images/tailoring%20footer.jpg');"></div>
+                <div class="craft-body">
+                  <div class="craft-label">Craft in motion</div>
+                  <div class="craft-title">Measured, pinned, refined.</div>
+                  <div class="craft-sub">Each fitting records posture, drape, and daily movement — so the garment moves with you.</div>
+                  <span class="craft-line"></span>
+                </div>
+              </section>
+              <section class="site-book">
+                <div class="book-left">
+                  <span class="book-title">Bring in the garment.</span>
+                  <span class="book-sub">Leave with a plan and a fitting date.</span>
+                </div>
+                <span class="book-cta">Reserve</span>
+              </section>
+              <footer class="site-foot">© 2026 Atelier Vale · Built by Mediocre Markup</footer>
+            </div>
+          </div>
+
+          <!-- MOBILE MOCKUP -->
+          <div class="atelier-mobile" aria-hidden="true">
+            <div class="mob-screen">
+              <div class="mob-nav">
+                <span class="mob-brand">Vale.</span>
+                <span class="mob-dot"></span>
+              </div>
+              <div class="mob-hero" style="background-image: url('images/tail;oring%20hero%20page%20img.jpg');">
+                <div class="mob-title">Tailoring that moves with you.</div>
+              </div>
+              <div class="mob-card"></div>
+              <div class="mob-card"></div>
+              <div class="mob-btn">Book</div>
+            </div>
+          </div>
+
+          <!-- PROGRESS RAIL -->
+          <div class="atelier-rail">
+            <div class="rail-track"></div>
+            <div class="rail-fill"></div>
+            <div class="rail-knob"></div>
+          </div>
+
+          <!-- LOCK ICON -->
+          <div class="atelier-lock" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <rect x="6" y="11" width="12" height="9" rx="1.5"/>
+              <path d="M9 11V8a3 3 0 0 1 6 0v3"/>
+            </svg>
+          </div>
+
+          <!-- META BAR -->
+          <div class="atelier-meta">
+            <span class="meta-tag">ATELIER</span>
+            <span class="meta-phase" id="ate-phase">scaffolding</span>
+            <span class="meta-progress" id="ate-progress">00%</span>
+          </div>
+
+          <!-- GRAIN -->
+          <div class="atelier-grain"></div>
         </div>
 
         <script>
         (() => {
           'use strict';
-          const frame = document.getElementById('sandbox-frame');
-          const canvas = document.getElementById('sandbox-canvas');
-          const phaseLabel = document.getElementById('sandbox-phase');
-          const tickLabel = document.getElementById('sandbox-tick');
-          if (!frame || !canvas) return;
-          const ctx = canvas.getContext('2d', { alpha: true });
+          const stage = document.getElementById('atelier-stage');
+          if (!stage) return;
 
-          const reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-          const cores = navigator.hardwareConcurrency || 8;
-          const LOW = cores <= 4 || window.innerWidth < 720;
+          const reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+          const codeBody = document.getElementById('ate-code-body');
+          const phaseLabel = document.getElementById('ate-phase');
+          const progressLabel = document.getElementById('ate-progress');
+          const previewEl = document.getElementById('ate-preview');
+          const sweepEl = stage.querySelector('.orbit-sweep');
+          const circumference = 2 * Math.PI * 270;
 
-          /* ---------- palette (charcoal, ivory, amber, emerald, violet) ---------- */
-          const PAL = {
-            paper:    [241, 234, 217],
-            paperDim: [188, 180, 162],
-            amber:    [213, 168,  92],
-            amberDeep:[188, 132,  68],
-            emerald:  [120, 160, 138],
-            violet:   [146, 124, 174],
-            rose:     [194, 128, 110],
-            ink:      [ 22,  18,  14]
-          };
-          const rgba  = (c, a) => 'rgba(' + (c[0]|0) + ',' + (c[1]|0) + ',' + (c[2]|0) + ',' + a + ')';
-          const lerp  = (a, b, t) => a + (b - a) * t;
-          const clamp01 = x => x < 0 ? 0 : x > 1 ? 1 : x;
-          const smooth  = x => { x = clamp01(x); return x * x * (3 - 2 * x); };
-          const easeIO  = x => { x = clamp01(x); return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2; };
-          const fade    = (u, a, b) => smooth((u - a) / (b - a));
-          const band    = (u, a, b, c, d) => smooth((u - a) / (b - a)) * (1 - smooth((u - c) / (d - c)));
-
-          /* ---------- deterministic RNG ---------- */
-          function mkRand(seed) {
-            let s = seed >>> 0;
-            return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967295; };
-          }
-          const rnd = mkRand(20260512);
-          const R = (a, b) => a + rnd() * (b - a);
-
-          /* ---------- token bank ---------- */
-          const TAGS  = ['<div>', '</div>', '<section>', '</section>', '<nav>', '<a>', '</a>', '<h1>', '<p>', '</p>', '<img/>', '<header>', '<main>', '<button>', '<li>', '<figure>'];
-          const PROPS = ['padding: 24px', 'margin: 0 auto', 'display: flex', 'gap: 16px', 'border-radius: 4px', 'color: #f1ead9', 'background: ink', 'font: 14px/1.5', '--accent: amber', 'grid-template-columns: 1fr 1fr', 'letter-spacing: -0.02em'];
-          const PUNC  = ['{', '}', '/*', '*/', '//', '...', '=>', '&&', ':', ';'];
-
-          /* ---------- sizing ---------- */
-          let W = 0, H = 0, DPR = 1;
-          function resize() {
-            const r = frame.getBoundingClientRect();
-            DPR = Math.min(window.devicePixelRatio || 1, 2);
-            W = Math.max(1, Math.round(r.width));
-            H = Math.max(1, Math.round(r.height));
-            canvas.width  = Math.round(W * DPR);
-            canvas.height = Math.round(H * DPR);
-            ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-            layout();
-          }
-
-          /* ---------- entities ---------- */
-          // tokens: drifting markup fragments
-          // structureSlots: positions on the page-architecture grid
-          //   slot kinds: nav, card, button, image, footer
-          // mmAnchors: MM monogram points (percentages of W,H)
-          const N = reduced ? 32 : (LOW ? 56 : 88);
-          const tokens = [];
-          const tokenRand = mkRand(99173);
-          function makeTokenText(i) {
-            const r = tokenRand();
-            if (r < 0.55) return { text: TAGS[(tokenRand() * TAGS.length) | 0], kind: 'tag' };
-            if (r < 0.85) return { text: PROPS[(tokenRand() * PROPS.length) | 0], kind: 'prop' };
-            return { text: PUNC[(tokenRand() * PUNC.length) | 0], kind: 'punc' };
-          }
-          for (let i = 0; i < N; i++) {
-            const t = makeTokenText(i);
-            tokens.push({
-              text: t.text,
-              kind: t.kind,
-              chaosX: 0, chaosY: 0,         // anchor in chaos field (percent space)
-              x: 0, y: 0,                   // current position
-              orderX: 0, orderY: 0,         // target in organized row (percent)
-              structX: 0, structY: 0,       // structure target (px relative to frame)
-              structKind: '',
-              mmX: 0, mmY: 0,
-              rot: R(-0.32, 0.32),
-              fontSize: 10 + Math.floor(tokenRand() * 5),
-              alpha: 0,
-              color: pickColor(t.kind, tokenRand),
-              seed: tokenRand() * 1000,
-              wobAmp: R(2.2, 5.4),
-              wobSpd: R(0.18, 0.42),
-              dropOut: tokenRand() < 0.32,  // duplicates that fade during organization
-              role: 'token',
-              localOffsetX: 0, localOffsetY: 0
-            });
-          }
-          function pickColor(kind, rfn) {
-            if (kind === 'punc') return rfn() < 0.5 ? PAL.amber : PAL.paperDim;
-            if (kind === 'prop') return rfn() < 0.5 ? PAL.emerald : PAL.paper;
-            // tag
-            const r = rfn();
-            if (r < 0.16) return PAL.amber;
-            if (r < 0.32) return PAL.violet;
-            if (r < 0.46) return PAL.emerald;
-            return PAL.paper;
-          }
-
-          /* ---------- layout (run on resize) ---------- */
-          // Three rows for organization phase
-          // Architecture slots: nav strip (top), 2 cards (mid), CTA (below cards), image strip (right)
-          const slots = [];            // structure target slots
-          const mmPts = [];            // MM monogram anchor points (percent space)
-          function layout() {
-            // 1) chaos anchors — distribute non-uniformly in percent space
-            const chRand = mkRand(411);
-            for (let i = 0; i < tokens.length; i++) {
-              const t = tokens[i];
-              // bias toward edges and clusters
-              const cx = 0.20 + chRand() * 0.60;
-              const cy = 0.18 + chRand() * 0.68;
-              // add a few cluster centers
-              t.chaosX = cx;
-              t.chaosY = cy;
-              t.orderRow = i % 3;
-              t.orderCol = (i / 3) | 0;
-            }
-            // 2) organized rows — fill in horizontal bands
-            const rowsY = [0.30, 0.50, 0.70];
-            const colsPerRow = Math.ceil(tokens.length / 3);
-            for (let i = 0; i < tokens.length; i++) {
-              const t = tokens[i];
-              const col = (i / 3) | 0;
-              const row = i % 3;
-              const span = 0.78;
-              const x0 = 0.11;
-              t.orderX = x0 + (col / Math.max(1, colsPerRow - 1)) * span;
-              t.orderY = rowsY[row] + R(-0.012, 0.012);
-            }
-            // 3) build structure slots
-            slots.length = 0;
-            // Nav (8 small dots/pieces in top strip)
-            const navY = 0.18, navX0 = 0.10, navX1 = 0.90;
-            for (let i = 0; i < 8; i++) {
-              slots.push({
-                kind: 'nav',
-                x: lerp(navX0, navX1, i / 7) * W,
-                y: navY * H,
-                w: 32, h: 8, idx: i, count: 8
-              });
-            }
-            // Two cards
-            const cardsTop = 0.32, cardsBottom = 0.62;
-            const cardW = (W * 0.78) / 2 - 8;
-            const cardH = (cardsBottom - cardsTop) * H;
-            const cardsX0 = 0.11 * W;
-            const cardGap = 16;
-            const cards = [
-              { x: cardsX0,                    y: cardsTop * H, w: cardW, h: cardH, idx: 0 },
-              { x: cardsX0 + cardW + cardGap,  y: cardsTop * H, w: cardW, h: cardH, idx: 1 }
-            ];
-            // Each card gets ~14 particles forming its outline + title bar + image placeholder
-            cards.forEach(c => {
-              const corners = 14;
-              for (let i = 0; i < corners; i++) {
-                const u = i / (corners - 1);
-                // distribute around card perimeter
-                let px, py;
-                if (i < 4) { px = c.x + u * 4 * c.w; py = c.y; }
-                else if (i < 8) { px = c.x + c.w; py = c.y + ((i - 4) / 3) * c.h; }
-                else if (i < 12) { px = c.x + c.w - ((i - 8) / 3) * c.w; py = c.y + c.h; }
-                else { px = c.x; py = c.y + c.h - ((i - 12) / 1) * c.h; }
-                slots.push({ kind: 'card', x: px, y: py, parent: c, idx: i, count: corners });
-              }
-            });
-            // CTA button (small rectangle below cards)
-            const btnY = 0.74 * H;
-            const btnX0 = 0.34 * W, btnW = 0.32 * W, btnH = 36;
-            for (let i = 0; i < 8; i++) {
-              const u = i / 7;
-              slots.push({
-                kind: 'btn',
-                x: lerp(btnX0, btnX0 + btnW, u),
-                y: btnY,
-                w: btnW, h: btnH, idx: i, count: 8
-              });
-            }
-            // Image strip (right top - decorative micro-cards)
-            const imgY = 0.86 * H;
-            for (let i = 0; i < 6; i++) {
-              slots.push({
-                kind: 'img',
-                x: 0.14 * W + (i / 5) * 0.72 * W,
-                y: imgY,
-                w: 26, h: 16, idx: i, count: 6
-              });
-            }
-            // Assign each token to nearest slot (in normalized space) — greedy by index, stable
-            for (let i = 0; i < tokens.length; i++) {
-              const s = slots[i % slots.length];
-              tokens[i].structX = s.x;
-              tokens[i].structY = s.y;
-              tokens[i].structKind = s.kind;
-              tokens[i].structSlot = s;
-            }
-            // 4) MM monogram anchor points
-            mmPts.length = 0;
-            const addLine = (x1, y1, x2, y2, n) => {
-              for (let i = 0; i < n; i++) {
-                const t = n > 1 ? i / (n - 1) : 0.5;
-                mmPts.push({ x: (x1 + (x2 - x1) * t) * W, y: (y1 + (y2 - y1) * t) * H });
-              }
-            };
-            const y0 = 0.30, y1 = 0.74, yM = 0.50;
-            // Left M
-            addLine(0.18, y0, 0.18, y1, 7);
-            addLine(0.18, y0, 0.30, yM, 5);
-            addLine(0.30, yM, 0.42, y0, 5);
-            addLine(0.42, y0, 0.42, y1, 7);
-            // Right M
-            addLine(0.50, y0, 0.50, y1, 7);
-            addLine(0.50, y0, 0.62, yM, 5);
-            addLine(0.62, yM, 0.74, y0, 5);
-            addLine(0.74, y0, 0.74, y1, 7);
-            // Assign each token an MM target (cycle through points)
-            for (let i = 0; i < tokens.length; i++) {
-              const p = mmPts[i % mmPts.length];
-              tokens[i].mmX = p.x;
-              tokens[i].mmY = p.y;
-            }
-          }
-
-          /* ---------- scroll progress (page scroll, normalized) ---------- */
-          let progress = 0; // 0..1
-          const heroEl = frame.closest('.hero');
-          function updateProgress() {
-            if (!heroEl) return;
-            const heroRect = heroEl.getBoundingClientRect();
-            // start at top of hero (rect.top = 0), end after scrolling 1.4 viewport heights
-            const start = 0;
-            const end = -window.innerHeight * 1.4;
-            const u = (heroRect.top - start) / (end - start);
-            progress = clamp01(u);
-          }
-
-          /* ---------- mouse / touch ---------- */
-          const cursor = { x: -9999, y: -9999, inside: false, lastX: -9999, lastY: -9999, vx: 0, vy: 0 };
-          const blooms = [];
-          frame.addEventListener('pointerenter', e => { cursor.inside = true; });
-          frame.addEventListener('pointermove', e => {
-            const r = frame.getBoundingClientRect();
-            cursor.lastX = cursor.x; cursor.lastY = cursor.y;
-            cursor.x = e.clientX - r.left;
-            cursor.y = e.clientY - r.top;
-            cursor.vx = cursor.x - cursor.lastX;
-            cursor.vy = cursor.y - cursor.lastY;
-            cursor.inside = true;
-          }, { passive: true });
-          frame.addEventListener('pointerleave', () => { cursor.inside = false; cursor.x = -9999; cursor.y = -9999; });
-          frame.addEventListener('pointerdown', e => {
-            const r = frame.getBoundingClientRect();
-            const bx = e.clientX - r.left;
-            const by = e.clientY - r.top;
-            spawnBloom(bx, by);
+          // === code lines (staged reveal via --at) ===
+          const CODE_LINES = [
+            { html: '<span class="com">// atelier · vale</span>', at: 0 },
+            { html: '<span class="tag">&lt;header&gt;</span>', at: 1 },
+            { html: '  <span class="tag">&lt;a</span> <span class="attr">class</span>=<span class="str">"brand"</span><span class="tag">&gt;</span>Vale.<span class="tag">&lt;/a&gt;</span>', at: 2 },
+            { html: '  <span class="tag">&lt;nav&gt;</span>', at: 3 },
+            { html: '    <span class="tag">&lt;a&gt;</span>Services<span class="tag">&lt;/a&gt;</span>', at: 4 },
+            { html: '    <span class="tag">&lt;a&gt;</span>Process<span class="tag">&lt;/a&gt;</span>', at: 5 },
+            { html: '  <span class="tag">&lt;/nav&gt;</span>', at: 6 },
+            { html: '<span class="tag">&lt;/header&gt;</span>', at: 6 },
+            { html: '', at: 7 },
+            { html: '<span class="tag">&lt;section</span> <span class="attr">class</span>=<span class="str">"hero"</span><span class="tag">&gt;</span>', at: 7 },
+            { html: '  <span class="tag">&lt;img</span> <span class="attr">src</span>=<span class="str">"studio.jpg"</span><span class="tag">/&gt;</span>', at: 8 },
+            { html: '  <span class="tag">&lt;h1&gt;</span>Tailoring that<span class="tag">&lt;/h1&gt;</span>', at: 9 },
+            { html: '<span class="tag">&lt;/section&gt;</span>', at: 9 },
+            { html: '', at: 10 },
+            { html: '<span class="sel">.svc</span> <span class="punc">{</span>', at: 10 },
+            { html: '  <span class="prop">display</span><span class="punc">:</span> <span class="val">grid</span><span class="punc">;</span>', at: 11 },
+            { html: '  <span class="prop">grid-template-columns</span><span class="punc">:</span> <span class="val">repeat(3,1fr)</span><span class="punc">;</span>', at: 11 },
+            { html: '<span class="punc">}</span>', at: 12 },
+            { html: '', at: 12 },
+            { html: '<span class="sel">.cta</span> <span class="punc">{</span>', at: 13 },
+            { html: '  <span class="prop">background</span><span class="punc">:</span> <span class="val">#c8a96e</span><span class="punc">;</span>', at: 13 },
+            { html: '  <span class="prop">letter-spacing</span><span class="punc">:</span> <span class="val">0.14em</span><span class="punc">;</span>', at: 14 },
+            { html: '<span class="punc">}</span>', at: 14 },
+            { html: '<span class="com">// signed · v1.0</span>', at: 15 }
+          ];
+          const STAGE_BUCKETS = 16;
+          CODE_LINES.forEach((line, i) => {
+            const at = line.at / STAGE_BUCKETS;
+            const el = document.createElement('span');
+            el.className = 'code-line';
+            el.style.setProperty('--at', at);
+            el.style.setProperty('--ci', i);
+            el.innerHTML = line.html || '&nbsp;';
+            codeBody.appendChild(el);
           });
-          function spawnBloom(x, y) {
-            // Random bloom kind result
-            const kinds = ['btn', 'card', 'nav', 'pill', 'tag'];
-            const kind = kinds[(Math.random() * kinds.length) | 0];
-            blooms.push({
-              x, y,
-              t: 0,
-              dur: 1600 + Math.random() * 400,
-              kind,
-              radius: 88 + Math.random() * 36
+          const caret = document.createElement('span');
+          caret.className = 'code-caret';
+          codeBody.appendChild(caret);
+
+          // === orbit ticks ===
+          const NS = 'http://www.w3.org/2000/svg';
+          const tOuter = stage.querySelector('#ate-ticks-outer');
+          const tInner = stage.querySelector('#ate-ticks-inner');
+          function ticks(g, count, radius, length, color, opacity) {
+            for (let i = 0; i < count; i++) {
+              const a = (i / count) * Math.PI * 2;
+              const x1 = 300 + Math.cos(a) * radius;
+              const y1 = 300 + Math.sin(a) * radius;
+              const x2 = 300 + Math.cos(a) * (radius + length);
+              const y2 = 300 + Math.sin(a) * (radius + length);
+              const line = document.createElementNS(NS, 'line');
+              line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+              line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+              line.setAttribute('stroke', color);
+              line.setAttribute('stroke-width', '1');
+              line.setAttribute('stroke-linecap', 'round');
+              line.setAttribute('opacity', opacity);
+              g.appendChild(line);
+            }
+          }
+          if (tOuter) ticks(tOuter, 36, 270, 5, 'rgba(213,168,92,0.55)', 0.62);
+          if (tInner) ticks(tInner, 24, 170, 4, 'rgba(241,234,217,0.30)', 0.7);
+          // four glow nodes on outer ring
+          if (tOuter) {
+            [0, 0.18, 0.42, 0.71].forEach(t => {
+              const a = t * Math.PI * 2 - Math.PI / 2;
+              const x = 300 + Math.cos(a) * 270;
+              const y = 300 + Math.sin(a) * 270;
+              const c = document.createElementNS(NS, 'circle');
+              c.setAttribute('cx', x); c.setAttribute('cy', y);
+              c.setAttribute('r', 2.6);
+              c.setAttribute('class', 'orbit-node');
+              tOuter.appendChild(c);
             });
-            if (blooms.length > 4) blooms.shift();
           }
 
-          /* ---------- handcrafted line helper ---------- */
-          // Draws a wobbled line between two points to simulate hand-drawing
-          function handLine(x1, y1, x2, y2, color, width, seed, alpha, dashOn) {
-            const dx = x2 - x1, dy = y2 - y1;
-            const len = Math.hypot(dx, dy);
-            if (len < 1) return;
-            const steps = Math.max(2, Math.floor(len / 18));
-            const nx = -dy / len, ny = dx / len;
-            ctx.beginPath();
-            for (let i = 0; i <= steps; i++) {
-              const u = i / steps;
-              const sx = x1 + dx * u;
-              const sy = y1 + dy * u;
-              const w = Math.sin((seed + u) * 9.2) * Math.sin((seed * 0.6 + u) * 17.1);
-              const ox = nx * w * 0.9;
-              const oy = ny * w * 0.9;
-              if (i === 0) ctx.moveTo(sx + ox, sy + oy);
-              else ctx.quadraticCurveTo(sx + ox * 0.5, sy + oy * 0.5, sx + ox, sy + oy);
+          // === state ===
+          let progress = 0;
+          let targetP = 0;
+          let isHovering = false;
+          let isLocked = false;
+          let rafScheduled = false;
+
+          function setProgress(p) {
+            progress = Math.max(0, Math.min(1, p));
+            stage.style.setProperty('--p', progress.toFixed(4));
+            if (sweepEl) {
+              const dash = (progress * circumference).toFixed(1);
+              sweepEl.style.strokeDasharray = dash + ' 9999';
             }
-            ctx.strokeStyle = rgba(color, alpha);
-            ctx.lineWidth = width;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            if (dashOn) { ctx.setLineDash([4, 6]); } else { ctx.setLineDash([]); }
-            ctx.stroke();
-            ctx.setLineDash([]);
-          }
-
-          /* ---------- main loop ---------- */
-          let rafId = 0, t0 = 0;
-          function frameTick(now) {
-            if (!t0) t0 = now;
-            const t = (now - t0) / 1000;
-            updateProgress();
-
-            const u = progress;
-            // phase masks (overlapping)
-            const m1 = 1 - smooth((u - 0.10) / 0.18);                          // chaos
-            const m2 = band(u, 0.08, 0.26, 0.40, 0.52);                        // organization
-            const m3 = band(u, 0.30, 0.52, 0.78, 0.90);                        // architecture / structure
-            const m4 = band(u, 0.50, 0.72, 0.96, 1.02);                        // craft
-            const m5 = band(u, 0.70, 0.84, 0.93, 1.00);                        // MM moment
-            const mFinal = smooth((u - 0.82) / 0.18);                          // final crafted feel
-
-            // Background atmospheric breathing
-            paintAtmosphere(t, u);
-
-            // Painterly base gradients
-            paintGradients(t, u);
-
-            // Hand-drawn alignment guides (during organize/architecture)
-            paintGuides(t, u, m2, m3);
-
-            // Structures (cards, nav, button) drawn faintly behind tokens
-            paintStructures(t, u, m3, m4);
-
-            // Tokens & particles
-            paintTokens(t, u, m1, m2, m3, m4, m5);
-
-            // MM monogram strokes (subtle)
-            paintMM(t, u, m5);
-
-            // Final craft refinements (typography rhythm, ornaments)
-            paintCraftOrnaments(t, u, m4);
-
-            // Blooms
-            paintBlooms(now);
-
-            // soft bloom pass (extra glow on amber)
-            paintBloomPass(t, u);
-
-            // Update HUD labels
-            updateLabels(t, u);
-
-            rafId = requestAnimationFrame(frameTick);
-          }
-
-          function paintAtmosphere(t, u) {
-            ctx.clearRect(0, 0, W, H);
-            // Two slow-drifting radial gradients
-            const a1 = 0.10 + 0.04 * Math.sin(t * 0.18);
-            const g1 = ctx.createRadialGradient(W * (0.22 + 0.04 * Math.sin(t * 0.10)), H * (0.30 + 0.03 * Math.cos(t * 0.12)), 0, W * 0.22, H * 0.30, Math.max(W, H) * 0.6);
-            g1.addColorStop(0, rgba(PAL.amber, a1));
-            g1.addColorStop(1, rgba(PAL.amber, 0));
-            ctx.fillStyle = g1;
-            ctx.fillRect(0, 0, W, H);
-            const g2 = ctx.createRadialGradient(W * (0.78 + 0.04 * Math.cos(t * 0.13)), H * (0.74 + 0.03 * Math.sin(t * 0.11)), 0, W * 0.78, H * 0.74, Math.max(W, H) * 0.6);
-            g2.addColorStop(0, rgba(PAL.violet, 0.07));
-            g2.addColorStop(1, rgba(PAL.violet, 0));
-            ctx.fillStyle = g2;
-            ctx.fillRect(0, 0, W, H);
-            // Lower emerald wash brightens during craft phase
-            const eA = 0.04 + 0.08 * smooth(u);
-            const g3 = ctx.createRadialGradient(W * 0.50, H * 1.05, 0, W * 0.50, H * 1.05, Math.max(W, H) * 0.85);
-            g3.addColorStop(0, rgba(PAL.emerald, eA));
-            g3.addColorStop(1, rgba(PAL.emerald, 0));
-            ctx.fillStyle = g3;
-            ctx.fillRect(0, 0, W, H);
-          }
-
-          function paintGradients(t, u) {
-            // Subtle painterly wash that brightens as page resolves
-            const k = smooth(u);
-            ctx.save();
-            ctx.globalCompositeOperation = 'screen';
-            ctx.fillStyle = rgba(PAL.paper, 0.012 + 0.022 * k);
-            ctx.fillRect(0, 0, W, H);
-            ctx.restore();
-          }
-
-          function paintGuides(t, u, m2, m3) {
-            const a = Math.max(m2, m3 * 0.6);
-            if (a < 0.02) return;
-            // Horizontal alignment guides (the three rows)
-            const rowsY = [0.30, 0.50, 0.70];
-            for (let i = 0; i < rowsY.length; i++) {
-              const y = rowsY[i] * H;
-              handLine(W * 0.08, y, W * 0.92, y, PAL.paper, 0.8, 17 + i, 0.10 * a, true);
-            }
-            // Vertical column markers fade in with m3
-            if (m3 > 0.05) {
-              const colsX = [0.11, 0.50, 0.89];
-              for (let i = 0; i < colsX.length; i++) {
-                const x = colsX[i] * W;
-                handLine(x, H * 0.16, x, H * 0.84, PAL.paper, 0.7, 41 + i, 0.07 * m3, true);
-              }
+            const pct = Math.round(progress * 100);
+            if (progressLabel) progressLabel.textContent = String(pct).padStart(2, '0') + '%';
+            let phase = 'scaffolding';
+            if (progress >= 0.98) phase = 'signed';
+            else if (progress >= 0.75) phase = 'crafted';
+            else if (progress >= 0.50) phase = 'composition';
+            else if (progress >= 0.25) phase = 'structure';
+            if (phaseLabel && phaseLabel.textContent !== phase) phaseLabel.textContent = phase;
+            if (progress >= 0.999 && !isLocked) {
+              isLocked = true;
+              stage.classList.add('is-locked');
+            } else if (progress < 0.999 && isLocked) {
+              isLocked = false;
+              stage.classList.remove('is-locked');
             }
           }
 
-          function paintStructures(t, u, m3, m4) {
-            const a = Math.max(m3, m4);
-            if (a < 0.04) return;
-            // Nav strip
-            const navY = 0.18 * H;
-            handLine(W * 0.10, navY, W * 0.90, navY, PAL.paperDim, 0.9, 5, 0.14 * a, false);
-            // Logo dot
-            ctx.fillStyle = rgba(PAL.amber, 0.42 * a);
-            ctx.beginPath(); ctx.arc(W * 0.12, navY, 3.2, 0, Math.PI * 2); ctx.fill();
-
-            // Two cards
-            const cardsTop = 0.32, cardsBottom = 0.62;
-            const cardH = (cardsBottom - cardsTop) * H;
-            const cardW = (W * 0.78) / 2 - 8;
-            const cardsX0 = 0.11 * W;
-            const cardGap = 16;
-            const cards = [
-              { x: cardsX0, y: cardsTop * H, w: cardW, h: cardH },
-              { x: cardsX0 + cardW + cardGap, y: cardsTop * H, w: cardW, h: cardH }
-            ];
-            cards.forEach((c, i) => {
-              // Fill (very subtle)
-              ctx.fillStyle = rgba(PAL.paper, 0.018 * a);
-              ctx.fillRect(c.x, c.y, c.w, c.h);
-              // Outline (handcrafted)
-              handLine(c.x, c.y, c.x + c.w, c.y, PAL.paper, 1.0, 70 + i * 4, 0.22 * a, false);
-              handLine(c.x + c.w, c.y, c.x + c.w, c.y + c.h, PAL.paper, 1.0, 71 + i * 4, 0.22 * a, false);
-              handLine(c.x + c.w, c.y + c.h, c.x, c.y + c.h, PAL.paper, 1.0, 72 + i * 4, 0.22 * a, false);
-              handLine(c.x, c.y + c.h, c.x, c.y, PAL.paper, 1.0, 73 + i * 4, 0.22 * a, false);
-              // Image placeholder bar at top
-              ctx.fillStyle = rgba(PAL.amber, 0.16 * a);
-              ctx.fillRect(c.x + 8, c.y + 8, c.w - 16, Math.min(38, c.h * 0.42));
-              // Title bar
-              ctx.fillStyle = rgba(PAL.paper, 0.36 * a);
-              ctx.fillRect(c.x + 8, c.y + Math.min(56, c.h * 0.55), c.w * 0.5, 6);
-              // Body lines
-              for (let li = 0; li < 3; li++) {
-                ctx.fillStyle = rgba(PAL.paperDim, (0.20 - li * 0.04) * a);
-                ctx.fillRect(c.x + 8, c.y + Math.min(72 + li * 10, c.h * 0.66 + li * 10), c.w - 22 - li * 16, 3);
-              }
-              // Hand-drawn shadow stripe under card (craft phase)
-              if (m4 > 0.05) {
-                ctx.fillStyle = rgba(PAL.ink, 0.22 * m4);
-                ctx.fillRect(c.x + 4, c.y + c.h + 2, c.w, 6);
-              }
-            });
-
-            // CTA button
-            const btnY = 0.74 * H;
-            const btnX0 = 0.34 * W, btnW = 0.32 * W, btnH = 30;
-            // Button fill
-            const btnA = 0.42 * a + 0.30 * m4;
-            ctx.fillStyle = rgba(PAL.amber, btnA);
-            ctx.fillRect(btnX0, btnY, btnW, btnH);
-            // Button highlight
-            ctx.fillStyle = rgba(PAL.paper, 0.16 * a);
-            ctx.fillRect(btnX0, btnY, btnW, 1);
-            // Button outline (subtle)
-            handLine(btnX0, btnY, btnX0 + btnW, btnY, PAL.amber, 0.9, 88, 0.40 * a, false);
-            handLine(btnX0 + btnW, btnY, btnX0 + btnW, btnY + btnH, PAL.amber, 0.9, 89, 0.40 * a, false);
-            handLine(btnX0 + btnW, btnY + btnH, btnX0, btnY + btnH, PAL.amber, 0.9, 90, 0.40 * a, false);
-            handLine(btnX0, btnY + btnH, btnX0, btnY, PAL.amber, 0.9, 91, 0.40 * a, false);
-
-            // Image strip (decorative micro-frames) - emerald
-            const imgY = 0.86 * H;
-            for (let i = 0; i < 6; i++) {
-              const x = 0.14 * W + (i / 5) * 0.72 * W;
-              ctx.fillStyle = rgba(PAL.emerald, (0.18 + 0.06 * Math.sin(t + i)) * a);
-              ctx.fillRect(x - 12, imgY - 6, 22, 12);
+          function easeStep() {
+            rafScheduled = false;
+            const diff = targetP - progress;
+            if (Math.abs(diff) < 0.0008) {
+              setProgress(targetP);
+              return;
+            }
+            setProgress(progress + diff * 0.22);
+            rafScheduled = true;
+            requestAnimationFrame(easeStep);
+          }
+          function queueEase() {
+            if (!rafScheduled) {
+              rafScheduled = true;
+              requestAnimationFrame(easeStep);
             }
           }
 
-          function paintTokens(t, u, m1, m2, m3, m4, m5) {
-            ctx.save();
-            ctx.font = '500 11px ' + "'JetBrains Mono', 'SF Mono', ui-monospace, monospace";
-            ctx.textBaseline = 'middle';
-            for (let i = 0; i < tokens.length; i++) {
-              const tk = tokens[i];
-              // Determine target position by blending phases
-              // Chaos: drift around chaos anchor
-              const wob = Math.sin(t * tk.wobSpd + tk.seed) * tk.wobAmp;
-              const wob2 = Math.cos(t * tk.wobSpd * 1.3 + tk.seed * 0.7) * tk.wobAmp * 0.7;
-              const chaosX = tk.chaosX * W + wob;
-              const chaosY = tk.chaosY * H + wob2;
-              // Order: organized rows
-              const orderX = tk.orderX * W;
-              const orderY = tk.orderY * H;
-              // Structure: assigned slot
-              const structX = tk.structX;
-              const structY = tk.structY;
-              // MM
-              const mmX = tk.mmX;
-              const mmY = tk.mmY;
+          setProgress(0);
 
-              // Phase weights driven by progress u
-              const wChaos  = 1 - smooth((u - 0.05) / 0.20);
-              const wOrder  = band(u, 0.08, 0.24, 0.32, 0.46);
-              const wStruct = band(u, 0.32, 0.48, 0.82, 0.94);
-              const wMM     = band(u, 0.74, 0.86, 0.94, 1.00);
-              const wDissolve = smooth((u - 0.96) / 0.04);
-
-              const wSum = wChaos + wOrder + wStruct + wMM + 0.0001;
-              const cX = (chaosX * wChaos + orderX * wOrder + structX * wStruct + mmX * wMM) / wSum;
-              const cY = (chaosY * wChaos + orderY * wOrder + structY * wStruct + mmY * wMM) / wSum;
-
-              // Smooth lerp toward target
-              tk.x = lerp(tk.x || cX, cX, 0.085);
-              tk.y = lerp(tk.y || cY, cY, 0.085);
-
-              // Cursor magnetism (subtle)
-              if (cursor.inside) {
-                const dx = cursor.x - tk.x;
-                const dy = cursor.y - tk.y;
-                const d2 = dx * dx + dy * dy;
-                const radius = 140;
-                if (d2 < radius * radius) {
-                  const k = (1 - Math.sqrt(d2) / radius) * 0.18;
-                  tk.localOffsetX = lerp(tk.localOffsetX, dx * k, 0.18);
-                  tk.localOffsetY = lerp(tk.localOffsetY, dy * k, 0.18);
-                } else {
-                  tk.localOffsetX = lerp(tk.localOffsetX, 0, 0.10);
-                  tk.localOffsetY = lerp(tk.localOffsetY, 0, 0.10);
-                }
-              } else {
-                tk.localOffsetX = lerp(tk.localOffsetX, 0, 0.08);
-                tk.localOffsetY = lerp(tk.localOffsetY, 0, 0.08);
-              }
-
-              // Bloom: pull toward bloom centers
-              for (let bi = 0; bi < blooms.length; bi++) {
-                const b = blooms[bi];
-                const bdx = b.x - tk.x;
-                const bdy = b.y - tk.y;
-                const bd = Math.hypot(bdx, bdy);
-                if (bd < b.radius * 1.4) {
-                  const bp = clamp01(b.t / b.dur);
-                  const inward = (1 - Math.abs(bp - 0.5) * 2) * (1 - bd / (b.radius * 1.4));
-                  tk.localOffsetX += bdx * 0.22 * inward;
-                  tk.localOffsetY += bdy * 0.22 * inward;
-                }
-              }
-
-              // Alpha by phase
-              let alpha = 0.78;
-              if (tk.dropOut) {
-                // duplicates fade during organization
-                alpha *= (1 - smooth((u - 0.18) / 0.20));
-              }
-              // During structure/MM, prop tokens fade more than tag tokens
-              if (tk.kind === 'prop') alpha *= lerp(1, 0.36, smooth((u - 0.40) / 0.30));
-              if (tk.kind === 'punc') alpha *= lerp(1, 0.28, smooth((u - 0.42) / 0.28));
-              // Final fade as everything resolves
-              alpha *= lerp(1, 0.18, wDissolve);
-
-              tk.alpha = lerp(tk.alpha, alpha, 0.10);
-
-              // Color shift: tags become more amber during architecture
-              const baseC = tk.color;
-              const archShift = smooth((u - 0.42) / 0.30);
-              const shiftedC = [
-                lerp(baseC[0], PAL.amber[0], archShift * 0.35),
-                lerp(baseC[1], PAL.amber[1], archShift * 0.35),
-                lerp(baseC[2], PAL.amber[2], archShift * 0.35)
-              ];
-
-              // Draw
-              ctx.save();
-              const drawX = tk.x + tk.localOffsetX;
-              const drawY = tk.y + tk.localOffsetY;
-              ctx.translate(drawX, drawY);
-              // Rotation calms down as structure emerges
-              const rot = tk.rot * (1 - smooth((u - 0.30) / 0.30));
-              ctx.rotate(rot);
-              ctx.fillStyle = rgba(shiftedC, tk.alpha);
-              ctx.font = '500 ' + tk.fontSize + 'px ' + "'JetBrains Mono', 'SF Mono', ui-monospace, monospace";
-              ctx.fillText(tk.text, 0, 0);
-              ctx.restore();
+          // === pointer / wheel ===
+          stage.addEventListener('pointerenter', (e) => {
+            if (e.pointerType === 'mouse' || e.pointerType === 'pen') {
+              isHovering = true;
+              stage.classList.add('is-hover');
             }
-            ctx.restore();
+          });
+          stage.addEventListener('pointerleave', () => {
+            isHovering = false;
+            stage.classList.remove('is-hover');
+          });
+
+          stage.addEventListener('wheel', (e) => {
+            if (!isHovering) return;
+            if (e.deltaY > 0 && progress >= 0.999) return;       // release downward
+            if (e.deltaY < 0 && progress <= 0.001) return;       // release upward
+            e.preventDefault();
+            const norm = e.deltaY * (e.deltaMode === 1 ? 16 : 1);
+            targetP = Math.max(0, Math.min(1, targetP + norm / 700));
+            queueEase();
+          }, { passive: false });
+
+          // === touch drag ===
+          let touchY = null;
+          stage.addEventListener('touchstart', (e) => {
+            if (e.touches.length !== 1) return;
+            touchY = e.touches[0].clientY;
+          }, { passive: true });
+          stage.addEventListener('touchmove', (e) => {
+            if (touchY == null || e.touches.length !== 1) return;
+            const y = e.touches[0].clientY;
+            const dy = touchY - y;
+            if ((progress >= 0.999 && dy > 0) || (progress <= 0.001 && dy < 0)) return;
+            e.preventDefault();
+            touchY = y;
+            targetP = Math.max(0, Math.min(1, targetP + dy / 220));
+            queueEase();
+          }, { passive: false });
+          stage.addEventListener('touchend', () => { touchY = null; });
+
+          // === crumple transition ===
+          function setCrumple(c) {
+            const v = Math.max(0, Math.min(1, c));
+            stage.style.setProperty('--crumple', v.toFixed(4));
+            if (v > 0.04) stage.classList.add('is-crumpling');
+            else stage.classList.remove('is-crumpling');
           }
 
-          function paintMM(t, u, m5) {
-            if (m5 < 0.04) return;
-            ctx.save();
-            ctx.globalCompositeOperation = 'lighter';
-            // draw very faint MM strokes connecting points (hand-drawn feel)
-            const groups = [
-              [0, 7], [7, 12], [12, 17], [17, 24],         // Left M
-              [24, 31], [31, 36], [36, 41], [41, 48]       // Right M
-            ];
-            for (let g = 0; g < groups.length; g++) {
-              const [a, b] = groups[g];
-              if (mmPts[a] && mmPts[b - 1]) {
-                handLine(mmPts[a].x, mmPts[a].y, mmPts[b - 1].x, mmPts[b - 1].y, PAL.amber, 1.2, 200 + g, 0.18 * m5, false);
-              }
+          if (window.gsap && window.ScrollTrigger) {
+            try { gsap.registerPlugin(ScrollTrigger); } catch (e) {}
+            const heroSection = document.getElementById('hero') || stage.closest('.hero');
+            if (heroSection) {
+              ScrollTrigger.create({
+                trigger: heroSection,
+                start: 'bottom bottom',
+                end: 'bottom 28%',
+                scrub: 0.5,
+                onUpdate: (self) => setCrumple(self.progress)
+              });
             }
-            ctx.restore();
-          }
-
-          function paintCraftOrnaments(t, u, m4) {
-            if (m4 < 0.04) return;
-            // Soft floor line — like a horizon
-            ctx.save();
-            ctx.strokeStyle = rgba(PAL.paper, 0.08 * m4);
-            ctx.lineWidth = 0.6;
-            ctx.beginPath();
-            ctx.moveTo(W * 0.08, H * 0.92);
-            ctx.lineTo(W * 0.92, H * 0.92);
-            ctx.stroke();
-            // Page label "01" at corner
-            ctx.fillStyle = rgba(PAL.amber, 0.36 * m4);
-            ctx.font = '500 9px ' + "'JetBrains Mono', monospace";
-            ctx.fillText('01 — INDEX', W * 0.09, H * 0.10);
-            ctx.fillStyle = rgba(PAL.paperDim, 0.36 * m4);
-            ctx.fillText('MM /', W * 0.85, H * 0.10);
-            ctx.restore();
-          }
-
-          function paintBlooms(now) {
-            for (let i = blooms.length - 1; i >= 0; i--) {
-              const b = blooms[i];
-              b.t += 16;
-              const p = clamp01(b.t / b.dur);
-              const easeP = easeIO(p);
-              const fadeP = 1 - smooth((p - 0.5) / 0.5);
-              const r = b.radius * easeP;
-              // glow rim
-              ctx.save();
-              ctx.globalCompositeOperation = 'lighter';
-              const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, r * 1.2);
-              g.addColorStop(0, rgba(PAL.amber, 0.36 * fadeP));
-              g.addColorStop(0.5, rgba(PAL.amber, 0.10 * fadeP));
-              g.addColorStop(1, rgba(PAL.amber, 0));
-              ctx.fillStyle = g;
-              ctx.beginPath();
-              ctx.arc(b.x, b.y, r * 1.2, 0, Math.PI * 2);
-              ctx.fill();
-              ctx.restore();
-              // crafted shape forming at midpoint
-              if (p > 0.30 && p < 0.85) {
-                const shapeP = smooth((p - 0.30) / 0.30) * (1 - smooth((p - 0.65) / 0.20));
-                if (b.kind === 'btn') {
-                  ctx.fillStyle = rgba(PAL.amber, 0.72 * shapeP);
-                  const bw = 72, bh = 22;
-                  ctx.fillRect(b.x - bw / 2, b.y - bh / 2, bw, bh);
-                } else if (b.kind === 'card') {
-                  ctx.fillStyle = rgba(PAL.paper, 0.10 * shapeP);
-                  ctx.fillRect(b.x - 48, b.y - 30, 96, 60);
-                  ctx.strokeStyle = rgba(PAL.paper, 0.55 * shapeP);
-                  ctx.lineWidth = 0.9;
-                  ctx.strokeRect(b.x - 48, b.y - 30, 96, 60);
-                } else if (b.kind === 'nav') {
-                  ctx.strokeStyle = rgba(PAL.paper, 0.55 * shapeP);
-                  ctx.lineWidth = 0.9;
-                  ctx.beginPath();
-                  ctx.moveTo(b.x - 60, b.y);
-                  ctx.lineTo(b.x + 60, b.y);
-                  ctx.stroke();
-                  for (let k = 0; k < 4; k++) {
-                    ctx.fillStyle = rgba(PAL.amber, 0.55 * shapeP);
-                    ctx.fillRect(b.x - 50 + k * 30, b.y - 3, 16, 5);
-                  }
-                } else if (b.kind === 'pill') {
-                  ctx.fillStyle = rgba(PAL.emerald, 0.55 * shapeP);
-                  const pw = 60, ph = 16;
-                  ctx.beginPath();
-                  ctx.arc(b.x - pw / 2 + ph / 2, b.y, ph / 2, Math.PI / 2, -Math.PI / 2);
-                  ctx.lineTo(b.x + pw / 2 - ph / 2, b.y - ph / 2);
-                  ctx.arc(b.x + pw / 2 - ph / 2, b.y, ph / 2, -Math.PI / 2, Math.PI / 2);
-                  ctx.lineTo(b.x - pw / 2 + ph / 2, b.y + ph / 2);
-                  ctx.fill();
-                } else {
-                  ctx.fillStyle = rgba(PAL.violet, 0.55 * shapeP);
-                  ctx.font = '600 16px ' + "'JetBrains Mono', monospace";
-                  ctx.textAlign = 'center';
-                  ctx.fillText('<MM/>', b.x, b.y + 5);
-                  ctx.textAlign = 'left';
-                }
-              }
-              if (p >= 1) blooms.splice(i, 1);
-            }
-          }
-
-          function paintBloomPass(t, u) {
-            // Add a soft amber bloom in the lower button area as craft progresses
-            const k = smooth((u - 0.55) / 0.30);
-            if (k < 0.04) return;
-            const cx = 0.50 * W, cy = 0.755 * H;
-            ctx.save();
-            ctx.globalCompositeOperation = 'lighter';
-            const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, 140);
-            g.addColorStop(0, rgba(PAL.amber, 0.20 * k));
-            g.addColorStop(1, rgba(PAL.amber, 0));
-            ctx.fillStyle = g;
-            ctx.fillRect(0, 0, W, H);
-            ctx.restore();
-          }
-
-          function updateLabels(t, u) {
-            const phaseName =
-              u < 0.20 ? 'raw markup' :
-              u < 0.42 ? 'finding order' :
-              u < 0.68 ? 'architecture' :
-              u < 0.86 ? 'crafted' :
-                         'signed';
-            if (phaseLabel && phaseLabel.textContent !== phaseName) phaseLabel.textContent = phaseName;
-            if (tickLabel) {
-              const mins = Math.floor(t / 60);
-              const secs = Math.floor(t % 60);
-              const newT = (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
-              if (tickLabel.textContent !== newT) tickLabel.textContent = newT;
-            }
-          }
-
-          /* ---------- lifecycle ---------- */
-          window.addEventListener('resize', () => { resize(); }, { passive: true });
-          window.addEventListener('scroll', updateProgress, { passive: true });
-          resize();
-          updateProgress();
-
-          if (reduced) {
-            // For reduced motion: paint a static near-resolved state
-            progress = 0.78;
-            rafId = requestAnimationFrame(frameTick);
           } else {
-            // Pause rendering when offscreen
-            const io = ('IntersectionObserver' in window) ? new IntersectionObserver(entries => {
-              for (const e of entries) {
-                if (e.isIntersecting) {
-                  if (!rafId) { t0 = performance.now(); rafId = requestAnimationFrame(frameTick); }
-                } else {
-                  if (rafId) { cancelAnimationFrame(rafId); rafId = 0; }
+            const heroSection = document.getElementById('hero') || stage.closest('.hero');
+            window.addEventListener('scroll', () => {
+              if (!heroSection) return;
+              const r = heroSection.getBoundingClientRect();
+              const wh = window.innerHeight || 1;
+              const startTop = wh;
+              const endTop = wh * 0.28;
+              if (r.bottom >= startTop) return setCrumple(0);
+              if (r.bottom <= endTop) return setCrumple(1);
+              setCrumple((startTop - r.bottom) / (startTop - endTop));
+            }, { passive: true });
+          }
+
+          // === idle nudge: signal interactivity ===
+          let lastInteract = performance.now();
+          ['pointerdown', 'wheel', 'touchstart'].forEach(ev => {
+            stage.addEventListener(ev, () => { lastInteract = performance.now(); }, { passive: true });
+          });
+          if (!reduce) {
+            setTimeout(() => {
+              if (progress >= 0.04 || performance.now() - lastInteract < 200) return;
+              const startV = progress, targetV = 0.10, startT = performance.now();
+              function nudge(now) {
+                const t = Math.min(1, (now - startT) / 1200);
+                const eased = t * t * (3 - 2 * t);
+                if (performance.now() - lastInteract > 200 && targetP === 0) {
+                  targetP = startV + (targetV - startV) * eased;
+                  setProgress(targetP);
                 }
+                if (t < 1 && targetP <= 0.10 + 0.001) requestAnimationFrame(nudge);
               }
-            }, { threshold: 0 }) : null;
-            if (io) io.observe(frame);
-            else rafId = requestAnimationFrame(frameTick);
+              requestAnimationFrame(nudge);
+            }, 2200);
+          } else {
+            targetP = 0.82;
+            setProgress(0.82);
           }
         })();
         </script>
+
       </div>
     </div>
   </section>
