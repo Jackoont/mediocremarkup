@@ -4095,265 +4095,192 @@
       flex-shrink: 0;
     }
 
-    /* -- HERO: interactive markup field -- */
+    /* -- HERO: paper field — flowing markup over textured cream -- */
     .hero {
-      --hero-ink: #0d1110;
-      --hero-ink-2: #111715;
-      --hero-paper: #f1ead9;
-      --hero-muted: rgba(241,234,217,0.64);
-      --hero-line: rgba(241,234,217,0.16);
-      --hero-clay: #d66b45;
-      --hero-blue: #7fa7ba;
-      --hero-yellow: #d5c96d;
-      --hero-green: #8fac84;
+      --hero-paper-1: #F5EFE0;
+      --hero-paper-2: #ECDFC4;
+      --hero-paper-edge: #E1D2B2;
+      --hero-ink: #1f1812;
+      --hero-ink-soft: rgba(31, 24, 18, 0.66);
+      --hero-ink-mute: rgba(31, 24, 18, 0.42);
+      --hero-sage: #6b7c66;
+      --hero-peach: #b86a48;
+      --hero-rule: rgba(31, 24, 18, 0.18);
       min-height: 100svh;
       position: relative;
       overflow: hidden;
       isolation: isolate;
-      color: var(--hero-paper);
+      color: var(--hero-ink);
       background:
-        radial-gradient(circle at 78% 18%, rgba(127, 167, 186, 0.13), transparent 24%),
-        radial-gradient(circle at 18% 76%, rgba(214, 107, 69, 0.12), transparent 28%),
-        linear-gradient(135deg, #090d0c 0%, var(--hero-ink) 48%, #121814 100%) !important;
+        radial-gradient(ellipse 70% 70% at 18% 14%, rgba(255, 246, 222, 0.55), transparent 60%),
+        radial-gradient(ellipse 60% 70% at 84% 86%, rgba(244, 220, 188, 0.42), transparent 65%),
+        linear-gradient(168deg, var(--hero-paper-1) 0%, var(--hero-paper-2) 100%) !important;
     }
 
+    /* paper grain — fractal noise multiplied over the paper */
     .hero::before {
       content: '';
       position: absolute;
-      inset: -16%;
+      inset: 0;
       z-index: 0;
       pointer-events: none;
-      background:
-        linear-gradient(rgba(241,234,217,0.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(241,234,217,0.03) 1px, transparent 1px);
-      background-size: 56px 56px;
-      opacity: 0.5;
-      transform: rotate(-2deg) scale(1.06);
-      mask-image: radial-gradient(circle at 56% 42%, #000 0 58%, transparent 82%);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='280'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.55 0 0 0 -0.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 280px 280px;
+      mix-blend-mode: multiply;
+      opacity: 0.36;
+      transform: none;
+      mask-image: none;
     }
 
+    /* soft vignette + fade into the next section */
     .hero::after {
-      z-index: 3;
-      height: 16vh;
-      background: linear-gradient(to bottom, transparent 0%, rgba(13,17,16,0.72) 42%, #f7f8f5 100%) !important;
-    }
-
-    #whirlpool-container {
-      display: none !important;
-    }
-
-    nav {
-      background: rgba(9,13,12,0.9);
-      border-bottom-color: rgba(241,234,217,0.08);
-    }
-
-    nav .nav-cta {
-      background: #d5c96d !important;
-      color: #0d1110 !important;
-      border-radius: 0;
-      font-family: var(--font-mono);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .hero-bg-scraps {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      pointer-events: none;
-      overflow: hidden;
-    }
-
-    .hero-bg-scraps::before,
-    .hero-bg-scraps::after {
       content: '';
       position: absolute;
-      border: 1px dashed rgba(241,234,217,0.10);
-      border-radius: 48% 52% 45% 55%;
-      opacity: 0.42;
-      animation: heroBlobBreathe 10s ease-in-out infinite;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 110% 90% at 50% 50%, transparent 55%, rgba(89, 65, 38, 0.12) 100%),
+        linear-gradient(to bottom, transparent 84%, rgba(245, 239, 224, 0.0) 86%, #FEF9F4 100%);
+      height: auto;
     }
 
-    .hero-bg-scraps::before {
-      width: 360px;
-      height: 260px;
-      right: 6%;
-      top: 14%;
-      transform: rotate(-7deg);
-    }
-
-    .hero-bg-scraps::after {
-      width: 300px;
-      height: 220px;
-      left: -5%;
-      bottom: 7%;
-      transform: rotate(10deg);
-      animation-delay: -3s;
-    }
-
-    .markup-float {
+    /* the flowing markup field — full-bleed canvas behind everything */
+    .hero-field {
       position: absolute;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 0.04em;
-      color: rgba(241,234,217,0.22);
-      transform: rotate(var(--r, 0deg));
-      animation: markupDrift 8s ease-in-out infinite;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+      display: block;
     }
 
-    .markup-float:nth-child(1) { left: 7%; top: 24%; --r: -8deg; color: rgba(143,172,132,0.48); }
-    .markup-float:nth-child(2) { left: 43%; top: 13%; --r: 4deg; animation-delay: -2s; color: rgba(213,201,109,0.44); }
-    .markup-float:nth-child(3) { right: 7%; bottom: 14%; --r: -4deg; animation-delay: -4s; color: rgba(214,107,69,0.46); }
+    #whirlpool-container { display: none !important; }
+
+    .hero-bg-scraps,
+    .markup-float,
+    .hero-line { display: none !important; }
 
     .hero-content {
-      display: grid;
-      grid-template-columns: minmax(500px, 0.82fr) minmax(520px, 0.9fr);
-      align-items: center;
-      max-width: 1440px;
+      display: block;
+      max-width: 1180px;
+      width: 100%;
+      margin: 0 auto;
       min-height: 100svh;
-      padding: 106px clamp(28px, 5vw, 76px) 76px;
-      gap: clamp(34px, 4.6vw, 68px);
+      padding: clamp(118px, 14vh, 168px) clamp(28px, 5vw, 76px) clamp(80px, 12vh, 130px);
+      position: relative;
       z-index: 4;
     }
 
     .hero-left {
-      max-width: 650px;
+      max-width: 880px;
       position: relative;
       z-index: 5;
     }
 
     .hero-eyebrow {
+      display: inline-flex;
       align-items: center;
+      gap: 12px;
       width: fit-content;
-      margin-bottom: 22px;
+      margin-bottom: 28px;
       padding: 0;
       border: 0;
-      border-radius: 0;
       background: transparent;
-      color: rgba(143,172,132,0.78) !important;
-      box-shadow: none;
+      color: var(--hero-ink-mute) !important;
       font-family: var(--font-mono);
       font-size: 12px;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       text-transform: none;
-      transform: rotate(-0.5deg);
+      transform: rotate(-0.4deg);
+      box-shadow: none;
     }
-
     .hero-eyebrow::before {
-      display: none;
+      content: '';
+      display: block;
+      width: 32px;
+      height: 1px;
+      background: var(--hero-rule);
+      transform: rotate(-0.7deg);
     }
 
     .hero-headline {
       font-family: var(--font-body);
-      font-size: clamp(44px, 4.45vw, 66px);
+      font-size: clamp(46px, 5.6vw, 84px);
       font-weight: 800;
       line-height: 0.96;
-      letter-spacing: -0.055em;
-      max-width: 650px;
+      letter-spacing: -0.054em;
+      max-width: 960px;
       margin-bottom: 28px;
-      color: var(--hero-paper);
+      color: var(--hero-ink);
       text-wrap: balance;
     }
 
-    .hero-headline .line {
-      display: block;
-    }
-
+    .hero-headline .line { display: block; }
     .hero-headline .hl-dim,
     .hero-headline .hl-accent,
     .hero-headline .hl-outlined {
-      color: var(--hero-paper) !important;
-    }
-
-    .hero-headline .hl-accent {
-      color: var(--hero-paper) !important;
+      color: var(--hero-ink) !important;
       background: none;
-    }
-
-    .hero-headline .hl-outlined {
-      color: var(--hero-paper) !important;
+      -webkit-text-stroke: 0;
     }
 
     .hero-sub {
-      max-width: 590px;
-      margin-bottom: 32px;
-      color: var(--hero-muted) !important;
-      font-size: clamp(15px, 1.12vw, 18px);
-      line-height: 1.75;
+      max-width: 600px;
+      margin-bottom: 36px;
+      color: var(--hero-ink-soft) !important;
+      font-size: clamp(15px, 1.18vw, 18px);
+      line-height: 1.72;
     }
-
     .hero-sub::after {
       content: '';
       display: block;
       width: min(280px, 64%);
       height: 1px;
-      margin-top: 5px;
-      background: var(--hero-yellow);
-      opacity: 0.54;
-      transform: rotate(-1deg);
+      margin-top: 10px;
+      background: var(--hero-sage);
+      opacity: 0.55;
+      transform: rotate(-0.6deg);
     }
 
-    .hero-actions {
-      gap: 14px;
-    }
+    .hero-actions { gap: 14px; }
 
     .hero-actions .btn {
-      border-radius: 0;
-      border: 1px solid rgba(241,234,217,0.42);
+      border-radius: 2px;
+      border: 1px solid var(--hero-ink);
       font-family: var(--font-mono);
       font-size: 12px;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      padding: 14px 22px;
+      padding: 15px 24px;
       box-shadow: none !important;
-      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
     }
-
     .hero-actions .btn:hover {
       transform: translateY(-2px);
       box-shadow: none !important;
     }
-
     .hero-actions .btn-primary {
-      background: var(--hero-yellow) !important;
-      color: #0d1110 !important;
-      border-color: var(--hero-yellow) !important;
+      background: var(--hero-ink) !important;
+      color: var(--hero-paper-1) !important;
+      border-color: var(--hero-ink) !important;
     }
-
     .hero-actions .btn-primary:hover {
-      background: #e0d875 !important;
+      background: #2a221a !important;
+      border-color: #2a221a !important;
     }
-
     .hero-actions .btn-secondary {
       background: transparent !important;
-      color: rgba(241,234,217,0.86) !important;
-      border-color: rgba(241,234,217,0.34) !important;
+      color: var(--hero-ink) !important;
+      border-color: rgba(31, 24, 18, 0.3) !important;
     }
-
     .hero-actions .btn-secondary:hover {
-      background: rgba(241,234,217,0.06) !important;
-      border-color: rgba(241,234,217,0.56) !important;
+      background: rgba(31, 24, 18, 0.05) !important;
+      border-color: rgba(31, 24, 18, 0.55) !important;
     }
 
-    .hero-stats {
-      display: none;
-    }
-
-    .hero-system {
-      position: relative;
-      min-height: clamp(460px, 51vw, 640px);
-      z-index: 4;
-      pointer-events: auto;
-    }
-
-    .hero-system::before {
-      content: '';
-      position: absolute;
-      inset: 44px 10px 30px 30px;
-      border: 1px dashed rgba(241,234,217,0.12);
-      transform: rotate(1deg);
-      pointer-events: none;
-    }
+    .hero-stats { display: none; }
 
     .markup-field {
       position: relative;
@@ -6315,6 +6242,234 @@
 
   <section class="hero" id="hero">
 
+    <canvas class="hero-field" id="hero-field" aria-hidden="true"></canvas>
+    <script>
+      (function () {
+        const hero = document.getElementById('hero');
+        const canvas = document.getElementById('hero-field');
+        if (!hero || !canvas) return;
+        const ctx = canvas.getContext('2d');
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        /* ink colors that read on warm cream */
+        const INK_PRIMARY  = 'rgba(46, 36, 26, 0.62)';
+        const INK_WALNUT   = 'rgba(95, 72, 50, 0.46)';
+        const INK_SAGE     = 'rgba(95, 110, 88, 0.55)';
+        const INK_PEACH    = 'rgba(170, 88, 56, 0.50)';
+
+        /* a hand-set vocabulary of webpage fragments */
+        const TOKENS = [
+          '<header>', '</header>', '<nav>', '</nav>', '<main>', '</main>',
+          '<section>', '</section>', '<article>', '</article>', '<aside>',
+          '<footer>', '</footer>', '<h1>', '</h1>', '<h2>', '<p>', '</p>',
+          '<a>', '</a>', '<img/>', '<button>', '</button>', '<form>', '</form>',
+          '<input/>', '<label>', '<ul>', '<li>', '</li>', '</ul>', '<div>',
+          '</div>', '<span>', '</span>', '<!-- -->', 'class=', 'href=', 'alt=',
+          'aria-', 'rel=', '/>', '{ }', ':root', '@media', '.hover'
+        ];
+
+        function pickToken() {
+          return TOKENS[(Math.random() * TOKENS.length) | 0];
+        }
+
+        function pickInk() {
+          const r = Math.random();
+          if (r < 0.55) return INK_PRIMARY;
+          if (r < 0.80) return INK_WALNUT;
+          if (r < 0.92) return INK_SAGE;
+          return INK_PEACH;
+        }
+
+        let W = 0, H = 0, dpr = 1;
+        let particles = [];
+        let t = 0;
+        const mouse = { x: -9999, y: -9999, active: false, vx: 0, vy: 0, px: 0, py: 0 };
+
+        function targetCount() {
+          /* roughly one token per ~7,500 pixels of hero area, clamped */
+          const area = W * H;
+          return Math.round(Math.max(70, Math.min(180, area / 7500)));
+        }
+
+        function spawn(p) {
+          p.x = Math.random() * W;
+          p.y = Math.random() * H;
+          p.vx = (Math.random() - 0.5) * 0.4;
+          p.vy = (Math.random() - 0.5) * 0.4;
+          p.token = pickToken();
+          p.size = 9.5 + Math.random() * 5.5;
+          p.color = pickInk();
+          p.angle = (Math.random() - 0.5) * 0.36;
+          p.alpha = 0.55 + Math.random() * 0.38;
+        }
+
+        function rebuild() {
+          const r = hero.getBoundingClientRect();
+          dpr = Math.min(2, window.devicePixelRatio || 1);
+          W = r.width;
+          H = r.height;
+          if (W < 2 || H < 2) return;
+          canvas.width  = Math.round(W * dpr);
+          canvas.height = Math.round(H * dpr);
+          canvas.style.width  = W + 'px';
+          canvas.style.height = H + 'px';
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+          const target = targetCount();
+          if (!particles.length) {
+            particles = new Array(target).fill(null).map(() => {
+              const p = {};
+              spawn(p);
+              return p;
+            });
+          } else if (particles.length < target) {
+            while (particles.length < target) {
+              const p = {};
+              spawn(p);
+              particles.push(p);
+            }
+          } else if (particles.length > target) {
+            particles.length = target;
+          }
+        }
+
+        /* flowing field — sum-of-sines, smooth and slow-varying */
+        function flowAt(x, y) {
+          const k1 = 0.0028, k2 = 0.0021;
+          const fx = Math.sin(x * k1 + y * k2 * 0.6 + t * 0.18)
+                   + Math.cos(y * k1 * 1.3 - t * 0.11);
+          const fy = Math.cos(x * k2 - y * k1 + t * 0.15)
+                   + Math.sin(x * k2 * 1.3 + t * 0.20);
+          return [fx, fy];
+        }
+
+        function step(dtScale) {
+          t += 0.016 * dtScale;
+          const damping = 0.94;
+          const accel = 0.055 * dtScale;
+          const R = 140;
+          const R2 = R * R;
+          const margin = 60;
+
+          /* cursor velocity for a stronger trail along motion direction */
+          const mvx = mouse.x - mouse.px;
+          const mvy = mouse.y - mouse.py;
+          mouse.px = mouse.x;
+          mouse.py = mouse.y;
+
+          for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
+            const [fx, fy] = flowAt(p.x, p.y);
+            p.vx += fx * accel;
+            p.vy += fy * accel;
+
+            if (mouse.active) {
+              const dx = p.x - mouse.x;
+              const dy = p.y - mouse.y;
+              const d2 = dx * dx + dy * dy;
+              if (d2 < R2 && d2 > 0.0001) {
+                const d = Math.sqrt(d2);
+                const k = 1 - d / R;
+                const force = k * k * 1.6;
+                p.vx += (dx / d) * force;
+                p.vy += (dy / d) * force;
+                /* small drag along the cursor's own motion — feels like wind */
+                p.vx += mvx * k * 0.02;
+                p.vy += mvy * k * 0.02;
+              }
+            }
+
+            p.vx *= damping;
+            p.vy *= damping;
+            p.x += p.vx;
+            p.y += p.vy;
+
+            /* gentle wrap with margin so tokens reappear seamlessly */
+            if (p.x < -margin) { p.x = W + margin; p.token = pickToken(); }
+            if (p.x > W + margin) { p.x = -margin; p.token = pickToken(); }
+            if (p.y < -margin) { p.y = H + margin; }
+            if (p.y > H + margin) { p.y = -margin; }
+          }
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, W, H);
+          for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.angle);
+            ctx.globalAlpha = p.alpha;
+            ctx.fillStyle = p.color;
+            ctx.font = '500 ' + p.size.toFixed(2) + 'px "JetBrains Mono", ui-monospace, monospace';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(p.token, 0, 0);
+            ctx.restore();
+          }
+          ctx.globalAlpha = 1;
+        }
+
+        /* cursor tracking via the hero element (canvas is pointer-events:none) */
+        function onMove(e) {
+          const r = canvas.getBoundingClientRect();
+          mouse.x = e.clientX - r.left;
+          mouse.y = e.clientY - r.top;
+          if (!mouse.active) {
+            mouse.px = mouse.x;
+            mouse.py = mouse.y;
+          }
+          mouse.active = true;
+        }
+        function onLeave() {
+          mouse.active = false;
+          mouse.x = -9999;
+          mouse.y = -9999;
+        }
+        hero.addEventListener('pointermove', onMove);
+        hero.addEventListener('pointerleave', onLeave);
+
+        /* keep canvas in sync with layout */
+        let resizeT;
+        window.addEventListener('resize', () => {
+          clearTimeout(resizeT);
+          resizeT = setTimeout(() => {
+            particles = [];
+            rebuild();
+          }, 120);
+        });
+
+        /* pause when offscreen */
+        let visible = true;
+        if ('IntersectionObserver' in window) {
+          new IntersectionObserver((entries) => {
+            visible = entries[0].isIntersecting;
+          }, { threshold: 0 }).observe(hero);
+        }
+
+        rebuild();
+        /* warm up with a few frames so it looks settled at first paint */
+        for (let i = 0; i < 40; i++) step(1);
+        render();
+
+        let last = performance.now();
+        function frame(now) {
+          const dt = Math.min(40, now - last);
+          last = now;
+          if (visible) {
+            if (prefersReduced) {
+              /* freeze; still respond to cursor lightly */
+              if (mouse.active) { step(0.5); render(); }
+            } else {
+              step(dt / 16.6667);
+              render();
+            }
+          }
+          requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      })();
+    </script>
     <div class="hero-content" id="hero-content">
       <div class="hero-left" id="hero-left">
         <div class="hero-eyebrow" id="hero-eyebrow">&lt;!-- digital presence check --&gt;</div>
@@ -6333,492 +6488,6 @@
           <div class="stat"><span class="stat-num">7 days</span><span class="stat-label">typical first pass</span></div>
           <div class="stat"><span class="stat-num">Custom code</span><span class="stat-label">no page builders</span></div>
         </div>
-      </div>
-
-      <div class="hero-line" id="hero-line" aria-hidden="true">
-        <style>
-          /* ============================================================
-             HERO PHYSICS SCENE — hand-hung markup.
-             Pieces of webpage scaffolding clipped to a length of twine,
-             swaying in a workshop breeze. Drag any tag to swing it.
-             ============================================================ */
-          .hero-line {
-            position: relative;
-            width: min(100%, 640px);
-            height: clamp(460px, 50vw, 620px);
-            margin-left: auto;
-            margin-right: clamp(36px, 4vw, 76px);
-            cursor: grab;
-            touch-action: none;
-            z-index: 4;
-            user-select: none;
-            -webkit-user-select: none;
-          }
-          .hero-line.is-grabbing { cursor: grabbing; }
-          .hero-line canvas {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            display: block;
-          }
-          @media (max-width: 980px) {
-            .hero-line {
-              margin: 0 auto;
-              width: min(100%, 560px);
-              height: clamp(360px, 78vw, 480px);
-            }
-          }
-          @media (max-width: 560px) {
-            .hero-line {
-              height: clamp(320px, 86vw, 420px);
-            }
-          }
-        </style>
-
-        <canvas id="hero-line-canvas"></canvas>
-
-        <script>
-          (function () {
-            const host = document.getElementById('hero-line');
-            const canvas = document.getElementById('hero-line-canvas');
-            if (!host || !canvas) return;
-            const ctx = canvas.getContext('2d');
-            const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-            /* palette — warm workshop, paper + twine */
-            const PAL = {
-              twineDark:  '#3a2c1a',
-              twineMid:   '#7a5c38',
-              twineHi:    '#a98758',
-              shadow:     'rgba(0,0,0,0.42)',
-              ink:        '#1c1812',
-              pinLight:   '#caa274',
-              pinShade:   '#7a5630',
-              pinSpring:  '#2a1f12',
-              nailRim:    '#1a1410',
-              nailHi:     '#5d4630'
-            };
-
-            /* the pieces of a webpage, hung out to dry */
-            const TAGS = [
-              { text: '<header>',  paper: '#F1ECDB', w: 100, h: 64, ropeT: 0.10 },
-              { text: '<nav>',     paper: '#A9B6A5', w:  76, h: 58, ropeT: 0.21 },
-              { text: '<main>',    paper: '#E5E2DC', w:  84, h: 62, ropeT: 0.32 },
-              { text: '<section>', paper: '#F5CFB0', w: 104, h: 62, ropeT: 0.44 },
-              { text: '<h1>',      paper: '#F1ECDB', w:  64, h: 60, ropeT: 0.55 },
-              { text: '<img/>',    paper: '#E5E2DC', w:  72, h: 84, ropeT: 0.65 },
-              { text: '<article>', paper: '#A9B6A5', w: 100, h: 68, ropeT: 0.77 },
-              { text: '<footer>',  paper: '#F1ECDB', w:  90, h: 58, ropeT: 0.90 }
-            ];
-
-            let W = 0, H = 0, dpr = 1;
-            const rope = [];
-            let constraints = [];
-            const SEG = 34;
-            let segLen = 0;
-            let leftPin = null, rightPin = null;
-
-            function P(x, y) {
-              return { x, y, ox: x, oy: y, pinned: false, locked: false };
-            }
-
-            function rebuild() {
-              const r = host.getBoundingClientRect();
-              dpr = Math.min(2, window.devicePixelRatio || 1);
-              W = r.width;
-              H = r.height;
-              if (W < 2 || H < 2) return;
-              canvas.width  = Math.round(W * dpr);
-              canvas.height = Math.round(H * dpr);
-              canvas.style.width  = W + 'px';
-              canvas.style.height = H + 'px';
-              ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-              const ropeY = Math.max(58, H * 0.14);
-              const leftX  = Math.max(22, W * 0.045);
-              const rightX = W - Math.max(22, W * 0.045);
-
-              rope.length = 0;
-              for (let i = 0; i <= SEG; i++) {
-                const t = i / SEG;
-                const x = leftX + (rightX - leftX) * t;
-                const y = ropeY + Math.sin(t * Math.PI) * 14;
-                rope.push(P(x, y));
-              }
-              rope[0].pinned = true;
-              rope[SEG].pinned = true;
-              leftPin = rope[0];
-              rightPin = rope[SEG];
-
-              /* a touch of slack so the line droops naturally */
-              const ropeLength = (rightX - leftX) * 1.075;
-              segLen = ropeLength / SEG;
-
-              constraints = [];
-              for (let i = 0; i < SEG; i++) {
-                constraints.push({ a: rope[i], b: rope[i + 1], d: segLen, k: 1 });
-              }
-
-              for (const tag of TAGS) {
-                const segsAcross = Math.max(1, Math.round(tag.w / segLen));
-                const center = Math.round(tag.ropeT * SEG);
-                let idx1 = Math.max(1, center - Math.floor(segsAcross / 2));
-                let idx2 = Math.min(SEG - 1, idx1 + segsAcross);
-                if (idx2 <= idx1) idx2 = Math.min(SEG - 1, idx1 + 1);
-                tag.idx1 = idx1;
-                tag.idx2 = idx2;
-
-                const p1 = rope[idx1];
-                const p2 = rope[idx2];
-                const dropY = 12;
-
-                tag.tl = P(p1.x, p1.y + dropY);
-                tag.tr = P(p2.x, p2.y + dropY);
-                tag.bl = P(p1.x - 1, p1.y + dropY + tag.h);
-                tag.br = P(p2.x + 1, p2.y + dropY + tag.h);
-                tag.parts = [tag.tl, tag.tr, tag.br, tag.bl];
-
-                const top  = Math.hypot(tag.tr.x - tag.tl.x, tag.tr.y - tag.tl.y);
-                const diag = Math.hypot(top, tag.h);
-
-                /* edges */
-                constraints.push({ a: tag.tl, b: tag.tr, d: top,   k: 1 });
-                constraints.push({ a: tag.bl, b: tag.br, d: top,   k: 1 });
-                constraints.push({ a: tag.tl, b: tag.bl, d: tag.h, k: 1 });
-                constraints.push({ a: tag.tr, b: tag.br, d: tag.h, k: 1 });
-                /* diagonals — keep it from folding flat */
-                constraints.push({ a: tag.tl, b: tag.br, d: diag,  k: 0.55 });
-                constraints.push({ a: tag.tr, b: tag.bl, d: diag,  k: 0.55 });
-                /* clothespin attachment to twine */
-                constraints.push({ a: tag.tl, b: p1, d: 5, k: 1 });
-                constraints.push({ a: tag.tr, b: p2, d: 5, k: 1 });
-              }
-            }
-
-            /* ---------------- simulation ---------------- */
-            let t = 0;
-            let drag = null;
-            const mouse = { x: 0, y: 0, px: 0, py: 0, down: false, inside: false };
-
-            function step(dtScale) {
-              t += 0.016 * dtScale;
-              const gravity = 0.34 * dtScale;
-              /* layered breeze — two slow sines plus the occasional gust */
-              const breeze =
-                  0.045 * Math.sin(t * 0.62)
-                + 0.060 * Math.sin(t * 0.21 + 1.3)
-                + 0.018 * Math.sin(t * 1.7);
-              const gust = Math.max(0, Math.sin(t * 0.085 + 0.4) - 0.55) * 0.55;
-              const wind = (breeze + gust * (0.4 + 0.6 * Math.sin(t * 2.3))) * dtScale;
-              const damping = 0.984;
-
-              const all = rope.slice();
-              for (const tag of TAGS) for (const p of tag.parts) all.push(p);
-
-              for (const p of all) {
-                if (p.pinned || p.locked) continue;
-                const vx = (p.x - p.ox) * damping;
-                const vy = (p.y - p.oy) * damping;
-                p.ox = p.x;
-                p.oy = p.y;
-                p.x += vx + wind;
-                p.y += vy + gravity;
-              }
-
-              if (drag) {
-                /* preserve mouse velocity into ox so a release throws naturally */
-                drag.ox = mouse.px;
-                drag.oy = mouse.py;
-                drag.x = mouse.x;
-                drag.y = mouse.y;
-              }
-
-              const iters = 8;
-              for (let it = 0; it < iters; it++) {
-                for (let i = 0; i < constraints.length; i++) {
-                  const c = constraints[i];
-                  const aPin = c.a.pinned || c.a.locked;
-                  const bPin = c.b.pinned || c.b.locked;
-                  if (aPin && bPin) continue;
-                  const dx = c.b.x - c.a.x;
-                  const dy = c.b.y - c.a.y;
-                  const len = Math.sqrt(dx * dx + dy * dy) || 0.0001;
-                  const diff = (len - c.d) / len * c.k;
-                  const wa = aPin ? 0 : (bPin ? 1 : 0.5);
-                  const wb = bPin ? 0 : (aPin ? 1 : 0.5);
-                  c.a.x += dx * diff * wa;
-                  c.a.y += dy * diff * wa;
-                  c.b.x -= dx * diff * wb;
-                  c.b.y -= dy * diff * wb;
-                }
-                for (let i = 0; i < all.length; i++) {
-                  const p = all[i];
-                  if (p.pinned || p.locked) continue;
-                  if (p.y > H - 4) { p.y = H - 4; p.oy = p.y + 0.6; }
-                  if (p.x < 4)     { p.x = 4; }
-                  if (p.x > W - 4) { p.x = W - 4; }
-                }
-              }
-
-              mouse.px = mouse.x;
-              mouse.py = mouse.y;
-            }
-
-            /* ---------------- render ---------------- */
-            function drawTwine() {
-              ctx.lineCap = 'round';
-              ctx.lineJoin = 'round';
-
-              /* soft drop shadow under the line */
-              ctx.strokeStyle = 'rgba(0,0,0,0.30)';
-              ctx.lineWidth = 3.4;
-              ctx.beginPath();
-              ctx.moveTo(rope[0].x + 1.2, rope[0].y + 4);
-              for (let i = 1; i < rope.length; i++) ctx.lineTo(rope[i].x + 1.2, rope[i].y + 4);
-              ctx.stroke();
-
-              /* under-strand */
-              ctx.strokeStyle = PAL.twineDark;
-              ctx.lineWidth = 2.4;
-              ctx.beginPath();
-              ctx.moveTo(rope[0].x, rope[0].y + 0.4);
-              for (let i = 1; i < rope.length; i++) ctx.lineTo(rope[i].x, rope[i].y + 0.4);
-              ctx.stroke();
-
-              /* main twine */
-              ctx.strokeStyle = PAL.twineMid;
-              ctx.lineWidth = 1.7;
-              ctx.beginPath();
-              ctx.moveTo(rope[0].x, rope[0].y);
-              for (let i = 1; i < rope.length; i++) ctx.lineTo(rope[i].x, rope[i].y);
-              ctx.stroke();
-
-              /* highlight strand */
-              ctx.strokeStyle = PAL.twineHi;
-              ctx.lineWidth = 0.6;
-              ctx.beginPath();
-              ctx.moveTo(rope[0].x, rope[0].y - 0.7);
-              for (let i = 1; i < rope.length; i++) ctx.lineTo(rope[i].x, rope[i].y - 0.7);
-              ctx.stroke();
-
-              /* anchor nails */
-              [leftPin, rightPin].forEach(p => {
-                ctx.fillStyle = PAL.nailRim;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, 3.4, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.fillStyle = PAL.nailHi;
-                ctx.beginPath();
-                ctx.arc(p.x - 0.8, p.y - 0.9, 1.2, 0, Math.PI * 2);
-                ctx.fill();
-              });
-            }
-
-            function drawTagShadows() {
-              ctx.save();
-              ctx.fillStyle = 'rgba(0,0,0,0.34)';
-              ctx.filter = 'blur(6px)';
-              for (const tag of TAGS) {
-                const { tl, tr, br, bl } = tag;
-                ctx.beginPath();
-                ctx.moveTo(tl.x + 4, tl.y + 9);
-                ctx.lineTo(tr.x + 4, tr.y + 9);
-                ctx.lineTo(br.x + 4, br.y + 9);
-                ctx.lineTo(bl.x + 4, bl.y + 9);
-                ctx.closePath();
-                ctx.fill();
-              }
-              ctx.restore();
-            }
-
-            function drawTag(tag) {
-              const { tl, tr, br, bl } = tag;
-              const cx = (tl.x + tr.x + br.x + bl.x) / 4;
-              const cy = (tl.y + tr.y + br.y + bl.y) / 4;
-              const ang = Math.atan2(tr.y - tl.y, tr.x - tl.x);
-
-              /* paper body */
-              ctx.beginPath();
-              ctx.moveTo(tl.x, tl.y);
-              ctx.lineTo(tr.x, tr.y);
-              ctx.lineTo(br.x, br.y);
-              ctx.lineTo(bl.x, bl.y);
-              ctx.closePath();
-              ctx.fillStyle = tag.paper;
-              ctx.fill();
-
-              /* paper grain — light from top-left, fall into bottom-right */
-              const grad = ctx.createLinearGradient(tl.x, tl.y, br.x, br.y);
-              grad.addColorStop(0,    'rgba(255,255,255,0.22)');
-              grad.addColorStop(0.45, 'rgba(255,255,255,0.00)');
-              grad.addColorStop(1,    'rgba(0,0,0,0.16)');
-              ctx.fillStyle = grad;
-              ctx.fill();
-
-              /* edge */
-              ctx.strokeStyle = 'rgba(0,0,0,0.22)';
-              ctx.lineWidth = 0.8;
-              ctx.stroke();
-
-              /* inner deckle line — subtle hand-cut feel */
-              ctx.save();
-              ctx.translate(cx, cy);
-              ctx.rotate(ang);
-              const halfW = Math.hypot(tr.x - tl.x, tr.y - tl.y) / 2;
-              const halfH = tag.h / 2;
-              ctx.strokeStyle = 'rgba(0,0,0,0.08)';
-              ctx.lineWidth = 0.6;
-              ctx.strokeRect(-halfW + 4, -halfH + 4, halfW * 2 - 8, halfH * 2 - 8);
-
-              /* the markup itself */
-              ctx.fillStyle = PAL.ink;
-              ctx.font = '500 13px "JetBrains Mono", ui-monospace, monospace';
-              ctx.textAlign = 'center';
-              ctx.textBaseline = 'middle';
-              ctx.fillText(tag.text, 0, 0);
-              ctx.restore();
-
-              /* clothespins */
-              drawPin(tl, ang);
-              drawPin(tr, ang);
-            }
-
-            function drawPin(p, ang) {
-              ctx.save();
-              ctx.translate(p.x, p.y);
-              ctx.rotate(ang + Math.PI / 2);
-              /* shadow */
-              ctx.fillStyle = 'rgba(0,0,0,0.30)';
-              ctx.fillRect(-3.4, -8 + 1.2, 7, 16);
-              /* body */
-              ctx.fillStyle = PAL.pinLight;
-              ctx.fillRect(-3.4, -8, 7, 16);
-              /* top cap shade */
-              ctx.fillStyle = PAL.pinShade;
-              ctx.fillRect(-3.4, -8, 7, 2.4);
-              /* spring */
-              ctx.strokeStyle = PAL.pinSpring;
-              ctx.lineWidth = 1.0;
-              ctx.beginPath();
-              ctx.moveTo(-3.4, 1.4);
-              ctx.lineTo(3.6, 1.4);
-              ctx.stroke();
-              /* split */
-              ctx.strokeStyle = 'rgba(0,0,0,0.32)';
-              ctx.lineWidth = 0.6;
-              ctx.beginPath();
-              ctx.moveTo(0, -8);
-              ctx.lineTo(0, 8);
-              ctx.stroke();
-              ctx.restore();
-            }
-
-            function render() {
-              ctx.clearRect(0, 0, W, H);
-              drawTagShadows();
-              drawTwine();
-              for (const tag of TAGS) drawTag(tag);
-            }
-
-            /* ---------------- pointer ---------------- */
-            function pos(e) {
-              const r = canvas.getBoundingClientRect();
-              const src = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]) || e;
-              return { x: src.clientX - r.left, y: src.clientY - r.top };
-            }
-
-            function findTarget(x, y) {
-              let best = null, bestD = Infinity;
-              for (const tag of TAGS) {
-                /* score by distance to tag center, prefer bottom corners as grab points */
-                const cx = (tag.tl.x + tag.tr.x + tag.br.x + tag.bl.x) / 4;
-                const cy = (tag.tl.y + tag.tr.y + tag.br.y + tag.bl.y) / 4;
-                const d = (cx - x) * (cx - x) + (cy - y) * (cy - y);
-                if (d < bestD) { bestD = d; best = tag; }
-              }
-              if (!best || bestD > 90 * 90) return null;
-              /* grab whichever bottom corner is closer to the cursor */
-              const dl = (best.bl.x - x) ** 2 + (best.bl.y - y) ** 2;
-              const dr = (best.br.x - x) ** 2 + (best.br.y - y) ** 2;
-              return dl < dr ? best.bl : best.br;
-            }
-
-            function onDown(e) {
-              const m = pos(e);
-              mouse.x = mouse.px = m.x;
-              mouse.y = mouse.py = m.y;
-              mouse.down = true;
-              const target = findTarget(m.x, m.y);
-              if (target) {
-                drag = target;
-                drag.locked = true;
-                host.classList.add('is-grabbing');
-                if (e.cancelable) e.preventDefault();
-              }
-            }
-            function onMove(e) {
-              if (!mouse.down) return;
-              const m = pos(e);
-              mouse.x = m.x;
-              mouse.y = m.y;
-              if (drag && e.cancelable) e.preventDefault();
-            }
-            function onUp() {
-              if (drag) {
-                drag.locked = false;
-                /* let it inherit current mouse velocity for a satisfying throw */
-                drag.ox = mouse.px;
-                drag.oy = mouse.py;
-              }
-              drag = null;
-              mouse.down = false;
-              host.classList.remove('is-grabbing');
-            }
-
-            host.addEventListener('pointerdown', onDown);
-            window.addEventListener('pointermove', onMove, { passive: false });
-            window.addEventListener('pointerup', onUp);
-            window.addEventListener('pointercancel', onUp);
-
-            /* keep canvas in sync with layout */
-            let resizeT;
-            window.addEventListener('resize', () => {
-              clearTimeout(resizeT);
-              resizeT = setTimeout(rebuild, 120);
-            });
-
-            /* pause when offscreen */
-            let visible = true;
-            if ('IntersectionObserver' in window) {
-              new IntersectionObserver((entries) => {
-                visible = entries[0].isIntersecting;
-              }, { threshold: 0 }).observe(host);
-            }
-
-            /* ---------------- boot ---------------- */
-            rebuild();
-            /* let everything settle so nothing drops on first paint */
-            for (let i = 0; i < 80; i++) step(1);
-            render();
-
-            let last = performance.now();
-            function frame(now) {
-              const dt = Math.min(40, now - last);
-              last = now;
-              if (visible && !prefersReduced) {
-                step(dt / 16.6667);
-                render();
-              } else if (visible && drag) {
-                /* still allow dragging when reduced motion is on */
-                step(1);
-                render();
-              }
-              requestAnimationFrame(frame);
-            }
-            requestAnimationFrame(frame);
-          })();
-        </script>
       </div>
     </div>
   </section>
