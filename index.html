@@ -6208,6 +6208,499 @@
     .field-note b {
       font-size: inherit;
     }
+
+    /* =============================================================
+       LIVE-CODE HERO — split screen: IDE typing left, render right
+       ============================================================= */
+    .hero.live-hero {
+      padding: 0;
+      min-height: 100vh;
+      display: block;
+      background:
+        radial-gradient(1200px 600px at 20% 0%, rgba(47,111,143,0.06), transparent 60%),
+        radial-gradient(900px 500px at 90% 90%, rgba(240,99,90,0.05), transparent 65%),
+        linear-gradient(180deg, #f7f8f5 0%, #efeee9 100%);
+    }
+    .hero.live-hero::after { display: none; }
+    .live-hero {
+      --lh-code-bg: #0b0f1a;
+      --lh-code-bg-2: #070a13;
+      --lh-code-fg: #cdd6f4;
+      --lh-code-dim: #4b5573;
+      --lh-code-tag: #f7768e;
+      --lh-code-attr: #e0af68;
+      --lh-code-str: #9ece6a;
+      --lh-code-text: #e5e9f5;
+      --lh-code-comment: #6272a4;
+      --lh-code-caret: #ff9e64;
+      --lh-code-line: #131826;
+      --lh-code-gutter: #6c7591;
+      --lh-code-sel: rgba(255,158,100,0.16);
+    }
+
+    .lh-stage {
+      position: relative;
+      z-index: 4;
+      min-height: 100vh;
+      width: 100%;
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 96px 28px 60px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto 1fr auto;
+      gap: 18px 20px;
+      align-items: stretch;
+      box-sizing: border-box;
+    }
+
+    .lh-eyebrow-bar {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 2.2px;
+      text-transform: uppercase;
+      color: rgba(23,33,29,0.5);
+      padding: 0 4px;
+    }
+    .lh-eyebrow-bar .lh-eb-left { display: flex; align-items: center; gap: 12px; }
+    .lh-eyebrow-bar .lh-eb-rule { width: 28px; height: 1px; background: rgba(47,111,143,0.4); }
+    .lh-eyebrow-bar .lh-eb-right { display: flex; align-items: center; gap: 14px; color: rgba(23,33,29,0.42); }
+    .lh-eb-progress {
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .lh-eb-progress .lh-eb-bar {
+      width: 110px; height: 2px; background: rgba(23,33,29,0.08);
+      position: relative; overflow: hidden;
+    }
+    .lh-eb-progress .lh-eb-bar i {
+      position: absolute; inset: 0; right: auto; width: 0;
+      background: linear-gradient(90deg, #2f6f8f, #ff9e64);
+      transition: width 0.25s ease-out;
+    }
+
+    .lh-pane {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(11,15,26,0.18), 0 6px 18px rgba(11,15,26,0.06);
+      min-height: 0;
+    }
+    .lh-code { background: var(--lh-code-bg); }
+    .lh-render { background: #fbfaf6; border: 1px solid rgba(23,33,29,0.08); }
+
+    .lh-bar {
+      flex: 0 0 auto;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 14px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      border-bottom: 1px solid;
+    }
+    .lh-code .lh-bar {
+      background: #050810;
+      border-bottom-color: #131826;
+      color: #6c7591;
+    }
+    .lh-render .lh-bar {
+      background: #ececea;
+      border-bottom-color: rgba(0,0,0,0.06);
+      color: #4a5563;
+    }
+
+    .lh-dots { display: flex; gap: 6px; }
+    .lh-dots i {
+      width: 11px; height: 11px; border-radius: 50%;
+      display: inline-block;
+    }
+    .lh-dots i:nth-child(1) { background: #ff5f56; }
+    .lh-dots i:nth-child(2) { background: #ffbd2e; }
+    .lh-dots i:nth-child(3) { background: #27c93f; }
+
+    .lh-tabs {
+      display: flex; gap: 2px; align-items: center;
+      margin-left: 6px;
+    }
+    .lh-tab {
+      padding: 6px 14px 7px;
+      border-radius: 6px 6px 0 0;
+      color: #6c7591;
+      position: relative; top: 1px;
+      font-size: 11px;
+      letter-spacing: 0.4px;
+      border: 1px solid transparent;
+      border-bottom: none;
+      display: inline-flex; align-items: center; gap: 7px;
+    }
+    .lh-tab::before {
+      content: ''; width: 10px; height: 10px;
+      background: linear-gradient(135deg, #ff9e64 50%, transparent 50%);
+      transform: rotate(-45deg);
+      opacity: 0.85;
+    }
+    .lh-tab.active {
+      background: var(--lh-code-bg);
+      color: #e5e9f5;
+      border-color: #131826;
+    }
+    .lh-tab.active::after {
+      content: ''; position: absolute; left: 0; right: 0; top: 0;
+      height: 2px; background: #ff9e64;
+    }
+
+    .lh-status {
+      margin-left: auto;
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 10px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: #6c7591;
+    }
+    .lh-status .lh-status-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #ff9e64;
+      box-shadow: 0 0 10px rgba(255,158,100,0.7);
+      animation: lhPulse 1.5s ease-in-out infinite;
+    }
+    .lh-status.is-done .lh-status-dot { background: #27c93f; box-shadow: 0 0 10px rgba(39,201,63,0.6); animation: none; }
+    @keyframes lhPulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.35; transform: scale(0.78); } }
+
+    /* Browser url pill */
+    .lh-url {
+      flex: 1;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 100px;
+      height: 24px;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 0 12px;
+      color: #5a6573;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      max-width: 360px;
+      overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+    }
+    .lh-url svg { width: 10px; height: 10px; flex: 0 0 auto; opacity: 0.6; }
+    .lh-url b { color: #17211d; font-weight: 500; }
+    .lh-bcontrols { display: inline-flex; gap: 8px; color: #98a0ad; font-size: 14px; line-height: 1; }
+    .lh-bcontrols span { opacity: 0.55; cursor: default; }
+
+    /* Editor body */
+    .lh-editor {
+      flex: 1 1 auto;
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 13px;
+      line-height: 1.72;
+      overflow: hidden;
+      color: var(--lh-code-fg);
+      min-height: 0;
+      position: relative;
+    }
+    .lh-editor::before {
+      content: '';
+      position: absolute;
+      pointer-events: none;
+      inset: 0;
+      background:
+        radial-gradient(80% 50% at 50% 0%, rgba(255,158,100,0.06), transparent 65%),
+        radial-gradient(60% 40% at 50% 100%, rgba(47,111,143,0.05), transparent 60%);
+      mix-blend-mode: screen;
+      z-index: 1;
+    }
+    .lh-gutter {
+      background: var(--lh-code-bg-2);
+      color: var(--lh-code-gutter);
+      text-align: right;
+      padding: 18px 12px 24px 0;
+      user-select: none;
+      white-space: pre;
+      font-size: 12px;
+      line-height: 1.72;
+      border-right: 1px solid #131826;
+      margin: 0;
+      overflow: hidden;
+      font-family: inherit;
+    }
+    .lh-gutter b {
+      display: block;
+      font-weight: 400;
+      transition: color 0.3s ease;
+    }
+    .lh-gutter b.is-current { color: #ff9e64; }
+    .lh-code-body {
+      padding: 18px 18px 28px;
+      overflow: auto;
+      white-space: pre;
+      position: relative;
+      margin: 0;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.15) transparent;
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
+      z-index: 2;
+    }
+    .lh-code-body::-webkit-scrollbar { width: 8px; }
+    .lh-code-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 4px; }
+
+    .lh-source { font: inherit; color: var(--lh-code-text); }
+    .lh-source .tk-tag      { color: var(--lh-code-tag); }
+    .lh-source .tk-attr     { color: var(--lh-code-attr); }
+    .lh-source .tk-str      { color: var(--lh-code-str); }
+    .lh-source .tk-op,
+    .lh-source .tk-punct    { color: var(--lh-code-dim); }
+    .lh-source .tk-comment  { color: var(--lh-code-comment); font-style: italic; }
+    .lh-source .tk-text     { color: var(--lh-code-text); }
+    .lh-source .tk-ws       { color: inherit; }
+
+    .lh-caret {
+      display: inline-block;
+      width: 2px;
+      height: 1.05em;
+      background: var(--lh-code-caret);
+      vertical-align: text-bottom;
+      margin-left: 1px;
+      box-shadow: 0 0 10px rgba(255,158,100,0.65);
+      animation: lhCaret 1s steps(1) infinite;
+    }
+    .lh-caret.is-done { background: transparent; box-shadow: none; animation: none; }
+    @keyframes lhCaret { 0%,49% { opacity: 1; } 50%,100% { opacity: 0; } }
+
+    /* current-line highlight ribbon */
+    .lh-line-hl {
+      position: absolute;
+      left: 0; right: 0;
+      height: 1.72em;
+      background: linear-gradient(90deg, rgba(255,158,100,0.08), rgba(255,158,100,0.0) 70%);
+      border-left: 2px solid #ff9e64;
+      pointer-events: none;
+      transform: translateY(0);
+      transition: transform 0.18s ease-out, opacity 0.2s;
+      z-index: 0;
+      opacity: 0.85;
+    }
+    .lh-line-hl.is-done { opacity: 0; }
+
+    /* Render canvas */
+    .lh-canvas {
+      flex: 1;
+      background:
+        radial-gradient(800px 400px at 30% 0%, rgba(47,111,143,0.08), transparent 65%),
+        linear-gradient(180deg, #fbfaf6 0%, #f3f1ec 100%);
+      padding: 54px 48px 44px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 0;
+    }
+    .lh-canvas::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(23,33,29,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(23,33,29,0.04) 1px, transparent 1px);
+      background-size: 32px 32px;
+      mask-image: radial-gradient(80% 70% at 50% 50%, #000 40%, transparent 100%);
+      -webkit-mask-image: radial-gradient(80% 70% at 50% 50%, #000 40%, transparent 100%);
+      pointer-events: none;
+      opacity: 0.55;
+    }
+    .lh-mockup {
+      max-width: 540px;
+      position: relative;
+      z-index: 1;
+    }
+    .lh-mockup [data-reveal] {
+      opacity: 0;
+      transform: translateY(10px);
+      filter: blur(6px);
+      transition: opacity 0.65s cubic-bezier(0.2, 0.7, 0.2, 1),
+                  transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+                  filter 0.55s ease;
+      will-change: opacity, transform, filter;
+    }
+    .lh-mockup [data-reveal].is-visible {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
+    .lh-mockup [data-reveal].is-flash::after {
+      content: '';
+      position: absolute;
+      inset: -4px -8px;
+      border: 1px dashed rgba(255,158,100,0.6);
+      animation: lhFlash 0.6s ease forwards;
+      pointer-events: none;
+      border-radius: 4px;
+    }
+    @keyframes lhFlash {
+      from { opacity: 1; transform: scale(1.02); }
+      to   { opacity: 0; transform: scale(1); }
+    }
+
+    .lh-render-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(89,102,96,0.86);
+      margin-bottom: 22px;
+    }
+    .lh-render-eyebrow::before {
+      content: '';
+      width: 22px; height: 1px;
+      background: rgba(47,111,143,0.52);
+      display: inline-block;
+    }
+
+    .lh-headline {
+      font-family: 'Source Serif 4', 'DM Serif Display', serif;
+      font-size: clamp(36px, 4.4vw, 64px);
+      line-height: 1.02;
+      letter-spacing: -0.5px;
+      color: #17211d;
+      margin-bottom: 22px;
+      font-weight: 400;
+      display: block;
+    }
+    .lh-headline > span { display: block; }
+    .lh-headline .lh-accent { color: #2f6f8f; }
+
+    .lh-sub {
+      font-size: 16px;
+      color: rgba(23,33,29,0.7);
+      margin-bottom: 26px;
+      max-width: 480px;
+      line-height: 1.6;
+      font-family: var(--font-body);
+    }
+
+    .lh-cta-row { display: block; margin-bottom: 26px; }
+    .lh-cta {
+      background: #2f6f8f;
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 13px 24px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.2s, opacity 0.2s, box-shadow 0.3s;
+      box-shadow: 0 12px 26px rgba(47,111,143,0.22);
+      border: 1.5px solid #2f6f8f;
+      cursor: pointer;
+    }
+    .lh-cta:hover { transform: translateY(-2px); opacity: 0.92; box-shadow: 0 18px 34px rgba(47,111,143,0.3); }
+    .lh-cta .lh-cta-arrow { transition: transform 0.25s; }
+    .lh-cta:hover .lh-cta-arrow { transform: translateX(3px); }
+
+    .lh-stats {
+      display: flex;
+      gap: 0;
+      flex-wrap: wrap;
+      border-top: 1px solid rgba(23,33,29,0.1);
+      padding-top: 18px;
+      max-width: 520px;
+    }
+    .lh-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-right: 24px;
+      margin-right: 24px;
+      border-right: 1px solid rgba(23,33,29,0.1);
+    }
+    .lh-stat:last-child {
+      border-right: none;
+      margin-right: 0;
+      padding-right: 0;
+    }
+    .lh-stat b {
+      font-family: 'Source Serif 4', serif;
+      font-size: 22px;
+      color: #17211d;
+      font-weight: 400;
+      line-height: 1;
+    }
+    .lh-stat small {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: rgba(89,102,96,0.86);
+    }
+
+    /* footer status row */
+    .lh-status-row {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 8px 0;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: rgba(89,102,96,0.6);
+    }
+    .lh-status-row .lh-sr-left,
+    .lh-status-row .lh-sr-right { display: flex; align-items: center; gap: 12px; }
+    .lh-status-row .lh-sr-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #ff9e64;
+      animation: lhPulse 1.8s ease-in-out infinite;
+    }
+    .lh-status-row .lh-sr-line {
+      width: 38px; height: 1px;
+      background: linear-gradient(to right, rgba(47,111,143,0.5), transparent);
+    }
+
+    /* mobile */
+    @media (max-width: 960px) {
+      .hero.live-hero { min-height: auto; }
+      .lh-stage {
+        grid-template-columns: 1fr;
+        padding: 88px 14px 40px;
+        gap: 14px;
+        min-height: auto;
+      }
+      .lh-code { max-height: 48vh; min-height: 280px; }
+      .lh-render { min-height: 0; }
+      .lh-canvas { padding: 36px 24px; }
+      .lh-headline { font-size: 38px; }
+      .lh-editor { font-size: 11.5px; line-height: 1.65; }
+      .lh-gutter { padding-right: 8px; font-size: 10.5px; }
+      .lh-tabs .lh-tab:not(.active) { display: none; }
+      .lh-stat { padding-right: 16px; margin-right: 16px; }
+    }
+    @media (max-width: 520px) {
+      .lh-eyebrow-bar .lh-eb-right { display: none; }
+      .lh-stat { font-size: 12px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .lh-mockup [data-reveal] { opacity: 1; transform: none; filter: none; transition: none; }
+      .lh-caret { animation: none; opacity: 1; }
+    }
   </style>
 
 </head>
@@ -6274,416 +6767,385 @@
     </div>
   </nav>
 
-  <section class="hero" id="hero">
+  <section class="hero live-hero" id="hero" data-live-hero>
 
-    <div class="hero-content" id="hero-content">
-      <div class="hero-left" id="hero-left">
-        <div class="hero-eyebrow" id="hero-eyebrow">&lt;!-- digital presence check --&gt;</div>
-        <h1 class="hero-headline" id="hero-headline">
-          <span class="line hl-dim">If you&rsquo;re invisible</span>
-          <span class="line hl-accent">online, you&rsquo;re</span>
-          <span class="line hl-outlined">invisible to</span>
-          <span class="line hl-outlined">customers.</span>
-        </h1>
-        <p class="hero-sub">Too many great businesses lose opportunities online because their digital presence fails to reflect the quality of their work.</p>
-        <div class="hero-actions">
-          <a href="#contact" onclick="jumpToContact(event)" class="btn btn-primary magnetic-btn">Start a project &rarr;</a>
+    <div class="lh-stage">
+
+      <div class="lh-eyebrow-bar">
+        <div class="lh-eb-left">
+          <span class="lh-eb-rule"></span>
+          <span>// building hero.html — live</span>
         </div>
-        <div class="hero-stats">
-          <div class="stat"><span class="stat-num">$500</span><span class="stat-label">single-page launch</span></div>
-          <div class="stat"><span class="stat-num">7 days</span><span class="stat-label">typical first pass</span></div>
-          <div class="stat"><span class="stat-num">Custom code</span><span class="stat-label">no page builders</span></div>
+        <div class="lh-eb-right">
+          <span class="lh-eb-progress">
+            <span class="lh-eb-bar"><i id="lhEbBar"></i></span>
+            <span id="lhEbPct">0%</span>
+          </span>
+          <span id="lhEbCounter">0 / 0 chars</span>
         </div>
       </div>
-      <div class="hero-art" id="hero-art" aria-hidden="true">
-        <canvas id="hero-art-canvas"></canvas>
-        <script>
-          (function () {
-            const host = document.getElementById('hero-art');
-            const canvas = document.getElementById('hero-art-canvas');
-            if (!host || !canvas) return;
-            const ctx = canvas.getContext('2d');
-            const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-            /* warm ink + small accent palette */
-            const INK         = 'rgba(31, 24, 18, 0.78)';
-            const INK_SOFT    = 'rgba(31, 24, 18, 0.50)';
-            const INK_FAINT   = 'rgba(31, 24, 18, 0.30)';
-            const INK_WASH    = 'rgba(31, 24, 18, 0.05)';
-            const SAGE        = 'rgba(95, 110, 88, 0.78)';
-            const PEACH       = 'rgba(170, 88, 56, 0.78)';
-            const TRAIL       = 'rgba(95, 110, 88, 0.55)';
+      <!-- LEFT: dark IDE pane -->
+      <div class="lh-pane lh-code">
+        <div class="lh-bar">
+          <span class="lh-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="lh-tabs">
+            <span class="lh-tab active">hero.html</span>
+            <span class="lh-tab">styles.css</span>
+          </span>
+          <span class="lh-status" id="lhStatus">
+            <span class="lh-status-dot"></span>
+            <span id="lhStatusText">writing</span>
+          </span>
+        </div>
+        <div class="lh-editor">
+          <pre class="lh-gutter" id="lhGutter" aria-hidden="true"></pre>
+          <pre class="lh-code-body" id="lhBody"><div class="lh-line-hl" id="lhLineHl"></div><code id="lhCode" class="lh-source"></code><span class="lh-caret" id="lhCaret"></span></pre>
+        </div>
+      </div>
 
-            let W = 0, H = 0, dpr = 1;
-            let lastResize = 0;
-            let t0 = performance.now();
-            let visible = true;
+      <!-- RIGHT: rendered browser pane -->
+      <div class="lh-pane lh-render">
+        <div class="lh-bar">
+          <span class="lh-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="lh-bcontrols" aria-hidden="true"><span>‹</span><span>›</span><span>↻</span></span>
+          <span class="lh-url">
+            <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1.5a2.5 2.5 0 0 0-2.5 2.5V5h-.5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-.5V4A2.5 2.5 0 0 0 6 1.5Zm-1.5 3.5V4a1.5 1.5 0 1 1 3 0v1h-3Z" fill="currentColor"/></svg>
+            <b>mediocremarkup.com</b><span style="opacity:0.45">/hero</span>
+          </span>
+        </div>
+        <div class="lh-canvas">
+          <div class="lh-mockup" id="lhMockup">
+            <div class="lh-render-eyebrow" data-reveal="eyebrow">digital presence check</div>
+            <h1 class="lh-headline">
+              <span data-reveal="h1a">If you&rsquo;re invisible</span>
+              <span data-reveal="h1b">online, you&rsquo;re</span>
+              <span data-reveal="h1c" class="lh-accent">invisible to</span>
+              <span data-reveal="h1d" class="lh-accent">customers.</span>
+            </h1>
+            <p class="lh-sub" data-reveal="sub">Too many great businesses lose opportunities online because their digital presence fails to reflect the quality of their work.</p>
+            <div class="lh-cta-row" data-reveal="cta">
+              <a href="#contact" onclick="jumpToContact(event)" class="lh-cta">Start a project <span class="lh-cta-arrow">&rarr;</span></a>
+            </div>
+            <div class="lh-stats">
+              <div class="lh-stat" data-reveal="stat1"><b>$500</b><small>single-page launch</small></div>
+              <div class="lh-stat" data-reveal="stat2"><b>7 days</b><small>typical first pass</small></div>
+              <div class="lh-stat" data-reveal="stat3"><b>Custom code</b><small>no page builders</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-            const mouse = { x: -9999, y: -9999, inside: false };
-            const trail = []; /* {x, y, t} */
+      <div class="lh-status-row">
+        <div class="lh-sr-left">
+          <span class="lh-sr-dot"></span>
+          <span>compiling DOM</span>
+        </div>
+        <div class="lh-sr-right">
+          <span>scroll</span>
+          <span class="lh-sr-line"></span>
+          <span id="lhFooterCount">ln 1, col 1</span>
+        </div>
+      </div>
 
-            /* smooth pseudo-noise from a few sines — cheap and reproducible */
-            function n1(seed, phase) {
-              return 0.5 + 0.5 * Math.sin(seed * 1.31 + phase) * Math.cos(seed * 0.73 + phase * 0.6);
+    </div>
+
+    <script>
+      (function () {
+        const codeEl   = document.getElementById('lhCode');
+        const gutterEl = document.getElementById('lhGutter');
+        const bodyEl   = document.getElementById('lhBody');
+        const caretEl  = document.getElementById('lhCaret');
+        const mockup   = document.getElementById('lhMockup');
+        const status   = document.getElementById('lhStatus');
+        const statusTx = document.getElementById('lhStatusText');
+        const ebBar    = document.getElementById('lhEbBar');
+        const ebPct    = document.getElementById('lhEbPct');
+        const ebCount  = document.getElementById('lhEbCounter');
+        const footerCt = document.getElementById('lhFooterCount');
+        const lineHl   = document.getElementById('lhLineHl');
+        const heroSec  = document.getElementById('hero');
+        if (!codeEl || !gutterEl || !mockup) return;
+
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        const SRC = [
+          '<section class="hero">',
+          '  <p class="eyebrow"><!-- digital presence check --></p>',
+          '  <h1>',
+          '    <span>If you’re invisible</span>',
+          '    <span>online, you’re</span>',
+          '    <span class="accent">invisible to</span>',
+          '    <span class="accent">customers.</span>',
+          '  </h1>',
+          '  <p class="sub">Too many great businesses lose opportunities online because their digital presence fails to reflect the quality of their work.</p>',
+          '  <a href="#contact" class="cta">Start a project →</a>',
+          '  <div class="stats">',
+          '    <div><b>$500</b><small>single-page launch</small></div>',
+          '    <div><b>7 days</b><small>typical first pass</small></div>',
+          '    <div><b>Custom code</b><small>no page builders</small></div>',
+          '  </div>',
+          '</section>'
+        ].join('\n');
+
+        /* Map: when typing reaches the END of source-line N, reveal id X */
+        const LINE_REVEALS = {
+          2: 'eyebrow',
+          4: 'h1a',
+          5: 'h1b',
+          6: 'h1c',
+          7: 'h1d',
+          9: 'sub',
+          10: 'cta',
+          12: 'stat1',
+          13: 'stat2',
+          14: 'stat3'
+        };
+
+        /* ------------- Tokenizer ------------- */
+        function tokenize(s) {
+          const out = [];
+          let i = 0;
+          while (i < s.length) {
+            if (s.startsWith('<!--', i)) {
+              const end = s.indexOf('-->', i);
+              const stop = end >= 0 ? end + 3 : s.length;
+              out.push({ t: 'comment', v: s.slice(i, stop) });
+              i = stop;
+              continue;
             }
-            function jit(seed, t, amp) {
-              const v = Math.sin(seed * 2.137 + t * 0.6) + Math.cos(seed * 1.119 - t * 0.4) * 0.6;
-              return v * amp * 0.5;
-            }
-
-            /* one hand-drawn ink stroke: micro-segments with perpendicular wobble.
-               Drawn twice — a wider, very soft underline then a sharper top stroke
-               — to fake fountain-pen pressure. */
-            function inkStroke(x1, y1, x2, y2, opts) {
-              const seed  = opts.seed || 1;
-              const t     = opts.t || 0;
-              const amp   = opts.jitter ?? 0.85;
-              const wMain = opts.weight ?? 1.5;
-              const wSoft = wMain + 1.1;
-              const color = opts.color || INK;
-              const dx = x2 - x1, dy = y2 - y1;
-              const len = Math.hypot(dx, dy);
-              if (len < 0.5) return;
-              const segs = Math.max(2, Math.min(48, Math.round(len / 14)));
-              const nxv = -dy / len, nyv = dx / len;
-
-              const pts = new Array(segs + 1);
-              for (let i = 0; i <= segs; i++) {
-                const u = i / segs;
-                /* taper jitter at the ends so corners stay reasonably crisp */
-                const edge = Math.min(1, Math.min(u, 1 - u) * 4);
-                const j = jit(seed + i * 0.317, t, amp) * edge;
-                pts[i] = [x1 + dx * u + nxv * j, y1 + dy * u + nyv * j];
-              }
-
-              /* soft underlayer */
-              ctx.lineCap = 'round';
-              ctx.lineJoin = 'round';
-              ctx.strokeStyle = INK_FAINT;
-              ctx.lineWidth = wSoft;
-              ctx.beginPath();
-              ctx.moveTo(pts[0][0], pts[0][1]);
-              for (let i = 1; i <= segs; i++) ctx.lineTo(pts[i][0], pts[i][1]);
-              ctx.stroke();
-
-              /* primary stroke */
-              ctx.strokeStyle = color;
-              ctx.lineWidth = wMain;
-              ctx.beginPath();
-              ctx.moveTo(pts[0][0], pts[0][1]);
-              for (let i = 1; i <= segs; i++) ctx.lineTo(pts[i][0], pts[i][1]);
-              ctx.stroke();
-            }
-
-            function inkRect(x, y, w, h, opts) {
-              const s = opts.seed || 1;
-              inkStroke(x,     y,     x + w, y,     { ...opts, seed: s + 1 });
-              inkStroke(x + w, y,     x + w, y + h, { ...opts, seed: s + 2 });
-              inkStroke(x + w, y + h, x,     y + h, { ...opts, seed: s + 3 });
-              inkStroke(x,     y + h, x,     y,     { ...opts, seed: s + 4 });
-            }
-
-            function inkPill(x, y, w, h, opts) {
-              const r = h / 2;
-              const s = opts.seed || 1;
-              inkStroke(x + r, y,         x + w - r, y,         { ...opts, seed: s + 1 });
-              inkStroke(x + r, y + h,     x + w - r, y + h,     { ...opts, seed: s + 2 });
-              /* hand-drawn rounded ends approximated with a chord */
-              inkArc(x + r,     y + r, r, Math.PI * 0.5,  Math.PI * 1.5, { ...opts, seed: s + 3 });
-              inkArc(x + w - r, y + r, r, Math.PI * 1.5,  Math.PI * 2.5, { ...opts, seed: s + 4 });
-            }
-
-            function inkArc(cx, cy, r, a0, a1, opts) {
-              const segs = Math.max(6, Math.round((Math.abs(a1 - a0) * r) / 6));
-              const t = opts.t || 0;
-              const amp = (opts.jitter ?? 0.7);
-              const s = opts.seed || 1;
-              const color = opts.color || INK;
-              const wMain = opts.weight ?? 1.5;
-              const wSoft = wMain + 1.1;
-              const pts = [];
-              for (let i = 0; i <= segs; i++) {
-                const a = a0 + (a1 - a0) * (i / segs);
-                const edge = Math.min(1, Math.min(i / segs, 1 - i / segs) * 4);
-                const j = jit(s + i * 0.41, t, amp) * edge;
-                pts.push([cx + Math.cos(a) * (r + j), cy + Math.sin(a) * (r + j)]);
-              }
-              ctx.lineCap = 'round';
-              ctx.lineJoin = 'round';
-              ctx.strokeStyle = INK_FAINT;
-              ctx.lineWidth = wSoft;
-              ctx.beginPath();
-              ctx.moveTo(pts[0][0], pts[0][1]);
-              for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
-              ctx.stroke();
-              ctx.strokeStyle = color;
-              ctx.lineWidth = wMain;
-              ctx.beginPath();
-              ctx.moveTo(pts[0][0], pts[0][1]);
-              for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
-              ctx.stroke();
-            }
-
-            /* a hand-drawn curving arrow, ending in a tiny head */
-            function inkArrow(x1, y1, x2, y2, opts) {
-              const t = opts.t || 0;
-              const s = opts.seed || 7;
-              const color = opts.color || INK_SOFT;
-              const curve = opts.curve ?? 18;
-              const mx = (x1 + x2) / 2 + curve;
-              const my = (y1 + y2) / 2;
-              const segs = 18;
-              const pts = [];
-              for (let i = 0; i <= segs; i++) {
-                const u = i / segs;
-                const bx = (1 - u) * (1 - u) * x1 + 2 * (1 - u) * u * mx + u * u * x2;
-                const by = (1 - u) * (1 - u) * y1 + 2 * (1 - u) * u * my + u * u * y2;
-                const edge = Math.min(1, Math.min(u, 1 - u) * 5);
-                const j = jit(s + i * 0.29, t, 0.5) * edge;
-                pts.push([bx + j * 0.6, by + j * 0.6]);
-              }
-              ctx.lineCap = 'round';
-              ctx.lineJoin = 'round';
-              ctx.strokeStyle = color;
-              ctx.lineWidth = 1.1;
-              ctx.beginPath();
-              ctx.moveTo(pts[0][0], pts[0][1]);
-              for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
-              ctx.stroke();
-              /* arrowhead */
-              const dx = x2 - pts[pts.length - 3][0];
-              const dy = y2 - pts[pts.length - 3][1];
-              const a = Math.atan2(dy, dx);
-              const ah = 8;
-              ctx.beginPath();
-              ctx.moveTo(x2, y2);
-              ctx.lineTo(x2 - Math.cos(a - 0.42) * ah, y2 - Math.sin(a - 0.42) * ah);
-              ctx.moveTo(x2, y2);
-              ctx.lineTo(x2 - Math.cos(a + 0.42) * ah, y2 - Math.sin(a + 0.42) * ah);
-              ctx.stroke();
-            }
-
-            function inkLabel(x, y, text, opts) {
-              ctx.save();
-              ctx.translate(x, y);
-              if (opts.rot) ctx.rotate(opts.rot);
-              ctx.fillStyle = opts.color || INK;
-              ctx.font = (opts.style || '500') + ' ' + (opts.size || 12) + 'px "JetBrains Mono", ui-monospace, monospace';
-              ctx.textAlign = opts.align || 'left';
-              ctx.textBaseline = opts.baseline || 'alphabetic';
-              ctx.fillText(text, 0, 0);
-              ctx.restore();
-            }
-
-            /* the composition — designed against a 480 x 600 canvas; scales to fit */
-            function paintComposition(now) {
-              const t = (now - t0) / 1000;
-
-              /* design coordinates */
-              const Cw = 480, Ch = 600;
-              const sx = W / Cw, sy = H / Ch;
-              const s = Math.min(sx, sy);
-              const ox = (W - Cw * s) / 2;
-              const oy = (H - Ch * s) / 2;
-
-              ctx.save();
-              ctx.translate(ox, oy);
-              ctx.scale(s, s);
-
-              /* corner note — handwriting-feel comment */
-              inkLabel(18, 30, '// hand-set', {
-                size: 11, color: INK_SOFT, style: '400 italic'
-              });
-
-              /* tilt the page itself */
-              const pageCx = 240, pageCy = 312;
-              ctx.save();
-              ctx.translate(pageCx, pageCy);
-              ctx.rotate(-1.4 * Math.PI / 180);
-              ctx.translate(-pageCx, -pageCy);
-
-              /* page footprint */
-              const PX = 56, PY = 70, PW = 320, PH = 484;
-
-              /* faintest wash inside the page */
-              ctx.fillStyle = INK_WASH;
-              ctx.fillRect(PX, PY, PW, PH);
-
-              /* page border */
-              inkRect(PX, PY, PW, PH, { seed: 11, jitter: 1.1, weight: 1.7, t });
-
-              /* header band */
-              const HX = PX + 18, HY = PY + 18, HW = PW - 36, HH = 30;
-              inkRect(HX, HY, HW, HH, { seed: 21, jitter: 0.85, weight: 1.25, t });
-              /* logo mark inside header — a small square + a stroke */
-              inkRect(HX + 8, HY + 8, 14, 14, { seed: 25, jitter: 0.6, weight: 1.1, t });
-              inkStroke(HX + 28, HY + 15, HX + 56, HY + 15, { seed: 26, jitter: 0.4, weight: 1.0, t });
-              /* nav dots */
-              for (let i = 0; i < 3; i++) {
-                const dx = HX + HW - 14 - i * 16;
-                inkArc(dx, HY + 15, 2.4, 0, Math.PI * 2, { seed: 27 + i, jitter: 0.25, weight: 1.0, t });
-              }
-
-              /* H1 — three confident heavy strokes (varied length, slight stagger) */
-              const H1X = PX + 18, H1Y = PY + 80;
-              inkStroke(H1X,      H1Y,      H1X + 264, H1Y,      { seed: 31, jitter: 0.9, weight: 3.6, t, color: INK });
-              inkStroke(H1X,      H1Y + 22, H1X + 232, H1Y + 22, { seed: 32, jitter: 0.9, weight: 3.6, t, color: INK });
-              inkStroke(H1X,      H1Y + 44, H1X + 180, H1Y + 44, { seed: 33, jitter: 0.9, weight: 3.6, t, color: INK });
-
-              /* paragraph — three thin lines */
-              const PPX = PX + 18, PPY = PY + 158;
-              inkStroke(PPX, PPY,      PPX + 248, PPY,      { seed: 41, jitter: 0.55, weight: 1.0, t, color: INK_SOFT });
-              inkStroke(PPX, PPY + 13, PPX + 232, PPY + 13, { seed: 42, jitter: 0.55, weight: 1.0, t, color: INK_SOFT });
-              inkStroke(PPX, PPY + 26, PPX + 156, PPY + 26, { seed: 43, jitter: 0.55, weight: 1.0, t, color: INK_SOFT });
-
-              /* CTA pill — filled with ink, the heroic mark */
-              const BX = PX + 18, BY = PY + 214, BW = 108, BH = 30;
-              /* the fill */
-              ctx.save();
-              ctx.fillStyle = 'rgba(31,24,18,0.92)';
-              ctx.beginPath();
-              const br = BH / 2;
-              ctx.moveTo(BX + br, BY);
-              ctx.lineTo(BX + BW - br, BY);
-              ctx.arc(BX + BW - br, BY + br, br, -Math.PI / 2, Math.PI / 2);
-              ctx.lineTo(BX + br, BY + BH);
-              ctx.arc(BX + br, BY + br, br, Math.PI / 2, -Math.PI / 2);
-              ctx.closePath();
-              ctx.fill();
-              ctx.restore();
-              /* a small line inside the button to suggest text */
-              inkStroke(BX + 18, BY + BH / 2, BX + BW - 22, BY + BH / 2, {
-                seed: 51, jitter: 0.3, weight: 1.1, t, color: 'rgba(245,239,224,0.78)'
-              });
-
-              /* image placeholder — rectangle with diagonal cross */
-              const IX = PX + 156, IY = PY + 264, IW = 152, IH = 116;
-              inkRect(IX, IY, IW, IH, { seed: 61, jitter: 0.85, weight: 1.4, t });
-              inkStroke(IX, IY,       IX + IW, IY + IH, { seed: 62, jitter: 0.45, weight: 1.0, t, color: INK_SOFT });
-              inkStroke(IX + IW, IY,  IX,       IY + IH, { seed: 63, jitter: 0.45, weight: 1.0, t, color: INK_SOFT });
-
-              /* caption line below image */
-              inkStroke(IX + 12, IY + IH + 14, IX + IW - 24, IY + IH + 14, {
-                seed: 64, jitter: 0.4, weight: 1.0, t, color: INK_SOFT
-              });
-
-              /* footer band */
-              const FX = HX, FH = 20, FY = PY + PH - 18 - FH, FW = HW;
-              inkRect(FX, FY, FW, FH, { seed: 71, jitter: 0.65, weight: 1.2, t, color: INK_SOFT });
-
-              ctx.restore(); /* end page tilt */
-
-              /* annotations — un-rotated, sit in margins like a designer's hand */
-
-              /* <h1> label + arrow pointing to the heavy strokes */
-              inkLabel(388, 134, '<h1>', { size: 12, color: SAGE });
-              inkArrow(404, 144, 376, 168, { t, seed: 81, curve: 16, color: SAGE });
-
-              /* <img/> label + arrow to image placeholder */
-              inkLabel(388, 336, '<img/>', { size: 12, color: PEACH });
-              inkArrow(404, 346, 374, 332, { t, seed: 82, curve: -14, color: PEACH });
-
-              /* measurement marker beneath page — a width annotation */
-              const MX1 = 72, MX2 = 372, MY = 580;
-              inkStroke(MX1, MY, MX2, MY, { seed: 91, jitter: 0.3, weight: 0.9, t, color: INK_FAINT });
-              inkStroke(MX1, MY - 4, MX1, MY + 4, { seed: 92, jitter: 0.2, weight: 0.9, t, color: INK_FAINT });
-              inkStroke(MX2, MY - 4, MX2, MY + 4, { seed: 93, jitter: 0.2, weight: 0.9, t, color: INK_FAINT });
-              ctx.fillStyle = INK_FAINT;
-              ctx.font = '500 10px "JetBrains Mono", ui-monospace, monospace';
-              ctx.textAlign = 'center';
-              ctx.textBaseline = 'bottom';
-              ctx.fillText('480 px', (MX1 + MX2) / 2, MY - 6);
-
-              ctx.restore();
-            }
-
-            /* the cursor leaves a fading ink trail — feels like drawing */
-            function paintTrail(now) {
-              const maxAge = 950;
-              while (trail.length && (now - trail[0].t) > maxAge) trail.shift();
-              if (trail.length < 2) return;
-              ctx.lineCap = 'round';
-              ctx.lineJoin = 'round';
-              for (let i = 1; i < trail.length; i++) {
-                const a = trail[i - 1], b = trail[i];
-                const age = now - b.t;
-                if (age > maxAge) continue;
-                const k = 1 - age / maxAge;
-                ctx.strokeStyle = TRAIL.replace('0.55', (0.55 * k * k).toFixed(3));
-                ctx.lineWidth = 1.2 + 0.8 * k;
-                ctx.beginPath();
-                ctx.moveTo(a.x, a.y);
-                ctx.lineTo(b.x, b.y);
-                ctx.stroke();
-              }
-            }
-
-            function paint(now) {
-              ctx.clearRect(0, 0, W, H);
-              paintComposition(now);
-              paintTrail(now);
-            }
-
-            function rebuild() {
-              const r = host.getBoundingClientRect();
-              dpr = Math.min(2, window.devicePixelRatio || 1);
-              W = r.width;
-              H = r.height;
-              if (W < 2 || H < 2) return;
-              canvas.width  = Math.round(W * dpr);
-              canvas.height = Math.round(H * dpr);
-              canvas.style.width  = W + 'px';
-              canvas.style.height = H + 'px';
-              ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-            }
-
-            function onMove(e) {
-              const r = canvas.getBoundingClientRect();
-              const x = e.clientX - r.left;
-              const y = e.clientY - r.top;
-              mouse.x = x; mouse.y = y; mouse.inside = true;
-              trail.push({ x, y, t: performance.now() });
-              if (trail.length > 80) trail.splice(0, trail.length - 80);
-            }
-            function onLeave() {
-              mouse.inside = false;
-            }
-            host.addEventListener('pointermove', onMove);
-            host.addEventListener('pointerleave', onLeave);
-
-            let resizeT;
-            window.addEventListener('resize', () => {
-              clearTimeout(resizeT);
-              resizeT = setTimeout(rebuild, 120);
-            });
-
-            if ('IntersectionObserver' in window) {
-              new IntersectionObserver(es => { visible = es[0].isIntersecting; }, { threshold: 0 })
-                .observe(host);
-            }
-
-            rebuild();
-            paint(performance.now());
-
-            let last = performance.now();
-            function frame(now) {
-              last = now;
-              if (visible) {
-                if (prefersReduced) {
-                  /* re-render only when cursor moves so the trail is responsive */
-                  if (mouse.inside || trail.length) paint(now);
+            if (s[i] === '<') {
+              const close = s[i + 1] === '/';
+              out.push({ t: 'punct', v: close ? '</' : '<' });
+              i += close ? 2 : 1;
+              const m = s.slice(i).match(/^[a-zA-Z][a-zA-Z0-9]*/);
+              if (m) { out.push({ t: 'tag', v: m[0] }); i += m[0].length; }
+              while (i < s.length && s[i] !== '>' && s[i] !== '\n') {
+                if (s[i] === '/' && s[i + 1] === '>') break;
+                if (s[i] === ' ') {
+                  let j = i;
+                  while (s[j] === ' ') j++;
+                  out.push({ t: 'ws', v: s.slice(i, j) });
+                  i = j;
+                } else if (/[a-zA-Z-]/.test(s[i])) {
+                  const am = s.slice(i).match(/^[a-zA-Z-]+/);
+                  out.push({ t: 'attr', v: am[0] });
+                  i += am[0].length;
+                } else if (s[i] === '=') {
+                  out.push({ t: 'op', v: '=' }); i++;
+                } else if (s[i] === '"' || s[i] === "'") {
+                  const q = s[i];
+                  let j = i + 1;
+                  while (j < s.length && s[j] !== q) j++;
+                  j = Math.min(s.length, j + 1);
+                  out.push({ t: 'str', v: s.slice(i, j) });
+                  i = j;
                 } else {
-                  paint(now);
+                  out.push({ t: 'text', v: s[i] }); i++;
                 }
               }
-              requestAnimationFrame(frame);
+              if (s[i] === '/' && s[i + 1] === '>') {
+                out.push({ t: 'punct', v: '/>' }); i += 2;
+              } else if (s[i] === '>') {
+                out.push({ t: 'punct', v: '>' }); i++;
+              }
+              continue;
             }
-            requestAnimationFrame(frame);
-          })();
-        </script>
-      </div>
-    </div>
+            if (s[i] === '\n') { out.push({ t: 'nl', v: '\n' }); i++; continue; }
+            let lt = s.indexOf('<', i);
+            let nl = s.indexOf('\n', i);
+            let end = s.length;
+            if (lt >= 0) end = Math.min(end, lt);
+            if (nl >= 0) end = Math.min(end, nl);
+            out.push({ t: 'text', v: s.slice(i, end) });
+            i = end;
+          }
+          return out;
+        }
+
+        const tokens = tokenize(SRC);
+        const totalChars = tokens.reduce((n, t) => n + t.v.length, 0);
+        const totalLines = SRC.split('\n').length;
+
+        /* line-end char positions for trigger points */
+        const lineEnds = [];
+        {
+          let pos = 0, line = 1;
+          for (const tk of tokens) {
+            pos += tk.v.length;
+            if (tk.t === 'nl') { lineEnds[line] = pos; line++; }
+          }
+          lineEnds[totalLines] = totalChars;
+        }
+        const triggers = Object.entries(LINE_REVEALS)
+          .map(([ln, id]) => ({ at: lineEnds[+ln], id }))
+          .sort((a, b) => a.at - b.at);
+
+        /* Pre-fill gutter once with all line numbers as <b> for highlight */
+        let gutterHTML = '';
+        for (let i = 1; i <= totalLines; i++) gutterHTML += '<b data-ln="' + i + '">' + i + '</b>';
+        gutterEl.innerHTML = gutterHTML;
+
+        /* state */
+        let charsTyped = 0;
+        let tokenIdx = 0;
+        let intraToken = 0;
+        let currentSpan = null;
+        let currentLine = 1;
+        let currentCol = 1;
+        let trigIdx = 0;
+        let lineHeightPx = 0;
+
+        function measureLineHeight() {
+          /* compute by looking at body font-size * line-height */
+          const cs = getComputedStyle(bodyEl);
+          const fs = parseFloat(cs.fontSize) || 13;
+          const lh = parseFloat(cs.lineHeight) || (fs * 1.72);
+          lineHeightPx = lh;
+        }
+        measureLineHeight();
+        window.addEventListener('resize', measureLineHeight);
+
+        function highlightLine(n) {
+          gutterEl.querySelectorAll('b.is-current').forEach(b => b.classList.remove('is-current'));
+          const b = gutterEl.querySelector('b[data-ln="' + n + '"]');
+          if (b) b.classList.add('is-current');
+          if (lineHl) {
+            const padTop = parseFloat(getComputedStyle(bodyEl).paddingTop) || 0;
+            lineHl.style.transform = 'translateY(' + (padTop + (n - 1) * lineHeightPx) + 'px)';
+            lineHl.style.height = lineHeightPx + 'px';
+          }
+        }
+
+        function autoScroll() {
+          /* keep caret in view */
+          const r = caretEl.getBoundingClientRect();
+          const br = bodyEl.getBoundingClientRect();
+          if (r.bottom > br.bottom - 24) {
+            bodyEl.scrollTop += (r.bottom - (br.bottom - 24));
+          }
+        }
+
+        function updateProgress() {
+          const pct = Math.min(100, Math.round((charsTyped / totalChars) * 100));
+          if (ebBar) ebBar.style.width = pct + '%';
+          if (ebPct) ebPct.textContent = pct + '%';
+          if (ebCount) ebCount.textContent = charsTyped + ' / ' + totalChars + ' chars';
+          if (footerCt) footerCt.textContent = 'ln ' + currentLine + ', col ' + currentCol;
+        }
+
+        function fireTriggers() {
+          while (trigIdx < triggers.length && charsTyped >= triggers[trigIdx].at) {
+            const tr = triggers[trigIdx++];
+            const el = mockup.querySelector('[data-reveal="' + tr.id + '"]');
+            if (el && !el.classList.contains('is-visible')) {
+              el.classList.add('is-visible', 'is-flash');
+              setTimeout(() => el.classList.remove('is-flash'), 650);
+            }
+          }
+        }
+
+        function appendOneChar() {
+          const t = tokens[tokenIdx];
+          if (!t) return false;
+          if (t.t === 'nl') {
+            codeEl.appendChild(document.createTextNode('\n'));
+            tokenIdx++;
+            intraToken = 0;
+            currentSpan = null;
+            charsTyped++;
+            currentLine++;
+            currentCol = 1;
+            highlightLine(currentLine);
+            autoScroll();
+            return true;
+          }
+          if (!currentSpan) {
+            currentSpan = document.createElement('span');
+            currentSpan.className = 'tk-' + t.t;
+            codeEl.appendChild(currentSpan);
+          }
+          currentSpan.appendChild(document.createTextNode(t.v[intraToken]));
+          intraToken++;
+          charsTyped++;
+          currentCol++;
+          if (intraToken >= t.v.length) {
+            tokenIdx++;
+            intraToken = 0;
+            currentSpan = null;
+          }
+          return tokenIdx < tokens.length;
+        }
+
+        function nextDelay() {
+          const t = tokens[tokenIdx];
+          if (!t) return 0;
+          if (t.t === 'nl') return 110 + Math.random() * 80;
+          if (t.t === 'punct' && (t.v === '>' || t.v === '/>')) return 50 + Math.random() * 60;
+          if (t.t === 'comment') return 6 + Math.random() * 10;
+          if (t.t === 'str') return 12 + Math.random() * 22;
+          if (t.t === 'tag') return 18 + Math.random() * 22;
+          /* occasional slight pause */
+          if (Math.random() < 0.04) return 90 + Math.random() * 110;
+          return 12 + Math.random() * 26;
+        }
+
+        function done() {
+          status.classList.add('is-done');
+          statusTx.textContent = 'saved';
+          caretEl.classList.add('is-done');
+          if (lineHl) lineHl.classList.add('is-done');
+          /* reveal anything left */
+          while (trigIdx < triggers.length) {
+            const tr = triggers[trigIdx++];
+            const el = mockup.querySelector('[data-reveal="' + tr.id + '"]');
+            if (el) el.classList.add('is-visible');
+          }
+          updateProgress();
+        }
+
+        function fillInstantly() {
+          while (appendOneChar()) {}
+          fireTriggers();
+          updateProgress();
+          done();
+        }
+
+        function tick() {
+          const more = appendOneChar();
+          fireTriggers();
+          updateProgress();
+          if (more) {
+            setTimeout(tick, nextDelay());
+          } else {
+            done();
+          }
+        }
+
+        let started = false;
+        function start() {
+          if (started) return;
+          started = true;
+          highlightLine(1);
+          updateProgress();
+          if (reduced) { fillInstantly(); return; }
+          setTimeout(tick, 650);
+        }
+
+        if ('IntersectionObserver' in window && heroSec) {
+          const io = new IntersectionObserver((entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) { start(); io.disconnect(); break; }
+            }
+          }, { threshold: 0.15 });
+          io.observe(heroSec);
+        } else {
+          start();
+        }
+      })();
+    </script>
   </section>
+
 
 
   <section id="showcase">
