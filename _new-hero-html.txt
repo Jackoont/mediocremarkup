@@ -1,0 +1,514 @@
+  <section class="hero hero-living" id="hero" data-hero-living>
+    <div class="hl-outer" id="hlOuter">
+      <div class="hl-sticky" id="hlSticky">
+        <canvas class="hl-canvas-bg" id="hlCanvas" aria-hidden="true"></canvas>
+
+        <div class="hl-filename">
+          <span>hero.html</span><span style="opacity:0.5">— building live</span>
+        </div>
+
+        <div class="hl-stage">
+          <div class="hl-frame">
+
+            <!-- ROW: EYEBROW -->
+            <div class="hl-row" data-row="eyebrow">
+              <div class="hl-code" data-code="eyebrow"></div>
+              <div class="hl-render" data-render="eyebrow">
+                <div class="hl-render-eyebrow">digital presence check</div>
+              </div>
+            </div>
+
+            <!-- ROW: HEADLINE -->
+            <div class="hl-row" data-row="headline">
+              <div class="hl-code" data-code="headline"></div>
+              <div class="hl-render" data-render="headline">
+                <h1 class="hl-render-headline">
+                  <span>If you&rsquo;re invisible</span>
+                  <span>online, you&rsquo;re</span>
+                  <span class="hl-accent">invisible to</span>
+                  <span class="hl-accent">customers.</span>
+                </h1>
+              </div>
+            </div>
+
+            <!-- ROW: SUB -->
+            <div class="hl-row" data-row="sub">
+              <div class="hl-code" data-code="sub"></div>
+              <div class="hl-render" data-render="sub">
+                <p class="hl-render-sub">Too many great businesses lose opportunities online because their digital presence fails to reflect the quality of their work.</p>
+              </div>
+            </div>
+
+            <!-- ROW: CTA -->
+            <div class="hl-row" data-row="cta">
+              <div class="hl-code" data-code="cta"></div>
+              <div class="hl-render" data-render="cta">
+                <div class="hl-render-cta-row">
+                  <a href="#contact" onclick="jumpToContact(event)" class="hl-render-cta">Start a project <span class="hl-cta-arrow">&rarr;</span></a>
+                </div>
+              </div>
+            </div>
+
+            <!-- ROW: STATS -->
+            <div class="hl-row" data-row="stats">
+              <div class="hl-code" data-code="stats"></div>
+              <div class="hl-render" data-render="stats">
+                <div class="hl-render-stats">
+                  <div class="hl-render-stat"><b>$500</b><small>single-page launch</small></div>
+                  <div class="hl-render-stat"><b>7 days</b><small>typical first pass</small></div>
+                  <div class="hl-render-stat"><b>Custom code</b><small>no page builders</small></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="hl-caret-fly" id="hlCaret"></div>
+
+        <div class="hl-meter" id="hlMeter">
+          <span class="hl-meter-phase" id="hlMeterPhase">idle</span>
+          <span class="hl-meter-track"><i class="hl-meter-fill" id="hlMeterFill"></i></span>
+          <span id="hlMeterPct">0%</span>
+        </div>
+
+        <div class="hl-scroll-prompt" id="hlScrollPrompt">
+          <span>scroll to build</span>
+          <span class="hl-sp-line"></span>
+          <span class="hl-sp-arrow"></span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const heroEl = document.getElementById('hero');
+        const sticky = document.getElementById('hlSticky');
+        const canvas = document.getElementById('hlCanvas');
+        const caret  = document.getElementById('hlCaret');
+        const meter  = document.getElementById('hlMeter');
+        const meterFill = document.getElementById('hlMeterFill');
+        const meterPct  = document.getElementById('hlMeterPct');
+        const meterPhase = document.getElementById('hlMeterPhase');
+        const scrollPrompt = document.getElementById('hlScrollPrompt');
+        if (!heroEl || !sticky || !canvas) return;
+
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        /* ============================================================
+           1. CODE SOURCES per row
+           ============================================================ */
+        const SOURCES = {
+          eyebrow:  '<p class="eyebrow">digital presence check</p>',
+          headline: '<h1>\n  <span>If you’re invisible</span>\n  <span>online, you’re</span>\n  <span class="accent">invisible to</span>\n  <span class="accent">customers.</span>\n</h1>',
+          sub:      '<p class="sub">Too many great businesses lose opportunities online because their digital presence fails to reflect the quality of their work.</p>',
+          cta:      '<a href="#contact" class="cta">Start a project →</a>',
+          stats:    '<div class="stats">\n  <div><b>$500</b><small>single-page launch</small></div>\n  <div><b>7 days</b><small>typical first pass</small></div>\n  <div><b>Custom code</b><small>no page builders</small></div>\n</div>'
+        };
+
+        const ORDER = ['eyebrow', 'headline', 'sub', 'cta', 'stats'];
+
+        /* Each phase has typing window + morph window within global scroll progress 0..1 */
+        const PHASES = {
+          /* row     :  typeStart, typeEnd, morphStart, morphEnd */
+          eyebrow:  { ts: 0.04, te: 0.14, ms: 0.13, me: 0.18, label: 'eyebrow' },
+          headline: { ts: 0.20, te: 0.50, ms: 0.48, me: 0.55, label: 'headline' },
+          sub:      { ts: 0.56, te: 0.66, ms: 0.65, me: 0.70, label: 'paragraph' },
+          cta:      { ts: 0.72, te: 0.80, ms: 0.79, me: 0.84, label: 'cta' },
+          stats:    { ts: 0.85, te: 0.94, ms: 0.93, me: 0.99, label: 'stats' }
+        };
+
+        /* ============================================================
+           2. Tokenize + render each code block into character spans
+           ============================================================ */
+        function tokenize(s) {
+          const out = [];
+          let i = 0;
+          while (i < s.length) {
+            if (s.startsWith('<!--', i)) {
+              const end = s.indexOf('-->', i);
+              const stop = end >= 0 ? end + 3 : s.length;
+              out.push({ t: 'comment', v: s.slice(i, stop) });
+              i = stop; continue;
+            }
+            if (s[i] === '<') {
+              const close = s[i + 1] === '/';
+              out.push({ t: 'punct', v: close ? '</' : '<' });
+              i += close ? 2 : 1;
+              const m = s.slice(i).match(/^[a-zA-Z][a-zA-Z0-9]*/);
+              if (m) { out.push({ t: 'tag', v: m[0] }); i += m[0].length; }
+              while (i < s.length && s[i] !== '>' && s[i] !== '\n') {
+                if (s[i] === '/' && s[i + 1] === '>') break;
+                if (s[i] === ' ') {
+                  let j = i; while (s[j] === ' ') j++;
+                  out.push({ t: 'ws', v: s.slice(i, j) }); i = j;
+                } else if (/[a-zA-Z-]/.test(s[i])) {
+                  const am = s.slice(i).match(/^[a-zA-Z-]+/);
+                  out.push({ t: 'attr', v: am[0] }); i += am[0].length;
+                } else if (s[i] === '=') {
+                  out.push({ t: 'op', v: '=' }); i++;
+                } else if (s[i] === '"' || s[i] === "'") {
+                  const q = s[i]; let j = i + 1;
+                  while (j < s.length && s[j] !== q) j++;
+                  j = Math.min(s.length, j + 1);
+                  out.push({ t: 'str', v: s.slice(i, j) }); i = j;
+                } else { out.push({ t: 'text', v: s[i] }); i++; }
+              }
+              if (s[i] === '/' && s[i + 1] === '>') { out.push({ t: 'punct', v: '/>' }); i += 2; }
+              else if (s[i] === '>') { out.push({ t: 'punct', v: '>' }); i++; }
+              continue;
+            }
+            if (s[i] === '\n') { out.push({ t: 'nl', v: '\n' }); i++; continue; }
+            let lt = s.indexOf('<', i);
+            let nl = s.indexOf('\n', i);
+            let end = s.length;
+            if (lt >= 0) end = Math.min(end, lt);
+            if (nl >= 0) end = Math.min(end, nl);
+            out.push({ t: 'text', v: s.slice(i, end) });
+            i = end;
+          }
+          return out;
+        }
+
+        /* Build DOM into a code container: each printable char is a .ch span */
+        function buildCode(container, source) {
+          container.innerHTML = '';
+          const tokens = tokenize(source);
+          const chars = [];
+          tokens.forEach(tok => {
+            if (tok.t === 'nl') {
+              container.appendChild(document.createTextNode('\n'));
+              return;
+            }
+            const tspan = document.createElement('span');
+            tspan.className = 'tk-' + tok.t;
+            const v = tok.v;
+            for (let i = 0; i < v.length; i++) {
+              const cs = document.createElement('span');
+              cs.className = 'ch';
+              if (v[i] === ' ') cs.setAttribute('data-ws', '1');
+              cs.textContent = v[i];
+              tspan.appendChild(cs);
+              chars.push(cs);
+            }
+            container.appendChild(tspan);
+          });
+          return chars;
+        }
+
+        /* Index code blocks */
+        const codeData = {};
+        ORDER.forEach(key => {
+          const el = heroEl.querySelector('[data-code="' + key + '"]');
+          if (!el) return;
+          const chars = buildCode(el, SOURCES[key]);
+          codeData[key] = { el, chars };
+        });
+
+        /* Render layer references */
+        const renderData = {};
+        ORDER.forEach(key => {
+          renderData[key] = heroEl.querySelector('[data-render="' + key + '"]');
+        });
+
+        /* ============================================================
+           3. Particle ink canvas
+           ============================================================ */
+        let W = 0, H = 0, dpr = 1;
+        const ctx = canvas.getContext('2d');
+        function resize() {
+          dpr = Math.min(window.devicePixelRatio || 1, 2);
+          const r = sticky.getBoundingClientRect();
+          W = Math.max(1, Math.floor(r.width));
+          H = Math.max(1, Math.floor(r.height));
+          canvas.width = W * dpr;
+          canvas.height = H * dpr;
+          canvas.style.width = W + 'px';
+          canvas.style.height = H + 'px';
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        const particles = [];
+        function spawnInk(x, y, n, opts) {
+          opts = opts || {};
+          for (let i = 0; i < n; i++) {
+            const a = Math.random() * Math.PI * 2;
+            const s = (opts.speed || 0.4) * (0.3 + Math.random() * 0.9);
+            particles.push({
+              x, y,
+              vx: Math.cos(a) * s,
+              vy: Math.sin(a) * s - (opts.lift || 0.15),
+              r: 0.6 + Math.random() * (opts.size || 1.6),
+              life: 0,
+              maxLife: 50 + Math.random() * 90,
+              color: opts.color || 'rgba(31,24,20,0.30)',
+              drift: (Math.random() - 0.5) * 0.02
+            });
+          }
+        }
+        function spawnBloom(x, y) {
+          spawnInk(x, y, 14, { color: 'rgba(192,89,58,0.30)', speed: 0.7, size: 2.2, lift: 0.25 });
+          spawnInk(x, y, 10, { color: 'rgba(95,110,88,0.24)', speed: 0.5, size: 1.6, lift: 0.1 });
+        }
+
+        function tickCanvas() {
+          ctx.clearRect(0, 0, W, H);
+          for (let i = particles.length - 1; i >= 0; i--) {
+            const p = particles[i];
+            p.life++;
+            if (p.life > p.maxLife) { particles.splice(i, 1); continue; }
+            p.vy += 0.005; /* slight gravity */
+            p.vx += p.drift;
+            p.x += p.vx;
+            p.y += p.vy;
+            const t = p.life / p.maxLife;
+            const a = (1 - t) * (1 - t);
+            ctx.beginPath();
+            ctx.fillStyle = p.color.replace(/[\d.]+\)$/, (a * 0.65).toFixed(3) + ')');
+            ctx.arc(p.x, p.y, p.r * (1 + t * 0.6), 0, Math.PI * 2);
+            ctx.fill();
+          }
+          requestAnimationFrame(tickCanvas);
+        }
+        requestAnimationFrame(tickCanvas);
+
+        /* ============================================================
+           4. Drive: scroll progress → per-row state
+           ============================================================ */
+        function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+        function ease(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+
+        const ROW_STATE = {}; /* key -> {revealed: 0..N, morphed: 0..1} */
+        ORDER.forEach(k => ROW_STATE[k] = { revealed: 0, morphed: 0, lastSpawn: 0 });
+
+        const caretState = { x: -9999, y: -9999, key: null, on: false };
+        let lastCaretMove = 0;
+
+        function setCaret(x, y) {
+          caret.style.transform = 'translate(' + (x - 6) + 'px, ' + y + 'px)';
+        }
+        function showCaret() {
+          if (!caretState.on) { caret.classList.add('on'); caretState.on = true; }
+        }
+        function hideCaret() {
+          if (caretState.on) { caret.classList.remove('on'); caretState.on = false; }
+        }
+
+        function updateRow(key, progress) {
+          /* progress is local 0..1 over phase typing window */
+          const data = codeData[key];
+          if (!data) return;
+          const chars = data.chars;
+          const target = Math.floor(clamp(progress, 0, 1) * chars.length);
+          const cur = ROW_STATE[key].revealed;
+          if (target === cur) return;
+          if (target > cur) {
+            for (let i = cur; i < target; i++) {
+              chars[i].classList.add('on');
+            }
+          } else {
+            for (let i = cur - 1; i >= target; i--) {
+              chars[i].classList.remove('on');
+            }
+          }
+          ROW_STATE[key].revealed = target;
+          /* spawn ink near the latest character */
+          if (target > cur && target > 0) {
+            const lastCh = chars[target - 1];
+            const r = lastCh.getBoundingClientRect();
+            const sr = sticky.getBoundingClientRect();
+            const x = r.right - sr.left;
+            const y = r.top - sr.top + r.height * 0.55;
+            const now = performance.now();
+            if (now - ROW_STATE[key].lastSpawn > 26 && !reduced) {
+              spawnInk(x, y, 1, { color: 'rgba(31,24,20,0.45)', speed: 0.45, size: 1.2, lift: 0.2 });
+              ROW_STATE[key].lastSpawn = now;
+            }
+            /* move caret */
+            setCaret(x, y - 2);
+            showCaret();
+            lastCaretMove = now;
+          }
+        }
+
+        function setMorph(key, m) {
+          /* m: 0 = no morph (code only), 1 = full render */
+          const codeEl = codeData[key] && codeData[key].el;
+          const renderEl = renderData[key];
+          if (!codeEl || !renderEl) return;
+          ROW_STATE[key].morphed = m;
+          /* code: fade out + lift + blur */
+          codeEl.style.opacity = (1 - m) + '';
+          codeEl.style.transform = 'translateY(' + (-8 * m) + 'px) scale(' + (1 - 0.05 * m) + ')';
+          codeEl.style.filter = 'blur(' + (m * 5).toFixed(2) + 'px)';
+          /* render: fade in + settle + unblur */
+          const em = ease(m);
+          renderEl.style.opacity = em;
+          renderEl.style.transform = 'translateY(' + ((1 - em) * 14).toFixed(2) + 'px) scale(' + (0.985 + em * 0.015).toFixed(3) + ')';
+          renderEl.style.filter = 'blur(' + ((1 - em) * 8).toFixed(2) + 'px)';
+          /* extras */
+          if (key === 'eyebrow') {
+            const eb = renderEl.querySelector('.hl-render-eyebrow');
+            if (eb) eb.style.setProperty('--rule', em);
+          }
+          if (key === 'headline') {
+            const accents = renderEl.querySelectorAll('.hl-accent');
+            accents.forEach(a => a.style.setProperty('--uw', (em * 100).toFixed(1) + '%'));
+          }
+          if (key === 'stats') {
+            const st = renderEl.querySelector('.hl-render-stats');
+            if (st) st.style.setProperty('--statsW', (em * 100).toFixed(1) + '%');
+          }
+          /* spawn bloom on transition crossing 0.5 */
+          if (m >= 0.5 && !ROW_STATE[key].bloomed) {
+            ROW_STATE[key].bloomed = true;
+            if (!reduced) {
+              const r = renderEl.getBoundingClientRect();
+              const sr = sticky.getBoundingClientRect();
+              spawnBloom(r.left - sr.left + r.width * 0.5, r.top - sr.top + r.height * 0.5);
+            }
+          }
+          if (m < 0.5) ROW_STATE[key].bloomed = false;
+        }
+
+        function fadeCode(key, opacity) {
+          const codeEl = codeData[key] && codeData[key].el;
+          if (codeEl) {
+            codeEl.style.opacity = opacity + '';
+            codeEl.style.transform = 'translateY(' + ((1 - opacity) * 6).toFixed(2) + 'px)';
+          }
+        }
+
+        /* ============================================================
+           5. Master scroll loop
+           ============================================================ */
+        let lastProgress = -1;
+        function update() {
+          const r = heroEl.getBoundingClientRect();
+          const total = heroEl.offsetHeight - window.innerHeight;
+          const scrolled = clamp(-r.top, 0, total);
+          const p = total > 0 ? scrolled / total : 0;
+          if (p === lastProgress) { requestAnimationFrame(update); return; }
+          lastProgress = p;
+
+          /* per-row */
+          let currentLabel = 'idle';
+          let activeKey = null;
+          ORDER.forEach(key => {
+            const ph = PHASES[key];
+            /* code fade in/out: appear shortly before typing, fade out during morph */
+            let codeOp = 0;
+            if (p >= ph.ts - 0.02 && p < ph.ms) codeOp = clamp((p - (ph.ts - 0.02)) / 0.02, 0, 1);
+            else if (p >= ph.ms && p < ph.me) codeOp = 1 - clamp((p - ph.ms) / (ph.me - ph.ms), 0, 1);
+            else if (p >= ph.me) codeOp = 0;
+            else codeOp = 0;
+            /* typing progress */
+            let typeProg = 0;
+            if (p < ph.ts) typeProg = 0;
+            else if (p >= ph.te) typeProg = 1;
+            else typeProg = (p - ph.ts) / (ph.te - ph.ts);
+            /* morph progress */
+            let morphProg = 0;
+            if (p < ph.ms) morphProg = 0;
+            else if (p >= ph.me) morphProg = 1;
+            else morphProg = (p - ph.ms) / (ph.me - ph.ms);
+
+            /* apply */
+            updateRow(key, typeProg);
+            const codeEl = codeData[key] && codeData[key].el;
+            if (codeEl) {
+              codeEl.style.opacity = codeOp.toFixed(3);
+              codeEl.style.transform = 'translateY(' + ((1 - codeOp) * 6 - (morphProg * 8)).toFixed(2) + 'px) scale(' + (1 - 0.05 * morphProg).toFixed(3) + ')';
+              codeEl.style.filter = 'blur(' + (morphProg * 5).toFixed(2) + 'px)';
+            }
+            /* render: only update if any morph progress */
+            const renderEl = renderData[key];
+            const em = ease(morphProg);
+            if (renderEl) {
+              renderEl.style.opacity = em.toFixed(3);
+              renderEl.style.transform = 'translateY(' + ((1 - em) * 14).toFixed(2) + 'px) scale(' + (0.985 + em * 0.015).toFixed(3) + ')';
+              renderEl.style.filter = 'blur(' + ((1 - em) * 8).toFixed(2) + 'px)';
+              /* per-row extras */
+              if (key === 'eyebrow') {
+                const eb = renderEl.querySelector('.hl-render-eyebrow');
+                if (eb) eb.style.setProperty('--rule', em);
+              }
+              if (key === 'headline') {
+                const accents = renderEl.querySelectorAll('.hl-accent');
+                accents.forEach(a => a.style.setProperty('--uw', (em * 100).toFixed(1) + '%'));
+              }
+              if (key === 'stats') {
+                const st = renderEl.querySelector('.hl-render-stats');
+                if (st) st.style.setProperty('--statsW', (em * 100).toFixed(1) + '%');
+              }
+              /* bloom once when morph crosses 0.5 */
+              if (morphProg >= 0.5 && !ROW_STATE[key].bloomed) {
+                ROW_STATE[key].bloomed = true;
+                if (!reduced) {
+                  const br = renderEl.getBoundingClientRect();
+                  const sr = sticky.getBoundingClientRect();
+                  spawnBloom(br.left - sr.left + br.width * 0.5, br.top - sr.top + br.height * 0.5);
+                }
+              }
+              if (morphProg < 0.4) ROW_STATE[key].bloomed = false;
+            }
+            /* mark active phase */
+            if (p >= ph.ts - 0.02 && p < ph.me) {
+              currentLabel = ph.label;
+              activeKey = key;
+            }
+          });
+
+          /* caret hide if no active typing within window */
+          const activeTyping = ORDER.some(key => {
+            const ph = PHASES[key];
+            return p >= ph.ts && p < ph.ms;
+          });
+          if (!activeTyping) hideCaret();
+
+          /* meter */
+          const pct = Math.round(p * 100);
+          if (meterFill) meterFill.style.width = pct + '%';
+          if (meterPct) meterPct.textContent = pct + '%';
+          if (meterPhase) meterPhase.textContent = currentLabel;
+
+          /* scroll prompt fades after first scroll */
+          if (p > 0.02 && scrollPrompt && !scrollPrompt.classList.contains('is-done')) {
+            scrollPrompt.classList.add('is-done');
+          } else if (p <= 0.005 && scrollPrompt && scrollPrompt.classList.contains('is-done')) {
+            scrollPrompt.classList.remove('is-done');
+          }
+
+          requestAnimationFrame(update);
+        }
+
+        if (reduced) {
+          /* show everything instantly */
+          ORDER.forEach(key => {
+            const data = codeData[key];
+            if (data) data.chars.forEach(c => c.classList.add('on'));
+            const r = renderData[key];
+            if (r) { r.style.opacity = 1; r.style.transform = 'none'; r.style.filter = 'none'; }
+            if (key === 'eyebrow') {
+              const eb = r && r.querySelector('.hl-render-eyebrow');
+              if (eb) eb.style.setProperty('--rule', 1);
+            }
+            if (key === 'headline') {
+              const accents = r && r.querySelectorAll('.hl-accent');
+              if (accents) accents.forEach(a => a.style.setProperty('--uw', '100%'));
+            }
+            if (key === 'stats') {
+              const st = r && r.querySelector('.hl-render-stats');
+              if (st) st.style.setProperty('--statsW', '100%');
+            }
+            const codeEl = data && data.el;
+            if (codeEl) codeEl.style.display = 'none';
+          });
+        } else {
+          requestAnimationFrame(update);
+        }
+      })();
+    </script>
+  </section>

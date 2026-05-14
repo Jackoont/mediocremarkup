@@ -1,0 +1,415 @@
+  <section class="hero immersive-hero" id="hero" data-immersive>
+    <div class="ih-pin" id="ihPin">
+
+      <canvas class="ih-canvas" id="ihCanvas" aria-hidden="true"></canvas>
+      <div class="ih-vignette" aria-hidden="true"></div>
+
+      <div class="ih-meta" aria-hidden="true">
+        <span class="ih-meta-rule"></span>
+        <span>hero.html</span>
+        <span class="ih-meta-num" id="ihMetaNum">000 / 000</span>
+      </div>
+
+      <div class="ih-ambient" id="ihAmbient" aria-hidden="true"></div>
+
+      <div class="ih-code" id="ihCode" aria-hidden="true">
+        <div class="ih-code-inner" id="ihCodeInner"></div>
+      </div>
+
+      <div class="ih-rendered" id="ihRendered">
+        <div class="ih-r-wrap">
+          <span class="ih-eyebrow" data-r="eyebrow">digital presence check</span>
+          <h1 class="ih-headline">
+            <span data-r="h1a">If you&rsquo;re invisible</span>
+            <span data-r="h1b">online, you&rsquo;re</span>
+            <span data-r="h1c" class="ih-accent">invisible to</span>
+            <span data-r="h1d" class="ih-accent">customers.</span>
+          </h1>
+          <p class="ih-sub" data-r="sub">Too many great businesses lose opportunities online because their digital presence fails to reflect the quality of their work.</p>
+          <div class="ih-actions" data-r="cta">
+            <a href="#contact" onclick="jumpToContact(event)" class="ih-cta">Start a project <span class="ih-cta-arrow">&rarr;</span></a>
+          </div>
+          <div class="ih-stats">
+            <div data-r="stat1"><b>$500</b><small>single-page launch</small></div>
+            <div data-r="stat2"><b>7 days</b><small>typical first pass</small></div>
+            <div data-r="stat3"><b>Custom code</b><small>no page builders</small></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ih-stage-rule" aria-hidden="true"></div>
+
+      <div class="ih-hint" id="ihHint" aria-hidden="true">
+        <span class="ih-hint-arrow">&darr;</span>
+        <span id="ihHintLabel">scroll to compile</span>
+        <span class="ih-hint-bar"><i id="ihHintFill"></i></span>
+      </div>
+
+      <div class="ih-tag" id="ihTag" aria-hidden="true">
+        <span class="ih-tag-dot"></span>
+        <span id="ihTagText">compiling DOM</span>
+      </div>
+
+      <div class="ih-grain" aria-hidden="true"></div>
+
+    </div>
+
+    <script>
+      (function () {
+        const pinEl     = document.getElementById('ihPin');
+        const codeInner = document.getElementById('ihCodeInner');
+        const ambient   = document.getElementById('ihAmbient');
+        const metaNum   = document.getElementById('ihMetaNum');
+        const hintFill  = document.getElementById('ihHintFill');
+        const hintEl    = document.getElementById('ihHint');
+        const hintLabel = document.getElementById('ihHintLabel');
+        const tagEl     = document.getElementById('ihTag');
+        const tagText   = document.getElementById('ihTagText');
+        const canvas    = document.getElementById('ihCanvas');
+        const heroSec   = document.getElementById('hero');
+        if (!pinEl || !codeInner || !canvas) return;
+        if (!window.gsap || !window.ScrollTrigger) return;
+
+        gsap.registerPlugin(ScrollTrigger);
+
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        /* HTML source we're "writing" — each row is one organic line */
+        const SRC = [
+          { indent: 0, html: '<section class="hero">' },
+          { indent: 1, html: '<p class="eyebrow"><!-- digital presence check --></p>' },
+          { indent: 1, html: '<h1>' },
+          { indent: 2, html: '<span>If you’re invisible</span>' },
+          { indent: 2, html: '<span>online, you’re</span>' },
+          { indent: 2, html: '<span class="accent">invisible to</span>' },
+          { indent: 2, html: '<span class="accent">customers.</span>' },
+          { indent: 1, html: '</h1>' },
+          { indent: 1, html: '<p class="sub">Too many great businesses lose opportunities online because their digital presence fails to reflect the quality of their work.</p>' },
+          { indent: 1, html: '<a href="#contact" class="cta">Start a project →</a>' },
+          { indent: 1, html: '<div class="stats">' },
+          { indent: 2, html: '<div><b>$500</b> <small>single-page launch</small></div>' },
+          { indent: 2, html: '<div><b>7 days</b> <small>typical first pass</small></div>' },
+          { indent: 2, html: '<div><b>Custom code</b> <small>no page builders</small></div>' },
+          { indent: 1, html: '</div>' },
+          { indent: 0, html: '</section>' }
+        ];
+
+        /* ---------- tokenizer ---------- */
+        function tokenize(s) {
+          const out = [];
+          let i = 0;
+          while (i < s.length) {
+            if (s.startsWith('<!--', i)) {
+              const e = s.indexOf('-->', i);
+              const stop = e >= 0 ? e + 3 : s.length;
+              out.push({ t: 'comment', v: s.slice(i, stop) });
+              i = stop; continue;
+            }
+            if (s[i] === '<') {
+              const close = s[i + 1] === '/';
+              out.push({ t: 'punct', v: close ? '</' : '<' });
+              i += close ? 2 : 1;
+              const m = s.slice(i).match(/^[a-zA-Z][a-zA-Z0-9]*/);
+              if (m) { out.push({ t: 'tag', v: m[0] }); i += m[0].length; }
+              while (i < s.length && s[i] !== '>' && s[i] !== '\n') {
+                if (s[i] === '/' && s[i + 1] === '>') break;
+                if (s[i] === ' ') {
+                  let j = i; while (s[j] === ' ') j++;
+                  out.push({ t: 'ws', v: s.slice(i, j) });
+                  i = j;
+                } else if (/[a-zA-Z-]/.test(s[i])) {
+                  const am = s.slice(i).match(/^[a-zA-Z-]+/);
+                  out.push({ t: 'attr', v: am[0] });
+                  i += am[0].length;
+                } else if (s[i] === '=') {
+                  out.push({ t: 'op', v: '=' }); i++;
+                } else if (s[i] === '"' || s[i] === "'") {
+                  const q = s[i];
+                  let j = i + 1;
+                  while (j < s.length && s[j] !== q) j++;
+                  j = Math.min(s.length, j + 1);
+                  out.push({ t: 'str', v: s.slice(i, j) });
+                  i = j;
+                } else {
+                  out.push({ t: 'text', v: s[i] }); i++;
+                }
+              }
+              if (s[i] === '/' && s[i + 1] === '>') { out.push({ t: 'punct', v: '/>' }); i += 2; }
+              else if (s[i] === '>') { out.push({ t: 'punct', v: '>' }); i++; }
+              continue;
+            }
+            let lt = s.indexOf('<', i);
+            let end = s.length;
+            if (lt >= 0) end = Math.min(end, lt);
+            out.push({ t: 'text', v: s.slice(i, end) });
+            i = end;
+          }
+          return out;
+        }
+
+        /* ---------- build the code DOM ---------- */
+        const allChars = [];
+        SRC.forEach((row, idx) => {
+          const line = document.createElement('div');
+          line.className = 'ih-line';
+          line.dataset.indent = row.indent;
+          line.dataset.idx = idx;
+
+          const toks = tokenize(row.html);
+          toks.forEach(tk => {
+            for (const ch of tk.v) {
+              const s = document.createElement('span');
+              s.className = 'ih-char tk-' + tk.t;
+              s.textContent = (ch === ' ') ? ' ' : ch;
+              line.appendChild(s);
+              allChars.push(s);
+            }
+          });
+
+          codeInner.appendChild(line);
+
+          /* organic per-line jitter + rotation */
+          const xj = (Math.random() - 0.5) * 36;
+          const yj = (Math.random() - 0.5) * 10;
+          const rot = (Math.random() - 0.5) * 2.6;
+          gsap.set(line, { x: xj, y: yj, rotation: rot });
+
+          /* ambient bob — independent of scroll */
+          gsap.to(line, {
+            y: yj + (Math.random() * 6 + 4),
+            duration: 3.6 + Math.random() * 2.4,
+            ease: 'sine.inOut',
+            yoyo: true,
+            repeat: -1,
+            delay: -Math.random() * 3
+          });
+        });
+
+        /* ---------- ambient floating glyphs ---------- */
+        const glyphs = ['{', '}', '<', '>', '/', ';', '=', '*', '"', "'", '<>', '/>', '()' ];
+        const N_AMB = reduced ? 0 : 36;
+        for (let i = 0; i < N_AMB; i++) {
+          const s = document.createElement('span');
+          s.className = 'ih-am-mark';
+          s.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
+          s.style.left = (Math.random() * 100) + '%';
+          s.style.top  = (Math.random() * 100) + '%';
+          s.style.animationDelay = (-Math.random() * 22) + 's';
+          s.style.opacity = (0.05 + Math.random() * 0.12).toFixed(2);
+          s.style.fontSize = (Math.random() * 22 + 12) + 'px';
+          s.style.transform = 'rotate(' + ((Math.random() - 0.5) * 30).toFixed(1) + 'deg)';
+          ambient.appendChild(s);
+        }
+
+        if (metaNum) metaNum.textContent = '000 / ' + String(allChars.length).padStart(3, '0');
+
+        /* ---------- canvas backdrop ---------- */
+        const ctx = canvas.getContext('2d');
+        let CW = 0, CH = 0;
+        function resizeCanvas() {
+          const r = canvas.getBoundingClientRect();
+          const dpr = window.devicePixelRatio || 1;
+          canvas.width  = r.width * dpr;
+          canvas.height = r.height * dpr;
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          CW = r.width; CH = r.height;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const N_PART = reduced ? 0 : 90;
+        const parts = Array.from({ length: N_PART }, () => ({
+          x: Math.random() * CW,
+          y: Math.random() * CH,
+          vx: (Math.random() - 0.5) * 0.08,
+          vy: -Math.random() * 0.22 - 0.04,
+          r: Math.random() * 1.6 + 0.5,
+          a: Math.random() * 0.45 + 0.18,
+          hue: Math.random() < 0.6 ? 'gold' : 'teal'
+        }));
+
+        const stains = Array.from({ length: 7 }, () => {
+          const cols = [
+            'rgba(47,111,143,0.06)',
+            'rgba(201,122,74,0.06)',
+            'rgba(31,24,18,0.05)',
+            'rgba(255,210,150,0.04)'
+          ];
+          return {
+            x: Math.random() * CW,
+            y: Math.random() * CH,
+            r: Math.random() * 320 + 180,
+            col: cols[Math.floor(Math.random() * cols.length)],
+            phase: Math.random() * Math.PI * 2,
+            speed: Math.random() * 0.0004 + 0.00018
+          };
+        });
+
+        let t0 = performance.now();
+        function frame() {
+          const t = (performance.now() - t0) / 1000;
+          ctx.clearRect(0, 0, CW, CH);
+
+          /* warm horizon wash */
+          const g = ctx.createLinearGradient(0, 0, 0, CH);
+          g.addColorStop(0, 'rgba(255,250,235,0.0)');
+          g.addColorStop(0.55, 'rgba(220,200,160,0.05)');
+          g.addColorStop(1, 'rgba(168,148,108,0.22)');
+          ctx.fillStyle = g;
+          ctx.fillRect(0, 0, CW, CH);
+
+          /* ink stains breathing */
+          for (const s of stains) {
+            s.x += Math.sin(t * 0.6 + s.phase) * 0.22;
+            s.y += Math.cos(t * 0.5 + s.phase) * 0.18;
+            const rg = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r);
+            rg.addColorStop(0, s.col);
+            rg.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = rg;
+            ctx.fillRect(0, 0, CW, CH);
+          }
+
+          /* motes */
+          for (const p of parts) {
+            p.x += p.vx + Math.sin(t * 0.5 + p.y * 0.01) * 0.04;
+            p.y += p.vy;
+            if (p.y < -12) { p.y = CH + 12; p.x = Math.random() * CW; }
+            if (p.x < -12) p.x = CW + 12;
+            if (p.x > CW + 12) p.x = -12;
+            const c = p.hue === 'gold' ? '255,210,148' : '120,180,200';
+            const grd = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3.8);
+            grd.addColorStop(0, 'rgba(' + c + ',' + p.a + ')');
+            grd.addColorStop(1, 'rgba(' + c + ',0)');
+            ctx.fillStyle = grd;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r * 3.8, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          requestAnimationFrame(frame);
+        }
+        if (!reduced) requestAnimationFrame(frame);
+
+        /* ---------- initial states ---------- */
+        gsap.set(allChars, { opacity: 0, yPercent: 70, scaleY: 0.35, filter: 'blur(8px)' });
+        gsap.set('.ih-rendered [data-r]', { opacity: 0 });
+        gsap.set('.ih-headline > span', { y: 80, rotateX: -45, filter: 'blur(22px)' });
+        gsap.set('.ih-eyebrow',  { y: -14, letterSpacing: '14px' });
+        gsap.set('.ih-sub',      { y: 32, filter: 'blur(10px)' });
+        gsap.set('.ih-actions',  { y: 30, scale: 0.92 });
+        gsap.set('.ih-stats > div', { y: 28, filter: 'blur(6px)' });
+
+        /* ---------- master scroll timeline ---------- */
+        const master = gsap.timeline({
+          scrollTrigger: {
+            trigger: heroSec,
+            start: 'top top',
+            end: '+=460%',
+            pin: pinEl,
+            pinSpacing: true,
+            scrub: 1.1,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              if (hintFill) hintFill.style.width = (self.progress * 100).toFixed(1) + '%';
+              if (metaNum) {
+                const typed = Math.round(self.progress * allChars.length);
+                metaNum.textContent = String(typed).padStart(3, '0') + ' / ' + String(allChars.length).padStart(3, '0');
+              }
+              if (hintEl) hintEl.classList.toggle('is-fading', self.progress > 0.12);
+              if (self.progress < 0.5) {
+                if (hintLabel) hintLabel.textContent = 'scroll to compile';
+                if (tagText) tagText.textContent = 'writing markup';
+                tagEl && tagEl.classList.remove('is-done');
+              } else if (self.progress < 0.92) {
+                if (hintLabel) hintLabel.textContent = 'rendering';
+                if (tagText) tagText.textContent = 'painting DOM';
+                tagEl && tagEl.classList.remove('is-done');
+              } else {
+                if (hintLabel) hintLabel.textContent = 'live';
+                if (tagText) tagText.textContent = 'live';
+                tagEl && tagEl.classList.add('is-done');
+              }
+            }
+          }
+        });
+
+        /* Phase A — write code (0 → 0.50) */
+        master.to(allChars, {
+          opacity: 1,
+          yPercent: 0,
+          scaleY: 1,
+          filter: 'blur(0px)',
+          duration: 0.50,
+          ease: 'power2.out',
+          stagger: { each: 0.50 / allChars.length, from: 'start' }
+        }, 0);
+
+        /* Phase B — code recedes (0.50 → 0.72) */
+        master.to('.ih-code-inner', {
+          scale: 0.74,
+          rotateX: -24,
+          z: -220,
+          opacity: 0.22,
+          filter: 'blur(2.5px)',
+          ease: 'power2.inOut',
+          duration: 0.22
+        }, 0.50);
+
+        /* Phase C — chars scatter (0.55 → 0.82) */
+        master.to(allChars, {
+          opacity: 0,
+          yPercent: () => gsap.utils.random(-110, 110),
+          xPercent: () => gsap.utils.random(-60, 60),
+          rotate: () => gsap.utils.random(-220, 220),
+          scale: () => gsap.utils.random(0.35, 1.7),
+          filter: 'blur(12px)',
+          duration: 0.27,
+          ease: 'power3.in',
+          stagger: { each: 0.27 / allChars.length, from: 'random' }
+        }, 0.55);
+
+        /* Phase D — rendered hero emerges (0.56 → 0.98) */
+        master.to('.ih-eyebrow', {
+          opacity: 1, y: 0, letterSpacing: '3.2px',
+          duration: 0.10, ease: 'power2.out'
+        }, 0.56);
+
+        master.to('.ih-headline > span', {
+          opacity: 1, y: 0, rotateX: 0, filter: 'blur(0px)',
+          duration: 0.20, ease: 'power3.out',
+          stagger: 0.05
+        }, 0.62);
+
+        master.to('.ih-sub', {
+          opacity: 1, y: 0, filter: 'blur(0px)',
+          duration: 0.14, ease: 'power2.out'
+        }, 0.80);
+
+        master.to('.ih-actions', {
+          opacity: 1, y: 0, scale: 1,
+          duration: 0.12, ease: 'back.out(1.5)'
+        }, 0.86);
+
+        master.to('.ih-stats > div', {
+          opacity: 1, y: 0, filter: 'blur(0px)',
+          duration: 0.11, ease: 'power2.out',
+          stagger: 0.028
+        }, 0.90);
+
+        /* settle */
+        master.to('.ih-r-wrap', { y: -2, duration: 0.05, ease: 'sine.inOut' }, 0.96);
+
+        /* reduced-motion: skip scroll, just show rendered */
+        if (reduced) {
+          gsap.set(allChars, { opacity: 0 });
+          gsap.set('.ih-rendered [data-r]', { opacity: 1, y: 0, scale: 1, rotateX: 0, filter: 'none', letterSpacing: '3.2px' });
+        }
+
+        /* ensure ScrollTrigger recalcs after fonts load */
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(() => ScrollTrigger.refresh());
+        }
+      })();
+    </script>
+  </section>

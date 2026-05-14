@@ -6210,497 +6210,403 @@
     }
 
     /* =============================================================
-       LIVE-CODE HERO — split screen: IDE typing left, render right
+       IMMERSIVE HERO — pinned scroll-driven build: code dissolves
+       into the actual rendered hero. No chrome, no panes, no rigid
+       grid. Cinematic ink-on-vellum aesthetic.
        ============================================================= */
-    .hero.live-hero {
+    .hero.imm-hero {
       padding: 0;
+      margin: 0;
       min-height: 100vh;
       display: block;
-      background:
-        radial-gradient(1200px 600px at 20% 0%, rgba(47,111,143,0.06), transparent 60%),
-        radial-gradient(900px 500px at 90% 90%, rgba(240,99,90,0.05), transparent 65%),
-        linear-gradient(180deg, #f7f8f5 0%, #efeee9 100%);
+      background: transparent;
+      contain: layout paint;
     }
-    .hero.live-hero::after { display: none; }
-    .live-hero {
-      --lh-code-bg: #0b0f1a;
-      --lh-code-bg-2: #070a13;
-      --lh-code-fg: #cdd6f4;
-      --lh-code-dim: #4b5573;
-      --lh-code-tag: #f7768e;
-      --lh-code-attr: #e0af68;
-      --lh-code-str: #9ece6a;
-      --lh-code-text: #e5e9f5;
-      --lh-code-comment: #6272a4;
-      --lh-code-caret: #ff9e64;
-      --lh-code-line: #131826;
-      --lh-code-gutter: #6c7591;
-      --lh-code-sel: rgba(255,158,100,0.16);
+    .hero.imm-hero::after { display: none; }
+
+    .imm-hero {
+      --imm-ink: #1c1814;
+      --imm-ink-soft: rgba(28,24,20,0.72);
+      --imm-ink-faint: rgba(28,24,20,0.42);
+      --imm-paper: #f8f3e7;
+      --imm-paper-2: #efe7d3;
+      --imm-paper-3: #e7dcc1;
+      --imm-accent: #2f6f8f;
+      --imm-accent-warm: #c46b3e;
+      --imm-tag: #a8453a;
+      --imm-attr: #b08740;
+      --imm-str: #5e7a3f;
+      --imm-comment: rgba(28,24,20,0.4);
+      --imm-glow: rgba(255,200,140,0.45);
     }
 
-    .lh-stage {
+    /* The whole hero is given enough scroll runway via JS-injected
+       spacer; the .imm-pin element gets pinned by ScrollTrigger. */
+    .imm-pin {
       position: relative;
-      z-index: 4;
-      min-height: 100vh;
       width: 100%;
-      max-width: 1480px;
-      margin: 0 auto;
-      padding: 96px 28px 60px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: auto 1fr auto;
-      gap: 18px 20px;
-      align-items: stretch;
-      box-sizing: border-box;
+      height: 100vh;
+      overflow: hidden;
+      isolation: isolate;
+      background:
+        radial-gradient(1400px 800px at 50% 22%, #fbf6e8 0%, transparent 62%),
+        radial-gradient(1100px 700px at 18% 88%, rgba(47,111,143,0.10), transparent 65%),
+        radial-gradient(1000px 650px at 88% 80%, rgba(196,107,62,0.12), transparent 70%),
+        linear-gradient(180deg, #f6efde 0%, #ecdfbe 100%);
     }
 
-    .lh-eyebrow-bar {
-      grid-column: 1 / -1;
+    .imm-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .imm-grain {
+      position: absolute; inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0.42;
+      mix-blend-mode: multiply;
+      background-image: radial-gradient(rgba(28,24,20,0.18) 1px, transparent 1px),
+                        radial-gradient(rgba(28,24,20,0.10) 1px, transparent 1px);
+      background-size: 3px 3px, 7px 7px;
+      background-position: 0 0, 1px 2px;
+      mask-image: radial-gradient(120% 100% at 50% 50%, #000 60%, transparent 100%);
+      -webkit-mask-image: radial-gradient(120% 100% at 50% 50%, #000 60%, transparent 100%);
+    }
+
+    /* The stage that holds the floating code AND the rendered hero
+       on top of one another. */
+    .imm-stage {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      perspective: 1400px;
+      perspective-origin: 50% 40%;
+    }
+
+    /* ---------- Floating code layer ---------- */
+    .imm-code {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      will-change: transform, opacity, filter;
+      pointer-events: none;
+    }
+    .imm-code-inner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(1080px, 96vw);
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+    .imm-line {
+      position: relative;
+      display: block;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: clamp(13px, 1.55vw, 22px);
+      line-height: 1.55;
+      color: var(--imm-ink);
+      white-space: pre;
+      will-change: transform, opacity;
+      transform-origin: 0 50%;
+      letter-spacing: -0.01em;
+    }
+    /* organic per-line offsets — each line is hand-placed */
+    .imm-line[data-ln="1"]  { transform: translate(0,            0)     rotate(-0.6deg); }
+    .imm-line[data-ln="2"]  { transform: translate(2.5%,         0)     rotate(0.2deg); }
+    .imm-line[data-ln="3"]  { transform: translate(-1%,          0)     rotate(-0.3deg); }
+    .imm-line[data-ln="4"]  { transform: translate(4%,           0)     rotate(0.4deg); }
+    .imm-line[data-ln="5"]  { transform: translate(2%,           0)     rotate(-0.4deg); }
+    .imm-line[data-ln="6"]  { transform: translate(5%,           0)     rotate(0.5deg); }
+    .imm-line[data-ln="7"]  { transform: translate(3%,           0)     rotate(-0.2deg); }
+    .imm-line[data-ln="8"]  { transform: translate(0,            0)     rotate(0.3deg); }
+    .imm-line[data-ln="9"]  { transform: translate(1%,           0)     rotate(-0.5deg); }
+    .imm-line[data-ln="10"] { transform: translate(3%,           0)     rotate(0.4deg); }
+    .imm-line[data-ln="11"] { transform: translate(-1%,          0)     rotate(-0.3deg); }
+    .imm-line[data-ln="12"] { transform: translate(4%,           0)     rotate(0.5deg); }
+    .imm-line[data-ln="13"] { transform: translate(3%,           0)     rotate(-0.4deg); }
+    .imm-line[data-ln="14"] { transform: translate(2%,           0)     rotate(0.3deg); }
+    .imm-line[data-ln="15"] { transform: translate(0,            0)     rotate(-0.3deg); }
+    .imm-line[data-ln="16"] { transform: translate(0,            0)     rotate(0.2deg); }
+
+    .imm-code .tk-tag      { color: var(--imm-tag); }
+    .imm-code .tk-attr     { color: var(--imm-attr); }
+    .imm-code .tk-str      { color: var(--imm-str); }
+    .imm-code .tk-punct    { color: rgba(28,24,20,0.55); }
+    .imm-code .tk-text     { color: var(--imm-ink); }
+    .imm-code .tk-comment  { color: var(--imm-comment); font-style: italic; }
+    .imm-code .tk-ws       { color: inherit; }
+
+    /* per-char wrapper for write-on + dissolve choreography */
+    .imm-char {
+      display: inline-block;
+      opacity: 0;
+      transform: translate3d(0, 0.45em, 0) rotate(0deg);
+      will-change: transform, opacity, filter, color;
+      backface-visibility: hidden;
+      filter: blur(2px);
+    }
+
+    /* ---------- Rendered hero layer (the actual content) ---------- */
+    .imm-page {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 2.2px;
-      text-transform: uppercase;
-      color: rgba(23,33,29,0.5);
-      padding: 0 4px;
+      justify-content: center;
+      pointer-events: none;
     }
-    .lh-eyebrow-bar .lh-eb-left { display: flex; align-items: center; gap: 12px; }
-    .lh-eyebrow-bar .lh-eb-rule { width: 28px; height: 1px; background: rgba(47,111,143,0.4); }
-    .lh-eyebrow-bar .lh-eb-right { display: flex; align-items: center; gap: 14px; color: rgba(23,33,29,0.42); }
-    .lh-eb-progress {
-      display: inline-flex; align-items: center; gap: 6px;
-    }
-    .lh-eb-progress .lh-eb-bar {
-      width: 110px; height: 2px; background: rgba(23,33,29,0.08);
-      position: relative; overflow: hidden;
-    }
-    .lh-eb-progress .lh-eb-bar i {
-      position: absolute; inset: 0; right: auto; width: 0;
-      background: linear-gradient(90deg, #2f6f8f, #ff9e64);
-      transition: width 0.25s ease-out;
-    }
-
-    .lh-pane {
+    .imm-page-inner {
       position: relative;
+      width: min(1100px, 92vw);
+      padding: 0 4vw;
       display: flex;
       flex-direction: column;
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: 0 32px 80px rgba(11,15,26,0.18), 0 6px 18px rgba(11,15,26,0.06);
-      min-height: 0;
+      align-items: flex-start;
+      text-align: left;
+      will-change: transform, opacity;
     }
-    .lh-code { background: var(--lh-code-bg); }
-    .lh-render { background: #fbfaf6; border: 1px solid rgba(23,33,29,0.08); }
+    .imm-page [data-r] {
+      opacity: 0;
+      will-change: transform, opacity, filter;
+      pointer-events: auto;
+    }
 
-    .lh-bar {
-      flex: 0 0 auto;
-      height: 38px;
-      display: flex;
+    .imm-eyebrow {
+      display: inline-flex;
       align-items: center;
       gap: 12px;
-      padding: 0 14px;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      border-bottom: 1px solid;
-    }
-    .lh-code .lh-bar {
-      background: #050810;
-      border-bottom-color: #131826;
-      color: #6c7591;
-    }
-    .lh-render .lh-bar {
-      background: #ececea;
-      border-bottom-color: rgba(0,0,0,0.06);
-      color: #4a5563;
-    }
-
-    .lh-dots { display: flex; gap: 6px; }
-    .lh-dots i {
-      width: 11px; height: 11px; border-radius: 50%;
-      display: inline-block;
-    }
-    .lh-dots i:nth-child(1) { background: #ff5f56; }
-    .lh-dots i:nth-child(2) { background: #ffbd2e; }
-    .lh-dots i:nth-child(3) { background: #27c93f; }
-
-    .lh-tabs {
-      display: flex; gap: 2px; align-items: center;
-      margin-left: 6px;
-    }
-    .lh-tab {
-      padding: 6px 14px 7px;
-      border-radius: 6px 6px 0 0;
-      color: #6c7591;
-      position: relative; top: 1px;
-      font-size: 11px;
-      letter-spacing: 0.4px;
-      border: 1px solid transparent;
-      border-bottom: none;
-      display: inline-flex; align-items: center; gap: 7px;
-    }
-    .lh-tab::before {
-      content: ''; width: 10px; height: 10px;
-      background: linear-gradient(135deg, #ff9e64 50%, transparent 50%);
-      transform: rotate(-45deg);
-      opacity: 0.85;
-    }
-    .lh-tab.active {
-      background: var(--lh-code-bg);
-      color: #e5e9f5;
-      border-color: #131826;
-    }
-    .lh-tab.active::after {
-      content: ''; position: absolute; left: 0; right: 0; top: 0;
-      height: 2px; background: #ff9e64;
-    }
-
-    .lh-status {
-      margin-left: auto;
-      display: inline-flex; align-items: center; gap: 8px;
-      font-size: 10px;
-      letter-spacing: 1.6px;
-      text-transform: uppercase;
-      color: #6c7591;
-    }
-    .lh-status .lh-status-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: #ff9e64;
-      box-shadow: 0 0 10px rgba(255,158,100,0.7);
-      animation: lhPulse 1.5s ease-in-out infinite;
-    }
-    .lh-status.is-done .lh-status-dot { background: #27c93f; box-shadow: 0 0 10px rgba(39,201,63,0.6); animation: none; }
-    @keyframes lhPulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.35; transform: scale(0.78); } }
-
-    /* Browser url pill */
-    .lh-url {
-      flex: 1;
-      background: #fff;
-      border: 1px solid rgba(0,0,0,0.06);
-      border-radius: 100px;
-      height: 24px;
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 0 12px;
-      color: #5a6573;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      max-width: 360px;
-      overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
-    }
-    .lh-url svg { width: 10px; height: 10px; flex: 0 0 auto; opacity: 0.6; }
-    .lh-url b { color: #17211d; font-weight: 500; }
-    .lh-bcontrols { display: inline-flex; gap: 8px; color: #98a0ad; font-size: 14px; line-height: 1; }
-    .lh-bcontrols span { opacity: 0.55; cursor: default; }
-
-    /* Editor body */
-    .lh-editor {
-      flex: 1 1 auto;
-      display: grid;
-      grid-template-columns: 56px 1fr;
       font-family: 'JetBrains Mono', ui-monospace, monospace;
-      font-size: 13px;
-      line-height: 1.72;
-      overflow: hidden;
-      color: var(--lh-code-fg);
-      min-height: 0;
-      position: relative;
-    }
-    .lh-editor::before {
-      content: '';
-      position: absolute;
-      pointer-events: none;
-      inset: 0;
-      background:
-        radial-gradient(80% 50% at 50% 0%, rgba(255,158,100,0.06), transparent 65%),
-        radial-gradient(60% 40% at 50% 100%, rgba(47,111,143,0.05), transparent 60%);
-      mix-blend-mode: screen;
-      z-index: 1;
-    }
-    .lh-gutter {
-      background: var(--lh-code-bg-2);
-      color: var(--lh-code-gutter);
-      text-align: right;
-      padding: 18px 12px 24px 0;
-      user-select: none;
-      white-space: pre;
-      font-size: 12px;
-      line-height: 1.72;
-      border-right: 1px solid #131826;
-      margin: 0;
-      overflow: hidden;
-      font-family: inherit;
-    }
-    .lh-gutter b {
-      display: block;
-      font-weight: 400;
-      transition: color 0.3s ease;
-    }
-    .lh-gutter b.is-current { color: #ff9e64; }
-    .lh-code-body {
-      padding: 18px 18px 28px;
-      overflow: auto;
-      white-space: pre;
-      position: relative;
-      margin: 0;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(255,255,255,0.15) transparent;
-      font-family: inherit;
-      font-size: inherit;
-      line-height: inherit;
-      z-index: 2;
-    }
-    .lh-code-body::-webkit-scrollbar { width: 8px; }
-    .lh-code-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 4px; }
-
-    .lh-source { font: inherit; color: var(--lh-code-text); }
-    .lh-source .tk-tag      { color: var(--lh-code-tag); }
-    .lh-source .tk-attr     { color: var(--lh-code-attr); }
-    .lh-source .tk-str      { color: var(--lh-code-str); }
-    .lh-source .tk-op,
-    .lh-source .tk-punct    { color: var(--lh-code-dim); }
-    .lh-source .tk-comment  { color: var(--lh-code-comment); font-style: italic; }
-    .lh-source .tk-text     { color: var(--lh-code-text); }
-    .lh-source .tk-ws       { color: inherit; }
-
-    .lh-caret {
-      display: inline-block;
-      width: 2px;
-      height: 1.05em;
-      background: var(--lh-code-caret);
-      vertical-align: text-bottom;
-      margin-left: 1px;
-      box-shadow: 0 0 10px rgba(255,158,100,0.65);
-      animation: lhCaret 1s steps(1) infinite;
-    }
-    .lh-caret.is-done { background: transparent; box-shadow: none; animation: none; }
-    @keyframes lhCaret { 0%,49% { opacity: 1; } 50%,100% { opacity: 0; } }
-
-    /* current-line highlight ribbon */
-    .lh-line-hl {
-      position: absolute;
-      left: 0; right: 0;
-      height: 1.72em;
-      background: linear-gradient(90deg, rgba(255,158,100,0.08), rgba(255,158,100,0.0) 70%);
-      border-left: 2px solid #ff9e64;
-      pointer-events: none;
-      transform: translateY(0);
-      transition: transform 0.18s ease-out, opacity 0.2s;
-      z-index: 0;
-      opacity: 0.85;
-    }
-    .lh-line-hl.is-done { opacity: 0; }
-
-    /* Render canvas */
-    .lh-canvas {
-      flex: 1;
-      background:
-        radial-gradient(800px 400px at 30% 0%, rgba(47,111,143,0.08), transparent 65%),
-        linear-gradient(180deg, #fbfaf6 0%, #f3f1ec 100%);
-      padding: 54px 48px 44px;
-      overflow: hidden;
-      position: relative;
-      display: flex;
-      align-items: flex-start;
-      flex-direction: column;
-      justify-content: center;
-      min-height: 0;
-    }
-    .lh-canvas::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(23,33,29,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(23,33,29,0.04) 1px, transparent 1px);
-      background-size: 32px 32px;
-      mask-image: radial-gradient(80% 70% at 50% 50%, #000 40%, transparent 100%);
-      -webkit-mask-image: radial-gradient(80% 70% at 50% 50%, #000 40%, transparent 100%);
-      pointer-events: none;
-      opacity: 0.55;
-    }
-    .lh-mockup {
-      max-width: 540px;
-      position: relative;
-      z-index: 1;
-    }
-    .lh-mockup [data-reveal] {
-      opacity: 0;
-      transform: translateY(10px);
-      filter: blur(6px);
-      transition: opacity 0.65s cubic-bezier(0.2, 0.7, 0.2, 1),
-                  transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
-                  filter 0.55s ease;
-      will-change: opacity, transform, filter;
-    }
-    .lh-mockup [data-reveal].is-visible {
-      opacity: 1;
-      transform: translateY(0);
-      filter: blur(0);
-    }
-    .lh-mockup [data-reveal].is-flash::after {
-      content: '';
-      position: absolute;
-      inset: -4px -8px;
-      border: 1px dashed rgba(255,158,100,0.6);
-      animation: lhFlash 0.6s ease forwards;
-      pointer-events: none;
-      border-radius: 4px;
-    }
-    @keyframes lhFlash {
-      from { opacity: 1; transform: scale(1.02); }
-      to   { opacity: 0; transform: scale(1); }
-    }
-
-    .lh-render-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 2px;
+      font-size: 11px;
+      letter-spacing: 2.4px;
       text-transform: uppercase;
-      color: rgba(89,102,96,0.86);
-      margin-bottom: 22px;
+      color: var(--imm-ink-soft);
+      margin-bottom: 30px;
+      position: relative;
     }
-    .lh-render-eyebrow::before {
+    .imm-eyebrow::before {
       content: '';
-      width: 22px; height: 1px;
-      background: rgba(47,111,143,0.52);
-      display: inline-block;
+      width: 28px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--imm-accent));
     }
+    .imm-eyebrow::after {
+      content: '';
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--imm-accent-warm);
+      box-shadow: 0 0 12px rgba(196,107,62,0.45);
+      animation: immBlink 2.4s ease-in-out infinite;
+    }
+    @keyframes immBlink { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
 
-    .lh-headline {
+    .imm-headline {
       font-family: 'Source Serif 4', 'DM Serif Display', serif;
-      font-size: clamp(36px, 4.4vw, 64px);
-      line-height: 1.02;
-      letter-spacing: -0.5px;
-      color: #17211d;
-      margin-bottom: 22px;
+      font-size: clamp(46px, 7.4vw, 124px);
+      line-height: 0.96;
+      letter-spacing: -0.012em;
+      color: var(--imm-ink);
       font-weight: 400;
+      margin: 0 0 36px;
+      max-width: 18ch;
+    }
+    .imm-headline span {
       display: block;
+      position: relative;
     }
-    .lh-headline > span { display: block; }
-    .lh-headline .lh-accent { color: #2f6f8f; }
+    .imm-headline .imm-accent {
+      color: var(--imm-accent);
+      font-style: italic;
+    }
+    .imm-headline .imm-accent::after {
+      content: '';
+      position: absolute;
+      left: -2%;
+      right: 0;
+      bottom: -0.04em;
+      height: 0.08em;
+      background: linear-gradient(90deg, var(--imm-accent-warm), transparent 92%);
+      transform-origin: left center;
+      transform: scaleX(0);
+      will-change: transform;
+    }
+    .imm-headline .imm-accent.is-drawn::after { transform: scaleX(1); transition: transform 0.9s cubic-bezier(0.2,0.7,0.2,1); }
 
-    .lh-sub {
-      font-size: 16px;
-      color: rgba(23,33,29,0.7);
-      margin-bottom: 26px;
-      max-width: 480px;
-      line-height: 1.6;
+    .imm-sub {
       font-family: var(--font-body);
+      font-size: clamp(16px, 1.25vw, 19px);
+      color: var(--imm-ink-soft);
+      line-height: 1.62;
+      max-width: 540px;
+      margin: 0 0 36px;
     }
 
-    .lh-cta-row { display: block; margin-bottom: 26px; }
-    .lh-cta {
-      background: #2f6f8f;
-      color: #fff;
+    .imm-actions { display: flex; gap: 16px; margin-bottom: 36px; flex-wrap: wrap; }
+    .imm-cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 16px 30px;
       font-family: var(--font-body);
-      font-size: 14px;
       font-weight: 600;
-      padding: 13px 24px;
+      font-size: 15px;
+      color: var(--imm-paper);
+      background: var(--imm-ink);
       border-radius: 999px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: transform 0.2s, opacity 0.2s, box-shadow 0.3s;
-      box-shadow: 0 12px 26px rgba(47,111,143,0.22);
-      border: 1.5px solid #2f6f8f;
+      border: 1.5px solid var(--imm-ink);
       cursor: pointer;
+      box-shadow: 0 18px 42px rgba(28,24,20,0.24), inset 0 0 0 1px rgba(255,200,140,0.06);
+      transition: transform 0.25s, box-shadow 0.25s, background 0.25s;
+      position: relative;
+      overflow: hidden;
     }
-    .lh-cta:hover { transform: translateY(-2px); opacity: 0.92; box-shadow: 0 18px 34px rgba(47,111,143,0.3); }
-    .lh-cta .lh-cta-arrow { transition: transform 0.25s; }
-    .lh-cta:hover .lh-cta-arrow { transform: translateX(3px); }
+    .imm-cta::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: radial-gradient(60% 100% at 50% 50%, rgba(255,200,140,0.4), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .imm-cta:hover { transform: translateY(-3px); box-shadow: 0 26px 56px rgba(28,24,20,0.32), inset 0 0 0 1px rgba(255,200,140,0.18); }
+    .imm-cta:hover::before { opacity: 1; }
+    .imm-cta .imm-cta-arrow { display: inline-block; transition: transform 0.25s; }
+    .imm-cta:hover .imm-cta-arrow { transform: translateX(4px); }
 
-    .lh-stats {
+    .imm-stats {
       display: flex;
-      gap: 0;
       flex-wrap: wrap;
-      border-top: 1px solid rgba(23,33,29,0.1);
-      padding-top: 18px;
-      max-width: 520px;
+      gap: 0;
+      padding-top: 22px;
+      border-top: 1px solid rgba(28,24,20,0.14);
+      max-width: 620px;
     }
-    .lh-stat {
+    .imm-stat {
       display: flex;
       flex-direction: column;
       gap: 6px;
-      padding-right: 24px;
-      margin-right: 24px;
-      border-right: 1px solid rgba(23,33,29,0.1);
+      padding-right: 30px;
+      margin-right: 30px;
+      border-right: 1px solid rgba(28,24,20,0.14);
     }
-    .lh-stat:last-child {
-      border-right: none;
-      margin-right: 0;
-      padding-right: 0;
-    }
-    .lh-stat b {
+    .imm-stat:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+    .imm-stat b {
       font-family: 'Source Serif 4', serif;
-      font-size: 22px;
-      color: #17211d;
+      font-size: 24px;
       font-weight: 400;
-      line-height: 1;
+      color: var(--imm-ink);
     }
-    .lh-stat small {
-      font-family: var(--font-mono);
-      font-size: 9px;
-      letter-spacing: 1.4px;
+    .imm-stat small {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      letter-spacing: 1.6px;
       text-transform: uppercase;
-      color: rgba(89,102,96,0.86);
+      color: var(--imm-ink-faint);
     }
 
-    /* footer status row */
-    .lh-status-row {
-      grid-column: 1 / -1;
+    /* ---------- Scroll affordance + chrome ---------- */
+    .imm-hint {
+      position: absolute;
+      left: 50%;
+      bottom: 36px;
+      transform: translateX(-50%);
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: space-between;
-      padding: 4px 8px 0;
-      font-family: var(--font-mono);
+      gap: 12px;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
-      letter-spacing: 1.8px;
+      letter-spacing: 3px;
       text-transform: uppercase;
-      color: rgba(89,102,96,0.6);
+      color: var(--imm-ink-faint);
+      z-index: 6;
+      transition: opacity 0.5s;
     }
-    .lh-status-row .lh-sr-left,
-    .lh-status-row .lh-sr-right { display: flex; align-items: center; gap: 12px; }
-    .lh-status-row .lh-sr-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: #ff9e64;
-      animation: lhPulse 1.8s ease-in-out infinite;
+    .imm-hint .imm-hint-line {
+      width: 1px; height: 36px;
+      background: linear-gradient(to bottom, transparent, var(--imm-ink-soft));
+      animation: immFlow 2.2s ease-in-out infinite;
     }
-    .lh-status-row .lh-sr-line {
-      width: 38px; height: 1px;
-      background: linear-gradient(to right, rgba(47,111,143,0.5), transparent);
+    @keyframes immFlow {
+      0%   { transform: scaleY(0.2); transform-origin: top; opacity: 0.3; }
+      50%  { transform: scaleY(1);   transform-origin: top; opacity: 1; }
+      51%  { transform: scaleY(1);   transform-origin: bottom; }
+      100% { transform: scaleY(0.2); transform-origin: bottom; opacity: 0.3; }
     }
 
-    /* mobile */
-    @media (max-width: 960px) {
-      .hero.live-hero { min-height: auto; }
-      .lh-stage {
-        grid-template-columns: 1fr;
-        padding: 88px 14px 40px;
-        gap: 14px;
-        min-height: auto;
-      }
-      .lh-code { max-height: 48vh; min-height: 280px; }
-      .lh-render { min-height: 0; }
-      .lh-canvas { padding: 36px 24px; }
-      .lh-headline { font-size: 38px; }
-      .lh-editor { font-size: 11.5px; line-height: 1.65; }
-      .lh-gutter { padding-right: 8px; font-size: 10.5px; }
-      .lh-tabs .lh-tab:not(.active) { display: none; }
-      .lh-stat { padding-right: 16px; margin-right: 16px; }
+    .imm-chapter {
+      position: absolute;
+      top: 32px;
+      left: 0; right: 0;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 38px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2.6px;
+      text-transform: uppercase;
+      color: var(--imm-ink-faint);
+      z-index: 6;
+      pointer-events: none;
     }
-    @media (max-width: 520px) {
-      .lh-eyebrow-bar .lh-eb-right { display: none; }
-      .lh-stat { font-size: 12px; }
+    .imm-chapter .imm-ch-num { color: var(--imm-accent-warm); margin-right: 10px; }
+    .imm-chapter .imm-ch-right { display: flex; align-items: center; gap: 10px; }
+    .imm-chapter .imm-ch-bar {
+      width: 130px; height: 1px; background: rgba(28,24,20,0.16);
+      position: relative; overflow: hidden;
+    }
+    .imm-chapter .imm-ch-bar i {
+      position: absolute; inset: 0; right: auto; width: 0;
+      background: linear-gradient(90deg, var(--imm-accent), var(--imm-accent-warm));
+    }
+
+    /* Floating ambient marks */
+    .imm-ambient {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      font-family: 'DM Serif Display', serif;
+      color: rgba(28,24,20,0.06);
+      overflow: hidden;
+    }
+    .imm-ambient span {
+      position: absolute;
+      font-size: clamp(140px, 24vw, 320px);
+      font-style: italic;
+      line-height: 1;
+      user-select: none;
+      will-change: transform;
+    }
+
+    /* Mobile */
+    @media (max-width: 900px) {
+      .imm-pin { height: 100svh; }
+      .imm-line { font-size: 11px; line-height: 1.5; }
+      .imm-page-inner { padding: 0 6vw; }
+      .imm-headline { font-size: clamp(40px, 11vw, 68px); }
+      .imm-chapter { padding: 0 18px; font-size: 9px; letter-spacing: 1.8px; }
+      .imm-chapter .imm-ch-bar { width: 80px; }
+      .imm-stat { padding-right: 18px; margin-right: 18px; }
+      .imm-stat b { font-size: 20px; }
+      .imm-ambient span { font-size: 26vw; }
+    }
+    @media (max-width: 560px) {
+      .imm-stats { gap: 12px; }
+      .imm-stat { padding-right: 12px; margin-right: 12px; border-right: none; flex: 1 0 calc(50% - 12px); }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .lh-mockup [data-reveal] { opacity: 1; transform: none; filter: none; transition: none; }
-      .lh-caret { animation: none; opacity: 1; }
+      .imm-char { opacity: 1; transform: none; filter: none; }
+      .imm-page [data-r] { opacity: 1; }
+      .imm-ambient span, .imm-hint .imm-hint-line, .imm-eyebrow::after { animation: none; }
     }
+
   </style>
 
 </head>
@@ -6767,111 +6673,84 @@
     </div>
   </nav>
 
-  <section class="hero live-hero" id="hero" data-live-hero>
+  <section class="hero imm-hero" id="hero" data-imm-hero>
+    <div class="imm-pin" id="immPin">
 
-    <div class="lh-stage">
+      <canvas class="imm-canvas" id="immCanvas" aria-hidden="true"></canvas>
+      <div class="imm-grain" aria-hidden="true"></div>
 
-      <div class="lh-eyebrow-bar">
-        <div class="lh-eb-left">
-          <span class="lh-eb-rule"></span>
-          <span>// building hero.html — live</span>
-        </div>
-        <div class="lh-eb-right">
-          <span class="lh-eb-progress">
-            <span class="lh-eb-bar"><i id="lhEbBar"></i></span>
-            <span id="lhEbPct">0%</span>
-          </span>
-          <span id="lhEbCounter">0 / 0 chars</span>
+      <div class="imm-ambient" aria-hidden="true">
+        <span style="top:-6%;  left:-4%;  ">&#123;</span>
+        <span style="top: 64%; right:-6%; ">&#125;</span>
+        <span style="top: 28%; left: 38%; font-size: clamp(80px, 14vw, 200px); opacity: 0.7;">/</span>
+      </div>
+
+      <div class="imm-chapter">
+        <div class="imm-ch-left"><span class="imm-ch-num">01</span><span>compiling hero</span></div>
+        <div class="imm-ch-right">
+          <span class="imm-ch-bar"><i id="immChBar"></i></span>
+          <span id="immChPct">scroll · 0%</span>
         </div>
       </div>
 
-      <!-- LEFT: dark IDE pane -->
-      <div class="lh-pane lh-code">
-        <div class="lh-bar">
-          <span class="lh-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span class="lh-tabs">
-            <span class="lh-tab active">hero.html</span>
-            <span class="lh-tab">styles.css</span>
-          </span>
-          <span class="lh-status" id="lhStatus">
-            <span class="lh-status-dot"></span>
-            <span id="lhStatusText">writing</span>
-          </span>
-        </div>
-        <div class="lh-editor">
-          <pre class="lh-gutter" id="lhGutter" aria-hidden="true"></pre>
-          <pre class="lh-code-body" id="lhBody"><div class="lh-line-hl" id="lhLineHl"></div><code id="lhCode" class="lh-source"></code><span class="lh-caret" id="lhCaret"></span></pre>
-        </div>
-      </div>
+      <div class="imm-stage" id="immStage">
 
-      <!-- RIGHT: rendered browser pane -->
-      <div class="lh-pane lh-render">
-        <div class="lh-bar">
-          <span class="lh-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span class="lh-bcontrols" aria-hidden="true"><span>‹</span><span>›</span><span>↻</span></span>
-          <span class="lh-url">
-            <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1.5a2.5 2.5 0 0 0-2.5 2.5V5h-.5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-.5V4A2.5 2.5 0 0 0 6 1.5Zm-1.5 3.5V4a1.5 1.5 0 1 1 3 0v1h-3Z" fill="currentColor"/></svg>
-            <b>mediocremarkup.com</b><span style="opacity:0.45">/hero</span>
-          </span>
+        <div class="imm-code" id="immCode" aria-hidden="true">
+          <div class="imm-code-inner" id="immCodeInner"></div>
         </div>
-        <div class="lh-canvas">
-          <div class="lh-mockup" id="lhMockup">
-            <div class="lh-render-eyebrow" data-reveal="eyebrow">digital presence check</div>
-            <h1 class="lh-headline">
-              <span data-reveal="h1a">If you&rsquo;re invisible</span>
-              <span data-reveal="h1b">online, you&rsquo;re</span>
-              <span data-reveal="h1c" class="lh-accent">invisible to</span>
-              <span data-reveal="h1d" class="lh-accent">customers.</span>
+
+        <div class="imm-page" id="immPage">
+          <div class="imm-page-inner">
+            <div class="imm-eyebrow" data-r="eyebrow">digital presence check</div>
+            <h1 class="imm-headline">
+              <span data-r="h1a">If you&rsquo;re invisible</span>
+              <span data-r="h1b">online, you&rsquo;re</span>
+              <span data-r="h1c" class="imm-accent">invisible to</span>
+              <span data-r="h1d" class="imm-accent">customers.</span>
             </h1>
-            <p class="lh-sub" data-reveal="sub">Too many great businesses lose opportunities online because their digital presence fails to reflect the quality of their work.</p>
-            <div class="lh-cta-row" data-reveal="cta">
-              <a href="#contact" onclick="jumpToContact(event)" class="lh-cta">Start a project <span class="lh-cta-arrow">&rarr;</span></a>
+            <p class="imm-sub" data-r="sub">Too many great businesses lose opportunities online because their digital presence fails to reflect the quality of their work.</p>
+            <div class="imm-actions" data-r="cta">
+              <a href="#contact" onclick="jumpToContact(event)" class="imm-cta">
+                Start a project <span class="imm-cta-arrow">&rarr;</span>
+              </a>
             </div>
-            <div class="lh-stats">
-              <div class="lh-stat" data-reveal="stat1"><b>$500</b><small>single-page launch</small></div>
-              <div class="lh-stat" data-reveal="stat2"><b>7 days</b><small>typical first pass</small></div>
-              <div class="lh-stat" data-reveal="stat3"><b>Custom code</b><small>no page builders</small></div>
+            <div class="imm-stats">
+              <div class="imm-stat" data-r="stat1"><b>$500</b><small>single-page launch</small></div>
+              <div class="imm-stat" data-r="stat2"><b>7 days</b><small>typical first pass</small></div>
+              <div class="imm-stat" data-r="stat3"><b>Custom code</b><small>no page builders</small></div>
             </div>
           </div>
         </div>
+
       </div>
 
-      <div class="lh-status-row">
-        <div class="lh-sr-left">
-          <span class="lh-sr-dot"></span>
-          <span>compiling DOM</span>
-        </div>
-        <div class="lh-sr-right">
-          <span>scroll</span>
-          <span class="lh-sr-line"></span>
-          <span id="lhFooterCount">ln 1, col 1</span>
-        </div>
+      <div class="imm-hint" id="immHint">
+        <span>scroll to build</span>
+        <span class="imm-hint-line"></span>
       </div>
 
     </div>
 
     <script>
       (function () {
-        const codeEl   = document.getElementById('lhCode');
-        const gutterEl = document.getElementById('lhGutter');
-        const bodyEl   = document.getElementById('lhBody');
-        const caretEl  = document.getElementById('lhCaret');
-        const mockup   = document.getElementById('lhMockup');
-        const status   = document.getElementById('lhStatus');
-        const statusTx = document.getElementById('lhStatusText');
-        const ebBar    = document.getElementById('lhEbBar');
-        const ebPct    = document.getElementById('lhEbPct');
-        const ebCount  = document.getElementById('lhEbCounter');
-        const footerCt = document.getElementById('lhFooterCount');
-        const lineHl   = document.getElementById('lhLineHl');
-        const heroSec  = document.getElementById('hero');
-        if (!codeEl || !gutterEl || !mockup) return;
+        const pin       = document.getElementById('immPin');
+        const stage     = document.getElementById('immStage');
+        const codeWrap  = document.getElementById('immCode');
+        const codeInner = document.getElementById('immCodeInner');
+        const page      = document.getElementById('immPage');
+        const canvas    = document.getElementById('immCanvas');
+        const hint      = document.getElementById('immHint');
+        const chBar     = document.getElementById('immChBar');
+        const chPct     = document.getElementById('immChPct');
+        const heroSec   = document.getElementById('hero');
+        if (!pin || !codeInner || !page || !canvas || !heroSec) return;
 
         const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+        /* ---------- 1. Source ---------- */
         const SRC = [
           '<section class="hero">',
-          '  <p class="eyebrow"><!-- digital presence check --></p>',
+          '  <p class="eyebrow">digital presence check</p>',
           '  <h1>',
           '    <span>If you’re invisible</span>',
           '    <span>online, you’re</span>',
@@ -6886,10 +6765,211 @@
           '    <div><b>Custom code</b><small>no page builders</small></div>',
           '  </div>',
           '</section>'
-        ].join('\n');
+        ];
 
-        /* Map: when typing reaches the END of source-line N, reveal id X */
-        const LINE_REVEALS = {
+        /* ---------- 2. Tokenize each line ---------- */
+        function tokenizeLine(s) {
+          const out = [];
+          let i = 0;
+          const len = s.length;
+          while (i < len) {
+            const c = s[i];
+            if (c === '<') {
+              const close = s[i + 1] === '/';
+              out.push({ t: 'punct', v: close ? '</' : '<' });
+              i += close ? 2 : 1;
+              const m = s.slice(i).match(/^[a-zA-Z][a-zA-Z0-9]*/);
+              if (m) { out.push({ t: 'tag', v: m[0] }); i += m[0].length; }
+              while (i < len && s[i] !== '>') {
+                if (s[i] === '/' && s[i + 1] === '>') break;
+                if (s[i] === ' ') {
+                  let j = i;
+                  while (j < len && s[j] === ' ') j++;
+                  out.push({ t: 'ws', v: s.slice(i, j) });
+                  i = j;
+                } else if (/[a-zA-Z-]/.test(s[i])) {
+                  const am = s.slice(i).match(/^[a-zA-Z-]+/);
+                  out.push({ t: 'attr', v: am[0] });
+                  i += am[0].length;
+                } else if (s[i] === '=') {
+                  out.push({ t: 'punct', v: '=' }); i++;
+                } else if (s[i] === '"' || s[i] === "'") {
+                  const q = s[i];
+                  let j = i + 1;
+                  while (j < len && s[j] !== q) j++;
+                  j = Math.min(len, j + 1);
+                  out.push({ t: 'str', v: s.slice(i, j) });
+                  i = j;
+                } else {
+                  out.push({ t: 'text', v: s[i] }); i++;
+                }
+              }
+              if (s[i] === '/' && s[i + 1] === '>') {
+                out.push({ t: 'punct', v: '/>' }); i += 2;
+              } else if (s[i] === '>') {
+                out.push({ t: 'punct', v: '>' }); i++;
+              }
+            } else {
+              let lt = s.indexOf('<', i);
+              let end = lt >= 0 ? lt : len;
+              out.push({ t: 'text', v: s.slice(i, end) });
+              i = end;
+            }
+          }
+          return out;
+        }
+
+        /* ---------- 3. Build DOM ---------- */
+        const lineEls = [];
+        const allChars = [];
+        const charsByLine = [];
+        SRC.forEach((line, idx) => {
+          const ln = idx + 1;
+          const div = document.createElement('div');
+          div.className = 'imm-line';
+          div.setAttribute('data-ln', ln);
+          const tokens = tokenizeLine(line);
+          const charsThisLine = [];
+          tokens.forEach(tk => {
+            const tkSpan = document.createElement('span');
+            tkSpan.className = 'tk-' + tk.t;
+            for (const ch of tk.v) {
+              const c = document.createElement('span');
+              c.className = 'imm-char';
+              c.textContent = ch === ' ' ? ' ' : ch;
+              tkSpan.appendChild(c);
+              allChars.push(c);
+              charsThisLine.push(c);
+            }
+            div.appendChild(tkSpan);
+          });
+          if (line.length === 0) {
+            const c = document.createElement('span');
+            c.className = 'imm-char';
+            c.innerHTML = '&nbsp;';
+            div.appendChild(c);
+          }
+          codeInner.appendChild(div);
+          lineEls.push(div);
+          charsByLine.push(charsThisLine);
+        });
+
+        /* ---------- 4. Canvas: ambient motes + ink stains ---------- */
+        const ctx = canvas.getContext('2d');
+        let W = 0, H = 0, DPR = 1;
+        function sizeCanvas() {
+          const r = pin.getBoundingClientRect();
+          DPR = Math.min(window.devicePixelRatio || 1, 2);
+          W = r.width; H = r.height;
+          canvas.width  = Math.max(1, Math.round(W * DPR));
+          canvas.height = Math.max(1, Math.round(H * DPR));
+          canvas.style.width = W + 'px';
+          canvas.style.height = H + 'px';
+          ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+        }
+        sizeCanvas();
+        window.addEventListener('resize', sizeCanvas);
+
+        function makeParticles(n) {
+          return Array.from({ length: n }, () => ({
+            x: Math.random() * W,
+            y: Math.random() * H,
+            vx: (Math.random() - 0.5) * 0.10,
+            vy: -Math.random() * 0.18 - 0.04,
+            r: Math.random() * 1.8 + 0.5,
+            a: Math.random() * 0.35 + 0.18,
+            hue: Math.random() < 0.6 ? 1 : 0
+          }));
+        }
+        const particles = makeParticles(reduced ? 0 : 70);
+
+        const stains = Array.from({ length: 5 }, (_, i) => ({
+          x: 0.12 + Math.random() * 0.76,
+          y: 0.10 + Math.random() * 0.80,
+          r: 220 + Math.random() * 280,
+          c: i % 2 === 0 ? 'rgba(47,111,143,0.07)' : 'rgba(196,107,62,0.06)',
+          ph: Math.random() * Math.PI * 2
+        }));
+
+        let scrollProgress = 0;
+        let mouseX = 0.5, mouseY = 0.5;
+
+        function paint(t) {
+          ctx.clearRect(0, 0, W, H);
+
+          /* ink stains drifting subtly */
+          for (const s of stains) {
+            const cx = s.x * W + Math.sin(t * 0.0002 + s.ph) * 18;
+            const cy = s.y * H + Math.cos(t * 0.00017 + s.ph) * 14;
+            const rg = ctx.createRadialGradient(cx, cy, 0, cx, cy, s.r);
+            rg.addColorStop(0, s.c);
+            rg.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = rg;
+            ctx.fillRect(0, 0, W, H);
+          }
+
+          /* vignette darkening near edges driven by scroll */
+          if (scrollProgress > 0.55) {
+            const k = (scrollProgress - 0.55) / 0.45;
+            const rg = ctx.createRadialGradient(W/2, H/2, Math.min(W,H) * 0.30, W/2, H/2, Math.max(W,H) * 0.85);
+            rg.addColorStop(0, 'rgba(0,0,0,0)');
+            rg.addColorStop(1, 'rgba(28,24,20,' + (0.18 * k).toFixed(3) + ')');
+            ctx.fillStyle = rg;
+            ctx.fillRect(0, 0, W, H);
+          }
+
+          /* spotlight on cursor when in code phase */
+          if (scrollProgress < 0.55) {
+            const k = 1 - scrollProgress / 0.55;
+            const rg = ctx.createRadialGradient(mouseX * W, mouseY * H, 0, mouseX * W, mouseY * H, 320);
+            rg.addColorStop(0, 'rgba(255,210,150,' + (0.16 * k).toFixed(3) + ')');
+            rg.addColorStop(1, 'rgba(255,210,150,0)');
+            ctx.fillStyle = rg;
+            ctx.fillRect(0, 0, W, H);
+          }
+
+          /* motes */
+          for (const p of particles) {
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.y < -8)  { p.y = H + 8; p.x = Math.random() * W; }
+            if (p.x < -8)  p.x = W + 8;
+            if (p.x > W+8) p.x = -8;
+            const col = p.hue
+              ? 'rgba(255,210,150,' + p.a.toFixed(3) + ')'
+              : 'rgba(140,170,200,' + (p.a * 0.7).toFixed(3) + ')';
+            const rg = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
+            rg.addColorStop(0, col);
+            rg.addColorStop(1, col.replace(/[\d.]+\)$/, '0)'));
+            ctx.fillStyle = rg;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        let rafId = 0;
+        function loop(t) { paint(t); rafId = requestAnimationFrame(loop); }
+        if (!reduced) rafId = requestAnimationFrame(loop);
+
+        window.addEventListener('mousemove', (e) => {
+          const r = pin.getBoundingClientRect();
+          mouseX = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+          mouseY = Math.max(0, Math.min(1, (e.clientY - r.top) / r.height));
+        });
+
+        /* ---------- 5. Scroll-driven progression ---------- */
+        const totalChars = allChars.length;
+
+        /* progress segments */
+        const SEG_TYPE_START = 0.04;
+        const SEG_TYPE_END   = 0.48;
+        const SEG_HOLD_END   = 0.55;
+        const SEG_DISS_END   = 0.78;
+        const SEG_LOCK_END   = 1.00;
+
+        /* reveal triggers per source line (line -> data-r id) */
+        const LINE_REVEAL = {
           2: 'eyebrow',
           4: 'h1a',
           5: 'h1b',
@@ -6902,249 +6982,165 @@
           14: 'stat3'
         };
 
-        /* ------------- Tokenizer ------------- */
-        function tokenize(s) {
-          const out = [];
-          let i = 0;
-          while (i < s.length) {
-            if (s.startsWith('<!--', i)) {
-              const end = s.indexOf('-->', i);
-              const stop = end >= 0 ? end + 3 : s.length;
-              out.push({ t: 'comment', v: s.slice(i, stop) });
-              i = stop;
-              continue;
+        /* precompute per-char info */
+        const charInfo = allChars.map((el, i) => {
+          const u = i / Math.max(1, totalChars - 1);
+          return {
+            el,
+            u,
+            /* random scatter target for dissolve */
+            tx: (Math.random() - 0.5) * 60,
+            ty: -10 - Math.random() * 80,
+            tr: (Math.random() - 0.5) * 60,
+            ts: 0.55 + Math.random() * 0.25,
+            /* random delay within dissolve phase */
+            disU: Math.random() * 0.7,
+            /* random delay within write phase to give organic feel */
+            wrU: (Math.random() - 0.5) * 0.015
+          };
+        });
+
+        function lerp(a, b, t) { return a + (b - a) * t; }
+        function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+        const revealEls = {};
+        Object.values(LINE_REVEAL).forEach(id => {
+          revealEls[id] = page.querySelector('[data-r="' + id + '"]');
+        });
+
+        function applyProgress(p) {
+          scrollProgress = p;
+
+          /* chapter progress UI */
+          if (chBar) chBar.style.width = (p * 100).toFixed(1) + '%';
+          if (chPct) {
+            let phase = 'idle';
+            if (p < SEG_TYPE_START) phase = 'preparing';
+            else if (p < SEG_TYPE_END) phase = 'writing';
+            else if (p < SEG_HOLD_END) phase = 'reviewing';
+            else if (p < SEG_DISS_END) phase = 'compiling';
+            else phase = 'live';
+            chPct.textContent = 'scroll · ' + Math.round(p * 100) + '% · ' + phase;
+          }
+
+          /* fade scroll hint after we move */
+          if (hint) hint.style.opacity = p < 0.04 ? 1 : Math.max(0, 1 - (p - 0.04) / 0.06);
+
+          /* code container global transform (camera) */
+          const tp = clamp((p - SEG_TYPE_START) / (SEG_TYPE_END - SEG_TYPE_START), 0, 1);
+          const hp = clamp((p - SEG_TYPE_END) / (SEG_HOLD_END - SEG_TYPE_END), 0, 1);
+          const dp = clamp((p - SEG_HOLD_END) / (SEG_DISS_END - SEG_HOLD_END), 0, 1);
+          const lp = clamp((p - SEG_DISS_END) / (SEG_LOCK_END - SEG_DISS_END), 0, 1);
+
+          /* During write+hold, code drifts gently; during dissolve, it scales up + pushes back */
+          const codeScale = lerp(0.88, 1.02, tp) + dp * 0.18;
+          const codeZ = lerp(-40, 0, tp) - dp * 380;
+          const codeRotX = -2 + tp * 2 - dp * 4;
+          const codeOpacity = 1 - dp * 0.85;
+          const codeBlur = dp * 6;
+          codeInner.style.transform =
+            'translate(-50%, -50%) translate3d(0,' + (-(hp * 1.5) - dp * 8).toFixed(2) + 'vh,' + codeZ.toFixed(1) + 'px) ' +
+            'scale(' + codeScale.toFixed(3) + ') rotateX(' + codeRotX.toFixed(2) + 'deg)';
+          codeWrap.style.opacity = codeOpacity.toFixed(3);
+          codeWrap.style.filter = 'blur(' + codeBlur.toFixed(2) + 'px)';
+
+          /* per-char write-on (during type phase) */
+          for (let i = 0; i < totalChars; i++) {
+            const info = charInfo[i];
+            /* write-on local progress for this char */
+            const charTarget = info.u + info.wrU;
+            const wOn = clamp((tp - charTarget * 0.92) / 0.06, 0, 1);
+            /* dissolve local progress */
+            const dStart = info.disU * 0.30;
+            const dOn = clamp((dp - dStart) / 0.30, 0, 1);
+
+            const op = wOn * (1 - dOn);
+            const ty = (1 - wOn) * 0.45 + dOn * info.ty * 0.02;
+            const tx = dOn * info.tx * 0.02;
+            const rot = (1 - wOn) * 0 + dOn * info.tr;
+            const blur = (1 - wOn) * 2 + dOn * 6;
+            const sc = lerp(0.92, 1, wOn) * (1 - dOn * (1 - info.ts));
+
+            info.el.style.opacity = op.toFixed(3);
+            info.el.style.transform =
+              'translate3d(' + tx.toFixed(3) + 'em,' + ty.toFixed(3) + 'em,0) rotate(' + rot.toFixed(2) + 'deg) scale(' + sc.toFixed(3) + ')';
+            info.el.style.filter = 'blur(' + blur.toFixed(2) + 'px)';
+          }
+
+          /* rendered page reveals — staggered across dissolve+lock */
+          const revealOrder = ['eyebrow','h1a','h1b','h1c','h1d','sub','cta','stat1','stat2','stat3'];
+          revealOrder.forEach((id, idx) => {
+            const el = revealEls[id];
+            if (!el) return;
+            const startAt = 0.05 + idx * 0.085;
+            const span = 0.18;
+            const localT = clamp((dp - startAt) / span, 0, 1);
+            const ease = 1 - Math.pow(1 - localT, 3);
+            el.style.opacity = ease.toFixed(3);
+            el.style.transform =
+              'translate3d(0,' + ((1 - ease) * 28).toFixed(2) + 'px,0) scale(' + lerp(0.96, 1, ease).toFixed(3) + ')';
+            el.style.filter = 'blur(' + ((1 - ease) * 8).toFixed(2) + 'px)';
+            if (id === 'h1c' || id === 'h1d') {
+              el.classList.toggle('is-drawn', ease > 0.85);
             }
-            if (s[i] === '<') {
-              const close = s[i + 1] === '/';
-              out.push({ t: 'punct', v: close ? '</' : '<' });
-              i += close ? 2 : 1;
-              const m = s.slice(i).match(/^[a-zA-Z][a-zA-Z0-9]*/);
-              if (m) { out.push({ t: 'tag', v: m[0] }); i += m[0].length; }
-              while (i < s.length && s[i] !== '>' && s[i] !== '\n') {
-                if (s[i] === '/' && s[i + 1] === '>') break;
-                if (s[i] === ' ') {
-                  let j = i;
-                  while (s[j] === ' ') j++;
-                  out.push({ t: 'ws', v: s.slice(i, j) });
-                  i = j;
-                } else if (/[a-zA-Z-]/.test(s[i])) {
-                  const am = s.slice(i).match(/^[a-zA-Z-]+/);
-                  out.push({ t: 'attr', v: am[0] });
-                  i += am[0].length;
-                } else if (s[i] === '=') {
-                  out.push({ t: 'op', v: '=' }); i++;
-                } else if (s[i] === '"' || s[i] === "'") {
-                  const q = s[i];
-                  let j = i + 1;
-                  while (j < s.length && s[j] !== q) j++;
-                  j = Math.min(s.length, j + 1);
-                  out.push({ t: 'str', v: s.slice(i, j) });
-                  i = j;
-                } else {
-                  out.push({ t: 'text', v: s[i] }); i++;
-                }
-              }
-              if (s[i] === '/' && s[i + 1] === '>') {
-                out.push({ t: 'punct', v: '/>' }); i += 2;
-              } else if (s[i] === '>') {
-                out.push({ t: 'punct', v: '>' }); i++;
-              }
-              continue;
-            }
-            if (s[i] === '\n') { out.push({ t: 'nl', v: '\n' }); i++; continue; }
-            let lt = s.indexOf('<', i);
-            let nl = s.indexOf('\n', i);
-            let end = s.length;
-            if (lt >= 0) end = Math.min(end, lt);
-            if (nl >= 0) end = Math.min(end, nl);
-            out.push({ t: 'text', v: s.slice(i, end) });
-            i = end;
-          }
-          return out;
-        }
+          });
 
-        const tokens = tokenize(SRC);
-        const totalChars = tokens.reduce((n, t) => n + t.v.length, 0);
-        const totalLines = SRC.split('\n').length;
-
-        /* line-end char positions for trigger points */
-        const lineEnds = [];
-        {
-          let pos = 0, line = 1;
-          for (const tk of tokens) {
-            pos += tk.v.length;
-            if (tk.t === 'nl') { lineEnds[line] = pos; line++; }
-          }
-          lineEnds[totalLines] = totalChars;
-        }
-        const triggers = Object.entries(LINE_REVEALS)
-          .map(([ln, id]) => ({ at: lineEnds[+ln], id }))
-          .sort((a, b) => a.at - b.at);
-
-        /* Pre-fill gutter once with all line numbers as <b> for highlight */
-        let gutterHTML = '';
-        for (let i = 1; i <= totalLines; i++) gutterHTML += '<b data-ln="' + i + '">' + i + '</b>';
-        gutterEl.innerHTML = gutterHTML;
-
-        /* state */
-        let charsTyped = 0;
-        let tokenIdx = 0;
-        let intraToken = 0;
-        let currentSpan = null;
-        let currentLine = 1;
-        let currentCol = 1;
-        let trigIdx = 0;
-        let lineHeightPx = 0;
-
-        function measureLineHeight() {
-          /* compute by looking at body font-size * line-height */
-          const cs = getComputedStyle(bodyEl);
-          const fs = parseFloat(cs.fontSize) || 13;
-          const lh = parseFloat(cs.lineHeight) || (fs * 1.72);
-          lineHeightPx = lh;
-        }
-        measureLineHeight();
-        window.addEventListener('resize', measureLineHeight);
-
-        function highlightLine(n) {
-          gutterEl.querySelectorAll('b.is-current').forEach(b => b.classList.remove('is-current'));
-          const b = gutterEl.querySelector('b[data-ln="' + n + '"]');
-          if (b) b.classList.add('is-current');
-          if (lineHl) {
-            const padTop = parseFloat(getComputedStyle(bodyEl).paddingTop) || 0;
-            lineHl.style.transform = 'translateY(' + (padTop + (n - 1) * lineHeightPx) + 'px)';
-            lineHl.style.height = lineHeightPx + 'px';
+          /* lock phase: subtle camera settle */
+          if (page) {
+            const pi = lp;
+            page.style.transform = 'translate3d(0,' + (pi * 0).toFixed(2) + 'px,0)';
           }
         }
 
-        function autoScroll() {
-          /* keep caret in view */
-          const r = caretEl.getBoundingClientRect();
-          const br = bodyEl.getBoundingClientRect();
-          if (r.bottom > br.bottom - 24) {
-            bodyEl.scrollTop += (r.bottom - (br.bottom - 24));
-          }
-        }
+        applyProgress(0);
 
-        function updateProgress() {
-          const pct = Math.min(100, Math.round((charsTyped / totalChars) * 100));
-          if (ebBar) ebBar.style.width = pct + '%';
-          if (ebPct) ebPct.textContent = pct + '%';
-          if (ebCount) ebCount.textContent = charsTyped + ' / ' + totalChars + ' chars';
-          if (footerCt) footerCt.textContent = 'ln ' + currentLine + ', col ' + currentCol;
-        }
-
-        function fireTriggers() {
-          while (trigIdx < triggers.length && charsTyped >= triggers[trigIdx].at) {
-            const tr = triggers[trigIdx++];
-            const el = mockup.querySelector('[data-reveal="' + tr.id + '"]');
-            if (el && !el.classList.contains('is-visible')) {
-              el.classList.add('is-visible', 'is-flash');
-              setTimeout(() => el.classList.remove('is-flash'), 650);
-            }
-          }
-        }
-
-        function appendOneChar() {
-          const t = tokens[tokenIdx];
-          if (!t) return false;
-          if (t.t === 'nl') {
-            codeEl.appendChild(document.createTextNode('\n'));
-            tokenIdx++;
-            intraToken = 0;
-            currentSpan = null;
-            charsTyped++;
-            currentLine++;
-            currentCol = 1;
-            highlightLine(currentLine);
-            autoScroll();
-            return true;
-          }
-          if (!currentSpan) {
-            currentSpan = document.createElement('span');
-            currentSpan.className = 'tk-' + t.t;
-            codeEl.appendChild(currentSpan);
-          }
-          currentSpan.appendChild(document.createTextNode(t.v[intraToken]));
-          intraToken++;
-          charsTyped++;
-          currentCol++;
-          if (intraToken >= t.v.length) {
-            tokenIdx++;
-            intraToken = 0;
-            currentSpan = null;
-          }
-          return tokenIdx < tokens.length;
-        }
-
-        function nextDelay() {
-          const t = tokens[tokenIdx];
-          if (!t) return 0;
-          if (t.t === 'nl') return 110 + Math.random() * 80;
-          if (t.t === 'punct' && (t.v === '>' || t.v === '/>')) return 50 + Math.random() * 60;
-          if (t.t === 'comment') return 6 + Math.random() * 10;
-          if (t.t === 'str') return 12 + Math.random() * 22;
-          if (t.t === 'tag') return 18 + Math.random() * 22;
-          /* occasional slight pause */
-          if (Math.random() < 0.04) return 90 + Math.random() * 110;
-          return 12 + Math.random() * 26;
-        }
-
-        function done() {
-          status.classList.add('is-done');
-          statusTx.textContent = 'saved';
-          caretEl.classList.add('is-done');
-          if (lineHl) lineHl.classList.add('is-done');
-          /* reveal anything left */
-          while (trigIdx < triggers.length) {
-            const tr = triggers[trigIdx++];
-            const el = mockup.querySelector('[data-reveal="' + tr.id + '"]');
-            if (el) el.classList.add('is-visible');
-          }
-          updateProgress();
-        }
-
-        function fillInstantly() {
-          while (appendOneChar()) {}
-          fireTriggers();
-          updateProgress();
-          done();
-        }
-
-        function tick() {
-          const more = appendOneChar();
-          fireTriggers();
-          updateProgress();
-          if (more) {
-            setTimeout(tick, nextDelay());
+        /* ---------- 6. ScrollTrigger pin ---------- */
+        function setupScroll() {
+          const hasGsap = typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
+          if (hasGsap) {
+            window.gsap.registerPlugin(window.ScrollTrigger);
+            window.ScrollTrigger.create({
+              trigger: heroSec,
+              start: 'top top',
+              end: '+=' + (reduced ? 0 : 420) + '%',
+              pin: pin,
+              pinSpacing: true,
+              scrub: 0.6,
+              anticipatePin: 1,
+              onUpdate: (self) => applyProgress(self.progress),
+              onRefresh: () => sizeCanvas()
+            });
           } else {
-            done();
+            /* fallback: tie progress to native scroll over a synthetic spacer */
+            const RUNWAY = window.innerHeight * 4.2;
+            const spacer = document.createElement('div');
+            spacer.style.height = RUNWAY + 'px';
+            spacer.style.pointerEvents = 'none';
+            heroSec.appendChild(spacer);
+            pin.style.position = 'sticky';
+            pin.style.top = '0';
+            function onScroll() {
+              const r = heroSec.getBoundingClientRect();
+              const total = heroSec.offsetHeight - window.innerHeight;
+              const p = clamp(-r.top / total, 0, 1);
+              applyProgress(p);
+            }
+            window.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('resize', onScroll);
+            onScroll();
           }
         }
 
-        let started = false;
-        function start() {
-          if (started) return;
-          started = true;
-          highlightLine(1);
-          updateProgress();
-          if (reduced) { fillInstantly(); return; }
-          setTimeout(tick, 650);
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+          setupScroll();
+        } else {
+          window.addEventListener('DOMContentLoaded', setupScroll);
         }
 
-        if ('IntersectionObserver' in window && heroSec) {
-          const io = new IntersectionObserver((entries) => {
-            for (const e of entries) {
-              if (e.isIntersecting) { start(); io.disconnect(); break; }
-            }
-          }, { threshold: 0.15 });
-          io.observe(heroSec);
-        } else {
-          start();
-        }
       })();
     </script>
   </section>
+
 
 
 
