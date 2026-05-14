@@ -1,0 +1,563 @@
+      (function () {
+        'use strict';
+
+        // ============================================================
+        // mediocre markup — watercolor markup hero  (v2: composing markup)
+        // Single HTML symbol characters compose around the buttons,
+        // underline the emphasis words, and drift sparsely in the
+        // negative space. Cluster-based intentional motion — not noise.
+        // ============================================================
+
+        const stage   = document.getElementById('wcStage');
+        const inkC    = document.getElementById('wcInk');
+        const bleedC  = document.getElementById('wcBleed');
+        const eyebrow = document.getElementById('wcEyebrow');
+        const head    = document.getElementById('wcHeadline');
+        const sub     = document.getElementById('wcSub');
+        const actions = document.getElementById('wcActions');
+        const stats   = document.getElementById('wcStats');
+        const primary = document.getElementById('wcCtaPrimary');
+        const ghost   = document.getElementById('wcCtaGhost');
+        if (!stage || !inkC || !bleedC) return;
+
+        const ink   = inkC.getContext('2d');
+        const bleed = bleedC.getContext('2d');
+
+        let W = 0, H = 0, DPR = 1;
+        const lowQ = (navigator.hardwareConcurrency || 4) <= 4;
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        function fit(c, ctx) {
+          DPR = Math.min(window.devicePixelRatio || 1, lowQ ? 1.25 : 1.75);
+          const r = stage.getBoundingClientRect();
+          W = Math.max(1, Math.floor(r.width));
+          H = Math.max(1, Math.floor(r.height));
+          c.width  = Math.floor(W * DPR);
+          c.height = Math.floor(H * DPR);
+          ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+        }
+
+        // --- Pigments ---
+        const PIG = {
+          mintDeep:  [53, 90, 77],
+          mint:      [95, 146, 130],
+          mintWash:  [162, 201, 184],
+          coralDeep: [196, 90, 68],
+          coral:     [229, 106, 85],
+          coralWash: [241, 169, 148],
+          inkSoft:   [107, 93, 79]
+        };
+        const rgba = (c, a) => 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')';
+        const jit = (c, j) => [
+          Math.max(0, Math.min(255, c[0] + (Math.random() - 0.5) * j)),
+          Math.max(0, Math.min(255, c[1] + (Math.random() - 0.5) * j)),
+          Math.max(0, Math.min(255, c[2] + (Math.random() - 0.5) * j))
+        ];
+
+        // Single HTML symbol vocabulary — no full tags
+        const SYMBOLS = ['<', '>', '/', '=', '"', ';', '{', '}', '[', ']', ':'];
+
+        // ============================================================
+        // Watercolor symbol stamp — lighter than v1, only when needed
+        // ============================================================
+        function stampSymbol(ctx, text, x, y, size, pigment, alpha, blurCtx) {
+          if (blurCtx && alpha > 0.25) {
+            blurCtx.save();
+            blurCtx.globalCompositeOperation = 'multiply';
+            const dx = (Math.random() - 0.5) * size * 0.35;
+            const dy = (Math.random() - 0.5) * size * 0.35;
+            const jp = jit(pigment, 18);
+            blurCtx.fillStyle = rgba(jp, alpha * 0.12);
+            blurCtx.font = '500 ' + (size * 1.25) + "px 'JetBrains Mono', ui-monospace, monospace";
+            blurCtx.textAlign = 'center';
+            blurCtx.textBaseline = 'middle';
+            blurCtx.fillText(text, x + dx, y + dy);
+            blurCtx.restore();
+          }
+          ctx.save();
+          ctx.globalCompositeOperation = 'multiply';
+          // mid wash
+          const dx = (Math.random() - 0.5) * size * 0.08;
+          const dy = (Math.random() - 0.5) * size * 0.08;
+          const jp = jit(pigment, 10);
+          ctx.fillStyle = rgba(jp, alpha * 0.35);
+          ctx.font = '500 ' + size + "px 'JetBrains Mono', ui-monospace, monospace";
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(text, x + dx, y + dy);
+          // pigment edge
+          const dp = [
+            Math.max(0, pigment[0] - 24),
+            Math.max(0, pigment[1] - 24),
+            Math.max(0, pigment[2] - 24)
+          ];
+          ctx.fillStyle = rgba(dp, alpha * 0.62);
+          ctx.fillText(text, x, y);
+          ctx.restore();
+        }
+
+        // ============================================================
+        // Layout probes — read DOM positions for cluster anchors
+        // ============================================================
+        let anchors = null;
+        function readAnchors() {
+          const sr = stage.getBoundingClientRect();
+          const pr = primary.getBoundingClientRect();
+          const gr = ghost.getBoundingClientRect();
+          // try to find the emphasized words inside the headline
+          const ems = head.querySelectorAll('em');
+          const invR = ems[0] ? ems[0].getBoundingClientRect() : null;
+          const cusR = ems[1] ? ems[1].getBoundingClientRect() : null;
+          anchors = {
+            primary: {
+              x: pr.left - sr.left, y: pr.top - sr.top,
+              w: pr.width, h: pr.height,
+              cx: pr.left - sr.left + pr.width / 2,
+              cy: pr.top  - sr.top  + pr.height / 2,
+              r: pr.height / 2
+            },
+            ghost: {
+              x: gr.left - sr.left, y: gr.top - sr.top,
+              w: gr.width, h: gr.height,
+              cx: gr.left - sr.left + gr.width / 2,
+              cy: gr.top  - sr.top  + gr.height / 2,
+              r: gr.height / 2
+            },
+            invisible: invR ? {
+              x: invR.left - sr.left, y: invR.top - sr.top,
+              w: invR.width, h: invR.height,
+              cx: invR.left - sr.left + invR.width / 2,
+              cy: invR.top  - sr.top  + invR.height / 2
+            } : null,
+            customers: cusR ? {
+              x: cusR.left - sr.left, y: cusR.top - sr.top,
+              w: cusR.width, h: cusR.height,
+              cx: cusR.left - sr.left + cusR.width / 2,
+              cy: cusR.top  - sr.top  + cusR.height / 2
+            } : null
+          };
+        }
+
+        // ============================================================
+        // Rounded-rect perimeter parametrization
+        // ============================================================
+        function perimeterPoint(rect, t, padOut) {
+          // returns {x,y, nx, ny} where nx/ny is outward normal
+          const pad = padOut || 0;
+          const w = rect.w + pad * 2;
+          const h = rect.h + pad * 2;
+          const r = Math.min(rect.r + pad, h / 2);
+          const x0 = rect.x - pad;
+          const y0 = rect.y - pad;
+          // straight segment lengths
+          const top    = w - 2 * r;
+          const right  = h - 2 * r;
+          const bottom = w - 2 * r;
+          const left   = h - 2 * r;
+          const arcLen = Math.PI * 2 * r / 4;
+          const total = top + arcLen + right + arcLen + bottom + arcLen + left + arcLen;
+          let d = ((t % 1) + 1) % 1 * total;
+          let px, py, nx, ny;
+
+          // top edge
+          if (d < top) { px = x0 + r + d; py = y0; nx = 0; ny = -1; return {x:px,y:py,nx,ny}; }
+          d -= top;
+          // top-right arc
+          if (d < arcLen) {
+            const a = d / arcLen * (Math.PI / 2) - Math.PI / 2;
+            px = x0 + w - r + Math.cos(a) * r;
+            py = y0 + r     + Math.sin(a) * r;
+            nx = Math.cos(a); ny = Math.sin(a);
+            return {x:px,y:py,nx,ny};
+          }
+          d -= arcLen;
+          // right edge
+          if (d < right) { px = x0 + w; py = y0 + r + d; nx = 1; ny = 0; return {x:px,y:py,nx,ny}; }
+          d -= right;
+          // bottom-right arc
+          if (d < arcLen) {
+            const a = d / arcLen * (Math.PI / 2);
+            px = x0 + w - r + Math.cos(a) * r;
+            py = y0 + h - r + Math.sin(a) * r;
+            nx = Math.cos(a); ny = Math.sin(a);
+            return {x:px,y:py,nx,ny};
+          }
+          d -= arcLen;
+          // bottom edge
+          if (d < bottom) { px = x0 + w - r - d; py = y0 + h; nx = 0; ny = 1; return {x:px,y:py,nx,ny}; }
+          d -= bottom;
+          // bottom-left arc
+          if (d < arcLen) {
+            const a = d / arcLen * (Math.PI / 2) + Math.PI / 2;
+            px = x0 + r     + Math.cos(a) * r;
+            py = y0 + h - r + Math.sin(a) * r;
+            nx = Math.cos(a); ny = Math.sin(a);
+            return {x:px,y:py,nx,ny};
+          }
+          d -= arcLen;
+          // left edge
+          if (d < left) { px = x0; py = y0 + h - r - d; nx = -1; ny = 0; return {x:px,y:py,nx,ny}; }
+          d -= left;
+          // top-left arc
+          const a = d / arcLen * (Math.PI / 2) + Math.PI;
+          px = x0 + r + Math.cos(a) * r;
+          py = y0 + r + Math.sin(a) * r;
+          nx = Math.cos(a); ny = Math.sin(a);
+          return {x:px,y:py,nx,ny};
+        }
+
+        // ============================================================
+        // Particles — each belongs to a cluster with its own behavior
+        // ============================================================
+        const particles = [];
+        let bloomStart = 0;
+        let bloomActive = false;
+
+        function makeParticle(cluster, opts) {
+          opts = opts || {};
+          return {
+            cluster,
+            text: SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)],
+            x: opts.x || 0, y: opts.y || 0,
+            vx: 0, vy: 0,
+            size: opts.size || (10 + Math.random() * 5),
+            pigment: opts.pigment || PIG.mint,
+            phase: opts.phase != null ? opts.phase : Math.random(),
+            speed: opts.speed || (0.06 + Math.random() * 0.08),
+            stampPhase: Math.random() * Math.PI * 2,
+            seed: Math.random() * 1000,
+            radius: opts.radius || 0,
+            angle: opts.angle || Math.random() * Math.PI * 2,
+            life: 1,
+            ttl: opts.ttl || 0
+          };
+        }
+
+        function seedClusters() {
+          if (!anchors) return;
+          particles.length = 0;
+
+          // 1. Primary CTA perimeter tracers — coral, orbiting just outside the button
+          const PRIMARY_N = lowQ ? 14 : 22;
+          for (let i = 0; i < PRIMARY_N; i++) {
+            const p = perimeterPoint(anchors.primary, i / PRIMARY_N, 8);
+            particles.push(makeParticle('primary-trace', {
+              x: p.x, y: p.y,
+              pigment: i % 5 === 0 ? PIG.coralDeep : PIG.coral,
+              phase: i / PRIMARY_N,
+              speed: 0.045 + Math.random() * 0.02,
+              size: 11 + Math.random() * 4
+            }));
+          }
+
+          // 2. Ghost CTA perimeter tracers — mint
+          const GHOST_N = lowQ ? 12 : 18;
+          for (let i = 0; i < GHOST_N; i++) {
+            const p = perimeterPoint(anchors.ghost, i / GHOST_N, 6);
+            particles.push(makeParticle('ghost-trace', {
+              x: p.x, y: p.y,
+              pigment: i % 5 === 0 ? PIG.mintDeep : PIG.mint,
+              phase: i / GHOST_N,
+              speed: 0.040 + Math.random() * 0.02,
+              size: 10 + Math.random() * 3
+            }));
+          }
+
+          // 3. "invisible" underline — mint symbols flowing left-to-right
+          if (anchors.invisible) {
+            const UND_N = 14;
+            for (let i = 0; i < UND_N; i++) {
+              particles.push(makeParticle('underline-inv', {
+                x: anchors.invisible.x + (i / UND_N) * anchors.invisible.w,
+                y: anchors.invisible.y + anchors.invisible.h * 0.92,
+                pigment: i % 4 === 0 ? PIG.mintDeep : PIG.mint,
+                phase: i / UND_N,
+                speed: 0.05 + Math.random() * 0.04,
+                size: 9 + Math.random() * 3
+              }));
+            }
+          }
+
+          // 4. "customers." aura — coral cloud orbiting behind the word
+          if (anchors.customers) {
+            const AURA_N = 16;
+            for (let i = 0; i < AURA_N; i++) {
+              const ang = (i / AURA_N) * Math.PI * 2;
+              const rad = anchors.customers.h * (0.55 + Math.random() * 0.45);
+              particles.push(makeParticle('aura-cust', {
+                x: anchors.customers.cx + Math.cos(ang) * rad,
+                y: anchors.customers.cy + Math.sin(ang) * rad * 0.55,
+                pigment: i % 3 === 0 ? PIG.coralDeep : PIG.coral,
+                angle: ang,
+                radius: rad,
+                speed: 0.18 + Math.random() * 0.18,
+                size: 10 + Math.random() * 4
+              }));
+            }
+          }
+
+          // 5. Ambient field — sparse drift in negative space (right side)
+          const AMB_N = lowQ ? 5 : 9;
+          for (let i = 0; i < AMB_N; i++) {
+            particles.push(makeParticle('ambient', {
+              x: W * (0.55 + Math.random() * 0.43),
+              y: H * (0.10 + Math.random() * 0.80),
+              pigment: Math.random() < 0.55 ? PIG.mint : (Math.random() < 0.5 ? PIG.coral : PIG.mintDeep),
+              size: 11 + Math.random() * 6,
+              speed: 0.3 + Math.random() * 0.4
+            }));
+          }
+        }
+
+        // ============================================================
+        // Cheap flow field for ambient cluster
+        // ============================================================
+        function flow(x, y, t) {
+          const s = 0.002;
+          return Math.atan2(
+            Math.sin(y * s * 1.27 - t * 0.10) + Math.cos((x - y) * s * 0.69 - t * 0.05),
+            Math.sin(x * s + t * 0.08) + Math.cos((x + y) * s * 0.55 + t * 0.07)
+          );
+        }
+
+        // ============================================================
+        // Background priming wash
+        // ============================================================
+        function paintBackgroundWash() {
+          const blobs = [
+            { x: W * 0.20, y: H * 0.22, r: Math.max(W,H) * 0.45, c: PIG.mintWash,  a: 0.07 },
+            { x: W * 0.85, y: H * 0.75, r: Math.max(W,H) * 0.42, c: PIG.coralWash, a: 0.06 },
+            { x: W * 0.62, y: H * 0.15, r: Math.max(W,H) * 0.30, c: PIG.mint,      a: 0.04 },
+            { x: W * 0.30, y: H * 0.85, r: Math.max(W,H) * 0.32, c: PIG.coralWash, a: 0.04 }
+          ];
+          blobs.forEach(b => {
+            const g = bleed.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
+            g.addColorStop(0,   rgba(b.c, b.a));
+            g.addColorStop(0.6, rgba(b.c, b.a * 0.4));
+            g.addColorStop(1,   rgba(b.c, 0));
+            bleed.fillStyle = g;
+            bleed.fillRect(0, 0, W, H);
+          });
+        }
+
+        function resize() {
+          fit(inkC, ink);
+          fit(bleedC, bleed);
+          bleed.clearRect(0, 0, W, H);
+          paintBackgroundWash();
+          readAnchors();
+          seedClusters();
+        }
+        window.addEventListener('resize', () => { resize(); });
+
+        // ============================================================
+        // Reveal text staggered after a beat
+        // ============================================================
+        let revealed = false;
+        function revealText() {
+          if (revealed) return;
+          revealed = true;
+          eyebrow.classList.add('is-visible');
+          head.classList.add('is-visible');
+          sub.classList.add('is-visible');
+          actions.classList.add('is-visible');
+          stats.classList.add('is-visible');
+          // re-read anchors slightly later (em elements may have shifted as they fade in)
+          setTimeout(() => { readAnchors(); seedClusters(); }, 950);
+        }
+
+        // ============================================================
+        // Bloom — primary button periodic flourish
+        // ============================================================
+        function triggerBloom() {
+          primary.classList.remove('is-repainting');
+          void primary.offsetWidth;
+          primary.classList.add('is-repainting');
+          bloomStart = performance.now();
+          bloomActive = true;
+        }
+
+        // Hover state for ghost button — densify tracers
+        let ghostHover = false;
+        ghost.addEventListener('pointerenter', () => { ghostHover = true; });
+        ghost.addEventListener('pointerleave', () => { ghostHover = false; });
+
+        // ============================================================
+        // Main loop
+        // ============================================================
+        let t0 = performance.now();
+        let lastT = t0;
+        let lastBloom = 0;
+
+        function loop(now) {
+          const t = (now - t0) / 1000;
+          const dt = Math.min(0.05, (now - lastT) / 1000);
+          lastT = now;
+
+          // aggressive trail fade so motion is clean, not smeary
+          ink.save();
+          ink.globalCompositeOperation = 'destination-out';
+          ink.fillStyle = 'rgba(0,0,0,0.16)';
+          ink.fillRect(0, 0, W, H);
+          ink.restore();
+
+          // very slow bleed relax so the paper doesn't get muddy
+          bleed.save();
+          bleed.globalCompositeOperation = 'destination-out';
+          bleed.fillStyle = 'rgba(0,0,0,0.006)';
+          bleed.fillRect(0, 0, W, H);
+          bleed.restore();
+
+          // bloom progress
+          let bloomT = 0;
+          if (bloomActive) {
+            bloomT = Math.min(1, (now - bloomStart) / 1800);
+            if (bloomT >= 1) { bloomActive = false; bloomT = 0; }
+          }
+          // bell curve 0 → 1 → 0 over the bloom
+          const bloomBell = bloomActive ? Math.sin(bloomT * Math.PI) : 0;
+
+          // update + draw each particle by cluster
+          for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
+
+            if (p.cluster === 'primary-trace' && anchors) {
+              // advance phase, position on perimeter (with bloom outward push)
+              p.phase = (p.phase + p.speed * dt) % 1;
+              const pad = 8 + bloomBell * 22;
+              const pt = perimeterPoint(anchors.primary, p.phase, pad);
+              // soft wobble along normal
+              const wobble = Math.sin(t * 1.8 + p.seed) * 1.4;
+              p.x = pt.x + pt.nx * wobble;
+              p.y = pt.y + pt.ny * wobble;
+              const alpha = 0.55 + bloomBell * 0.45;
+              const sz = p.size * (1 + bloomBell * 0.4);
+              stampSymbol(ink, p.text, p.x, p.y, sz, p.pigment, alpha, bleed);
+            }
+            else if (p.cluster === 'ghost-trace' && anchors) {
+              const boost = ghostHover ? 1.8 : 1.0;
+              p.phase = (p.phase + p.speed * boost * dt) % 1;
+              const pad = 6 + (ghostHover ? 4 : 0);
+              const pt = perimeterPoint(anchors.ghost, p.phase, pad);
+              const wobble = Math.sin(t * 1.6 + p.seed) * 1.2;
+              p.x = pt.x + pt.nx * wobble;
+              p.y = pt.y + pt.ny * wobble;
+              const alpha = ghostHover ? 0.75 : 0.5;
+              stampSymbol(ink, p.text, p.x, p.y, p.size, p.pigment, alpha, bleed);
+            }
+            else if (p.cluster === 'underline-inv' && anchors && anchors.invisible) {
+              p.phase = (p.phase + p.speed * dt * 0.4) % 1;
+              const baseX = anchors.invisible.x + p.phase * anchors.invisible.w;
+              const baseY = anchors.invisible.y + anchors.invisible.h * 0.96;
+              p.x = baseX;
+              p.y = baseY + Math.sin(t * 2 + p.phase * 6) * 3;
+              stampSymbol(ink, p.text, p.x, p.y, p.size, p.pigment, 0.55, bleed);
+            }
+            else if (p.cluster === 'aura-cust' && anchors && anchors.customers) {
+              p.angle += p.speed * dt;
+              const breath = 1 + Math.sin(t * 0.8 + p.seed) * 0.12;
+              const rad = p.radius * breath;
+              p.x = anchors.customers.cx + Math.cos(p.angle) * rad;
+              p.y = anchors.customers.cy + Math.sin(p.angle) * rad * 0.55;
+              stampSymbol(ink, p.text, p.x, p.y, p.size, p.pigment, 0.55, bleed);
+            }
+            else if (p.cluster === 'ambient') {
+              const ang = flow(p.x, p.y, t + p.seed * 0.001);
+              p.vx += Math.cos(ang) * 0.08 * dt * 6;
+              p.vy += Math.sin(ang) * 0.08 * dt * 6;
+              p.vx *= 0.94; p.vy *= 0.94;
+              const v = Math.hypot(p.vx, p.vy);
+              const maxV = 1.6;
+              if (v > maxV) { p.vx = p.vx / v * maxV; p.vy = p.vy / v * maxV; }
+              p.x += p.vx; p.y += p.vy;
+              // soft edges — keep ambient confined to right side & top region
+              const minX = W * 0.50;
+              if (p.x < minX) p.vx += (minX - p.x) * 0.02;
+              if (p.x > W - 30) p.vx -= (p.x - (W - 30)) * 0.02;
+              if (p.y < 30)    p.vy += (30 - p.y) * 0.02;
+              if (p.y > H - 30) p.vy -= (p.y - (H - 30)) * 0.02;
+              // ambient stamps lighter and less frequent
+              p.stampPhase += dt * 0.8;
+              if (Math.sin(p.stampPhase) > 0.4 || Math.random() < 0.04) {
+                stampSymbol(ink, p.text, p.x, p.y, p.size, p.pigment, 0.42, bleed);
+              }
+            }
+            else if (p.cluster === 'inbound' && p.ttl > 0) {
+              // brief bloom inrushers — symbols that fly toward the primary button center
+              const dx = anchors.primary.cx - p.x;
+              const dy = anchors.primary.cy - p.y;
+              p.x += dx * 0.10;
+              p.y += dy * 0.10;
+              p.ttl -= dt;
+              p.life = Math.max(0, p.ttl / 0.7);
+              if (p.life > 0) {
+                stampSymbol(ink, p.text, p.x, p.y, p.size, p.pigment, p.life * 0.7, bleed);
+              }
+            }
+          }
+
+          // spawn inbound symbols at bloom start
+          if (bloomActive && bloomT < 0.05 && anchors) {
+            const burst = 14;
+            for (let i = 0; i < burst; i++) {
+              const a = Math.random() * Math.PI * 2;
+              const r = 90 + Math.random() * 70;
+              particles.push(makeParticle('inbound', {
+                x: anchors.primary.cx + Math.cos(a) * r,
+                y: anchors.primary.cy + Math.sin(a) * r,
+                pigment: Math.random() < 0.5 ? PIG.coralDeep : PIG.coral,
+                size: 12 + Math.random() * 5,
+                ttl: 0.7
+              }));
+            }
+          }
+          // cull dead inbounds
+          for (let i = particles.length - 1; i >= 0; i--) {
+            if (particles[i].cluster === 'inbound' && particles[i].ttl <= 0) {
+              particles.splice(i, 1);
+            }
+          }
+
+          // periodic bloom
+          if (revealed && now - lastBloom > 11000 && !bloomActive) {
+            triggerBloom();
+            lastBloom = now;
+          }
+
+          requestAnimationFrame(loop);
+        }
+
+        // ============================================================
+        // Boot
+        // ============================================================
+        function boot() {
+          resize();
+
+          if (reduced) {
+            revealText();
+            // single static stamp pass for accessibility / motion-reduced
+            for (let pass = 0; pass < 3; pass++) {
+              for (const p of particles) {
+                stampSymbol(ink, p.text, p.x, p.y, p.size, p.pigment, 0.55, bleed);
+              }
+            }
+            return;
+          }
+
+          // quick text reveal — no long assembly anymore
+          setTimeout(revealText, 280);
+          // first bloom after 5s so users see the effect early
+          setTimeout(() => { triggerBloom(); lastBloom = performance.now(); }, 5400);
+          requestAnimationFrame(loop);
+        }
+
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(boot);
+        } else {
+          window.addEventListener('load', boot);
+        }
+
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden) lastT = performance.now();
+        });
+      })();

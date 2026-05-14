@@ -6210,495 +6210,390 @@
     }
 
     /* =============================================================
-       CINEMATIC HERO — self-playing intro. 6-second mini-movie:
-       code writes itself, a bright sweep dissolves it into golden
-       embers, and the rendered hero materializes from within.
+       WATERCOLOR HERO — cream paper, painted markup that drifts and
+       periodically re-paints the CTA. HTML as fine art.
        ============================================================= */
-    .hero.cine-hero {
+    .hero.wc-hero {
       padding: 0;
       margin: 0;
       min-height: 100vh;
       display: block;
       background: transparent;
+      position: relative;
+      overflow: hidden;
     }
-    .hero.cine-hero::after { display: none; }
+    .hero.wc-hero::after { display: none; }
 
-    .cine-hero {
-      --cine-bg-0: #06080f;
-      --cine-bg-1: #0d1224;
-      --cine-bg-2: #1a1f3a;
-      --cine-bg-3: #2a2350;
-      --cine-paper: #f3ead4;
-      --cine-paper-dim: #c9bea0;
-      --cine-text: #f6efe0;
-      --cine-text-dim: rgba(246,239,224,0.62);
-      --cine-text-faint: rgba(246,239,224,0.36);
-      --cine-amber: #f4b261;
-      --cine-amber-hot: #ffcf85;
-      --cine-coral: #ff7a6b;
-      --cine-rose: #e57a8a;
-      --cine-mint: #9be0c6;
-      --cine-violet: #b58cff;
-      --cine-tag: #ff8a72;
-      --cine-attr: #f4c267;
-      --cine-str: #b9e29a;
-      --cine-punct: rgba(246,239,224,0.45);
-      --cine-comment: rgba(140,150,180,0.65);
+    .wc-hero {
+      --paper:        #f6ecd6;
+      --paper-warm:   #efe2c4;
+      --paper-edge:   #e3d2ad;
+      --paper-deep:   #d6c08f;
+      --ink:          #2c2922;
+      --ink-soft:     #6b5d4f;
+      --ink-faint:    #a8957d;
+      --mint-deep:    #355a4d;
+      --mint:         #5f9282;
+      --mint-wash:    #a2c9b8;
+      --mint-ghost:   rgba(95, 146, 130, 0.18);
+      --coral-deep:   #c45a44;
+      --coral:        #e56a55;
+      --coral-wash:   #f1a994;
+      --coral-ghost:  rgba(229, 106, 85, 0.22);
+      --wc-serif:     'Source Serif 4', 'DM Serif Display', Georgia, serif;
+      --wc-sans:      'Sora', 'Inter', system-ui, sans-serif;
+      --wc-mono:      'JetBrains Mono', ui-monospace, monospace;
     }
 
-    .cine-stage {
+    .wc-stage {
       position: relative;
       width: 100%;
-      height: 100vh;
-      min-height: 720px;
+      min-height: 100vh;
       overflow: hidden;
       isolation: isolate;
       background:
-        radial-gradient(1600px 1000px at 50% 28%, #1d2546 0%, transparent 60%),
-        radial-gradient(900px 700px at 12% 92%, rgba(45,120,180,0.18), transparent 70%),
-        radial-gradient(900px 700px at 88% 96%, rgba(196,107,62,0.14), transparent 70%),
-        linear-gradient(180deg, #06080f 0%, #0d1224 55%, #161a32 100%);
-      color: var(--cine-text);
+        radial-gradient(1400px 1000px at 70% 30%, var(--paper-warm) 0%, transparent 65%),
+        radial-gradient(1100px 800px at 18% 78%, #f9f0d8 0%, transparent 60%),
+        linear-gradient(165deg, var(--paper) 0%, var(--paper-warm) 60%, var(--paper-edge) 100%);
+      color: var(--ink);
     }
 
-    .cine-canvas {
+    /* Hand-pressed paper grain over the entire hero */
+    .wc-paper-grain {
+      position: absolute; inset: 0; z-index: 2; pointer-events: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.32  0 0 0 0 0.27  0 0 0 0 0.18  0 0 0 0.50 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+      mix-blend-mode: multiply;
+      opacity: 0.22;
+    }
+    /* Warm deckle vignette */
+    .wc-vignette {
+      position: absolute; inset: 0; z-index: 3; pointer-events: none;
+      background:
+        radial-gradient(ellipse at 50% 40%, rgba(214,192,143,0) 55%, rgba(180,148,80,0.28) 100%),
+        linear-gradient(180deg, rgba(120,90,40,0.05), rgba(0,0,0,0) 30%, rgba(0,0,0,0) 70%, rgba(120,90,40,0.10));
+    }
+
+    .wc-canvas {
       position: absolute; inset: 0;
       width: 100%; height: 100%;
-      z-index: 1;
       pointer-events: none;
     }
+    .wc-canvas-bleed { z-index: 1; mix-blend-mode: multiply; opacity: 0.95; }
+    .wc-canvas-ink   { z-index: 4; }
 
-    /* Volumetric light rays from top */
-    .cine-rays {
-      position: absolute; inset: 0;
-      z-index: 2;
-      pointer-events: none;
-      opacity: 0;
-      background:
-        linear-gradient(190deg, rgba(255,207,133,0.18) 0%, rgba(255,207,133,0) 38%),
-        linear-gradient(170deg, rgba(255,207,133,0.12) 0%, rgba(255,207,133,0) 42%),
-        linear-gradient(200deg, rgba(255,180,120,0.10) 0%, rgba(255,180,120,0) 50%);
-      mix-blend-mode: screen;
-      will-change: opacity;
-    }
-
-    /* Top spotlight */
-    .cine-spotlight {
-      position: absolute;
-      left: 50%;
-      top: -20%;
-      width: 130vmax;
-      height: 100vmax;
-      transform: translate(-50%, 0) scale(0.6);
-      opacity: 0;
-      z-index: 2;
-      pointer-events: none;
-      background: radial-gradient(closest-side, rgba(255,210,140,0.55) 0%, rgba(255,180,110,0.22) 24%, rgba(255,140,80,0.06) 52%, transparent 76%);
-      mix-blend-mode: screen;
-      filter: blur(2px);
-      will-change: opacity, transform;
-    }
-    .cine-rim {
-      position: absolute;
-      left: -15%; right: -15%;
-      bottom: -38%;
-      height: 70vh;
-      z-index: 2;
-      pointer-events: none;
-      opacity: 0;
-      background: radial-gradient(closest-side, rgba(80,180,220,0.32) 0%, rgba(80,180,220,0.08) 36%, transparent 70%);
-      mix-blend-mode: screen;
-      filter: blur(8px);
-      will-change: opacity;
-    }
-
-    /* Vignette + film grain */
-    .cine-vignette {
-      position: absolute; inset: 0;
-      z-index: 7;
-      pointer-events: none;
-      background:
-        radial-gradient(140% 100% at 50% 50%, transparent 50%, rgba(6,8,15,0.55) 92%, rgba(6,8,15,0.85) 100%),
-        linear-gradient(180deg, rgba(6,8,15,0.32) 0%, transparent 14%, transparent 80%, rgba(6,8,15,0.5) 100%);
-      opacity: 0;
-      transition: opacity 0.6s ease;
-    }
-    .cine-grain {
-      position: absolute; inset: 0;
-      z-index: 8;
-      pointer-events: none;
-      opacity: 0.16;
-      mix-blend-mode: overlay;
-      background-image:
-        radial-gradient(rgba(255,255,255,0.5) 1px, transparent 1.2px),
-        radial-gradient(rgba(0,0,0,0.5) 1px, transparent 1.2px);
-      background-size: 3px 3px, 5px 5px;
-      background-position: 0 0, 2px 1px;
-      animation: cineGrain 1.6s steps(8) infinite;
-    }
-    @keyframes cineGrain {
-      0%   { transform: translate3d(0,0,0); }
-      20%  { transform: translate3d(-4%,1%,0); }
-      40%  { transform: translate3d(2%,-3%,0); }
-      60%  { transform: translate3d(-1%,-2%,0); }
-      80%  { transform: translate3d(3%,2%,0); }
-      100% { transform: translate3d(0,0,0); }
-    }
-
-    /* Ambient drifting glyph */
-    .cine-ambient {
-      position: absolute; inset: 0;
-      z-index: 3;
-      pointer-events: none;
-      font-family: 'DM Serif Display', serif;
-      color: rgba(255,255,255,0.04);
-      overflow: hidden;
-    }
-    .cine-ambient span {
-      position: absolute;
-      font-size: clamp(160px, 26vw, 360px);
-      font-style: italic;
-      line-height: 1;
-      user-select: none;
-      opacity: 0;
-      will-change: opacity, transform;
-    }
-
-    /* ----- Code layer ----- */
-    .cine-code {
-      position: absolute;
-      inset: 0;
+    /* --- Hero copy frame --- */
+    .wc-content {
+      position: relative;
       z-index: 5;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      perspective: 1400px;
-      pointer-events: none;
-      will-change: opacity, filter, transform;
-    }
-    .cine-code-block {
-      position: relative;
-      transform-style: preserve-3d;
-      max-width: 90vw;
-      font-family: 'JetBrains Mono', ui-monospace, monospace;
-      font-size: clamp(13px, 1.45vw, 20px);
-      line-height: 1.62;
-      color: var(--cine-paper);
-      text-shadow: 0 1px 0 rgba(0,0,0,0.4), 0 0 14px rgba(255,210,140,0.10);
-      transform: translateZ(0) rotateX(0deg);
-      will-change: transform;
-    }
-    .cine-line {
-      display: block;
-      position: relative;
-      white-space: pre;
-      transform-origin: 0 50%;
-      will-change: transform, opacity, filter;
-    }
-    /* organic per-line tilt (subtle) */
-    .cine-line[data-ln="1"]  { transform: rotate(-0.4deg); }
-    .cine-line[data-ln="2"]  { transform: rotate(0.2deg) translateX(2%); }
-    .cine-line[data-ln="3"]  { transform: rotate(-0.2deg); }
-    .cine-line[data-ln="4"]  { transform: rotate(0.3deg) translateX(2.5%); }
-    .cine-line[data-ln="5"]  { transform: rotate(-0.3deg) translateX(1%); }
-    .cine-line[data-ln="6"]  { transform: rotate(0.4deg) translateX(3%); }
-    .cine-line[data-ln="7"]  { transform: rotate(-0.2deg) translateX(1.5%); }
-    .cine-line[data-ln="8"]  { transform: rotate(0.2deg); }
-    .cine-line[data-ln="9"]  { transform: rotate(-0.3deg); }
-    .cine-line[data-ln="10"] { transform: rotate(0.3deg) translateX(1%); }
-    .cine-line[data-ln="11"] { transform: rotate(-0.2deg); }
-    .cine-line[data-ln="12"] { transform: rotate(0.3deg) translateX(2.5%); }
-    .cine-line[data-ln="13"] { transform: rotate(-0.3deg) translateX(2%); }
-    .cine-line[data-ln="14"] { transform: rotate(0.2deg) translateX(1.5%); }
-    .cine-line[data-ln="15"] { transform: rotate(-0.2deg); }
-    .cine-line[data-ln="16"] { transform: rotate(0.2deg); }
-
-    .cine-code .tk-tag      { color: var(--cine-tag); }
-    .cine-code .tk-attr     { color: var(--cine-attr); }
-    .cine-code .tk-str      { color: var(--cine-str); }
-    .cine-code .tk-punct    { color: var(--cine-punct); }
-    .cine-code .tk-text     { color: var(--cine-paper); }
-    .cine-code .tk-comment  { color: var(--cine-comment); font-style: italic; }
-
-    .cine-char {
-      display: inline-block;
-      opacity: 0;
-      transform: translate3d(0, 0.4em, 0);
-      filter: blur(4px);
-      will-change: opacity, transform, filter;
-      backface-visibility: hidden;
-    }
-
-    /* Bright sweep that dissolves the code */
-    .cine-sweep {
-      position: absolute;
-      top: -10%; bottom: -10%;
-      left: -20%;
-      width: 24%;
-      transform: skewX(-14deg);
-      background:
-        linear-gradient(90deg, transparent 0%, rgba(255,210,140,0.0) 8%, rgba(255,225,170,0.55) 50%, rgba(255,210,140,0.0) 92%, transparent 100%);
-      box-shadow: 0 0 80px rgba(255,210,140,0.5), 0 0 200px rgba(255,180,110,0.32);
-      mix-blend-mode: screen;
-      opacity: 0;
-      pointer-events: none;
-      will-change: transform, opacity, left;
-    }
-
-    /* ----- Rendered hero ----- */
-    .cine-page {
-      position: absolute;
-      inset: 0;
-      z-index: 6;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-    }
-    .cine-page-inner {
-      position: relative;
-      width: min(1180px, 92vw);
-      padding: 0 4vw;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 168px 80px 96px;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
       text-align: left;
+      min-height: 100vh;
+      justify-content: center;
     }
 
-    /* Eyebrow */
-    .cine-eyebrow {
+    .wc-eyebrow {
+      font-family: var(--wc-mono);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--mint-deep);
+      letter-spacing: 0.02em;
+      margin: 0 0 32px;
       display: inline-flex;
       align-items: center;
-      gap: 14px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 3.4px;
-      text-transform: uppercase;
-      color: var(--cine-amber);
-      margin-bottom: 36px;
-      pointer-events: auto;
+      gap: 6px;
       opacity: 0;
-      will-change: opacity, transform, filter;
-      text-shadow: 0 0 18px rgba(244,178,97,0.4);
+      transform: translateY(8px);
+      transition: opacity 0.6s ease 0.05s, transform 0.6s ease 0.05s;
     }
-    .cine-eyebrow::before {
-      content: '';
-      width: 36px; height: 1px;
-      background: linear-gradient(90deg, transparent, var(--cine-amber));
-      box-shadow: 0 0 8px rgba(244,178,97,0.6);
+    .wc-eyebrow.is-visible { opacity: 1; transform: translateY(0); }
+    .wc-eyebrow-mark { color: var(--ink-faint); font-weight: 400; }
+    .wc-eyebrow .wc-eyebrow-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--coral);
+      box-shadow: 0 0 0 4px rgba(229,106,85,0.18);
+      margin-right: 10px;
+      animation: wcPulse 2.4s ease-in-out infinite;
     }
-    .cine-eyebrow::after {
-      content: '';
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--cine-coral);
-      box-shadow: 0 0 14px rgba(255,122,107,0.8), 0 0 30px rgba(255,122,107,0.4);
-      animation: cineBlink 2.6s ease-in-out infinite;
+    @keyframes wcPulse {
+      0%,100% { transform: scale(1);   opacity: 1; }
+      50%     { transform: scale(0.7); opacity: 0.55; }
     }
-    @keyframes cineBlink { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
 
-    /* Headline — letterpress + top-lit gradient */
-    .cine-headline {
-      font-family: 'Source Serif 4', 'DM Serif Display', serif;
-      font-size: clamp(50px, 7.8vw, 132px);
-      line-height: 0.94;
-      letter-spacing: -0.014em;
-      font-weight: 400;
-      margin: 0 0 38px;
-      color: var(--cine-text);
-      max-width: 18ch;
-      pointer-events: auto;
-      /* lit-from-above: gradient text */
-      background: linear-gradient(180deg, #ffffff 0%, var(--cine-text) 42%, #c9bfa8 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 2px 0 rgba(0,0,0,0.25);
+    .wc-headline {
+      font-family: var(--wc-serif);
+      font-weight: 500;
+      font-size: clamp(44px, 6.4vw, 92px);
+      line-height: 1.02;
+      letter-spacing: -0.022em;
+      margin: 0 0 28px;
+      color: var(--ink);
+      max-width: 16ch;
+      position: relative;
     }
-    .cine-h-line {
+    .wc-headline .wc-h-line {
       display: block;
-      position: relative;
       opacity: 0;
-      transform: translateY(60px) scale(0.96);
-      filter: blur(20px);
-      will-change: opacity, transform, filter;
+      transform: translateY(28px);
+      filter: blur(6px);
+      transition: opacity 0.9s cubic-bezier(0.22,1,0.36,1),
+                  transform 0.9s cubic-bezier(0.22,1,0.36,1),
+                  filter 0.9s cubic-bezier(0.22,1,0.36,1);
     }
-    .cine-h-line.cine-accent {
+    .wc-headline.is-visible .wc-h-line {
+      opacity: 1; transform: translateY(0); filter: blur(0);
+    }
+    .wc-headline .wc-h-line:nth-child(1) { transition-delay: 0.20s; }
+    .wc-headline .wc-h-line:nth-child(2) { transition-delay: 0.36s; }
+    .wc-headline .wc-h-line:nth-child(3) { transition-delay: 0.54s; }
+    .wc-headline .wc-h-line:nth-child(4) { transition-delay: 0.74s; }
+
+    .wc-headline em {
       font-style: italic;
-      background: linear-gradient(180deg, #ffd99a 0%, var(--cine-amber) 50%, #d27a3a 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 50px rgba(244,178,97,0.25);
-    }
-    .cine-h-line.cine-accent::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      right: 6%;
-      bottom: 0.04em;
-      height: 0.10em;
-      background: linear-gradient(90deg, var(--cine-amber-hot), var(--cine-coral) 70%, transparent 100%);
-      box-shadow: 0 0 22px rgba(244,178,97,0.55), 0 0 4px rgba(244,178,97,0.85);
-      transform-origin: left;
-      transform: scaleX(0);
-      border-radius: 2px;
-      will-change: transform;
-    }
-    .cine-h-line.cine-accent.is-drawn::after {
-      transform: scaleX(1);
-      transition: transform 1.05s cubic-bezier(0.2,0.7,0.2,1);
-    }
-
-    /* Sub */
-    .cine-sub {
-      font-family: var(--font-body);
-      font-size: clamp(16px, 1.22vw, 19px);
-      color: var(--cine-text-dim);
-      line-height: 1.62;
-      max-width: 540px;
-      margin: 0 0 36px;
-      pointer-events: auto;
-      opacity: 0;
-      will-change: opacity, transform;
-    }
-
-    /* CTA — embossed gold */
-    .cine-actions { display: flex; gap: 16px; margin-bottom: 40px; flex-wrap: wrap; opacity: 0; will-change: opacity, transform; }
-    .cine-cta {
-      display: inline-flex; align-items: center; gap: 12px;
-      padding: 17px 32px;
-      font-family: var(--font-body);
-      font-weight: 700;
-      font-size: 15px;
-      color: #1a1126;
-      background: linear-gradient(180deg, #ffd599 0%, var(--cine-amber) 55%, #d18b3e 100%);
-      border-radius: 999px;
-      border: 1px solid rgba(255,220,170,0.6);
-      cursor: pointer;
-      pointer-events: auto;
-      box-shadow:
-        0 22px 56px rgba(244,178,97,0.32),
-        0 6px 14px rgba(0,0,0,0.32),
-        inset 0 1px 0 rgba(255,255,255,0.5),
-        inset 0 -2px 0 rgba(0,0,0,0.18);
-      transition: transform 0.25s, box-shadow 0.25s;
+      font-weight: 400;
+      color: var(--mint-deep);
       position: relative;
+      display: inline-block;
+    }
+    /* wet underpainting behind italicized words */
+    .wc-headline em::before {
+      content: ''; position: absolute;
+      left: -6%; right: -6%; top: 14%; bottom: 14%;
+      background:
+        radial-gradient(ellipse at 30% 50%, rgba(95,146,130,0.28), rgba(95,146,130,0) 70%),
+        radial-gradient(ellipse at 70% 60%, rgba(162,201,184,0.22), rgba(162,201,184,0) 75%);
+      z-index: -1;
+      filter: blur(3px);
+      animation: wcBreathe 7.5s ease-in-out infinite;
+    }
+    .wc-headline em.coral-wash { color: var(--coral-deep); }
+    .wc-headline em.coral-wash::before {
+      background:
+        radial-gradient(ellipse at 30% 50%, rgba(229,106,85,0.26), rgba(229,106,85,0) 70%),
+        radial-gradient(ellipse at 70% 60%, rgba(241,169,148,0.22), rgba(241,169,148,0) 75%);
+    }
+    @keyframes wcBreathe {
+      0%,100% { opacity: 0.85; transform: scale(1); }
+      50%     { opacity: 1;    transform: scale(1.05); }
+    }
+
+    .wc-sub {
+      font-family: var(--wc-sans);
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--ink-soft);
+      max-width: 52ch;
+      margin: 0 0 40px;
+      font-weight: 400;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.7s ease 0.55s, transform 0.7s ease 0.55s;
+    }
+    .wc-sub.is-visible { opacity: 1; transform: translateY(0); }
+
+    .wc-actions {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 56px;
+      flex-wrap: wrap;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.7s ease 0.80s, transform 0.7s ease 0.80s;
+    }
+    .wc-actions.is-visible { opacity: 1; transform: translateY(0); }
+
+    .wc-cta {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 28px;
+      font-family: var(--wc-sans);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 999px;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s ease;
+      overflow: visible;
+      white-space: nowrap;
+    }
+
+    .wc-cta-primary {
+      color: #fff6ee;
+      background: var(--coral);
+      box-shadow:
+        0 1px 0 rgba(140, 50, 35, 0.30),
+        0 22px 44px -20px rgba(229,106,85,0.55),
+        inset 0 1px 0 rgba(255,225,210,0.45);
+    }
+    .wc-cta-primary::before {
+      content: ''; position: absolute; inset: 0; border-radius: inherit;
+      background:
+        radial-gradient(ellipse at 22% 25%, rgba(255,225,210,0.55), rgba(255,225,210,0) 55%),
+        radial-gradient(ellipse at 82% 80%, rgba(155,55,38,0.42), rgba(155,55,38,0) 60%);
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+    }
+    /* the wash overlay that refreshes during the periodic re-paint */
+    .wc-cta-primary .wc-cta-wash {
+      position: absolute; inset: -4px; border-radius: 999px;
+      background:
+        radial-gradient(ellipse at 30% 40%, rgba(241,169,148,0.70), rgba(241,169,148,0) 60%),
+        radial-gradient(ellipse at 70% 60%, rgba(229,106,85,0.62), rgba(229,106,85,0) 65%);
+      mix-blend-mode: multiply;
+      opacity: 0;
+      pointer-events: none;
+      filter: blur(4px);
+    }
+    .wc-cta-primary.is-repainting .wc-cta-wash { animation: wcWashPulse 2.2s ease-out forwards; }
+    @keyframes wcWashPulse {
+      0%   { opacity: 0; transform: scale(0.88); }
+      35%  { opacity: 1; transform: scale(1.10); }
+      100% { opacity: 0; transform: scale(1.0); }
+    }
+    .wc-cta-primary:hover { transform: translateY(-2px); }
+    .wc-cta-primary .wc-cta-arrow {
+      font-family: var(--wc-mono);
+      font-size: 14px;
+      transition: transform 0.3s ease;
+    }
+    .wc-cta-primary:hover .wc-cta-arrow { transform: translateX(4px); }
+
+    .wc-cta-ghost {
+      color: var(--ink);
+      background: transparent;
+      border: 1.5px solid rgba(44,41,34,0.25);
+      box-shadow: 0 1px 0 rgba(44,41,34,0.05);
       overflow: hidden;
     }
-    .cine-cta::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.5) 50%, transparent 80%);
-      transform: translateX(-110%);
-      transition: transform 0.7s ease;
+    .wc-cta-ghost .wc-cta-trace {
+      position: absolute; inset: -1.5px; border-radius: inherit;
+      border: 1.5px solid var(--mint-deep);
+      clip-path: inset(0 100% 0 0);
+      transition: clip-path 0.7s cubic-bezier(0.22,1,0.36,1);
       pointer-events: none;
     }
-    .cine-cta:hover {
-      transform: translateY(-3px);
-      box-shadow:
-        0 28px 66px rgba(244,178,97,0.45),
-        0 8px 18px rgba(0,0,0,0.35),
-        inset 0 1px 0 rgba(255,255,255,0.6),
-        inset 0 -2px 0 rgba(0,0,0,0.2);
+    .wc-cta-ghost:hover .wc-cta-trace { clip-path: inset(0 0 0 0); }
+    .wc-cta-ghost::after {
+      content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 0;
+      background: rgba(53, 90, 77, 0.08);
+      transition: width 0.45s cubic-bezier(0.22,1,0.36,1);
+      pointer-events: none;
     }
-    .cine-cta:hover::before { transform: translateX(110%); }
-    .cine-cta .cine-cta-arrow { display: inline-block; transition: transform 0.25s; }
-    .cine-cta:hover .cine-cta-arrow { transform: translateX(4px); }
+    .wc-cta-ghost:hover::after { width: 100%; }
+    .wc-cta-ghost:hover { color: var(--mint-deep); transform: translateY(-2px); }
 
-    /* Stats */
-    .cine-stats {
+    .wc-stats {
       display: flex;
-      flex-wrap: wrap;
-      padding-top: 22px;
-      border-top: 1px solid rgba(246,239,224,0.16);
-      max-width: 620px;
-      pointer-events: auto;
-    }
-    .cine-stat {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      padding-right: 32px;
-      margin-right: 32px;
-      border-right: 1px solid rgba(246,239,224,0.16);
+      gap: 0;
+      align-items: flex-start;
       opacity: 0;
-      will-change: opacity, transform;
+      transform: translateY(12px);
+      transition: opacity 0.7s ease 1.05s, transform 0.7s ease 1.05s;
     }
-    .cine-stat:last-child { border-right: none; margin-right: 0; padding-right: 0; }
-    .cine-stat b {
-      font-family: 'Source Serif 4', serif;
+    .wc-stats.is-visible { opacity: 1; transform: translateY(0); }
+
+    .wc-stat {
+      padding-right: 36px;
+      margin-right: 36px;
+      border-right: 1px solid rgba(44,41,34,0.14);
+    }
+    .wc-stat:last-child { border-right: none; padding-right: 0; margin-right: 0; }
+    .wc-stat b {
+      display: block;
+      font-family: var(--wc-serif);
+      font-weight: 500;
       font-size: 24px;
-      font-weight: 400;
-      color: var(--cine-text);
+      color: var(--ink);
       letter-spacing: -0.01em;
+      margin-bottom: 4px;
     }
-    .cine-stat small {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9.5px;
-      letter-spacing: 1.6px;
+    .wc-stat small {
+      display: block;
+      font-family: var(--wc-mono);
+      font-size: 11px;
+      color: var(--ink-soft);
+      letter-spacing: 0.04em;
       text-transform: uppercase;
-      color: var(--cine-text-faint);
     }
 
-    /* Director's chrome — chapter readout (small, top-left) */
-    .cine-chrome {
+    /* --- Painter's chrome (status bar in corner) --- */
+    .wc-chrome {
       position: absolute;
-      top: 28px;
-      left: 38px;
-      z-index: 7;
-      display: flex; align-items: center; gap: 12px;
-      font-family: 'JetBrains Mono', monospace;
+      top: 92px; left: 80px;
+      z-index: 6;
+      font-family: var(--wc-mono);
       font-size: 10px;
-      letter-spacing: 2.6px;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--cine-text-faint);
+      color: rgba(44,41,34,0.50);
+      display: flex; align-items: center; gap: 10px;
       pointer-events: none;
     }
-    .cine-chrome .cine-rec {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--cine-coral);
-      box-shadow: 0 0 12px rgba(255,122,107,0.6);
-      animation: cineBlink 1.6s ease-in-out infinite;
+    .wc-chrome-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--mint);
+      box-shadow: 0 0 0 4px rgba(95,146,130,0.18);
+      animation: wcPulse 2.4s ease-in-out infinite;
     }
-    .cine-skip {
-      position: absolute;
-      top: 28px;
-      right: 38px;
-      z-index: 9;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 2.2px;
-      text-transform: uppercase;
-      color: var(--cine-text-faint);
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 999px;
-      padding: 9px 14px;
-      cursor: pointer;
-      transition: color 0.2s, background 0.2s, border-color 0.2s, opacity 0.4s;
-    }
-    .cine-skip:hover { color: var(--cine-text); background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.18); }
-    .cine-skip.is-hidden { opacity: 0; pointer-events: none; }
 
-    @media (max-width: 900px) {
-      .cine-chrome { top: 16px; left: 18px; font-size: 9px; }
-      .cine-skip { top: 16px; right: 18px; padding: 7px 12px; font-size: 9px; }
-      .cine-stage { min-height: 640px; }
-      .cine-code-block { font-size: 11px; }
-      .cine-headline { font-size: clamp(40px, 11.5vw, 76px); }
-      .cine-stat { padding-right: 16px; margin-right: 16px; }
-      .cine-stat b { font-size: 20px; }
+    /* --- Footer trim of the hero --- */
+    .wc-foot {
+      position: absolute;
+      bottom: 36px; left: 80px; right: 80px;
+      z-index: 5;
+      display: flex; align-items: center; justify-content: space-between;
+      font-family: var(--wc-mono);
+      font-size: 11px;
+      color: var(--ink-faint);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      pointer-events: none;
     }
-    @media (max-width: 560px) {
-      .cine-stat { padding-right: 12px; margin-right: 12px; border-right: none; flex: 1 0 calc(50% - 12px); }
+    .wc-foot .wc-foot-line {
+      flex: 1;
+      height: 1px;
+      margin: 0 22px;
+      background: linear-gradient(90deg, transparent, rgba(107,93,79,0.32), transparent);
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 960px) {
+      .wc-content { padding: 132px 32px 80px; }
+      .wc-chrome { top: 80px; left: 32px; }
+      .wc-foot { left: 32px; right: 32px; }
+      .wc-stat { padding-right: 20px; margin-right: 20px; }
+      .wc-stat b { font-size: 20px; }
+    }
+    @media (max-width: 640px) {
+      .wc-content { padding: 120px 22px 80px; }
+      .wc-chrome { top: 76px; left: 22px; font-size: 9px; }
+      .wc-foot { left: 22px; right: 22px; font-size: 10px; }
+      .wc-actions { flex-direction: column; align-items: stretch; gap: 12px; width: 100%; }
+      .wc-cta { justify-content: center; width: 100%; }
+      .wc-stats { flex-wrap: wrap; gap: 18px 0; }
+      .wc-stat { flex: 1 0 calc(50% - 18px); border-right: none; padding-right: 0; margin-right: 18px; }
+      .wc-stat:last-child { margin-right: 0; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .cine-char { opacity: 1; transform: none; filter: none; }
-      .cine-h-line { opacity: 1; transform: none; filter: none; }
-      .cine-eyebrow, .cine-sub, .cine-actions, .cine-stat { opacity: 1; }
-      .cine-grain, .cine-eyebrow::after, .cine-chrome .cine-rec { animation: none; }
+      .wc-headline .wc-h-line,
+      .wc-eyebrow,
+      .wc-sub,
+      .wc-actions,
+      .wc-stats {
+        opacity: 1; transform: none; filter: none; transition: none;
+      }
+      .wc-headline em::before, .wc-chrome-dot, .wc-eyebrow .wc-eyebrow-dot { animation: none; }
     }
 
 
@@ -6768,478 +6663,675 @@
     </div>
   </nav>
 
-  <section class="hero cine-hero" id="hero">
-    <div class="cine-stage" id="cineStage">
+  <section class="hero wc-hero" id="hero">
+    <div class="wc-stage" id="wcStage">
 
-      <canvas class="cine-canvas" id="cineCanvas" aria-hidden="true"></canvas>
-      <div class="cine-spotlight" id="cineSpotlight"></div>
-      <div class="cine-rim" id="cineRim"></div>
-      <div class="cine-rays" id="cineRays"></div>
-      <div class="cine-ambient" aria-hidden="true">
-        <span id="cineAmb1" style="top:-6%; left:-4%;">&#123;</span>
-        <span id="cineAmb2" style="top:62%; right:-6%;">&#125;</span>
+      <canvas class="wc-canvas wc-canvas-bleed" id="wcBleed" aria-hidden="true"></canvas>
+      <canvas class="wc-canvas wc-canvas-ink"   id="wcInk"   aria-hidden="true"></canvas>
+      <div class="wc-paper-grain" aria-hidden="true"></div>
+      <div class="wc-vignette" aria-hidden="true"></div>
+
+      <div class="wc-chrome">
+        <span class="wc-chrome-dot"></span>
+        <span>scene 01 · painting</span>
       </div>
 
-      <div class="cine-chrome">
-        <span class="cine-rec"></span>
-        <span id="cineChromeLabel">scene 01 · prelude</span>
-      </div>
-      <button class="cine-skip" id="cineSkip" type="button" aria-label="Skip intro">skip intro</button>
+      <div class="wc-content">
+        <p class="wc-eyebrow" id="wcEyebrow">
+          <span class="wc-eyebrow-dot"></span>
+          <span class="wc-eyebrow-mark">&lt;!--</span>
+          <span>&nbsp;digital presence check&nbsp;</span>
+          <span class="wc-eyebrow-mark">--&gt;</span>
+        </p>
 
-      <div class="cine-code" id="cineCode">
-        <div class="cine-code-block" id="cineCodeBlock"></div>
-        <div class="cine-sweep" id="cineSweep"></div>
-      </div>
+        <h1 class="wc-headline" id="wcHeadline">
+          <span class="wc-h-line">If you&rsquo;re <em>invisible</em></span>
+          <span class="wc-h-line">online, you&rsquo;re</span>
+          <span class="wc-h-line">invisible to</span>
+          <span class="wc-h-line"><em class="coral-wash">customers.</em></span>
+        </h1>
 
-      <div class="cine-page" id="cinePage">
-        <div class="cine-page-inner">
-          <div class="cine-eyebrow" data-r="eyebrow">digital presence check</div>
-          <h1 class="cine-headline">
-            <span class="cine-h-line" data-r="h1a">If you&rsquo;re invisible</span>
-            <span class="cine-h-line" data-r="h1b">online, you&rsquo;re</span>
-            <span class="cine-h-line cine-accent" data-r="h1c">invisible to</span>
-            <span class="cine-h-line cine-accent" data-r="h1d">customers.</span>
-          </h1>
-          <p class="cine-sub" data-r="sub">Too many great businesses lose opportunities online because their digital presence fails to reflect the quality of their work.</p>
-          <div class="cine-actions" data-r="cta">
-            <a href="#contact" onclick="jumpToContact(event)" class="cine-cta">
-              Start a project <span class="cine-cta-arrow">&rarr;</span>
-            </a>
-          </div>
-          <div class="cine-stats">
-            <div class="cine-stat" data-r="stat1"><b>$500</b><small>single-page launch</small></div>
-            <div class="cine-stat" data-r="stat2"><b>7 days</b><small>typical first pass</small></div>
-            <div class="cine-stat" data-r="stat3"><b>Custom code</b><small>no page builders</small></div>
-          </div>
+        <p class="wc-sub" id="wcSub">
+          Too many great businesses lose opportunities online because their digital presence fails to reflect the quality of their work.
+        </p>
+
+        <div class="wc-actions" id="wcActions">
+          <a href="#contact" onclick="jumpToContact(event)" class="wc-cta wc-cta-primary" id="wcCtaPrimary">
+            <span class="wc-cta-wash" aria-hidden="true"></span>
+            <span>Start a project</span>
+            <span class="wc-cta-arrow">&rarr;</span>
+          </a>
+          <a href="#pricing" onclick="jumpToPricing(event)" class="wc-cta wc-cta-ghost" id="wcCtaGhost">
+            <span class="wc-cta-trace" aria-hidden="true"></span>
+            <span>See pricing</span>
+          </a>
+        </div>
+
+        <div class="wc-stats" id="wcStats">
+          <div class="wc-stat"><b>$500</b><small>single-page launch</small></div>
+          <div class="wc-stat"><b>7 days</b><small>typical first pass</small></div>
+          <div class="wc-stat"><b>Custom code</b><small>no page builders</small></div>
         </div>
       </div>
 
-      <div class="cine-vignette" id="cineVignette"></div>
-      <div class="cine-grain" aria-hidden="true"></div>
+      <div class="wc-foot">
+        <span>01 — Hero</span>
+        <span class="wc-foot-line"></span>
+        <span>Scroll for work&nbsp;&darr;</span>
+      </div>
 
     </div>
 
     <script>
       (function () {
-        const stage     = document.getElementById('cineStage');
-        const codeBlock = document.getElementById('cineCodeBlock');
-        const codeWrap  = document.getElementById('cineCode');
-        const sweep     = document.getElementById('cineSweep');
-        const page      = document.getElementById('cinePage');
-        const canvas    = document.getElementById('cineCanvas');
-        const spot      = document.getElementById('cineSpotlight');
-        const rim       = document.getElementById('cineRim');
-        const rays      = document.getElementById('cineRays');
-        const vignette  = document.getElementById('cineVignette');
-        const amb1      = document.getElementById('cineAmb1');
-        const amb2      = document.getElementById('cineAmb2');
-        const chromeLbl = document.getElementById('cineChromeLabel');
-        const skipBtn   = document.getElementById('cineSkip');
-        if (!stage || !codeBlock || !page || !canvas) return;
+        'use strict';
 
+        // ============================================================
+        // mediocre markup — watercolor markup hero (strand edition)
+        // HTML tag pairs are stitched into living strands that drift
+        // across cream paper. Two strands wrap the CTAs — the buttons
+        // are literally outlined by traveling open/close tag glyphs.
+        // Cursor repels strands; clicks bloom transient coral bursts.
+        // ============================================================
+
+        const stage   = document.getElementById('wcStage');
+        const inkC    = document.getElementById('wcInk');
+        const bleedC  = document.getElementById('wcBleed');
+        const eyebrow = document.getElementById('wcEyebrow');
+        const head    = document.getElementById('wcHeadline');
+        const sub     = document.getElementById('wcSub');
+        const actions = document.getElementById('wcActions');
+        const stats   = document.getElementById('wcStats');
+        const primary = document.getElementById('wcCtaPrimary');
+        const ghost   = document.getElementById('wcCtaGhost');
+        if (!stage || !inkC || !bleedC) return;
+
+        const ink    = inkC.getContext('2d');
+        const bleed  = bleedC.getContext('2d');
+
+        let W = 0, H = 0, DPR = 1;
+        const lowQ = (navigator.hardwareConcurrency || 4) <= 4;
         const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        const SRC = [
-          '<section class="hero">',
-          '  <p class="eyebrow">digital presence check</p>',
-          '  <h1>',
-          '    <span>If you’re invisible</span>',
-          '    <span>online, you’re</span>',
-          '    <span class="accent">invisible to</span>',
-          '    <span class="accent">customers.</span>',
-          '  </h1>',
-          '  <p class="sub">Too many great businesses lose opportunities online because their digital presence fails to reflect the quality of their work.</p>',
-          '  <a href="#contact" class="cta">Start a project →</a>',
-          '  <div class="stats">',
-          '    <div><b>$500</b><small>single-page launch</small></div>',
-          '    <div><b>7 days</b><small>typical first pass</small></div>',
-          '    <div><b>Custom code</b><small>no page builders</small></div>',
-          '  </div>',
-          '</section>'
-        ];
-
-        /* ---------- Tokenize ---------- */
-        function tokenizeLine(s) {
-          const out = [];
-          let i = 0;
-          const len = s.length;
-          while (i < len) {
-            const c = s[i];
-            if (c === '<') {
-              const close = s[i + 1] === '/';
-              out.push({ t: 'punct', v: close ? '</' : '<' });
-              i += close ? 2 : 1;
-              const m = s.slice(i).match(/^[a-zA-Z][a-zA-Z0-9]*/);
-              if (m) { out.push({ t: 'tag', v: m[0] }); i += m[0].length; }
-              while (i < len && s[i] !== '>') {
-                if (s[i] === '/' && s[i + 1] === '>') break;
-                if (s[i] === ' ') {
-                  let j = i;
-                  while (j < len && s[j] === ' ') j++;
-                  out.push({ t: 'ws', v: s.slice(i, j) });
-                  i = j;
-                } else if (/[a-zA-Z-]/.test(s[i])) {
-                  const am = s.slice(i).match(/^[a-zA-Z-]+/);
-                  out.push({ t: 'attr', v: am[0] });
-                  i += am[0].length;
-                } else if (s[i] === '=') {
-                  out.push({ t: 'punct', v: '=' }); i++;
-                } else if (s[i] === '"' || s[i] === "'") {
-                  const q = s[i];
-                  let j = i + 1;
-                  while (j < len && s[j] !== q) j++;
-                  j = Math.min(len, j + 1);
-                  out.push({ t: 'str', v: s.slice(i, j) });
-                  i = j;
-                } else {
-                  out.push({ t: 'text', v: s[i] }); i++;
-                }
-              }
-              if (s[i] === '/' && s[i + 1] === '>') {
-                out.push({ t: 'punct', v: '/>' }); i += 2;
-              } else if (s[i] === '>') {
-                out.push({ t: 'punct', v: '>' }); i++;
-              }
-            } else {
-              let lt = s.indexOf('<', i);
-              let end = lt >= 0 ? lt : len;
-              if (end <= i) { i = i + 1; continue; }
-              out.push({ t: 'text', v: s.slice(i, end) });
-              i = end;
-            }
-          }
-          return out;
-        }
-
-        /* ---------- Render code DOM ---------- */
-        const allChars = [];
-        SRC.forEach((line, idx) => {
-          const ln = idx + 1;
-          const div = document.createElement('div');
-          div.className = 'cine-line';
-          div.setAttribute('data-ln', ln);
-          if (line.length === 0) {
-            const c = document.createElement('span');
-            c.className = 'cine-char';
-            c.innerHTML = '&nbsp;';
-            div.appendChild(c);
-          } else {
-            const tokens = tokenizeLine(line);
-            tokens.forEach(tk => {
-              const tkSpan = document.createElement('span');
-              tkSpan.className = 'tk-' + tk.t;
-              for (const ch of tk.v) {
-                const c = document.createElement('span');
-                c.className = 'cine-char';
-                c.textContent = ch === ' ' ? ' ' : ch;
-                tkSpan.appendChild(c);
-                allChars.push(c);
-              }
-              div.appendChild(tkSpan);
-            });
-          }
-          codeBlock.appendChild(div);
-        });
-
-        /* ---------- Canvas: warm embers rising from below ---------- */
-        const ctx = canvas.getContext('2d');
-        let W = 0, H = 0, DPR = 1;
-        function sizeCanvas() {
+        function fit(c, ctx) {
+          DPR = Math.min(window.devicePixelRatio || 1, lowQ ? 1.25 : 1.75);
           const r = stage.getBoundingClientRect();
-          DPR = Math.min(window.devicePixelRatio || 1, 2);
-          W = r.width; H = r.height;
-          canvas.width  = Math.max(1, Math.round(W * DPR));
-          canvas.height = Math.max(1, Math.round(H * DPR));
-          canvas.style.width = W + 'px';
-          canvas.style.height = H + 'px';
+          W = Math.max(1, Math.floor(r.width));
+          H = Math.max(1, Math.floor(r.height));
+          c.width  = Math.floor(W * DPR);
+          c.height = Math.floor(H * DPR);
           ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
         }
-        sizeCanvas();
-        window.addEventListener('resize', sizeCanvas);
-
-        const particles = [];
-        function spawnParticles(n) {
-          for (let k = 0; k < n; k++) {
-            particles.push({
-              x: Math.random() * W,
-              y: H + Math.random() * 60,
-              vx: (Math.random() - 0.5) * 0.18,
-              vy: -(0.15 + Math.random() * 0.55),
-              r: 0.5 + Math.random() * 1.8,
-              a: 0.35 + Math.random() * 0.45,
-              life: 0,
-              maxLife: 480 + Math.random() * 220,
-              hue: Math.random() < 0.75 ? 0 : 1
-            });
-          }
-        }
-        if (!reduced) spawnParticles(40);
-
-        let intensity = 0;       // 0..1 — driven by timeline; controls ember density
-        let emberBoost = 0;      // burst boost during sweep
-        let lastTs = performance.now();
-
-        function paint(t) {
-          ctx.clearRect(0, 0, W, H);
-          const dt = Math.min(64, t - lastTs);
-          lastTs = t;
-
-          /* spawn more during action */
-          if (Math.random() < 0.05 + intensity * 0.18 + emberBoost * 0.6) {
-            spawnParticles(1 + Math.floor(emberBoost * 5));
-          }
-
-          /* atmospheric mist (light haze) */
-          const haze = ctx.createLinearGradient(0, 0, 0, H);
-          haze.addColorStop(0, 'rgba(255,210,140,' + (0.04 + intensity * 0.06).toFixed(3) + ')');
-          haze.addColorStop(0.5, 'rgba(255,210,140,0)');
-          haze.addColorStop(1, 'rgba(80,120,170,' + (0.05 + intensity * 0.04).toFixed(3) + ')');
-          ctx.fillStyle = haze;
-          ctx.fillRect(0, 0, W, H);
-
-          /* embers */
-          for (let i = particles.length - 1; i >= 0; i--) {
-            const p = particles[i];
-            p.life += dt;
-            p.x += p.vx * (dt / 16.67);
-            p.y += p.vy * (dt / 16.67);
-            p.vy *= 0.998;
-            const lifeT = p.life / p.maxLife;
-            if (lifeT >= 1 || p.y < -20) { particles.splice(i, 1); continue; }
-            const fade = 1 - lifeT;
-            const a = p.a * fade;
-            const baseR = p.r * 3.5;
-            const col = p.hue
-              ? 'rgba(255,180,120,' + a.toFixed(3) + ')'
-              : 'rgba(255,225,170,' + a.toFixed(3) + ')';
-            const rg = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, baseR);
-            rg.addColorStop(0, col);
-            rg.addColorStop(0.4, col.replace(/[\d.]+\)$/, (a * 0.6).toFixed(3) + ')'));
-            rg.addColorStop(1, 'rgba(255,180,120,0)');
-            ctx.fillStyle = rg;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, baseR, 0, Math.PI * 2);
-            ctx.fill();
-          }
-
-          emberBoost = Math.max(0, emberBoost - 0.012);
+        function resize() {
+          try {
+            fit(inkC, ink);
+            fit(bleedC, bleed);
+            bleed.clearRect(0, 0, W, H);
+            paintBackgroundWash();
+            // buildScribe is hoisted; safe to call here. Guard in case it's not
+            // ready yet (e.g. very early resize firing during boot).
+            if (typeof buildScribe === 'function') buildScribe();
+          } catch (err) { safeLog('resize', err); }
         }
 
-        let rafId = 0;
-        function loop(t) { paint(t); rafId = requestAnimationFrame(loop); }
-        if (!reduced) rafId = requestAnimationFrame(loop);
-
-        /* ---------- Easing helpers ---------- */
-        const ease = {
-          outCubic: (t) => 1 - Math.pow(1 - t, 3),
-          inOutCubic: (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
-          outQuint: (t) => 1 - Math.pow(1 - t, 5),
-          inQuad: (t) => t * t,
-          outExpo: (t) => t === 1 ? 1 : 1 - Math.pow(2, -10 * t)
+        // --- Pigments ---
+        const PIG = {
+          mintDeep:  [53, 90, 77],
+          mint:      [95, 146, 130],
+          mintWash:  [162, 201, 184],
+          coralDeep: [196, 90, 68],
+          coral:     [229, 106, 85],
+          coralWash: [241, 169, 148],
+          inkSoft:   [107, 93, 79],
+          inkFaint:  [168, 149, 125]
         };
-        const clamp01 = (v) => Math.max(0, Math.min(1, v));
-        const lerp = (a, b, t) => a + (b - a) * t;
+        const rgba = (c, a) => 'rgba(' + (c[0]|0) + ',' + (c[1]|0) + ',' + (c[2]|0) + ',' + a + ')';
+        const jit = (c, j) => [
+          Math.max(0, Math.min(255, c[0] + (Math.random() - 0.5) * j)),
+          Math.max(0, Math.min(255, c[1] + (Math.random() - 0.5) * j)),
+          Math.max(0, Math.min(255, c[2] + (Math.random() - 0.5) * j))
+        ];
 
-        /* ---------- Timeline (ms-based) ---------- */
-        const T = {
-          ignite:      [0,    900],   // stage powers up
-          codeWrite:   [350,  2400],  // chars stream in
-          codeHold:    [2400, 2900],
-          sweep:       [2700, 3850],  // bright sweep travels
-          codeDissolve:[2900, 3900],
-          codeRecede:  [3500, 4200],
-          hero:        [3700, 6000],  // hero materializes
-          accentDraw:  [5400, 6200]
-        };
-        const TOTAL = 6300;
+        // --- Strand vocabulary: each entry is a complete tag-strand:
+        // an opening tag, an ordered list of inner glyphs, and the
+        // matching close tag. Strands read like a real markup snippet. ---
+        const STRAND_VOCAB = [
+          { open: '<h1>',      close: '</h1>',      inner: ['<em>',     '</em>'] },
+          { open: '<p>',       close: '</p>',       inner: ['<a>',      'href',    '</a>'] },
+          { open: '<section>', close: '</section>', inner: ['<h2>',     '<p>',     '</p>',    '</h2>'] },
+          { open: '<nav>',     close: '</nav>',     inner: ['<a>',      '·',       '<a>',     '</a>'] },
+          { open: '<main>',    close: '</main>',    inner: ['<article>', '<p>',    '</p>',    '</article>'] },
+          { open: '<div>',     close: '</div>',     inner: ['<img/>',   '<br/>',   '<span>',  '</span>'] },
+          { open: '<a>',       close: '</a>',       inner: ['href=',    '"#"',     '→'] },
+          { open: '<form>',    close: '</form>',    inner: ['<input/>', '<label>', '</label>'] }
+        ];
+        // Glyph pool used to densely wrap CTA orbit strands.
+        const ORBIT_INNER = ['<a>', 'href', '</a>', '<span>', 'click', '</span>',
+                             '<em>', '→', '</em>', '<i>', '·', '</i>'];
 
-        const N = allChars.length;
-        const heroOrder = ['eyebrow','h1a','h1b','h1c','h1d','sub','cta','stat1','stat2','stat3'];
-        const heroEls = heroOrder.map(id => page.querySelector('[data-r="' + id + '"]'));
-        const heroTargets = {
-          eyebrow: { start: 3700, dur: 700,  y: 14, blur: 6,  scale: 1 },
-          h1a:     { start: 3850, dur: 950,  y: 60, blur: 18, scale: 0.96 },
-          h1b:     { start: 4000, dur: 950,  y: 60, blur: 18, scale: 0.96 },
-          h1c:     { start: 4180, dur: 1000, y: 60, blur: 20, scale: 0.96 },
-          h1d:     { start: 4360, dur: 1000, y: 60, blur: 20, scale: 0.96 },
-          sub:     { start: 4900, dur: 700,  y: 18, blur: 6,  scale: 1 },
-          cta:     { start: 5200, dur: 700,  y: 18, blur: 4,  scale: 0.97 },
-          stat1:   { start: 5450, dur: 600,  y: 22, blur: 4,  scale: 1 },
-          stat2:   { start: 5570, dur: 600,  y: 22, blur: 4,  scale: 1 },
-          stat3:   { start: 5690, dur: 600,  y: 22, blur: 4,  scale: 1 }
-        };
+        // --- Safe error formatter so nothing ever logs "[object Object]" ---
+        function fmtErr(e) {
+          try {
+            if (e == null) return 'unknown';
+            if (e instanceof Error) return e.message || String(e);
+            if (typeof e === 'string') return e;
+            return JSON.stringify(e);
+          } catch (_) { return 'unstringifiable'; }
+        }
+        function safeLog(scope, e) { try { console.error('[wc-hero ' + scope + ']', fmtErr(e), e); } catch(_){} }
 
-        function setOpacity(el, v) { if (el) el.style.opacity = v.toFixed(3); }
-        function setTransform(el, str) { if (el) el.style.transform = str; }
-        function setFilter(el, str) { if (el) el.style.filter = str; }
-
-        function frame(elapsed) {
-          /* 1. Stage ignition */
-          {
-            const [a, b] = T.ignite;
-            const t = clamp01((elapsed - a) / (b - a));
-            const e = ease.outExpo(t);
-            setOpacity(spot, (0.0 + e * 0.95).toFixed ? (0.0 + e * 0.95) : 0);
-            spot.style.opacity = (e * 0.95).toFixed(3);
-            spot.style.transform = 'translate(-50%, 0) scale(' + (0.6 + e * 0.5).toFixed(3) + ')';
-            rim.style.opacity = (e * 0.8).toFixed(3);
-            rays.style.opacity = (e * 0.55).toFixed(3);
-            vignette.style.opacity = (e * 0.85).toFixed(3);
-            if (amb1) amb1.style.opacity = (e * 0.9).toFixed(3);
-            if (amb2) amb2.style.opacity = (e * 0.9).toFixed(3);
-            if (amb1) amb1.style.transform = 'translate(' + (-(1 - e) * 30).toFixed(1) + 'px,' + ((1 - e) * 20).toFixed(1) + 'px)';
-            if (amb2) amb2.style.transform = 'translate(' + ((1 - e) * 30).toFixed(1) + 'px,' + (-(1 - e) * 20).toFixed(1) + 'px)';
-            intensity = e * 0.35;
-            if (chromeLbl && elapsed < 800) chromeLbl.textContent = 'scene 01 · prelude';
-          }
-
-          /* 2. Code write-on (per-char) */
-          {
-            const [a, b] = T.codeWrite;
-            const tGlobal = clamp01((elapsed - a) / (b - a));
-            if (elapsed > a) {
-              for (let i = 0; i < N; i++) {
-                const u = i / Math.max(1, N - 1);
-                const local = clamp01((tGlobal - u * 0.9) / 0.12);
-                const e = ease.outCubic(local);
-                allChars[i].style.opacity = e.toFixed(3);
-                allChars[i].style.transform = 'translate3d(0,' + ((1 - e) * 0.4).toFixed(3) + 'em,0)';
-                allChars[i].style.filter = 'blur(' + ((1 - e) * 4).toFixed(2) + 'px)';
-              }
+        // --- Background paper wash (priming the paper) ---
+        function paintBackgroundWash() {
+          if (!W || !H) return; // guard against pre-fit calls
+          try {
+            const blobs = [
+              { x: W * 0.20, y: H * 0.22, r: Math.max(W,H) * 0.45, c: PIG.mintWash,  a: 0.07 },
+              { x: W * 0.82, y: H * 0.78, r: Math.max(W,H) * 0.42, c: PIG.coralWash, a: 0.07 },
+              { x: W * 0.62, y: H * 0.18, r: Math.max(W,H) * 0.30, c: PIG.mint,      a: 0.04 },
+              { x: W * 0.28, y: H * 0.82, r: Math.max(W,H) * 0.32, c: PIG.coralWash, a: 0.04 }
+            ];
+            for (const b of blobs) {
+              const g = bleed.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
+              g.addColorStop(0,   rgba(b.c, b.a));
+              g.addColorStop(0.6, rgba(b.c, b.a * 0.4));
+              g.addColorStop(1,   rgba(b.c, 0));
+              bleed.fillStyle = g;
+              bleed.fillRect(0, 0, W, H);
             }
-            if (elapsed > 900 && elapsed < 2900 && chromeLbl) chromeLbl.textContent = 'scene 02 · writing';
-            intensity = Math.max(intensity, 0.5);
-          }
-
-          /* 3. Sweep across */
-          {
-            const [a, b] = T.sweep;
-            const t = clamp01((elapsed - a) / (b - a));
-            const e = ease.inOutCubic(t);
-            const opacity = elapsed < a ? 0 : (elapsed > b ? 0 : (t < 0.1 ? t * 10 : (t > 0.9 ? (1 - t) * 10 : 1)));
-            sweep.style.opacity = opacity.toFixed(3);
-            sweep.style.left = lerp(-20, 110, e).toFixed(2) + '%';
-            if (t > 0 && t < 1) emberBoost = Math.max(emberBoost, 0.85);
-          }
-
-          /* 4. Code dissolve */
-          {
-            const [a, b] = T.codeDissolve;
-            const t = clamp01((elapsed - a) / (b - a));
-            if (elapsed > a) {
-              for (let i = 0; i < N; i++) {
-                const u = i / Math.max(1, N - 1);
-                const local = clamp01((t - u * 0.8) / 0.25);
-                const e = ease.inQuad(local);
-                /* fade out + push up + blur */
-                const ch = allChars[i];
-                ch.style.opacity = (1 - e).toFixed(3);
-                ch.style.transform = 'translate3d(' + (((Math.sin(i * 12.9) * 0.5)) * e * 1.5).toFixed(3) + 'em,' + (-e * 1.2).toFixed(3) + 'em,0) scale(' + (1 - e * 0.4).toFixed(3) + ')';
-                ch.style.filter = 'blur(' + (e * 8).toFixed(2) + 'px)';
-              }
-            }
-            if (elapsed >= a && elapsed <= b && chromeLbl) chromeLbl.textContent = 'scene 03 · dissolve';
-          }
-
-          /* 5. Code recede (whole block fades & blurs out) */
-          {
-            const [a, b] = T.codeRecede;
-            const t = clamp01((elapsed - a) / (b - a));
-            const e = ease.outCubic(t);
-            codeWrap.style.opacity = (1 - e).toFixed(3);
-            codeWrap.style.filter = 'blur(' + (e * 10).toFixed(2) + 'px)';
-            codeBlock.style.transform = 'translateZ(' + (-e * 320).toFixed(1) + 'px) scale(' + (1 + e * 0.18).toFixed(3) + ')';
-          }
-
-          /* 6. Hero reveals */
-          {
-            heroOrder.forEach((id, idx) => {
-              const tgt = heroTargets[id];
-              const el = heroEls[idx];
-              if (!el) return;
-              const t = clamp01((elapsed - tgt.start) / tgt.dur);
-              const e = ease.outQuint(t);
-              el.style.opacity = e.toFixed(3);
-              el.style.transform = 'translate3d(0,' + ((1 - e) * tgt.y).toFixed(2) + 'px,0) scale(' + lerp(tgt.scale, 1, e).toFixed(3) + ')';
-              el.style.filter = 'blur(' + ((1 - e) * tgt.blur).toFixed(2) + 'px)';
-            });
-            if (elapsed >= T.hero[0] && elapsed <= T.hero[1] && chromeLbl) chromeLbl.textContent = 'scene 04 · live';
-          }
-
-          /* 7. Accent underline draw */
-          {
-            const [a, b] = T.accentDraw;
-            if (elapsed >= a) {
-              heroEls[3] && heroEls[3].classList.add('is-drawn');  // h1c
-              heroEls[4] && heroEls[4].classList.add('is-drawn');  // h1d
-            }
-          }
-
-          /* Final settle: keep intensity high a touch, then back to ambient */
-          if (elapsed > TOTAL) {
-            if (chromeLbl) chromeLbl.textContent = 'live';
-            intensity = 0.3;
-            return false;
-          }
-          return true;
+          } catch (err) { safeLog('wash', err); }
         }
 
-        let startedAt = 0;
-        let running = false;
-        let skipped = false;
-        let animId = 0;
+        // --- Watercolor glyph stamp (rotated; single-pass; safe values) ---
+        function stampGlyph(ctx, text, x, y, size, pigment, alpha, rot) {
+          if (!isFinite(x) || !isFinite(y) || !isFinite(size) || size <= 0) return;
+          const r = rot || 0;
+          ctx.save();
+          ctx.translate(x, y);
+          if (r) ctx.rotate(r);
+          ctx.globalCompositeOperation = 'multiply';
+          ctx.font = '500 ' + size + "px 'JetBrains Mono', ui-monospace, monospace";
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          // soft wash
+          const jp = jit(pigment, 8);
+          ctx.fillStyle = rgba(jp, alpha * 0.34);
+          ctx.fillText(text, 0, 0);
+          // pigment edge
+          const dp = [
+            Math.max(0, pigment[0] - 22),
+            Math.max(0, pigment[1] - 22),
+            Math.max(0, pigment[2] - 22)
+          ];
+          ctx.fillStyle = rgba(dp, alpha * 0.62);
+          ctx.fillText(text, 0, 0);
+          ctx.restore();
+        }
 
-        function step(now) {
-          if (!startedAt) startedAt = now;
-          const elapsed = now - startedAt;
-          const cont = frame(elapsed);
-          if (cont && running) {
-            animId = requestAnimationFrame(step);
+        // --- Cheap pseudo-noise flow field ---
+        function flow(x, y, t) {
+          const s = 0.0022;
+          const a = Math.sin(x * s + t * 0.08) +
+                    Math.cos(y * s * 1.27 - t * 0.10);
+          const b = Math.cos(x * s * 0.83 - t * 0.07) +
+                    Math.sin(y * s * 1.11 + t * 0.09);
+          return Math.atan2(b, a);
+        }
+
+        // ============================================================
+        // STRANDS — chains of glyph nodes connected by springs.
+        // First node = open tag, last = close tag, middle = inner glyphs.
+        // ============================================================
+        const STRANDS = [];
+
+        function makeStrand(opts) {
+          opts = opts || {};
+          let openT, closeT, inner;
+          if (opts.openT) {
+            openT  = opts.openT;
+            closeT = opts.closeT;
+            inner  = opts.inner || [];
           } else {
-            running = false;
-            /* hide skip button */
-            if (skipBtn) skipBtn.classList.add('is-hidden');
+            const v = STRAND_VOCAB[Math.floor(Math.random() * STRAND_VOCAB.length)];
+            openT = v.open; closeT = v.close; inner = v.inner.slice();
           }
+          const tagsArr = [openT].concat(inner, [closeT]);
+          const N = tagsArr.length;
+          const cx = opts.cx;
+          const cy = opts.cy;
+          const angle = (opts.angle != null) ? opts.angle : Math.random() * Math.PI * 2;
+          const rest = opts.rest || (28 + Math.random() * 14);
+          const coral = Math.random() < 0.18;
+          const pigment = opts.pigment || (coral ? PIG.coral : (Math.random() < 0.6 ? PIG.mint : PIG.mintDeep));
+          const size = opts.size || (13 + Math.random() * 5);
+          const nodes = [];
+          for (let i = 0; i < N; i++) {
+            const off = i - (N - 1) / 2;
+            nodes.push({
+              x: cx + Math.cos(angle) * off * rest + (Math.random()-0.5)*4,
+              y: cy + Math.sin(angle) * off * rest + (Math.random()-0.5)*4,
+              vx: 0, vy: 0,
+              text: tagsArr[i],
+              size: size * ((i === 0 || i === N - 1) ? 1 : 0.78)
+            });
+          }
+          return {
+            nodes, rest, pigment, size,
+            seed: Math.random() * 1000,
+            mode: opts.mode || 'free',
+            orbit: opts.orbit || null,
+            transient: !!opts.transient,
+            life: opts.life != null ? opts.life : 1,
+            phase: Math.random() * Math.PI * 2
+          };
         }
 
-        function startAnimation() {
-          if (running) return;
-          running = true;
-          startedAt = 0;
-          animId = requestAnimationFrame(step);
+        function makeOrbitStrand(el, dir, accent) {
+          // 12 dense glyphs that wrap a CTA perimeter.
+          const inner = [];
+          for (let i = 0; i < 12; i++) {
+            inner.push(ORBIT_INNER[(i + (Math.random() * ORBIT_INNER.length)|0) % ORBIT_INNER.length]);
+          }
+          const openT  = (el === ghost) ? '<a>'      : '<button>';
+          const closeT = (el === ghost) ? '</a>'     : '</button>';
+          return makeStrand({
+            cx: W * 0.5, cy: H * 0.5,
+            openT, closeT, inner,
+            size: 10.5,
+            pigment: accent,
+            mode: 'orbit',
+            orbit: { el, dir: dir || 1, phase: Math.random() }
+          });
         }
 
-        function skipToEnd() {
-          if (skipped) return;
-          skipped = true;
-          running = false;
-          cancelAnimationFrame(animId);
-          /* Apply final state directly */
-          frame(TOTAL + 50);
-          frame(TOTAL + 100);
-          if (skipBtn) skipBtn.classList.add('is-hidden');
+        function seedStrands() {
+          STRANDS.length = 0;
+          const count = lowQ ? 8 : 12;
+          for (let i = 0; i < count; i++) {
+            STRANDS.push(makeStrand({
+              cx: W * (0.42 + Math.random() * 0.55),
+              cy: H * (0.12 + Math.random() * 0.78)
+            }));
+          }
+          if (primary) STRANDS.push(makeOrbitStrand(primary, 1,  PIG.mintDeep));
+          if (ghost)   STRANDS.push(makeOrbitStrand(ghost,  -1,  PIG.coralDeep));
         }
 
-        if (skipBtn) skipBtn.addEventListener('click', skipToEnd);
-        /* allow Esc to skip */
-        window.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape') skipToEnd();
+        // ----- CTA orbit helpers -----
+        function elRect(el) {
+          const r = el.getBoundingClientRect();
+          const s = stage.getBoundingClientRect();
+          return { x: r.left - s.left, y: r.top - s.top, w: r.width, h: r.height };
+        }
+        // Stadium-perimeter (pill shape) point at parametric phase ∈ [0,1).
+        function orbitPoint(rect, phase) {
+          const pad = 14;
+          const w = rect.w + pad * 2;
+          const h = rect.h + pad * 2;
+          if (w <= 0 || h <= 0) return { x: rect.x, y: rect.y, ang: 0 };
+          const cx = rect.x + rect.w / 2;
+          const cy = rect.y + rect.h / 2;
+          const r = h / 2;
+          const straight = Math.max(0, w - h);
+          const halfC = Math.PI * r;
+          const total = 2 * straight + 2 * halfC;
+          if (total <= 0) return { x: cx, y: cy, ang: 0 };
+          let s = ((phase % 1) + 1) % 1 * total;
+          // top edge (l->r)
+          if (s < straight) {
+            return { x: cx - straight / 2 + s, y: cy - r, ang: 0 };
+          }
+          s -= straight;
+          // right cap (top -> bottom)
+          if (s < halfC) {
+            const a = s / r - Math.PI / 2;
+            return { x: cx + straight / 2 + Math.cos(a) * r, y: cy + Math.sin(a) * r, ang: a + Math.PI / 2 };
+          }
+          s -= halfC;
+          // bottom edge (r->l)
+          if (s < straight) {
+            return { x: cx + straight / 2 - s, y: cy + r, ang: Math.PI };
+          }
+          s -= straight;
+          // left cap (bottom -> top)
+          const a = s / r + Math.PI / 2;
+          return { x: cx - straight / 2 + Math.cos(a) * r, y: cy + Math.sin(a) * r, ang: a + Math.PI / 2 };
+        }
+
+        // ----- mouse interaction -----
+        const mouse = { x: -9999, y: -9999, active: false };
+        stage.addEventListener('mousemove', (e) => {
+          const r = stage.getBoundingClientRect();
+          mouse.x = e.clientX - r.left;
+          mouse.y = e.clientY - r.top;
+          mouse.active = true;
+        }, { passive: true });
+        stage.addEventListener('mouseleave', () => {
+          mouse.active = false; mouse.x = -9999; mouse.y = -9999;
+        });
+        let lastBurst = 0;
+        stage.addEventListener('click', (e) => {
+          const now = performance.now();
+          if (now - lastBurst < 280) return;
+          lastBurst = now;
+          const r = stage.getBoundingClientRect();
+          spawnBurst(e.clientX - r.left, e.clientY - r.top);
         });
 
-        if (reduced) {
-          skipToEnd();
-        } else {
-          /* slight delay so fonts are likely ready */
-          setTimeout(startAnimation, 120);
+        function spawnBurst(x, y) {
+          const s = makeStrand({
+            cx: x, cy: y,
+            rest: 18, size: 12,
+            pigment: PIG.coral,
+            transient: true, life: 1.0
+          });
+          for (let i = 0; i < s.nodes.length; i++) {
+            const n = s.nodes[i];
+            const ang = Math.random() * Math.PI * 2;
+            n.vx = Math.cos(ang) * (2 + Math.random() * 2);
+            n.vy = Math.sin(ang) * (2 + Math.random() * 2) - 0.6;
+          }
+          STRANDS.push(s);
         }
 
+        // ----- hover boost on CTAs (orbit speeds up + brightens) -----
+        const hover = { primary: false, ghost: false };
+        if (primary) {
+          primary.addEventListener('mouseenter', () => { hover.primary = true; });
+          primary.addEventListener('mouseleave', () => { hover.primary = false; });
+        }
+        if (ghost) {
+          ghost.addEventListener('mouseenter', () => { hover.ghost = true; });
+          ghost.addEventListener('mouseleave', () => { hover.ghost = false; });
+        }
+
+        // ============================================================
+        // Eyebrow scribe — drifting dots fly in to spell the comment,
+        // hold briefly, then fade. Independent of strands.
+        // ============================================================
+        const EYE_TEXT = '<!-- digital presence check -->';
+        let scribeStart = 0;
+        const SCRIBE_DURATION = 1500;
+        const SCRIBE_HOLD     = 500;
+        let scribe = [];
+        let scribeDone = false;
+
+        function buildScribe() {
+          if (!eyebrow) { scribe = []; return; }
+          const off = document.createElement('canvas');
+          const renderSize = 22;
+          off.width = 760; off.height = 56;
+          const oc = off.getContext('2d');
+          oc.fillStyle = '#000';
+          oc.font = '500 ' + renderSize + "px 'JetBrains Mono', ui-monospace, monospace";
+          oc.textAlign = 'left';
+          oc.textBaseline = 'middle';
+          oc.fillText(EYE_TEXT, 8, off.height / 2);
+          const data = oc.getImageData(0, 0, off.width, off.height).data;
+          const pts = [];
+          const step = 6;
+          for (let y = 0; y < off.height; y += step) {
+            for (let x = 0; x < off.width; x += step) {
+              const idx = (y * off.width + x) * 4 + 3;
+              if (data[idx] > 100) pts.push([x, y]);
+            }
+          }
+          const eRect = eyebrow.getBoundingClientRect();
+          const sRect = stage.getBoundingClientRect();
+          const targetX = eRect.left - sRect.left;
+          const targetY = eRect.top  - sRect.top + eRect.height / 2;
+          const desiredW = Math.min(W * 0.42, 440);
+          const scale = desiredW / off.width;
+          const fieldH = off.height * scale;
+          scribe = pts.map(([x,y]) => ({
+            tx: targetX + x * scale,
+            ty: targetY - fieldH / 2 + y * scale,
+            x:  W * (0.45 + Math.random() * 0.5),
+            y:  H * (0.15 + Math.random() * 0.7),
+            size: 8 + Math.random() * 3,
+            pigment: Math.random() < 0.18 ? PIG.coral : PIG.mintDeep,
+            delay: Math.random() * 350
+          }));
+        }
+
+        // ============================================================
+        // Periodic CTA "repaint" pulse
+        // ============================================================
+        let lastRepaint = 0;
+        function repaintPrimary() {
+          if (!primary) return;
+          primary.classList.remove('is-repainting');
+          void primary.offsetWidth;
+          primary.classList.add('is-repainting');
+          const rect = elRect(primary);
+          spawnBurst(rect.x + rect.w / 2, rect.y + rect.h / 2);
+        }
+
+        function revealText() {
+          if (eyebrow) eyebrow.classList.add('is-visible');
+          if (head)    head.classList.add('is-visible');
+          if (sub)     sub.classList.add('is-visible');
+          if (actions) actions.classList.add('is-visible');
+          if (stats)   stats.classList.add('is-visible');
+        }
+
+        // ============================================================
+        // Main loop
+        // ============================================================
+        let t0 = performance.now();
+        let lastT = t0;
+        let orbitT = 0;
+        let revealedText = false;
+
+        function loop(now) {
+          try {
+            const t  = (now - t0) / 1000;
+            const dt = Math.min(0.05, (now - lastT) / 1000);
+            lastT = now;
+            orbitT += dt;
+
+            // crisp clear each frame — no muddy buildup
+            ink.clearRect(0, 0, W, H);
+            // bleed layer fades slowly so background blooms stay soft
+            bleed.save();
+            bleed.globalCompositeOperation = 'destination-out';
+            bleed.fillStyle = 'rgba(0,0,0,0.004)';
+            bleed.fillRect(0, 0, W, H);
+            bleed.restore();
+
+            // ---- eyebrow scribe ----
+            if (scribeStart > 0 && !scribeDone) {
+              const elapsed = now - scribeStart;
+              const easeOut = (x) => 1 - Math.pow(1 - x, 3);
+              for (let i = 0; i < scribe.length; i++) {
+                const p = scribe[i];
+                const lp = Math.max(0, Math.min(1, (elapsed - p.delay) / (SCRIBE_DURATION - 200)));
+                const e = easeOut(lp);
+                p.x += (p.tx - p.x) * (0.05 + 0.18 * e);
+                p.y += (p.ty - p.y) * (0.05 + 0.18 * e);
+                const fadePhase = elapsed - (SCRIBE_DURATION + SCRIBE_HOLD);
+                const fade = fadePhase > 0 ? Math.max(0, 1 - fadePhase / 600) : 1;
+                const alpha = (0.55 + 0.35 * e) * fade;
+                if (alpha > 0.01) stampGlyph(ink, '·', p.x, p.y, p.size, p.pigment, alpha, 0);
+              }
+              if (!revealedText && elapsed > SCRIBE_DURATION) {
+                revealedText = true;
+                revealText();
+                lastRepaint = now + 6000;
+                setTimeout(repaintPrimary, 6000);
+              }
+              if (elapsed > SCRIBE_DURATION + SCRIBE_HOLD + 700) {
+                scribeDone = true;
+                scribe.length = 0;
+              }
+            }
+
+            // ---- update + draw strands ----
+            for (let si = STRANDS.length - 1; si >= 0; si--) {
+              const s = STRANDS[si];
+              const nodes = s.nodes;
+              const N = nodes.length;
+              if (N < 2) { STRANDS.splice(si, 1); continue; }
+
+              if (s.mode === 'orbit' && s.orbit && s.orbit.el) {
+                const rect = elRect(s.orbit.el);
+                if (rect.w > 0 && rect.h > 0) {
+                  const isHover = (s.orbit.el === primary && hover.primary) ||
+                                  (s.orbit.el === ghost   && hover.ghost);
+                  const speed = (isHover ? 0.11 : 0.045) * s.orbit.dir;
+                  for (let i = 0; i < N; i++) {
+                    const ph = (orbitT * speed) + (i / N) + s.orbit.phase;
+                    const tgt = orbitPoint(rect, ph);
+                    const k = 0.22;
+                    nodes[i].vx += (tgt.x - nodes[i].x) * k;
+                    nodes[i].vy += (tgt.y - nodes[i].y) * k;
+                  }
+                }
+              } else {
+                // flow drift on each node
+                for (let i = 0; i < N; i++) {
+                  const n = nodes[i];
+                  const ang = flow(n.x, n.y, t + s.seed * 0.001);
+                  n.vx += Math.cos(ang) * 0.085 * dt * 60;
+                  n.vy += Math.sin(ang) * 0.085 * dt * 60;
+                }
+                // chain springs hold strand shape
+                for (let i = 0; i < N - 1; i++) {
+                  const a = nodes[i], b = nodes[i + 1];
+                  const dx = b.x - a.x, dy = b.y - a.y;
+                  const d = Math.hypot(dx, dy) + 0.001;
+                  const k = 0.06;
+                  const f = (d - s.rest) * k;
+                  const fx = (dx / d) * f, fy = (dy / d) * f;
+                  a.vx += fx; a.vy += fy;
+                  b.vx -= fx; b.vy -= fy;
+                }
+              }
+
+              // cursor repulsion — strands flinch from the pointer
+              if (mouse.active) {
+                const R = 110, R2 = R * R;
+                for (let i = 0; i < N; i++) {
+                  const n = nodes[i];
+                  const dx = n.x - mouse.x, dy = n.y - mouse.y;
+                  const d2 = dx * dx + dy * dy;
+                  if (d2 < R2 && d2 > 0.5) {
+                    const d = Math.sqrt(d2);
+                    const fall = 1 - d / R;
+                    const force = fall * fall * 2.4;
+                    n.vx += (dx / d) * force;
+                    n.vy += (dy / d) * force;
+                  }
+                }
+              }
+
+              // integrate
+              const damp = 0.86;
+              for (let i = 0; i < N; i++) {
+                const n = nodes[i];
+                n.vx *= damp; n.vy *= damp;
+                const v = Math.hypot(n.vx, n.vy);
+                if (v > 6) { n.vx = n.vx / v * 6; n.vy = n.vy / v * 6; }
+                n.x += n.vx; n.y += n.vy;
+                if (s.mode !== 'orbit') {
+                  const pad = 16;
+                  if (n.x < pad)         n.vx += (pad - n.x) * 0.02;
+                  else if (n.x > W - pad) n.vx -= (n.x - (W - pad)) * 0.02;
+                  if (n.y < pad)         n.vy += (pad - n.y) * 0.02;
+                  else if (n.y > H - pad) n.vy -= (n.y - (H - pad)) * 0.02;
+                }
+              }
+
+              // transient lifetime (click bursts)
+              if (s.transient) {
+                s.life -= dt * 0.55;
+                if (s.life <= 0) { STRANDS.splice(si, 1); continue; }
+              }
+
+              const lifeMul = s.transient ? Math.max(0, s.life) : 1;
+
+              // ribbon stroke through the chain
+              ink.save();
+              ink.globalCompositeOperation = 'multiply';
+              ink.lineWidth = 1.1;
+              ink.lineCap = 'round';
+              ink.strokeStyle = rgba(s.pigment, 0.16 * lifeMul);
+              ink.beginPath();
+              ink.moveTo(nodes[0].x, nodes[0].y);
+              for (let i = 1; i < N - 1; i++) {
+                const mx = (nodes[i].x + nodes[i + 1].x) / 2;
+                const my = (nodes[i].y + nodes[i + 1].y) / 2;
+                ink.quadraticCurveTo(nodes[i].x, nodes[i].y, mx, my);
+              }
+              ink.lineTo(nodes[N - 1].x, nodes[N - 1].y);
+              ink.stroke();
+              ink.restore();
+
+              // glyphs along the chain, rotated softly toward chain direction
+              for (let i = 0; i < N; i++) {
+                const n = nodes[i];
+                const prev = nodes[Math.max(0, i - 1)];
+                const next = nodes[Math.min(N - 1, i + 1)];
+                let rot = Math.atan2(next.y - prev.y, next.x - prev.x);
+                if (rot >  Math.PI / 2) rot -= Math.PI;
+                if (rot < -Math.PI / 2) rot += Math.PI;
+                const isEnd = (i === 0 || i === N - 1);
+                const baseA = isEnd ? 0.9 : 0.72;
+                stampGlyph(ink, n.text, n.x, n.y, n.size, s.pigment, baseA * lifeMul, rot * 0.55);
+              }
+            }
+
+            // periodic CTA repaint
+            if (revealedText && now - lastRepaint > 14000) {
+              repaintPrimary();
+              lastRepaint = now;
+            }
+
+            requestAnimationFrame(loop);
+          } catch (err) {
+            // keep frames coming even if a single tick blew up
+            safeLog('loop', err);
+            try { requestAnimationFrame(loop); } catch (_) {}
+          }
+        }
+
+        // ============================================================
+        // Boot
+        // ============================================================
+        function boot() {
+          try {
+            resize();
+            seedStrands();
+            buildScribe();
+
+            if (reduced) {
+              revealText();
+              revealedText = true;
+              return;
+            }
+            setTimeout(() => { scribeStart = performance.now(); }, 280);
+            requestAnimationFrame(loop);
+          } catch (err) {
+            safeLog('boot', err);
+            revealText();
+          }
+        }
+
+        window.addEventListener('resize', () => {
+          try { resize(); buildScribe(); } catch (e) { safeLog('resize', e); }
+        });
+
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(boot, (err) => { safeLog('fonts', err); boot(); });
+        } else {
+          window.addEventListener('load', boot);
+        }
+
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden) lastT = performance.now();
+        });
       })();
     </script>
   </section>
-
-
-
-
 
   <section id="showcase">
     <div id="sc-glow-bg"></div>

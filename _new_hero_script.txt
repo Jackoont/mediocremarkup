@@ -1,0 +1,505 @@
+    <script>
+      (function () {
+        'use strict';
+
+        // ============================================================
+        // mediocre markup — watercolor markup strands
+        // ============================================================
+        // Each strand is a verlet rope of single HTML symbols. The
+        // strands wander on a flow field, then snake to a UI element
+        // (button, eyebrow, headline accent) and wrap themselves around
+        // it — spelling out the literal markup that defines it. They
+        // hold briefly, then release and drift away.
+        // ============================================================
+
+        const stage   = document.getElementById('wcStage');
+        const inkC    = document.getElementById('wcInk');
+        const bleedC  = document.getElementById('wcBleed');
+        const eyebrow = document.getElementById('wcEyebrow');
+        const head    = document.getElementById('wcHeadline');
+        const sub     = document.getElementById('wcSub');
+        const actions = document.getElementById('wcActions');
+        const stats   = document.getElementById('wcStats');
+        const primary = document.getElementById('wcCtaPrimary');
+        const ghost   = document.getElementById('wcCtaGhost');
+        if (!stage || !inkC || !bleedC) return;
+
+        const ink   = inkC.getContext('2d');
+        const bleed = bleedC.getContext('2d');
+
+        let W = 0, H = 0, DPR = 1;
+        const lowQ    = (navigator.hardwareConcurrency || 4) <= 4;
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        function fit(c, ctx) {
+          DPR = Math.min(window.devicePixelRatio || 1, lowQ ? 1.25 : 1.75);
+          const r = stage.getBoundingClientRect();
+          W = Math.max(1, Math.floor(r.width));
+          H = Math.max(1, Math.floor(r.height));
+          c.width  = Math.floor(W * DPR);
+          c.height = Math.floor(H * DPR);
+          ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+        }
+
+        // ---------- Pigments ----------
+        const PIG = {
+          mintDeep:  [53, 90, 77],
+          mint:      [95, 146, 130],
+          mintWash:  [162, 201, 184],
+          coralDeep: [180, 78, 60],
+          coral:     [218, 96, 76],
+          coralWash: [241, 169, 148],
+          ink:       [50, 44, 36]
+        };
+        const rgba = (c, a) => 'rgba(' + (c[0]|0) + ',' + (c[1]|0) + ',' + (c[2]|0) + ',' + a + ')';
+        const jit  = (c, j) => [
+          c[0] + (Math.random() - 0.5) * j,
+          c[1] + (Math.random() - 0.5) * j,
+          c[2] + (Math.random() - 0.5) * j
+        ];
+        const darken = (c, n) => [Math.max(0, c[0]-n), Math.max(0, c[1]-n), Math.max(0, c[2]-n)];
+
+        // ---------- Background paper wash (drawn once, never cleared) ----------
+        function paintBackgroundWash() {
+          bleed.clearRect(0, 0, W, H);
+          const blobs = [
+            { x: W * 0.22, y: H * 0.24, r: Math.max(W,H) * 0.50, c: PIG.mintWash,  a: 0.075 },
+            { x: W * 0.80, y: H * 0.80, r: Math.max(W,H) * 0.45, c: PIG.coralWash, a: 0.075 },
+            { x: W * 0.62, y: H * 0.18, r: Math.max(W,H) * 0.30, c: PIG.mint,      a: 0.040 },
+            { x: W * 0.30, y: H * 0.80, r: Math.max(W,H) * 0.32, c: PIG.coralWash, a: 0.045 },
+            { x: W * 0.50, y: H * 0.55, r: Math.max(W,H) * 0.40, c: PIG.mintWash,  a: 0.030 }
+          ];
+          blobs.forEach(b => {
+            const g = bleed.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
+            g.addColorStop(0,   rgba(b.c, b.a));
+            g.addColorStop(0.6, rgba(b.c, b.a * 0.4));
+            g.addColorStop(1,   rgba(b.c, 0));
+            bleed.fillStyle = g;
+            bleed.fillRect(0, 0, W, H);
+          });
+        }
+
+        // ---------- Watercolor symbol stamp ----------
+        function stamp(ctx, ch, x, y, size, pigment, alpha) {
+          if (ch === ' ' || ch === '\t' || ch === '\n') return;
+          // under-bleed (large, soft)
+          const jp1 = jit(pigment, 22);
+          ctx.globalCompositeOperation = 'multiply';
+          ctx.fillStyle = rgba(jp1, alpha * 0.10);
+          ctx.font = '600 ' + (size * 1.55) + "px 'JetBrains Mono', ui-monospace, monospace";
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(ch, x + (Math.random() - 0.5) * size * 0.45,
+                            y + (Math.random() - 0.5) * size * 0.45);
+          // mid wash
+          const jp2 = jit(pigment, 14);
+          ctx.fillStyle = rgba(jp2, alpha * 0.34);
+          ctx.font = '600 ' + (size * 1.1) + "px 'JetBrains Mono', ui-monospace, monospace";
+          ctx.fillText(ch, x + (Math.random() - 0.5) * size * 0.12,
+                            y + (Math.random() - 0.5) * size * 0.12);
+          // pigment edge (crisper)
+          ctx.fillStyle = rgba(darken(pigment, 28), alpha * 0.78);
+          ctx.font = '600 ' + size + "px 'JetBrains Mono', ui-monospace, monospace";
+          ctx.fillText(ch, x, y);
+        }
+
+        // ---------- Flow field ----------
+        function flow(x, y, t) {
+          const s = 0.0024;
+          const a = Math.sin(x * s + t * 0.11) +
+                    Math.cos(y * s * 1.27 - t * 0.13) +
+                    Math.sin((x + y) * s * 0.55 + t * 0.07);
+          const b = Math.cos(x * s * 0.83 - t * 0.09) +
+                    Math.sin(y * s * 1.11 + t * 0.12) +
+                    Math.cos((x - y) * s * 0.69 - t * 0.05);
+          return Math.atan2(b, a);
+        }
+
+        // ---------- Target builders (rect outline + line) ----------
+        function rectPerimeter(el, padding) {
+          if (!el) return null;
+          const sr = stage.getBoundingClientRect();
+          const r  = el.getBoundingClientRect();
+          const p  = padding || 0;
+          const x0 = r.left  - sr.left - p;
+          const y0 = r.top   - sr.top  - p;
+          const x1 = r.right - sr.left + p;
+          const y1 = r.bottom- sr.top  + p;
+          // build polyline starting at top-left, going clockwise
+          // sample at high density for smooth head motion
+          const points = [];
+          const seg = (a, b, n) => {
+            for (let i = 0; i < n; i++) {
+              const t = i / n;
+              points.push({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t });
+            }
+          };
+          const corners = [
+            { x: x0, y: y0 }, { x: x1, y: y0 },
+            { x: x1, y: y1 }, { x: x0, y: y1 }
+          ];
+          const widths = [x1 - x0, y1 - y0, x1 - x0, y1 - y0];
+          for (let i = 0; i < 4; i++) {
+            const a = corners[i];
+            const b = corners[(i + 1) % 4];
+            seg(a, b, Math.max(20, Math.floor(widths[i] / 2)));
+          }
+          points.push({ x: x0, y: y0 });
+          return { points, kind: 'rect' };
+        }
+
+        function eyebrowLine(el) {
+          if (!el) return null;
+          const sr = stage.getBoundingClientRect();
+          const r  = el.getBoundingClientRect();
+          const x0 = r.left  - sr.left - 8;
+          const y  = r.top   - sr.top + r.height / 2;
+          const x1 = r.right - sr.left + 8;
+          const points = [];
+          const n = Math.max(40, Math.floor((x1 - x0) / 4));
+          for (let i = 0; i <= n; i++) {
+            const t = i / n;
+            points.push({ x: x0 + (x1 - x0) * t, y: y });
+          }
+          return { points, kind: 'line' };
+        }
+
+        // ---------- Strand ----------
+        function makeStrand(text, pigment) {
+          const chars = text.split('');
+          const N = chars.length;
+          const spacing = 13;
+          const parts = [];
+          // initialize off-screen left
+          const startX = -spacing * N - 80;
+          const startY = H * 0.5;
+          for (let i = 0; i < N; i++) {
+            parts.push({
+              x: startX + i * spacing, y: startY + Math.sin(i * 0.4) * 6,
+              px: startX + i * spacing, py: startY + Math.sin(i * 0.4) * 6,
+              ch: chars[i]
+            });
+          }
+          return {
+            chars, parts, N, spacing,
+            pigment,
+            mode: 'wander',     // 'wander' | 'approach' | 'trace' | 'hold' | 'release'
+            target: null,       // { points: [...], kind: 'rect'|'line' }
+            tracePos: 0,
+            traceSpeed: 0.7,    // 1.0 = full traversal per second
+            holdTimer: 0,
+            holdDur: 0.7,
+            releaseTimer: 0,
+            releaseDur: 1.6,
+            wanderTimer: 0,
+            // visual
+            sizeBase: 13 + Math.random() * 2,
+            born: performance.now()
+          };
+        }
+
+        function assignTarget(strand, target) {
+          strand.target = target;
+          strand.mode = 'approach';
+          strand.tracePos = 0;
+          strand.holdTimer = 0;
+        }
+
+        function clearTarget(strand) {
+          strand.mode = 'release';
+          strand.releaseTimer = 0;
+          strand.target = null;
+        }
+
+        // Verlet integrate + distance constraints
+        function step(strand, dt, t) {
+          const parts = strand.parts;
+          const N = strand.N;
+          const head = parts[0];
+
+          // ---- Steer head based on mode ----
+          if (strand.mode === 'wander') {
+            const ang = flow(head.x, head.y, t);
+            const force = 110 * dt;
+            head.x += Math.cos(ang) * force;
+            head.y += Math.sin(ang) * force;
+            // soft edge cushion
+            const pad = 60;
+            if (head.x < pad)        head.x += (pad - head.x) * 0.04;
+            if (head.x > W - pad)    head.x -= (head.x - (W - pad)) * 0.04;
+            if (head.y < pad)        head.y += (pad - head.y) * 0.04;
+            if (head.y > H - pad)    head.y -= (head.y - (H - pad)) * 0.04;
+          } else if (strand.mode === 'approach') {
+            const start = strand.target.points[0];
+            const dx = start.x - head.x;
+            const dy = start.y - head.y;
+            const d  = Math.hypot(dx, dy);
+            head.x += dx * 0.08;
+            head.y += dy * 0.08;
+            if (d < 8) {
+              strand.mode = 'trace';
+              strand.tracePos = 0;
+            }
+          } else if (strand.mode === 'trace') {
+            strand.tracePos += dt * strand.traceSpeed;
+            const tp = Math.min(1, strand.tracePos);
+            const pts = strand.target.points;
+            // Place each particle along the path: particle i sits at path position
+            // s - i*step, so the strand lays along the perimeter behind the head.
+            const pathLen = pts.length - 1;
+            const stride = strand.target.kind === 'rect'
+              ? pathLen / Math.max(1, N - 1)  // strand exactly wraps once
+              : pathLen / Math.max(1, N - 1);
+            for (let i = 0; i < N; i++) {
+              const s = tp * pathLen - i * stride;
+              const sClamped = Math.max(0, Math.min(pathLen, s));
+              const idx = Math.floor(sClamped);
+              const frac = sClamped - idx;
+              const a = pts[idx];
+              const b = pts[Math.min(pathLen, idx + 1)];
+              const targetX = a.x + (b.x - a.x) * frac;
+              const targetY = a.y + (b.y - a.y) * frac;
+              // smooth toward target
+              const k = i === 0 ? 0.5 : 0.35;
+              parts[i].x += (targetX - parts[i].x) * k;
+              parts[i].y += (targetY - parts[i].y) * k;
+              parts[i].px = parts[i].x;
+              parts[i].py = parts[i].y;
+            }
+            if (tp >= 1) {
+              strand.mode = 'hold';
+              strand.holdTimer = 0;
+            }
+            return; // skip verlet during trace — positions are directly placed
+          } else if (strand.mode === 'hold') {
+            strand.holdTimer += dt;
+            // micro-jitter for liveliness
+            for (let i = 0; i < N; i++) {
+              parts[i].x += Math.sin(t * 2 + i * 0.4) * 0.15;
+              parts[i].y += Math.cos(t * 2.3 + i * 0.5) * 0.15;
+              parts[i].px = parts[i].x;
+              parts[i].py = parts[i].y;
+            }
+            if (strand.holdTimer >= strand.holdDur) clearTarget(strand);
+            return;
+          } else if (strand.mode === 'release') {
+            strand.releaseTimer += dt;
+            const ang = flow(head.x, head.y, t) + Math.PI * 0.25;
+            head.x += Math.cos(ang) * 180 * dt;
+            head.y += Math.sin(ang) * 180 * dt;
+            if (strand.releaseTimer >= strand.releaseDur) {
+              strand.mode = 'wander';
+              strand.wanderTimer = 0;
+            }
+          }
+
+          // ---- Verlet integration for body (head is directly steered) ----
+          for (let i = 1; i < N; i++) {
+            const p = parts[i];
+            const vx = (p.x - p.px) * 0.92;
+            const vy = (p.y - p.py) * 0.92;
+            p.px = p.x;
+            p.py = p.y;
+            p.x += vx;
+            p.y += vy;
+          }
+          // store head's prev
+          head.px = head.x;
+          head.py = head.y;
+
+          // ---- Distance constraint ----
+          const iters = 2;
+          for (let it = 0; it < iters; it++) {
+            for (let i = 1; i < N; i++) {
+              const a = parts[i - 1];
+              const b = parts[i];
+              const dx = b.x - a.x;
+              const dy = b.y - a.y;
+              const d  = Math.hypot(dx, dy);
+              if (d < 0.001) continue;
+              const diff = (d - strand.spacing) / d;
+              // anchor head (i=1 means previous is head)
+              const aMove = (i === 1) ? 0 : 0.5;
+              const bMove = 1 - aMove;
+              a.x += dx * diff * aMove;
+              a.y += dy * diff * aMove;
+              b.x -= dx * diff * bMove;
+              b.y -= dy * diff * bMove;
+            }
+          }
+        }
+
+        function drawStrand(ctx, strand) {
+          const N = strand.N;
+          const parts = strand.parts;
+          // faint connecting underline behind (very subtle)
+          if (strand.mode !== 'wander' || true) {
+            ctx.save();
+            ctx.globalCompositeOperation = 'multiply';
+            ctx.strokeStyle = rgba(strand.pigment, 0.10);
+            ctx.lineWidth = 1.0;
+            ctx.beginPath();
+            ctx.moveTo(parts[0].x, parts[0].y);
+            for (let i = 1; i < N; i++) ctx.lineTo(parts[i].x, parts[i].y);
+            ctx.stroke();
+            ctx.restore();
+          }
+          // stamp each glyph
+          for (let i = 0; i < N; i++) {
+            const p = parts[i];
+            // fade head/tail slightly for a softer ribbon
+            const t = i / Math.max(1, N - 1);
+            const taper = Math.sin(t * Math.PI);
+            const alpha = (strand.mode === 'wander') ? 0.55 * (0.35 + taper * 0.65)
+                       : (strand.mode === 'hold')   ? 0.85
+                       : 0.70;
+            stamp(ctx, p.ch, p.x, p.y, strand.sizeBase, strand.pigment, alpha);
+          }
+        }
+
+        // ---------- Build strands ----------
+        const STRANDS = [];
+        function seedStrands() {
+          STRANDS.length = 0;
+          STRANDS.push(makeStrand('<a href="#contact" class="cta-primary">Start a project</a>', PIG.coral));
+          STRANDS.push(makeStrand('<a href="#pricing" class="cta-ghost">See pricing</a>',       PIG.mint));
+          STRANDS.push(makeStrand('<p class="eyebrow"> digital presence check </p>',           PIG.mintDeep));
+          // stagger initial off-screen positions
+          STRANDS.forEach((s, i) => {
+            const side = i % 2 === 0 ? 1 : -1;
+            const x0 = side > 0 ? W + 40 : -s.spacing * s.N - 40;
+            const y0 = H * (0.18 + 0.30 * i + Math.random() * 0.15);
+            for (let k = 0; k < s.N; k++) {
+              s.parts[k].x = x0 - (k * s.spacing * side);
+              s.parts[k].y = y0 + Math.sin(k * 0.3) * 5;
+              s.parts[k].px = s.parts[k].x;
+              s.parts[k].py = s.parts[k].y;
+            }
+          });
+        }
+
+        // ---------- Reveal text ----------
+        function revealText() {
+          if (eyebrow) eyebrow.classList.add('is-visible');
+          if (head)    head.classList.add('is-visible');
+          if (sub)     sub.classList.add('is-visible');
+          if (actions) actions.classList.add('is-visible');
+          if (stats)   stats.classList.add('is-visible');
+        }
+
+        // ---------- Schedule intro ----------
+        function scheduleIntro() {
+          // strand 0 → primary CTA
+          // strand 1 → ghost CTA
+          // strand 2 → eyebrow
+          setTimeout(() => {
+            assignTarget(STRANDS[2], eyebrowLine(eyebrow));
+          }, 200);
+          setTimeout(() => {
+            assignTarget(STRANDS[0], rectPerimeter(primary, 6));
+          }, 500);
+          setTimeout(() => {
+            assignTarget(STRANDS[1], rectPerimeter(ghost, 6));
+          }, 850);
+          // text reveals
+          setTimeout(revealText, 1600);
+        }
+
+        // ---------- Periodic re-weaves ----------
+        let reweaveTimer = 0;
+        function tickReweave(dt) {
+          reweaveTimer += dt;
+          if (reweaveTimer > 14) {
+            // pick a random target and assign to whichever strand is wandering
+            const wandering = STRANDS.filter(s => s.mode === 'wander');
+            if (wandering.length) {
+              const s = wandering[Math.floor(Math.random() * wandering.length)];
+              const targets = [
+                () => rectPerimeter(primary, 6),
+                () => rectPerimeter(ghost, 6),
+                () => eyebrowLine(eyebrow)
+              ];
+              const pick = targets[Math.floor(Math.random() * targets.length)]();
+              if (pick) assignTarget(s, pick);
+            }
+            reweaveTimer = 0;
+          }
+        }
+
+        // ---------- Main loop ----------
+        let t0 = performance.now();
+        let lastT = t0;
+
+        function loop(now) {
+          const t  = (now - t0) / 1000;
+          const dt = Math.min(0.05, (now - lastT) / 1000);
+          lastT = now;
+
+          // FULL CLEAR ink layer every frame — no mud
+          ink.clearRect(0, 0, W, H);
+
+          for (let i = 0; i < STRANDS.length; i++) {
+            step(STRANDS[i], dt, t);
+            drawStrand(ink, STRANDS[i]);
+          }
+
+          tickReweave(dt);
+
+          requestAnimationFrame(loop);
+        }
+
+        // ---------- Boot ----------
+        function boot() {
+          fit(inkC, ink);
+          fit(bleedC, bleed);
+          paintBackgroundWash();
+          seedStrands();
+
+          if (reduced) {
+            revealText();
+            // draw a single static composition
+            STRANDS.forEach((s, i) => {
+              const t = i === 0 ? rectPerimeter(primary, 6)
+                      : i === 1 ? rectPerimeter(ghost, 6)
+                      : eyebrowLine(eyebrow);
+              if (t) {
+                assignTarget(s, t);
+                s.tracePos = 1; s.mode = 'hold'; s.holdTimer = 0;
+                // place statically along path
+                step(s, 0.016, 0);
+                drawStrand(ink, s);
+              }
+            });
+            return;
+          }
+
+          scheduleIntro();
+          requestAnimationFrame(loop);
+        }
+
+        function handleResize() {
+          fit(inkC, ink);
+          fit(bleedC, bleed);
+          paintBackgroundWash();
+          // re-aim active targets (geometry shifted)
+          STRANDS.forEach(s => {
+            if (s.mode === 'trace' || s.mode === 'hold' || s.mode === 'approach') {
+              // rebuild target relative to which element it was tracking
+              // (simple: just release; periodic re-weave will reassign)
+              clearTarget(s);
+            }
+          });
+        }
+        window.addEventListener('resize', handleResize);
+
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(boot);
+        } else {
+          window.addEventListener('load', boot);
+        }
+
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden) lastT = performance.now();
+        });
+      })();
+    </script>
