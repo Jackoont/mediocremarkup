@@ -7447,7 +7447,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: clamp(118px, 15vh, 148px) clamp(24px, 4vw, 52px) clamp(56px, 8vh, 88px);
+      padding: clamp(92px, 10vh, 118px) clamp(24px, 4vw, 52px) clamp(28px, 3.6vh, 48px);
       background:
         radial-gradient(circle at 75% 55%, rgba(223, 93, 53, 0.10), transparent 26%),
         radial-gradient(circle at 60% 48%, rgba(23, 21, 19, 0.035), transparent 25%),
@@ -7539,9 +7539,9 @@
       position: relative;
       width: min(100%, 1380px);
       display: grid;
-      grid-template-columns: minmax(300px, 0.72fr) minmax(560px, 1.28fr);
+      grid-template-columns: minmax(320px, 0.84fr) minmax(500px, 1fr);
       align-items: center;
-      gap: clamp(28px, 4vw, 72px);
+      gap: clamp(40px, 4vw, 82px);
     }
 
     .hero-copy {
@@ -7550,7 +7550,7 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: 24px;
+      gap: 20px;
     }
 
     .hero-banner {
@@ -7573,7 +7573,7 @@
       max-width: none;
       color: var(--hero-ink);
       font-family: var(--font-serif);
-      font-size: clamp(42px, 5vw, 72px);
+      font-size: clamp(42px, min(4.35vw, 7vh), 68px);
       font-weight: 500;
       line-height: 0.98;
       letter-spacing: -0.04em;
@@ -7582,9 +7582,9 @@
     .hero-title .line { display: block; }
 
     .hero-lede {
-      max-width: 28ch;
+      max-width: 29ch;
       color: var(--hero-muted);
-      font-size: clamp(15px, 1.15vw, 17px);
+      font-size: clamp(15px, 1vw, 16px);
       line-height: 1.6;
     }
 
@@ -7662,7 +7662,9 @@
 
     .hero-artwork {
       position: relative;
-      min-height: min(70svh, 660px);
+      width: min(100%, 620px);
+      justify-self: end;
+      min-height: clamp(420px, min(56svh, 48vw), 540px);
     }
 
     .art-swatch,
@@ -7681,10 +7683,10 @@
     }
 
     .art-swatch.one {
-      left: 5%;
-      top: 15%;
-      width: 42%;
-      height: 48%;
+      left: 8%;
+      top: 18%;
+      width: 38%;
+      height: 42%;
       background: rgba(225, 210, 192, 0.8);
       clip-path: polygon(4% 8%, 92% 0, 100% 84%, 84% 100%, 6% 94%, 0 22%);
       border-radius: 18% 8% 14% 10% / 12% 10% 18% 14%;
@@ -7692,10 +7694,10 @@
     }
 
     .art-swatch.two {
-      right: 2%;
-      top: 8%;
-      width: 32%;
-      height: 38%;
+      right: 5%;
+      top: 12%;
+      width: 28%;
+      height: 32%;
       background: rgba(223, 93, 53, 0.72);
       clip-path: polygon(7% 4%, 100% 0, 96% 100%, 0 91%, 4% 18%);
       border-radius: 8% 14% 10% 18% / 10% 12% 16% 12%;
@@ -7703,10 +7705,10 @@
     }
 
     .art-swatch.three {
-      left: 0;
-      bottom: 13%;
-      width: 37%;
-      height: 24%;
+      left: 3%;
+      bottom: 16%;
+      width: 32%;
+      height: 20%;
       background:
         radial-gradient(circle at 20% 50%, rgba(103, 120, 101, 0.82), rgba(103, 120, 101, 0.74) 58%, rgba(103, 120, 101, 0.18) 100%);
       clip-path: polygon(0 24%, 12% 8%, 90% 0, 100% 76%, 78% 100%, 8% 92%);
@@ -7729,7 +7731,7 @@
     .hero-building {
       left: 44%;
       top: 50%;
-      width: min(700px, 100%);
+      width: min(590px, 86%);
       height: auto;
       z-index: 4;
       filter: saturate(0.96) contrast(1.03);
@@ -7758,10 +7760,10 @@
     }
 
     .art-scribble {
-      right: 0;
-      bottom: 5%;
-      width: 34%;
-      height: 26%;
+      right: 3%;
+      bottom: 8%;
+      width: 28%;
+      height: 21%;
       z-index: 6;
       opacity: 0.62;
       transform: translate(calc(var(--mx) * -0.16), calc(var(--my) * -0.16));
@@ -7790,6 +7792,7 @@
 
       .hero-artwork {
         min-height: 620px;
+        width: min(100%, 620px);
       }
     }
 
@@ -7809,6 +7812,7 @@
 
       .hero-artwork {
         min-height: 430px;
+        width: 100%;
       }
 
       .hero-building {
@@ -7837,67 +7841,69 @@
       }
     }
 
-    /* Wide-but-short desktop viewports need a calmer scale than tall previews. */
-    @media (min-width: 1500px) and (max-height: 920px) {
+    /* Compact desktop viewports: preserve the CTA and keep the artwork supportive. */
+    @media (min-width: 1101px) and (max-height: 920px) {
       .hero.hero-blueprint {
-        padding-top: clamp(88px, 10vh, 102px);
-        padding-bottom: clamp(34px, 4vh, 48px);
+        align-items: flex-start;
+        padding-top: clamp(78px, 8vh, 92px);
+        padding-bottom: clamp(20px, 2.8vh, 34px);
       }
 
       .hero-blueprint-shell {
-        width: min(100%, 1380px);
-        grid-template-columns: minmax(340px, 0.78fr) minmax(560px, 1.08fr);
-        gap: clamp(48px, 4.2vw, 90px);
+        width: min(100%, 1320px);
+        grid-template-columns: minmax(320px, 0.88fr) minmax(460px, 0.96fr);
+        gap: clamp(44px, 4vw, 76px);
       }
 
       .hero-copy {
-        gap: 20px;
+        gap: 18px;
       }
 
       .hero-title {
-        font-size: clamp(44px, 3.45vw, 60px);
+        font-size: clamp(40px, min(3.7vw, 6.5vh), 60px);
         line-height: 0.98;
       }
 
       .hero-lede {
         max-width: 30ch;
-        font-size: clamp(14px, 0.92vw, 16px);
+        font-size: clamp(14px, 0.9vw, 15px);
       }
 
       .hero-artwork {
-        min-height: min(56svh, 520px);
+        width: min(100%, 560px);
+        min-height: min(52svh, 480px);
       }
 
       .hero-building {
-        width: min(590px, 88%);
+        width: min(540px, 82%);
       }
 
       .art-swatch.one {
         left: 10%;
         top: 18%;
-        width: 38%;
-        height: 41%;
+        width: 35%;
+        height: 38%;
       }
 
       .art-swatch.two {
-        right: 6%;
+        right: 8%;
         top: 13%;
-        width: 27%;
-        height: 31%;
+        width: 24%;
+        height: 28%;
       }
 
       .art-swatch.three {
-        left: 5%;
-        bottom: 16%;
-        width: 31%;
-        height: 19%;
+        left: 7%;
+        bottom: 17%;
+        width: 28%;
+        height: 17%;
       }
 
       .art-scribble {
-        right: 4%;
-        bottom: 8%;
-        width: 27%;
-        height: 20%;
+        right: 6%;
+        bottom: 9%;
+        width: 24%;
+        height: 18%;
       }
     }
 
