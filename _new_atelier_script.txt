@@ -1,0 +1,119 @@
+  <script>
+    (function () {
+      'use strict';
+
+      const hero = document.getElementById('hero');
+      const motesLayer = document.getElementById('atelierMotes');
+      if (!hero || !motesLayer) return;
+
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // --- Cursor-tracked window light ---
+      let tx = 22, ty = 18;
+      let cx = 22, cy = 18;
+      let raf = 0;
+
+      function updateLight() {
+        cx += (tx - cx) * 0.085;
+        cy += (ty - cy) * 0.085;
+        hero.style.setProperty('--sx', cx.toFixed(2) + '%');
+        hero.style.setProperty('--sy', cy.toFixed(2) + '%');
+        hero.style.setProperty('--shx', (100 - cx).toFixed(2) + '%');
+        hero.style.setProperty('--shy', (100 - cy).toFixed(2) + '%');
+        if (Math.abs(tx - cx) > 0.06 || Math.abs(ty - cy) > 0.06) {
+          raf = requestAnimationFrame(updateLight);
+        } else {
+          raf = 0;
+        }
+      }
+
+      if (!reduced) {
+        hero.addEventListener('pointermove', (e) => {
+          const r = hero.getBoundingClientRect();
+          tx = ((e.clientX - r.left) / r.width) * 100;
+          ty = ((e.clientY - r.top) / r.height) * 100;
+          hero.classList.toggle('is-lit', ty > 30 && ty < 72 && tx > 14 && tx < 86);
+          if (!raf) raf = requestAnimationFrame(updateLight);
+        }, { passive: true });
+
+        hero.addEventListener('pointerleave', () => {
+          tx = 22; ty = 18;
+          hero.classList.remove('is-lit');
+          if (!raf) raf = requestAnimationFrame(updateLight);
+        });
+      } else {
+        hero.style.setProperty('--sx', '22%');
+        hero.style.setProperty('--sy', '18%');
+        hero.style.setProperty('--shx', '78%');
+        hero.style.setProperty('--shy', '82%');
+      }
+
+      // --- Drifting paint motes ---
+      const motePool = [
+        { text: '<button>',     cls: '',      size: 14 },
+        { text: '</nav>',       cls: 'coral', size: 13 },
+        { text: '<section>',    cls: 'gold',  size: 14 },
+        { text: 'flex',         cls: 'mono',  size: 11 },
+        { text: 'gap: 12',      cls: 'mono',  size: 11 },
+        { text: '<a href>',     cls: '',      size: 13 },
+        { text: ':hover',       cls: 'coral', size: 13 },
+        { text: '</article>',   cls: 'gold',  size: 12 },
+        { text: 'border',       cls: 'mono',  size: 11 },
+        { text: '<figure>',     cls: '',      size: 12 },
+        { text: 'em {',         cls: 'mono',  size: 11 },
+        { text: '</main>',      cls: 'coral', size: 13 },
+        { text: '<picture>',    cls: 'gold',  size: 12 },
+        { text: 'rem',          cls: 'mono',  size: 11 }
+      ];
+
+      const motes = [];
+      const count = window.innerWidth < 700 ? 7 : 12;
+
+      function placeMote(m, i) {
+        const onLeft = (i % 2 === 0);
+        const side = onLeft ? (3 + Math.random() * 22) : (75 + Math.random() * 22);
+        const top  = 14 + Math.random() * 74;
+        m.bx = side;
+        m.by = top;
+        m.seed = i * 1.234 + Math.random() * 2;
+        m.amp = 1.4 + Math.random() * 2.2;
+        m.el.style.left = side + '%';
+        m.el.style.top  = top + '%';
+      }
+
+      for (let i = 0; i < count; i++) {
+        const spec = motePool[i % motePool.length];
+        const el = document.createElement('span');
+        el.className = 'mote ' + spec.cls;
+        el.textContent = spec.text;
+        el.style.fontSize = spec.size + 'px';
+        el.style.opacity = '0';
+        motesLayer.appendChild(el);
+        const m = { el };
+        placeMote(m, i);
+        motes.push(m);
+      }
+
+      motes.forEach((m, i) => {
+        setTimeout(() => {
+          m.el.style.transition = 'opacity 1300ms ease';
+          m.el.style.opacity = (0.50 + Math.random() * 0.35).toFixed(2);
+        }, 500 + i * 110);
+      });
+
+      if (!reduced) {
+        let t0 = performance.now();
+        function drift(now) {
+          const t = (now - t0) * 0.001;
+          for (let i = 0; i < motes.length; i++) {
+            const m = motes[i];
+            const dx = Math.sin(t * 0.18 + m.seed * 1.7) * m.amp;
+            const dy = Math.cos(t * 0.22 + m.seed * 2.1) * m.amp * 0.7;
+            m.el.style.transform = 'translate(calc(-50% + ' + dx.toFixed(2) + 'px), calc(-50% + ' + dy.toFixed(2) + 'px))';
+          }
+          requestAnimationFrame(drift);
+        }
+        requestAnimationFrame(drift);
+      }
+    })();
+  </script>

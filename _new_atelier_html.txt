@@ -1,0 +1,54 @@
+  <section class="hero atelier-hero" id="hero" aria-label="Mediocre Markup hero">
+    <svg class="atelier-defs" aria-hidden="true">
+      <defs>
+        <filter id="bleed" x="-5%" y="-5%" width="110%" height="110%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="3" result="t"/>
+          <feDisplacementMap in="SourceGraphic" in2="t" scale="2.6"/>
+        </filter>
+      </defs>
+    </svg>
+
+    <div class="atelier-grain" aria-hidden="true"></div>
+    <div class="atelier-sun" aria-hidden="true"></div>
+    <div class="atelier-shade" aria-hidden="true"></div>
+    <div class="atelier-motes" id="atelierMotes" aria-hidden="true"></div>
+    <div class="atelier-vignette" aria-hidden="true"></div>
+
+    <div class="atelier-shell">
+      <header class="atelier-meta">
+        <span class="ink-mark">MEDIOCRE&nbsp;MARKUP</span>
+        <span class="rule"></span>
+        <span class="folio">Folio I &middot; the atelier</span>
+      </header>
+
+      <div class="atelier-composition">
+        <span class="atelier-mark open" aria-hidden="true"><span class="b">&lt;</span>h1<span class="b">&gt;</span></span>
+
+        <h1 class="atelier-title">
+          If you&rsquo;re <span class="invisible">invisible</span> online, you&rsquo;re <span class="invisible">invisible</span> to <span class="keyword">customers.</span>
+        </h1>
+
+        <span class="atelier-mark close" aria-hidden="true"><span class="b">&lt;/</span>h1<span class="b">&gt;</span></span>
+      </div>
+
+      <p class="atelier-sub">
+        Custom websites for local businesses &mdash; <em>written by hand</em>, line by line, with the kind of restraint that makes a small shop feel like a destination.
+      </p>
+
+      <div class="atelier-actions">
+        <a href="#contact" onclick="jumpToContact(event)" class="atelier-btn primary">
+          <span>Start a project</span>
+          <span class="arr" aria-hidden="true">&rarr;</span>
+        </a>
+        <a href="#pricing" onclick="jumpToPricing(event)" class="atelier-btn ghost">
+          <span>See pricing</span>
+        </a>
+      </div>
+
+      <footer class="atelier-foot">
+        <span class="sig">made in browser</span>
+        <span class="rule"></span>
+        <span>Atelier &middot; MM &middot; 2026</span>
+      </footer>
+    </div>
+  </section>
