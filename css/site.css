@@ -105,12 +105,13 @@ svg { display: block; }
   line-height: 0.9;
   letter-spacing: -0.045em;
 }
-/* each line is a window the words rise through on arrival; the padding keeps the letters' tops in it */
+/* each line is a window the words rise through on arrival; the padding keeps the letters' tops
+   and their descenders (g, p, y) inside it */
 .line {
   display: block;
   overflow: clip;
-  padding: 0.1em 0 0.04em;
-  margin: -0.1em 0 -0.04em;
+  padding: 0.1em 0 0.22em;
+  margin: -0.1em 0 -0.22em;
 }
 .line > span { display: inline-block; }
 
@@ -204,6 +205,6 @@ svg { display: block; }
   .button { animation: up .8s var(--ease-out) .42s both; }
   .note { animation: up .8s var(--ease-out) .5s both; }
 }
-@keyframes rise { from { transform: translateY(110%); } }
+@keyframes rise { from { transform: translateY(140%); } }
 @keyframes up { from { opacity: 0; transform: translateY(18px); } }
 @keyframes fade { from { opacity: 0; } }

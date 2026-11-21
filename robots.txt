@@ -1,0 +1,5 @@
+# managed by the seo skill. The preview link writes its own, which keeps the preview out of Google.
+User-agent: *
+Allow: /
+
+Sitemap: https://mediocremarkup.com/sitemap.xml
